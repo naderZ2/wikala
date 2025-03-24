@@ -31,11 +31,11 @@ return [
         'secret' => env('AWS_SECRET_ACCESS_KEY'),
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
-    // 'facebook' => [
-    //     'client_id' => "305634685107598",
-    //     'client_secret' => "2d43cd4c7c6ec825700535b79f0cc9ed",
-    //     'redirect' => "http://localhost:8000/facebook/callback",
-    // ],
+    'facebook' => [
+        'client_id' => "1377788370073359",
+        'client_secret' => "bd3ee5510fc6ce970fc94a56e1800d13",
+        'redirect' => "https://127.0.0.1:8000/facebook/callback",
+    ],
 
     'google' => [
         'client_id'     => "682438700043-vohk56av2315iga3rs6nfirqtid6vhin.apps.googleusercontent.com",

@@ -24,13 +24,16 @@ class SocialController extends Controller
 
     public function redirect(Request $request)
     {
+        // $data=$request->validated();
         // Use the access token to retrieve user data from Google
         $userSocial = Socialite::driver('google')->stateless()->userFromToken('ya29.a0AeXRPp4wJZhITwjHxtpDmCVnjqz9iQrCIKfNcp7H35jvcP27tZRVtVJcKWK1UH7wGW0lpN6_JoMj1hFsG4k49i8sXQiZzEpdKS5jv7oGl47b4kcyabJC1Q4dsmBcBZNYnP8k4MdXTqvqvfzus70uokR-uy7OYpZ0DuTEKH4zmgaCgYKAQkSARESFQHGX2MiE_ttluCwnqTCVLwaoCELJw0177');
-        $userSocial = Socialite::driver('google')->stateless()->userFromToken('ya29.a0AeXRPp4wJZhITwjHxtpDmCVnjqz9iQrCIKfNcp7H35jvcP27tZRVtVJcKWK1UH7wGW0lpN6_JoMj1hFsG4k49i8sXQiZzEpdKS5jv7oGl47b4kcyabJC1Q4dsmBcBZNYnP8k4MdXTqvqvfzus70uokR-uy7OYpZ0DuTEKH4zmgaCgYKAQkSARESFQHGX2MiE_ttluCwnqTCVLwaoCELJw0177');
+        
+        // $userSocial = Socialite::driver($request->provider)->stateless()->userFromToken($request->token);
         // $user = Socialite::driver('google')->stateless()->userFromToken($request->token);
 
         // Log::info('Google User: ' . json_encode($userSocial));
         // Get or create the user
+        dd($userSocial?->user['phone']);
         $user = User::firstOrCreate(
             [
                 'provider_id' => $userSocial->getId(),
@@ -39,9 +42,10 @@ class SocialController extends Controller
             [
                 'email' => $userSocial->getEmail(),
                 'name' => $userSocial?->user['name'] ?? "client",
-                'phone' => $userSocial?->user['phone_number'] ?? "01",
+                'phone' => $userSocial?->user['phone_number'] ?? "0001",
                 'password' => Hash::make(Str::random(16)), 
                 'provider_id' => $userSocial->getId(),
+                // 'provider_name' =>  $request->provider ?? "google",
                 'provider_name' =>  $request->provider ?? "google",
             ]
         );
@@ -89,13 +93,13 @@ class SocialController extends Controller
 
     // public function redirect(Request $request)
     // {
-    //     return Socialite::driver('google')->redirect();
+    //     return Socialite::driver('facebook')->redirect();
     // }
 
     // public function handleGoogleCallback()
     // {
     //     try {
-    //         $user = Socialite::driver('google')->user();
+    //         $user = Socialite::driver('facebook')->user();
     
     //         dd($user);
     //         Log::info('Google User: ' . json_encode($user));

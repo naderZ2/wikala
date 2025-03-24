@@ -31,7 +31,7 @@ Route::view('terms_en', 'terms_en');
 
 Route::middleware(['web'])->get('login/redirect', [Client\Auth\SocialController::class, 'redirect'] );
 
-// Route::middleware(['web'])->get('login/google/callback', [Client\Auth\SocialController::class, 'handleGoogleCallback'] );
+// Route::middleware(['web'])->get('facebook/callback', [Client\Auth\SocialController::class, 'handleGoogleCallback'] );
 
 // Route::middleware(['web'])->get('login/google/callback', function (Request $request) {
 //     Log::info('Google callback', $request->all());
