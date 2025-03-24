@@ -31,8 +31,8 @@ class SocialRequest extends FormRequest
     public function rules()
     {
         return [
-            "provider" => "required",
             "token" => "required",
+            "provider" => "required",
         ];
     }
 
