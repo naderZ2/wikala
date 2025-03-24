@@ -28,6 +28,8 @@ class EditSettingRequest extends FormRequest
             'whatsapp_number' => 'sometimes|nullable',
             'facebook' => 'sometimes|nullable',
             'insta' => 'sometimes|nullable',
+            'phone' => 'sometimes|nullable',
+            'email' => 'sometimes|nullable',
             // 'terms' => 'sometimes|nullable',
             // 'privacy' => 'sometimes|nullable',
             'instance_id' => 'required',

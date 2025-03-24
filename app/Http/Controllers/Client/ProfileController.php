@@ -1,8 +1,10 @@
 <?php
 
 namespace App\Http\Controllers\Client;
+use PgSql\Lob;
 use Illuminate\Http\Request;
 use App\Traits\ResponsesTrait;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Client\EditProfileRequest;
 
@@ -30,6 +32,7 @@ class ProfileController extends Controller
 
     function update(EditProfileRequest $request){
         $data=$request->validated();
+        Log::info($data);
         auth()->user()->update($data);
         return $this->success(null,trans('lang.updated'));
     }

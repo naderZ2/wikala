@@ -34,7 +34,21 @@
 								<input class="form-control" id="validationCustom01" type="text" name="whatsapp_number" value="{{ $settings->whatsapp_number}}" placeholder="whatsapp Number" required="">
 								<div class="valid-feedback">Looks good!</div>
                                 <div class="invalid-feedback">Please choose a whatsapp Number.</div>
+							</div>
 
+							<div class="col-md-6 mb-3">
+								<label for="validationCustom01">@lang('lang.phone')
+								    </label>
+								<input class="form-control" id="validationCustom01" type="text" name="phone" value="{{ $settings->phone}}" placeholder="Phone Number" required="">
+								<div class="valid-feedback">Looks good!</div>
+                                <div class="invalid-feedback">Please choose a Phone Number.</div>
+							</div>
+							<div class="col-md-6 mb-3">
+								<label for="validationCustom01">@lang('lang.Email')
+								    </label>
+								<input class="form-control" id="validationCustom01" type="text" name="email" value="{{ $settings->email}}" placeholder="Email" required="">
+								<div class="valid-feedback">Looks good!</div>
+                                <div class="invalid-feedback">Please choose a Email.</div>
 							</div>
 				
 						
@@ -66,12 +80,12 @@
                                 <div class="invalid-feedback">Please choose a access_token.</div>
 							</div>
 
-							<div class="col-md-6 mb-3">
+							{{-- <div class="col-md-6 mb-3">
 								<label for="validationCustom01">@lang('lang.delivery_fee')</label>
 								<input class="form-control" id="validationCustom01" type="text" name="delivery_fee" value="{{ $settings->delivery_fee}}" required="">
 								<div class="valid-feedback">Looks good!</div>
                                 <div class="invalid-feedback">Please choose a access_token.</div>
-							</div>
+							</div> --}}
 				
 						
 					</div>

@@ -11,7 +11,7 @@ class AboutUs extends Model
     protected $fillable = 
     [
         'whatsapp_number','facebook',
-        'insta','youtube',
+        'insta','youtube',"phone","email",
         'description','privacy',
         'terms_ar','terms_en','access_token','instance_id'
     ];

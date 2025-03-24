@@ -31,6 +31,8 @@
 									<th>@lang('lang.Name')</th>
 									<th class="text-center">@lang('lang.phone')</th>
 									<th class="text-center">@lang('lang.Email')</th>
+									<th>@lang('lang.bio')</th>
+									<th>@lang('lang.date_of_birth')</th>
 									<th>@lang('lang.joining_date')</th>
 									<th></th>								
 								</tr>
@@ -41,6 +43,8 @@
 										<td>{{ $client->name }}</td>
 										<td class="text-center">{{ $client->phone}}</td>
 										<td>{{ $client->email}}</td>
+										<td title="{{ $client?->bio }}">{{ Str::limit($client?->bio, 30) }}</td>
+										<td>{{ $client?->date_of_birth }}</td>
 										<td>{{ $client?->created_at?->format('Y-m-d') }}</td>
 										<td>
 											<button class="btn btn-primary" type="button" data-bs-toggle="modal" onclick="getRndInteger(),getId({{ $client->id }})" data-original-title="test" data-bs-target="#exampleModal" >@lang('lang.reset_password')</button>
@@ -57,6 +61,8 @@
 									<th>@lang('lang.Name')</th>
 									<th class="text-center">@lang('lang.phone')</th>
 									<th class="text-center">@lang('lang.Email')</th>
+									<th>@lang('lang.bio')</th>
+									<th>@lang('lang.date_of_birth')</th>
 									<th>@lang('lang.joining_date')</th>
 									<th></th>								
 								</tr>

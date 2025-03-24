@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Client\Auth;
 
 use Illuminate\Http\Request;
 use App\Traits\ResponsesTrait;
+use Illuminate\Support\Carbon;
 use App\Models\ConfirmationCodes;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;

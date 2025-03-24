@@ -33,10 +33,12 @@ class EditProfileRequest extends FormRequest
         return [
             'name' => 'sometimes|nullable',
             // 'password' => 'sometimes|nullable',
-            'phone' => 'sometimes|nullable|unique:users,phone,'.auth()->id(),
-            'phone' => 'sometimes|nullable|unique:users,phone,'.auth()->id(),
-            'email' => 'sometimes|nullable|unique:users,email,'.auth()->id(),
+            // 'phone' => 'sometimes|nullable|unique:users,phone,'.auth()->id(),
+            'phone' => 'required|unique:users,phone,'.auth()->id(),
+            'email' => 'required|unique:users,email,'.auth()->id(),
             'image' => 'sometimes|nullable|file',
+            'date_of_birth' => 'required|date',
+            'bio' => 'sometimes|nullable',
         ];
     }
 

@@ -253,7 +253,8 @@
 		"delivery_fee" => "Delivery Fee",
 		"Total_Product_Price" => "Total Product Price",
 		
-
+		"bio" => "Bio",
+		"date_of_birth" => "date of birth",
 
 	]
 ?>

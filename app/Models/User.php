@@ -30,7 +30,7 @@ class User extends Authenticatable
         'device_id','email' ,
         'deleted_at','lang' ,
         'provider_id','provider_name',
-        'active'
+        'active','bio','date_of_birth'
     ];
 
     /**

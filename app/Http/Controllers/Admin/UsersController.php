@@ -15,7 +15,7 @@ class UsersController extends Controller
             $clients =$clients->join('address_user', 'address_user.user_id' ,'users.id')
             ->where('address_user.region_id' , $request->regionId);
         }
-        $clients =$clients->select('users.id' ,'users.name' ,'users.email' , 'users.phone' ,'users.created_at')->get();
+        $clients =$clients->select('users.id' ,'users.name' ,'users.email','users.bio','users.date_of_birth' , 'users.phone' ,'users.created_at')->get();
         return view('admin.clients.index',compact('clients'));
     }
 
