@@ -252,9 +252,23 @@
 		"phone_numeric" => "Phone must be numeric",
 		"delivery_fee" => "Delivery Fee",
 		"Total_Product_Price" => "Total Product Price",
-		
 		"bio" => "Bio",
 		"date_of_birth" => "date of birth",
+		"are_you_sure_to_delete" => "Are you sure to delete",
+
+		"string" => "string",
+		"number" => "number",
+		"select" => "select",
+		"Attributes" => "Attributes",
+		
+		"The_Arabic_name_is_required" => "The Arabic name is required",
+		"The_Arabic_name_must_be_unique" => "The Arabic name must be unique",
+		"The_English_name_is_required" => "The English name is required",
+		"The_English_name_must_be_unique" => "The English name must be unique",
+		"The_image_size_must_not_exceed_1024_kilobytes" => "The image size must not exceed 1024 kilobytes",
+		"The_type_field_is_required" => "The type field is required",
+		"The_type_must_be_one_of_the_following_string_number_select" => "The type must be one of the following string number select",
+		
 
 	]
 ?>

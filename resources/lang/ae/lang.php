@@ -271,6 +271,19 @@
 		"Total_Product_Price" => "اجمالي سعر المنتجات",
 		"bio" => "نبذه",
 		"date_of_birth" => "تاريخ الميلاد",
+		"are_you_sure_to_delete" => "هل انت متاكد من الحذف",
+		"string" => "نص",
+		"number" => "رقم",
+		"select" => "اختيار",
+		"Attributes" => "الخصائص",
+		
+		"The_Arabic_name_is_required" => "الاسم بالعربية مطلوب",
+		"The_Arabic_name_must_be_unique" => "الاسم بالعربية يجب ان يكون فريد",
+		"The_English_name_is_required" => "الاسم بالانجليزية مطلوب",
+		"The_English_name_must_be_unique" => "الاسم بالانجليزية يجب ان يكون فريد",
+		"The_image_size_must_not_exceed_1024_kilobytes" => "حجم الصورة لا يجب ان يتجاوز 1024 كيلو بايت",
+		"The_type_field_is_required" => "حقل النوع مطلوب",
+		"The_type_must_be_one_of_the_following_string_number_select" => "يجب ان يكون النوع احد الاتي نص رقم اختيار",
 		
 		]
 ?>

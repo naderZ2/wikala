@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\File;
 
 trait FileUploadTrait
 {
-    protected function uploadFile ($file, $location ,$imagePath = null) {
+    protected function uploadFile($file, $location ,$imagePath = null) {
         if($imagePath)
         {
             $img =public_path($imagePath);

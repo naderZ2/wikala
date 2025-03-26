@@ -138,10 +138,10 @@ function togglePassword() {
     
     if (passwordField.type === "password") {
         passwordField.type = "text";
-        showHideIcon.textContent = ""; // تغيير الأيقونة عند إظهار كلمة المرور
+        showHideIcon.textContent = ""; 
     } else {
         passwordField.type = "password";
-        showHideIcon.textContent = ""; // تغيير الأيقونة عند إخفاء كلمة المرور
+        showHideIcon.textContent = "";
     }
 }
 

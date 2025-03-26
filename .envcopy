@@ -10,8 +10,13 @@ DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
 DB_PORT=3306
 DB_DATABASE=ezhalhakw_dashboard_dev
+
 DB_USERNAME=root
 DB_PASSWORD=
+
+DB_USERNAME=ezhalhakw_wikala
+DB_PASSWORD=2Z*b)a_^zc.7
+
 
 BROADCAST_DRIVER=log
 CACHE_DRIVER=file

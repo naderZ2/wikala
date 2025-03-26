@@ -1,9 +1,0 @@
-ALTER TABLE about_us
-ADD COLUMN phone BIGINT NULL AFTER facebook,
-ADD COLUMN email VARCHAR(255) NULL AFTER phone;
-
-
-
-ALTER TABLE users
-ADD COLUMN bio TEXT NULL AFTER email,
-ADD COLUMN date_of_birth DATE NULL AFTER bio;

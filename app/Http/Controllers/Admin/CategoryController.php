@@ -9,7 +9,7 @@ use App\Traits\FileUploadTrait;
 
 class CategoryController extends Controller
 {
-        use FileUploadTrait;
+    use FileUploadTrait;
 
     public function index(){
         $this->lang();

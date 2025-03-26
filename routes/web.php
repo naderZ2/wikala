@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Session;
 use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Http\Client\Events\RequestSending;
+use App\Http\Controllers\Admin\AttributeController;
 
 // Route::get('test')->name('');
 Route::view('test2', 'test')->name('test');
@@ -112,6 +113,11 @@ Route::group(['middleware' => ['auth:admin','CheckUserActiviation']], function()
         Route::resource('sections', 'Admin\SectionsController');
 
         Route::post('edit_section', [Admin\SectionsController::class, 'update'])->name('sections.update');
+
+        Route::resource('attributes', AttributeController::class);
+
+        Route::get('attributes/{id}/enable', [AttributeController::class, 'enable'])->name('attributes.enable');
+
 
     });
 
