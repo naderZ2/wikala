@@ -115,8 +115,11 @@ Route::group(['middleware' => ['auth:admin','CheckUserActiviation']], function()
         Route::post('edit_section', [Admin\SectionsController::class, 'update'])->name('sections.update');
 
         Route::resource('attributes', AttributeController::class);
-
         Route::get('attributes/{id}/enable', [AttributeController::class, 'enable'])->name('attributes.enable');
+
+        Route::resource('category-attributes', Admin\CategoryAttributeController::class);
+        
+        Route::get('category-attributes/{id}/enable', [Admin\CategoryAttributeController::class, 'enable'])->name('category-attributes.enable');
 
 
     });

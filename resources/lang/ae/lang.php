@@ -276,6 +276,8 @@
 		"number" => "رقم",
 		"select" => "اختيار",
 		"Attributes" => "الخصائص",
+		"add_attribute" => "اضافة خاصية",
+		"edit_attribute" => "تعديل خاصية",
 		
 		"The_Arabic_name_is_required" => "الاسم بالعربية مطلوب",
 		"The_Arabic_name_must_be_unique" => "الاسم بالعربية يجب ان يكون فريد",
@@ -284,6 +286,19 @@
 		"The_image_size_must_not_exceed_1024_kilobytes" => "حجم الصورة لا يجب ان يتجاوز 1024 كيلو بايت",
 		"The_type_field_is_required" => "حقل النوع مطلوب",
 		"The_type_must_be_one_of_the_following_string_number_select" => "يجب ان يكون النوع احد الاتي نص رقم اختيار",
+
+		"category_attributes" => "خصائص الفئات",
+		"add_category_attribute" => "اضافة خاصية للفئة",
+		"mandatory" => "اجباري",
+		"required" => "مطلوب",
+		"not_required" => "غير مطلوب",
+		"Attribute" => "الخاصية",
+		
+		"Mandatory_field_is_required" => "الحقل الاجباري مطلوب",
+		"Mandatory_field_must_be_boolean" => "الحقل الاجباري يجب ان يكون من الاختيارات",
+		"The_category_and_attribute_combination_must_be_unique" => "الفئة والخاصية يجب ان تكون فريدة",
+		"The_attribute_and_category_combination_must_be_unique" => "الخاصية والفئة يجب ان تكون فريدة",
+		
 		
 		]
 ?>

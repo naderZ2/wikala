@@ -58,7 +58,6 @@ class AttributeController extends Controller
 
     public function destroy($id){
         $attribute = Attribute::find($id);
-
         $attribute->delete();
         return to_route('attributes.index')->with('success');
     }

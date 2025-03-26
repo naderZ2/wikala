@@ -105,7 +105,7 @@
 					--}}
 
 
-					<li class="sidebar-list">
+					{{-- <li class="sidebar-list">
 						<a class="sidebar-link sidebar-title {{ request()->route()->uri() == 'discounts' ? 'active' : '' }}" href="#"><i data-feather="dollar-sign"></i>
 							<span class="lan-7">@lang('lang.discounts') </span>
 							<div class="according-menu"><i class="fa fa-angle-{{ request()->route()->uri() == 'discounts' ? 'down' : 'right' }}"></i></div>
@@ -115,10 +115,10 @@
 							<li><a href="{{route('discounts.index')}}" class="{{ Route::currentRouteName()=='discounts.index' ? 'active' : '' }}">@lang('lang.discounts') </a></li>
 
                       </ul>
-                  	</li>
+                  	</li> --}}
 
 
-					<li class="sidebar-list">
+					{{-- <li class="sidebar-list">
 						<a class="sidebar-link sidebar-title {{ request()->route()->getPrefix() == '/events' ? 'active' : '' }}" href="#"><i data-feather="calendar"></i>
 							<span class="lan-7">@lang('lang.events') </span>
 							<div class="according-menu"><i class="fa fa-angle-{{ request()->route()->getPrefix() == '/events' ? 'down' : 'right' }}"></i></div>
@@ -126,7 +126,7 @@
 
 	                    <ul class="sidebar-submenu" style="display: {{ request()->route()->getPrefix() == '/events' ? 'block;' : 'none;' }}">
 	                        	<li><a class="lan-4 {{ Route::currentRouteName()=='event_category.index' ? 'active' : '' }}" href="{{route('event_category.index')}}">{{ trans('lang.events_category') }}</a></li>
-							{{-- @dd(request()->get('eventiFlter')) --}}
+							{{-- @dd(request()->get('eventiFlter')) 
 								<li><a class="lan-4 {{ request()->get('eventiFlter') == 'under_review' ? 'active' : '' }}" href="{{route('daily_events.index', ['eventiFlter' => 'under_review'] )}}">{{ trans('lang.under_review') }}</a></li>
 							<li><a class="lan-4 {{ request()->get('eventiFlter') == 'approved' ? 'active' : '' }}" href="{{route('daily_events.index', ['eventiFlter' => 'approved'] )}}">{{ trans('lang.approved') }}</a></li>
 						
@@ -138,7 +138,7 @@
 						
 
                       </ul>
-                  	</li>
+                  	</li> --}}
 
 
 					<li class="sidebar-list">
@@ -167,8 +167,30 @@
                   	</li>
 
 
-			
 					<li class="sidebar-list">
+						<a class="sidebar-link sidebar-title {{ request()->route()->uri() == 'dashboard/attributes' ? 'active' : '' }}" href="#"><i data-feather="users"></i>
+							<span class="lan-7">{{ trans('lang.Attributes') }}</span>
+							<div class="according-menu"><i class="fa fa-angle-{{ request()->route()->uri() == 'dashboard/attributes' ? 'down' : 'right' }}"></i></div>
+						</a>
+						
+	                    <ul class="sidebar-submenu" style="display: {{ request()->route()->uri() == 'dashboard/attributes' ? 'block;' : 'none;' }}">
+							<li><a href="{{ route('attributes.index') }}" class="{{ Route::currentRouteName() == 'attributes' ? 'active' : '' }}">{{ trans('lang.Attributes') }}</a></li>
+                      </ul>
+                  	</li>
+					<li class="sidebar-list">
+						<a class="sidebar-link sidebar-title {{ request()->route()->uri() == 'dashboard/category-attributes' ? 'active' : '' }}" href="#"><i data-feather="users"></i>
+							<span class="lan-7">{{ trans('lang.category_attributes') }}</span>
+							<div class="according-menu"><i class="fa fa-angle-{{ request()->route()->uri() == 'dashboard/category-attributes' ? 'down' : 'right' }}"></i></div>
+						</a>
+						
+	                    <ul class="sidebar-submenu" style="display: {{ request()->route()->uri() == 'dashboard/category-attributes' ? 'block;' : 'none;' }}">
+							<li><a href="{{ route('category-attributes.index') }}" class="{{ Route::currentRouteName() == 'category-attributes' ? 'active' : '' }}">{{ trans('lang.category_attributes') }}</a></li>
+                      </ul>
+                  	</li>
+
+
+			
+					{{-- <li class="sidebar-list">
 						<a class="sidebar-link sidebar-title {{ request()->route()->uri() == 'users/seller' ? 'active' : '' }}" href="#"><i data-feather="users"></i>
 							<span class="lan-7">{{ trans('lang.Sellers') }}</span>
 							<div class="according-menu"><i class="fa fa-angle-{{ request()->route()->uri() == 'users/seller' ? 'down' : 'right' }}"></i></div>
@@ -178,7 +200,7 @@
                           <li><a href="{{ route('seller.index') }}" class="{{ Route::currentRouteName() == 'seller.index' ? 'active' : '' }}">{{ trans('lang.Sellers') }}</a></li>
 
                       </ul>
-                  	</li>
+                  	</li> --}}
 
 					  {{-- <li class="sidebar-list">
 						<a class="sidebar-link sidebar-title {{request()->route()->getPrefix() == '/forms' ? 'active' : '' }}" href="#">
@@ -307,7 +329,7 @@
 					</li> --}}
 
 
-					<li class="sidebar-list">
+					{{-- <li class="sidebar-list">
 					    
 						<a class="sidebar-link sidebar-title {{ (request()->route()->uri() == 'orders/products')||(request()->route()->uri() == 'orders/products/create') ? 'active' : '' }}" href="#"><i data-feather="shopping-bag"></i>
 							<span class="lan-7">{{ trans('lang.Products') }}</span>
@@ -330,7 +352,7 @@
 
 									
 						</ul>
-                  	</li>
+                  	</li> --}}
 
 					  {{-- <li class="sidebar-list">
 						<a class="sidebar-link sidebar-title {{ request()->route()->uri() == 'special_request/index' ? 'active' : '' }}" href="#"><i data-feather="mail"></i>
@@ -346,7 +368,7 @@
 									@lang('lang.specialRequest')</a></li>
 						</ul>
                   	</li> --}}
-					<li class="sidebar-list">
+					{{-- <li class="sidebar-list">
 						<a class="sidebar-link sidebar-title {{ request()->route()->uri() == 'orders/orders' ? 'active' : '' }}" href="#"><i data-feather="shopping-bag"></i>
 							<span class="lan-7">{{ trans('lang.Orders') }}</span>
 							<div class="according-menu"><i class="fa fa-angle-{{ request()->route()->uri() == 'orders/orders' ? 'down' : 'right' }}"></i></div>
@@ -362,7 +384,7 @@
 
 							<li><a href="{{ route('order.under_preparation') }}" class="{{ Route::currentRouteName() == 'order.under_preparation' ? 'active' : '' }}">@lang('lang.Under_Preparation_Orders')</a></li>
 	                    </ul>
-                  	</li>
+                  	</li> --}}
 
 
 

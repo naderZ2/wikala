@@ -1,3 +1,4 @@
+
 <?php $__env->startSection('title', 'Basic DataTables'); ?>
 
 <?php $__env->startSection('css'); ?>
@@ -10,12 +11,12 @@
 <?php $__env->stopSection(); ?>
 
 <?php $__env->startSection('breadcrumb-title'); ?>
-<h3> <?php echo app('translator')->get('lang.Attributes'); ?> </h3>
+<h3> <?php echo app('translator')->get('lang.category_attributes'); ?> </h3>
 <?php $__env->stopSection(); ?>
 
 <?php $__env->startSection('breadcrumb-items'); ?>
 <li class="breadcrumb-item"><?php echo app('translator')->get('lang.Dashboard'); ?></li>
-<li class="breadcrumb-item active"><?php echo app('translator')->get('lang.Attributes'); ?></li>
+<li class="breadcrumb-item active"><?php echo app('translator')->get('lang.category_attributes'); ?></li>
 <?php $__env->stopSection(); ?>
 
 <?php $__env->startSection('content'); ?>
@@ -23,7 +24,7 @@
 	<div class="row">
 		<div class="d-flex justify-content-end col-sm-12">
 			<?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('add category')): ?>
-				<a href="<?php echo e(route('attributes.create')); ?>"  class="btn btn-primary"><?php echo app('translator')->get('lang.add_slider'); ?></a>
+				<a href="<?php echo e(route('category-attributes.create')); ?>"  class="btn btn-primary"><?php echo app('translator')->get('lang.add_category_attribute'); ?></a>
 			<?php endif; ?>	
 		</div>
 		<div class="col-sm-12 mt-3">
@@ -33,34 +34,36 @@
 						<table class="display" id="advance-1">
 							<thead>
 								<tr>
-									<th><?php echo app('translator')->get('lang.Name'); ?></th>
-									<th><?php echo app('translator')->get('lang.image'); ?></th>
-									<th><?php echo app('translator')->get('lang.Type'); ?></th>
+									<th><?php echo app('translator')->get('lang.Category'); ?></th>
+									<th><?php echo app('translator')->get('lang.Attributes'); ?></th>
+									<th><?php echo app('translator')->get('lang.mandatory'); ?></th>
 									
 									<th></th>									
 								</tr>
 							</thead>
 							<tbody>
-								<?php $__empty_1 = true; $__currentLoopData = $attributes; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $attribute): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+								<?php $__empty_1 = true; $__currentLoopData = $categoryAttributes; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $value): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
 									<tr>
-										<td><?php echo e($attribute?->name); ?></td>
-										<td >
-											<img src="<?php echo e(asset($attribute->image)); ?>"  alt=""  class="image-fluid"  height="90" width="90">
-										</td>
-										<td><?php echo e(__('lang.'.$attribute->type)); ?></td>
+										<td><?php echo e($value?->category?->name); ?></td>
+
+										<td><?php echo e($value?->attribute?->name); ?></td>
+										
+										<td><?php echo e($value?->mandatory == 1 ? __('lang.required') : __('lang.not_required')); ?></td>
+										
+										
 										
 										
 										<td>
 											
 											
-											<a class="btn btn-primary mt-1" href="<?php echo e(route('attributes.edit',$attribute->id)); ?>" ><?php echo app('translator')->get('lang.edit'); ?></a>
-											<?php if($attribute->enable == 1): ?>
-											<a class="btn btn-danger mt-1"  href="<?php echo e(route('attributes.enable', $attribute->id)); ?>" ><?php echo app('translator')->get('lang.Disable'); ?> </a>
+											<a class="btn btn-primary mt-1" href="<?php echo e(route('category-attributes.edit',$value->id)); ?>" ><?php echo app('translator')->get('lang.edit'); ?></a>
+											<?php if($value?->enable == 1): ?>
+											<a class="btn btn-danger mt-1"  href="<?php echo e(route('category-attributes.enable', $value->id)); ?>" ><?php echo app('translator')->get('lang.Disable'); ?> </a>
 											<?php else: ?>
-												<a class="btn btn-success mt-1"  href="<?php echo e(route('attributes.enable', $attribute->id)); ?>" ><?php echo app('translator')->get('lang.Enable'); ?></a>
+												<a class="btn btn-success mt-1"  href="<?php echo e(route('category-attributes.enable', $value->id)); ?>" ><?php echo app('translator')->get('lang.Enable'); ?></a>
 											<?php endif; ?>
 											
-											<button class="btn btn-danger" type="button" data-bs-toggle="modal" data-bs-target="#deleteModal" onclick="setDeleteAction('<?php echo e(route('attributes.destroy', $attribute->id)); ?>')"><?php echo app('translator')->get('lang.Delete'); ?></button>
+											<button class="btn btn-danger" type="button" data-bs-toggle="modal" data-bs-target="#deleteModal" onclick="setDeleteAction('<?php echo e(route('category-attributes.destroy', $value->id)); ?>')"><?php echo app('translator')->get('lang.Delete'); ?></button>
 										</td>							
 
 											
@@ -74,9 +77,9 @@
 							</tbody>
 							<tfoot>
 								<tr>
-									<th><?php echo app('translator')->get('lang.Name'); ?></th>
-									<th><?php echo app('translator')->get('lang.image'); ?></th>
-									<th><?php echo app('translator')->get('lang.Type'); ?></th>
+									<th><?php echo app('translator')->get('lang.Category'); ?></th>
+									<th><?php echo app('translator')->get('lang.Attributes'); ?></th>
+									<th><?php echo app('translator')->get('lang.mandatory'); ?></th>
 									
 									<th></th>									
 								</tr>							
@@ -95,7 +98,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="deleteModalLabel"><?php echo app('translator')->get('lang.Delete'); ?> <?php echo app('translator')->get('lang.attribute'); ?></h5>
+                <h5 class="modal-title" id="deleteModalLabel"><?php echo app('translator')->get('lang.Delete'); ?> <?php echo app('translator')->get('lang.category_attributes'); ?></h5>
                 <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -197,4 +200,4 @@
 <?php $__env->stopSection(); ?>
 
 
-<?php echo $__env->make('admin.layout.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\Users\HP\OneDrive\Desktop\_\codeing\work\mazen\wikala\resources\views/admin/attributes/index.blade.php ENDPATH**/ ?>
+<?php echo $__env->make('admin.layout.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\Users\HP\OneDrive\Desktop\_\codeing\work\mazen\wikala\resources\views/admin/categories_attributes/index.blade.php ENDPATH**/ ?>

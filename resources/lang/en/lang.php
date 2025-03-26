@@ -260,7 +260,9 @@
 		"number" => "number",
 		"select" => "select",
 		"Attributes" => "Attributes",
-		
+		"add_attribute" => "add attribute",
+		"edit_attribute" => "edit attribute",
+
 		"The_Arabic_name_is_required" => "The Arabic name is required",
 		"The_Arabic_name_must_be_unique" => "The Arabic name must be unique",
 		"The_English_name_is_required" => "The English name is required",
@@ -268,7 +270,18 @@
 		"The_image_size_must_not_exceed_1024_kilobytes" => "The image size must not exceed 1024 kilobytes",
 		"The_type_field_is_required" => "The type field is required",
 		"The_type_must_be_one_of_the_following_string_number_select" => "The type must be one of the following string number select",
-		
 
+		"category_attributes" => "category attributes",
+		"add_category_attribute" => "add category attribute",
+		"mandatory" => "mandatory",
+		"required" => "required",
+		"not_required" => "not required",
+		"Attribute" => "Attribute",
+
+		"Mandatory_field_is_required" => "Mandatory field is required",
+		"Mandatory_field_must_be_boolean" => "Mandatory field must be boolean",
+		"The_category_and_attribute_combination_must_be_unique" => "The category and attribute combination must be unique",
+		"The_attribute_and_category_combination_must_be_unique" => "The attribute and category combination must be unique",
+		
 	]
 ?>
