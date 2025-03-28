@@ -43,7 +43,19 @@
 										<td>{{ $client->name }}</td>
 										<td class="text-center">{{ $client->phone}}</td>
 										<td>{{ $client->email}}</td>
-										<td title="{{ $client?->bio }}">{{ Str::limit($client?->bio, 30) }}</td>
+
+
+										<td title="{{ $client?->bio }}">
+											
+											<button class="btn btn-primary" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#exampleModalBio"  onclick="getRecord({{ $client }})">@lang('lang.details')</button>
+											
+											
+
+											{{-- <button class="btn btn-primary" type="button"  >@lang('lang.detelse')</button> --}}
+										</td>
+
+
+
 										<td>{{ $client?->date_of_birth }}</td>
 										<td>{{ $client?->created_at?->format('Y-m-d') }}</td>
 										<td>
@@ -118,12 +130,61 @@
 	</div>
  </div>
 
+
+ <div class="modal fade" id="exampleModalBio" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+
+
+	<div class="modal-dialog" role="document">
+	   <div class="modal-content">
+		  <div class="modal-header">
+			 <h5 class="modal-title" id="exampleModalLabel">@lang('lang.details')</h5>
+			 <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+		  </div>
+		  <div class="modal-body">
+
+			
+				<input type="hidden" id="section_id" name="id">
+				
+				
+				<div class="mb-3">
+					
+					
+					<div class="col-md-12 mb-3">
+								<label for="validationCustom01">@lang('lang.bio')</label>
+								<textarea class="form-control" disabled id="section_bio" name="bio" >
+									{{ old('bio') }}
+								</textarea>
+								{{-- <ar class="form-control" id="section_link" type="" name="link" value="{{ old('bio') }}" placeholder="" > --}}
+								<div class="valid-feedback">Looks good!</div>
+                                <div class="invalid-feedback">Please choose a bio.</div>
+
+							</div>	
+
+				</div>
+				{{-- <button class="btn btn-primary" type="submit">Submit form</button> --}}
+				<div class="modal-footer">
+					<button class="btn btn-primary" type="button" data-bs-dismiss="modal">Close</button>
+					{{-- <button class="btn btn-secondary" type="submit">@lang('lang.edit')</button> --}}
+				 </div>
+			
+
+		  </div>
+		  
+	   </div>
+	</div>
+</div>
+
 @endsection
 <script>
 	function getRndInteger() {
   	let password=Math.floor(Math.random() * (99999999 - 11111111)) + 11111111;
 	  document.getElementById("password").value=password;
 	}
+
+	function getRecord(data){
+	    document.getElementById("section_id").value=data['id'];
+	    document.getElementById("section_bio").value=data['bio'];
+   }
 
 	function getId(id){
 		document.getElementById("client_id").value=id;

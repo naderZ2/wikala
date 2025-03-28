@@ -43,7 +43,19 @@
 										<td><?php echo e($client->name); ?></td>
 										<td class="text-center"><?php echo e($client->phone); ?></td>
 										<td><?php echo e($client->email); ?></td>
-										<td title="<?php echo e($client?->bio); ?>"><?php echo e(Str::limit($client?->bio, 30)); ?></td>
+
+
+										<td title="<?php echo e($client?->bio); ?>">
+											
+											<button class="btn btn-primary" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#exampleModalBio"  onclick="getRecord(<?php echo e($client); ?>)"><?php echo app('translator')->get('lang.detelse'); ?></button>
+											
+											
+
+											
+										</td>
+
+
+
 										<td><?php echo e($client?->date_of_birth); ?></td>
 										<td><?php echo e($client?->created_at?->format('Y-m-d')); ?></td>
 										<td>
@@ -118,12 +130,62 @@
 	</div>
  </div>
 
+
+ <div class="modal fade" id="exampleModalBio" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+
+
+	<div class="modal-dialog" role="document">
+	   <div class="modal-content">
+		  <div class="modal-header">
+			 <h5 class="modal-title" id="exampleModalLabel"><?php echo app('translator')->get('lang.edit'); ?></h5>
+			 <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+		  </div>
+		  <div class="modal-body">
+
+			
+				<input type="hidden" id="section_id" name="id">
+				
+				
+				<div class="mb-3">
+					
+					
+					<div class="col-md-12 mb-3">
+								<label for="validationCustom01"><?php echo app('translator')->get('lang.bio'); ?></label>
+								<textarea class="form-control" disabled id="section_bio" name="bio" >
+									<?php echo e(old('bio')); ?>
+
+								</textarea>
+								
+								<div class="valid-feedback">Looks good!</div>
+                                <div class="invalid-feedback">Please choose a bio.</div>
+
+							</div>	
+
+				</div>
+				
+				<div class="modal-footer">
+					<button class="btn btn-primary" type="button" data-bs-dismiss="modal">Close</button>
+					
+				 </div>
+			
+
+		  </div>
+		  
+	   </div>
+	</div>
+</div>
+
 <?php $__env->stopSection(); ?>
 <script>
 	function getRndInteger() {
   	let password=Math.floor(Math.random() * (99999999 - 11111111)) + 11111111;
 	  document.getElementById("password").value=password;
 	}
+
+	function getRecord(data){
+	    document.getElementById("section_id").value=data['id'];
+	    document.getElementById("section_bio").value=data['bio'];
+   }
 
 	function getId(id){
 		document.getElementById("client_id").value=id;
