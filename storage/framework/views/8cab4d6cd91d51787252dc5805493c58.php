@@ -94,17 +94,12 @@
 	                    <ul class="sidebar-submenu" style="display: <?php echo e(request()->route()->uri() == 'dashboard/attributes' ? 'block;' : 'none;'); ?>">
 							<li><a href="<?php echo e(route('attributes.index')); ?>" class="<?php echo e(Route::currentRouteName() == 'attributes' ? 'active' : ''); ?>"><?php echo e(trans('lang.Attributes')); ?></a></li>
                       </ul>
+					  <ul class="sidebar-submenu" style="display: <?php echo e(request()->route()->uri() == 'dashboard/category-attributes' ? 'block;' : 'none;'); ?>">
+						<li><a href="<?php echo e(route('category-attributes.index')); ?>" class="<?php echo e(Route::currentRouteName() == 'category-attributes' ? 'active' : ''); ?>"><?php echo e(trans('lang.category_attributes')); ?></a></li>
+				  </ul>
                   	</li>
-					<li class="sidebar-list">
-						<a class="sidebar-link sidebar-title <?php echo e(request()->route()->uri() == 'dashboard/category-attributes' ? 'active' : ''); ?>" href="#"><i data-feather="users"></i>
-							<span class="lan-7"><?php echo e(trans('lang.category_attributes')); ?></span>
-							<div class="according-menu"><i class="fa fa-angle-<?php echo e(request()->route()->uri() == 'dashboard/category-attributes' ? 'down' : 'right'); ?>"></i></div>
-						</a>
-						
-	                    <ul class="sidebar-submenu" style="display: <?php echo e(request()->route()->uri() == 'dashboard/category-attributes' ? 'block;' : 'none;'); ?>">
-							<li><a href="<?php echo e(route('category-attributes.index')); ?>" class="<?php echo e(Route::currentRouteName() == 'category-attributes' ? 'active' : ''); ?>"><?php echo e(trans('lang.category_attributes')); ?></a></li>
-                      </ul>
-                  	</li>
+
+					
 
 
 			

@@ -14,13 +14,16 @@
 @endsection
 
 @section('breadcrumb-items')
-<li class="breadcrumb-item">@lang('lang.attributes')</li>
+<li class="breadcrumb-item">@lang('lang.Attributes')</li>
 <li class="breadcrumb-item active">@lang('lang.add_attribute')</li>
 @endsection
 
 @section('content')
 <div class="container-fluid">
 	<div class="row">
+        @foreach ($errors->all() as $error)
+        <div class="alert alert-danger">{{ $error }}</div>
+        @endforeach
 		<div class="col-sm-12">
 			<div class="card">
 			

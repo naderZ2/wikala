@@ -35,9 +35,11 @@ class AttributeController extends Controller
     public function Store(StoreRequest $request){
         $file = $request->file('image');
         $data = $request->validated();
-        $data['image'] = $this->uploadFile($file, 'attributes');
+        if($request->image){
+            $data['image'] = $this->uploadFile($file, 'attributes');
+        }
         $attribute = Attribute::create( $data );
-        return  to_route('attributes.index')->with('success');
+        return  to_route('attributes.index')->with('success',trans('lang.created'));
     }
 
     public function edit($id){
@@ -53,11 +55,11 @@ class AttributeController extends Controller
             $data['image'] = $this->uploadFile($request->image, 'attributes', $attribute->image);
         }
         $attribute->update($data);
-        return  to_route('attributes.index')->with('success');
+        return  to_route('attributes.index')->with('success',trans('lang.updated'));
     }
 
-    public function destroy($id){
-        $attribute = Attribute::find($id);
+    public function destroy(Request $request){
+        $attribute = Attribute::find($request->id);
         $attribute->delete();
         return to_route('attributes.index')->with('success');
     }

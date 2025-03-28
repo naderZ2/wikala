@@ -14,7 +14,7 @@
 @endsection
 
 @section('breadcrumb-items')
-<li class="breadcrumb-item">@lang('lang.Attributes')</li>
+<li class="breadcrumb-item">@lang('lang.category_attributes')</li>
 <li class="breadcrumb-item active">@lang('lang.edit')</li>
 @endsection
 

@@ -298,6 +298,8 @@
 		"Mandatory_field_must_be_boolean" => "الحقل الاجباري يجب ان يكون من الاختيارات",
 		"The_category_and_attribute_combination_must_be_unique" => "الفئة والخاصية يجب ان تكون فريدة",
 		"The_attribute_and_category_combination_must_be_unique" => "الخاصية والفئة يجب ان تكون فريدة",
+		"Attribute_field_is_required" => "حقل الخاصية مطلوب",
+		"Category_field_is_required" => "حقل الفئة مطلوب",
 		
 		
 		]

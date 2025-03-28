@@ -116,8 +116,11 @@ Route::group(['middleware' => ['auth:admin','CheckUserActiviation']], function()
 
         Route::resource('attributes', AttributeController::class);
         Route::get('attributes/{id}/enable', [AttributeController::class, 'enable'])->name('attributes.enable');
-
+        Route::delete('attributes/delete', [AttributeController::class, 'destroy'])->name('attributes.delete');
+        
+        
         Route::resource('category-attributes', Admin\CategoryAttributeController::class);
+        Route::delete('category-attributes/delete', [Admin\CategoryAttributeController::class, 'destroy'])->name('categories_attributes.delete');
 
         Route::get('category-attributes/{id}/enable', [Admin\CategoryAttributeController::class, 'enable'])->name('category-attributes.enable');
 

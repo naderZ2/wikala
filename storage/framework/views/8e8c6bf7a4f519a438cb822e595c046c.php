@@ -14,7 +14,7 @@
 <?php $__env->stopSection(); ?>
 
 <?php $__env->startSection('breadcrumb-items'); ?>
-<li class="breadcrumb-item"><?php echo app('translator')->get('lang.Attributes'); ?></li>
+<li class="breadcrumb-item"><?php echo app('translator')->get('lang.category_attributes'); ?></li>
 <li class="breadcrumb-item active"><?php echo app('translator')->get('lang.edit'); ?></li>
 <?php $__env->stopSection(); ?>
 

@@ -26,7 +26,7 @@ class StoreRequests extends FormRequest
         return [
             'mandatory' => 'required|boolean',
             'category_id' => 'required|unique:categories_attributes,category_id,NULL,id,attribute_id,' . $this->attribute_id,
-            // 'attribute_id' => 'required|unique:categories_attributes,attribute_id,NULL,id,category_id,' . $this->category_id,
+            'attribute_id' => 'required',
         ];
     }
 
@@ -36,6 +36,8 @@ class StoreRequests extends FormRequest
             'mandatory.required' => __('lang.Mandatory_field_is_required'),
             'mandatory.boolean' => __('lang.Mandatory_field_must_be_boolean'),
             'category_id.unique' => __('lang.The_category_and_attribute_combination_must_be_unique'),
+            'category_id.required' => __('lang.Category_field_is_required'),
+            'attribute_id.required' => __('lang.Attribute_field_is_required'),
             // 'attribute_id.unique' => __('lang.The_attribute_and_category_combination_must_be_unique'),
         ];
     }

@@ -46,7 +46,10 @@
 									<tr>
 										<td>{{ $attribute?->name }}</td>
 										<td >
-											<img src="{{ asset($attribute->image) }}"  alt=""  class="image-fluid"  height="90" width="90">
+											@if ($attribute->image)
+												
+											<img src="{{ asset($attribute?->image) }}"  alt=""  class="image-fluid"  height="90" width="90">
+											@endif
 										</td>
 										<td>{{
 											__('lang.'.$attribute->type)
@@ -63,7 +66,17 @@
 												<a class="btn btn-success mt-1"  href="{{ route('attributes.enable', $attribute->id) }}" >@lang('lang.Enable')</a>
 											@endif
 											{{-- <button class="btn btn-secondary mt-1" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#exampleModal">@lang('lang.Delete')</button> --}}
-											<button class="btn btn-danger" type="button" data-bs-toggle="modal" data-bs-target="#deleteModal" onclick="setDeleteAction('{{ route('attributes.destroy', $attribute->id) }}')">@lang('lang.Delete')</button>
+											{{-- <button class="btn btn-danger" type="button" data-bs-toggle="modal" data-bs-target="#deleteModal" onclick="setDeleteAction('{{ route('attributes.destroy', $attribute->id) }}')">@lang('lang.Delete')</button> --}}
+											<form action="{{ route('attributes.delete') }}" style="display:inline;" onclick="getId({{ $attribute->id }})" method="Post" id="form_id">
+                                                @method("delete")
+                                                @csrf
+                                                <input type="hidden" name="id" id="notification_id">
+                                                {{-- @can('delete notification') --}}
+                                                <button id="{{ $loop->iteration }}" class="btn btn-danger sweet-5" onclick="test()" type="button" >@lang('lang.remove')</button>
+                                                {{-- @endcan	 --}}
+                                            </form>
+										
+										
 										</td>							
 
 											
@@ -93,50 +106,15 @@
 	</div>
 </div>
 
+\
 
-<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="deleteModalLabel">@lang('lang.Delete') @lang('lang.attribute')</h5>
-                <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <p>@lang('lang.are_you_sure_to_delete')</p>
-            </div>
-            <div class="modal-footer">
-                <form id="delete-form" method="POST" action="" style="display: inline;">
-                    @csrf
-                    @method('DELETE')
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@lang('lang.cancel')</button>
-                    <button type="submit" class="btn btn-danger">@lang('lang.Delete')</button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
 
-<div class="modal fade" id="enableDisableModal" tabindex="-1" role="dialog" aria-labelledby="enableDisableModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="enableDisableModalLabel">@lang('lang.Enable_Disable') @lang('lang.attribute')</h5>
-                <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <p>@lang('lang.are_you_sure_to_enable_disable')</p>
-            </div>
-            <div class="modal-footer">
-                <form id="enable-disable-form" method="POST" action="" style="display: inline;">
-                    @csrf
-                    {{-- @method('PATCH') --}}
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@lang('lang.cancel')</button>
-                    <button type="submit" class="btn btn-warning" id="enable-disable-button">@lang('lang.Enable')</button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
+
+
+
+
+
+
 
 
 
@@ -163,12 +141,8 @@
 
 </script>
 <script>
- function setDeleteAction(url) {
-	 var form = document.getElementById('delete-form');
-	 form.action = url;
- }
 
- <script>
+
     function setEnableDisableAction(url, id) {
         var form = document.getElementById('enable-disable-form');
         form.action = url;
@@ -177,7 +151,7 @@
         var button = document.getElementById('enable-disable-button');
         button.innerText = (button.innerText === '@lang('lang.Enable')') ? '@lang('lang.Disable')' : '@lang('lang.Enable')';
     }
-</script>
+
 </script>
 
 @section('script')
@@ -191,10 +165,24 @@
 <script src="{{asset('assets/js/select2/select2-custom.js')}}"></script>
 <script src="{{asset('assets/js/owlcarousel/owl.carousel.js')}}"></script>
 <script src="{{asset('assets/js/owlcarousel/owl-custom.js')}}"></script>
+<script src="{{asset('assets/js/sweet-alert/sweetalert.min.js')}}"></script>
+<script src="{{asset('assets/js/sweet-alert/app.js')}}"></script>
+
 <script>
+
 	 	$('#carouselExampleControls').carousel({
   		interval: 3000
 	})
+
+
+		function getRecord(data){
+	    document.getElementById("section_id").value=data['id'];
+	    document.getElementById("section_link").value=data['link'];
+   }
+
+   function getId(id){
+	    document.getElementById("notification_id").value=id;
+   }
 </script>
 
 @endsection

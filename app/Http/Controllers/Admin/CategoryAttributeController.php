@@ -17,7 +17,7 @@ class CategoryAttributeController extends Controller
     {
         $this->lang();
         $categoryAttributes = CategoryAttribute::with("attribute:id,$this->name","category:id,$this->name")->get();
-        Log::info($categoryAttributes);
+        // Log::info($categoryAttributes);
         return view('admin.categories_attributes.index', compact('categoryAttributes'));
     }
     
@@ -57,12 +57,12 @@ class CategoryAttributeController extends Controller
         $categoryAttribute = CategoryAttribute::findOrFail($id);
         $categoryAttribute->update($request->validated());
 
-        return redirect()->route('category-attributes.index')->with('success', 'Category Attribute updated successfully.');
+        return redirect()->route('category-attributes.index')->with('success',trans('lang.updated'));
     }
 
-    public function destroy($id)
+    public function destroy(Request $request)
     {
-        $categoryAttribute = CategoryAttribute::findOrFail($id);
+        $categoryAttribute = CategoryAttribute::findOrFail($request->id);
         $categoryAttribute->delete();
         // return redirect()->route('category-attributes.index')->with('success', 'Category Attribute deleted successfully.');
         return to_route('category-attributes.index')->with('success');;

@@ -17,7 +17,9 @@ class AboutUsController extends Controller
     }
 
     public function update(EditSettingRequest $request){
+        Log::info($request->all());
         $data=$request->validated();
+        Log::info($data);
         AboutUs::whereId(1)->update($data);
         return back()->with('success',trans('lang.updated'));
     }

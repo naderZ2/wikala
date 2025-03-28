@@ -63,7 +63,15 @@
 												<a class="btn btn-success mt-1"  href="<?php echo e(route('category-attributes.enable', $value->id)); ?>" ><?php echo app('translator')->get('lang.Enable'); ?></a>
 											<?php endif; ?>
 											
-											<button class="btn btn-danger" type="button" data-bs-toggle="modal" data-bs-target="#deleteModal" onclick="setDeleteAction('<?php echo e(route('category-attributes.destroy', $value->id)); ?>')"><?php echo app('translator')->get('lang.Delete'); ?></button>
+											<form action="<?php echo e(route('categories_attributes.delete')); ?>" style="display:inline;" onclick="getId(<?php echo e($value->id); ?>)" method="Post" id="form_id">
+                                                <?php echo method_field("delete"); ?>
+                                                <?php echo csrf_field(); ?>
+                                                <input type="hidden" name="id" id="notification_id">
+                                                
+                                                <button id="<?php echo e($loop->iteration); ?>" class="btn btn-danger sweet-5" onclick="test()" type="button" ><?php echo app('translator')->get('lang.remove'); ?></button>
+                                                
+                                            </form>
+											
 										</td>							
 
 											
@@ -94,49 +102,6 @@
 </div>
 
 
-<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="deleteModalLabel"><?php echo app('translator')->get('lang.Delete'); ?> <?php echo app('translator')->get('lang.category_attributes'); ?></h5>
-                <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <p><?php echo app('translator')->get('lang.are_you_sure_to_delete'); ?></p>
-            </div>
-            <div class="modal-footer">
-                <form id="delete-form" method="POST" action="" style="display: inline;">
-                    <?php echo csrf_field(); ?>
-                    <?php echo method_field('DELETE'); ?>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><?php echo app('translator')->get('lang.cancel'); ?></button>
-                    <button type="submit" class="btn btn-danger"><?php echo app('translator')->get('lang.Delete'); ?></button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" id="enableDisableModal" tabindex="-1" role="dialog" aria-labelledby="enableDisableModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="enableDisableModalLabel"><?php echo app('translator')->get('lang.Enable_Disable'); ?> <?php echo app('translator')->get('lang.attribute'); ?></h5>
-                <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <p><?php echo app('translator')->get('lang.are_you_sure_to_enable_disable'); ?></p>
-            </div>
-            <div class="modal-footer">
-                <form id="enable-disable-form" method="POST" action="" style="display: inline;">
-                    <?php echo csrf_field(); ?>
-                    
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><?php echo app('translator')->get('lang.cancel'); ?></button>
-                    <button type="submit" class="btn btn-warning" id="enable-disable-button"><?php echo app('translator')->get('lang.Enable'); ?></button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
 
 
 
@@ -191,10 +156,22 @@
 <script src="<?php echo e(asset('assets/js/select2/select2-custom.js')); ?>"></script>
 <script src="<?php echo e(asset('assets/js/owlcarousel/owl.carousel.js')); ?>"></script>
 <script src="<?php echo e(asset('assets/js/owlcarousel/owl-custom.js')); ?>"></script>
+<script src="<?php echo e(asset('assets/js/sweet-alert/sweetalert.min.js')); ?>"></script>
+<script src="<?php echo e(asset('assets/js/sweet-alert/app.js')); ?>"></script>
+
 <script>
 	 	$('#carouselExampleControls').carousel({
   		interval: 3000
 	})
+
+	function getRecord(data){
+	    document.getElementById("section_id").value=data['id'];
+	    document.getElementById("section_link").value=data['link'];
+   }
+
+   function getId(id){
+	    document.getElementById("notification_id").value=id;
+   }
 </script>
 
 <?php $__env->stopSection(); ?>

@@ -21,6 +21,9 @@
 <?php $__env->startSection('content'); ?>
 <div class="container-fluid">
 	<div class="row">
+        <?php $__currentLoopData = $errors->all(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $error): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+        <div class="alert alert-danger"><?php echo e($error); ?></div>
+        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
         
 		<div class="col-sm-12">
 			<div class="card">
@@ -41,16 +44,7 @@
                                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                 </select>
                                 <div class="invalid-feedback"><?php echo app('translator')->get('lang.please_select_category'); ?></div>
-                                <?php $__errorArgs = ['category_id'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?>
-								<div class="alert alert-danger"><?php echo e($message); ?></div>
-							    <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>
+                                
                             </div>
 
 
@@ -62,16 +56,7 @@ unset($__errorArgs, $__bag); ?>
                                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                 </select>
                                 <div class="invalid-feedback"><?php echo app('translator')->get('lang.please_select_attribute'); ?></div>
-                                <?php $__errorArgs = ['attribute_id'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?>
-								<div class="alert alert-danger"><?php echo e($message); ?></div>
-							    <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>
+                                
                             </div>
                             
                             

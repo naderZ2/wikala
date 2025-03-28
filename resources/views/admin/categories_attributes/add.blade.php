@@ -21,6 +21,9 @@
 @section('content')
 <div class="container-fluid">
 	<div class="row">
+        @foreach ($errors->all() as $error)
+        <div class="alert alert-danger">{{ $error }}</div>
+        @endforeach
         
 		<div class="col-sm-12">
 			<div class="card">
@@ -41,9 +44,9 @@
                                     @endforeach
                                 </select>
                                 <div class="invalid-feedback">@lang('lang.please_select_category')</div>
-                                @error('category_id')
+                                {{-- @error('category_id')
 								<div class="alert alert-danger">{{ $message }}</div>
-							    @enderror
+							    @enderror --}}
                             </div>
 
 
@@ -55,9 +58,9 @@
                                     @endforeach
                                 </select>
                                 <div class="invalid-feedback">@lang('lang.please_select_attribute')</div>
-                                @error('attribute_id')
+                                {{-- @error('attribute_id')
 								<div class="alert alert-danger">{{ $message }}</div>
-							    @enderror
+							    @enderror --}}
                             </div>
                             
                             

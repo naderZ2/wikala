@@ -282,6 +282,7 @@
 		"Mandatory_field_must_be_boolean" => "Mandatory field must be boolean",
 		"The_category_and_attribute_combination_must_be_unique" => "The category and attribute combination must be unique",
 		"The_attribute_and_category_combination_must_be_unique" => "The attribute and category combination must be unique",
-		
+		"Attribute_field_is_required" => "Attribute field is required",
+		"Category_field_is_required" => "Category field is required",
 	]
 ?>

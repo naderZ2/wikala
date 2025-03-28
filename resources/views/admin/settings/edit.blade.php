@@ -66,6 +66,38 @@
                                 <div class="invalid-feedback">Please choose a insta.</div>
 
 							</div>
+							<div class="col-md-6 mb-3">
+			
+							</div>
+
+							<div class="col-md-6 mb-3">
+								<label for="validationCustom01">@lang('lang.ads_time_user')</label>
+								<input class="form-control" id="validationCustom01" type="number" name="ads_time_user" value="{{ $settings->ads_time_user}}" placeholder="ads_time_user" required="">
+								<div class="valid-feedback">Looks good!</div>
+                                <div class="invalid-feedback">Please choose a ads time user.</div>
+							</div>
+
+							<div class="col-md-6 mb-3">
+								<label for="validationCustom01">@lang('lang.ads_time_business')</label>
+								<input class="form-control" id="validationCustom01" type="number" name="ads_time_business" value="{{ $settings->ads_time_business}}" placeholder="ads_time_business" required="">
+								<div class="valid-feedback">Looks good!</div>
+                                <div class="invalid-feedback">Please choose a ads time business.</div>
+							</div>
+							<div class="col-md-6 mb-3">
+								<label for="validationCustom01">@lang('lang.free_ads_user')</label>
+								<input class="form-control" id="validationCustom01" type="number" name="free_ads_user" value="{{ $settings->free_ads_user}}" placeholder="free_ads_user" required="">
+								<div class="valid-feedback">Looks good!</div>
+                                <div class="invalid-feedback">Please choose a free ads user.</div>
+							</div>
+							<div class="col-md-6 mb-3">
+								<label for="validationCustom01">@lang('lang.free_ads_business')</label>
+								<input class="form-control" id="validationCustom01" type="number" name="free_ads_business" value="{{ $settings->free_ads_business}}" placeholder="free_ads_business" required="">
+								<div class="valid-feedback">Looks good!</div>
+                                <div class="invalid-feedback">Please choose a free ads business.</div>
+							</div>
+
+
+							
 
 							<div class="col-md-6 mb-3">
 								<label for="validationCustom01">@lang('lang.instance')</label>

@@ -34,7 +34,13 @@ class EditSettingRequest extends FormRequest
             // 'privacy' => 'sometimes|nullable',
             'instance_id' => 'required',
             'access_token' => 'required',
-            'delivery_fee' => 'required|numeric|min:1',
+            // 'delivery_fee' => 'required|numeric|min:1',
+
+            'ads_time_user' => 'required',
+            'ads_time_business' => 'required',
+            
+            'free_ads_user' => 'required',
+            'free_ads_business' => 'required',
         ];
     }
 }

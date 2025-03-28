@@ -14,13 +14,16 @@
 <?php $__env->stopSection(); ?>
 
 <?php $__env->startSection('breadcrumb-items'); ?>
-<li class="breadcrumb-item"><?php echo app('translator')->get('lang.attributes'); ?></li>
+<li class="breadcrumb-item"><?php echo app('translator')->get('lang.Attributes'); ?></li>
 <li class="breadcrumb-item active"><?php echo app('translator')->get('lang.add_attribute'); ?></li>
 <?php $__env->stopSection(); ?>
 
 <?php $__env->startSection('content'); ?>
 <div class="container-fluid">
 	<div class="row">
+        <?php $__currentLoopData = $errors->all(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $error): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+        <div class="alert alert-danger"><?php echo e($error); ?></div>
+        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 		<div class="col-sm-12">
 			<div class="card">
 			
