@@ -110,15 +110,15 @@ Route::group(['middleware' => ['auth:admin','CheckUserActiviation']], function()
         
           
     
-        Route::resource('sections', 'Admin\SectionsController');
+        // Route::resource('sections', 'Admin\SectionsController');
 
-        Route::post('edit_section', [Admin\SectionsController::class, 'update'])->name('sections.update');
+        // Route::post('edit_section', [Admin\SectionsController::class, 'update'])->name('sections.update');
 
         Route::resource('attributes', AttributeController::class);
         Route::get('attributes/{id}/enable', [AttributeController::class, 'enable'])->name('attributes.enable');
 
         Route::resource('category-attributes', Admin\CategoryAttributeController::class);
-        
+
         Route::get('category-attributes/{id}/enable', [Admin\CategoryAttributeController::class, 'enable'])->name('category-attributes.enable');
 
 
@@ -163,8 +163,8 @@ Route::group(['middleware' => ['auth:admin','CheckUserActiviation']], function()
 
         Route::resource('admins', 'Admin\AdminController');
 
-        Route::resource('consultants', 'Admin\ConsultantsController');
-        Route::post('update_consultant\{id}', [Admin\ConsultantsController::class, 'update'])->name('consultant.update');
+        // Route::resource('consultants', 'Admin\ConsultantsController');
+        // Route::post('update_consultant\{id}', [Admin\ConsultantsController::class, 'update'])->name('consultant.update');
 
         Route::resource('seller', 'Admin\SellerController');
         Route::put('update_seller\{id}', [Admin\SellerController::class, 'update'])->name('seller.update');
@@ -183,8 +183,8 @@ Route::group(['middleware' => ['auth:admin','CheckUserActiviation']], function()
     Route::get('logout', [Admin\Auth\LoginController::class, 'logout'])->name('admin.logout');
 
     Route::prefix('chat')->group(function () {
-        Route::get('view_consultations', [Admin\ConsultationsController::class, 'index'])->name('admin.consultation.index');
-        Route::get('view_consultation\{id}', [Admin\ConsultationsController::class, 'details'])->name('admin.consultation.review');
+        // Route::get('view_consultations', [Admin\ConsultationsController::class, 'index'])->name('admin.consultation.index');
+        // Route::get('view_consultation\{id}', [Admin\ConsultationsController::class, 'details'])->name('admin.consultation.review');
     });
   
     Route::prefix('settings')->group(function () {
@@ -193,12 +193,12 @@ Route::group(['middleware' => ['auth:admin','CheckUserActiviation']], function()
     });
 
     Route::prefix('evaluations')->group(function () {
-        Route::get('view_evaluations', [Admin\EvaluationController::class, 'index'])->name('admin.evaluations.index');
-        Route::get('view_evaluations2', [Admin\EvaluationController::class, 'index'])->name('admin_evaluations');
+        // Route::get('view_evaluations', [Admin\EvaluationController::class, 'index'])->name('admin.evaluations.index');
+        // Route::get('view_evaluations2', [Admin\EvaluationController::class, 'index'])->name('admin_evaluations');
         
-        Route::get('accept_evaluation/{id}', [Admin\EvaluationController::class, 'accept'])->name('admin.evaluations.accept');
+        // Route::get('accept_evaluation/{id}', [Admin\EvaluationController::class, 'accept'])->name('admin.evaluations.accept');
         
-        Route::get('refuse_evaluation/{id}', [Admin\EvaluationController::class, 'refuse'])->name('admin.evaluations.refuse');
+        // Route::get('refuse_evaluation/{id}', [Admin\EvaluationController::class, 'refuse'])->name('admin.evaluations.refuse');
     });
    
     Route::prefix('notifications')->group(function () {
@@ -232,11 +232,11 @@ Route::group(['middleware' => ['auth:admin','CheckUserActiviation']], function()
 
      
 
-        Route::get('packages',[Admin\PackageController::class, 'index'])->name('admin.packages');
-        Route::get('subscriptions',[Admin\PackageController::class, 'subscriptions'])->name('admin.subscriptions');
-        Route::post('packages',[Admin\PackageController::class, 'store'])->name('admin.package.store');
-        Route::post('edit_package',[Admin\PackageController::class, 'update'])->name('admin.package.edit');
-        Route::get('delete_package',[Admin\PackageController::class, 'destroy'])->name('admin.package.delete');
+        // Route::get('packages',[Admin\PackageController::class, 'index'])->name('admin.packages');
+        // Route::get('subscriptions',[Admin\PackageController::class, 'subscriptions'])->name('admin.subscriptions');
+        // Route::post('packages',[Admin\PackageController::class, 'store'])->name('admin.package.store');
+        // Route::post('edit_package',[Admin\PackageController::class, 'update'])->name('admin.package.edit');
+        // Route::get('delete_package',[Admin\PackageController::class, 'destroy'])->name('admin.package.delete');
     });
     
     Route::prefix('special_request')->group(function () {
@@ -609,7 +609,7 @@ Route::get('layout-{light}', function($light){
         return redirect()->route('pages-vertical-layout');
     }
     return redirect()->route('index');
-    return 1;
+    // return 1;
 });
 
 Route::get('/clear-cache', function() {

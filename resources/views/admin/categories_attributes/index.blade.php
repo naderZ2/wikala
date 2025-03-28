@@ -64,7 +64,7 @@
 											@else
 												<a class="btn btn-success mt-1"  href="{{ route('category-attributes.enable', $value->id) }}" >@lang('lang.Enable')</a>
 											@endif
-											{{-- <button class="btn btn-secondary mt-1" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#exampleModal">@lang('lang.Delete')</button> --}}
+											
 											<button class="btn btn-danger" type="button" data-bs-toggle="modal" data-bs-target="#deleteModal" onclick="setDeleteAction('{{ route('category-attributes.destroy', $value->id) }}')">@lang('lang.Delete')</button>
 										</td>							
 

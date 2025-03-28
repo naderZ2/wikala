@@ -44,9 +44,9 @@
                                     @endforeach
                                 </select>
                                 <div class="invalid-feedback">@lang('lang.please_select_category')</div>
-                                @error('category_id')
+                                {{-- @error('category_id')
                                 <div class="alert alert-danger">{{ $message }}</div>
-                                @enderror
+                                @enderror --}}
                             </div>
 
                             <div class="col-md-6 mb-3">
@@ -59,9 +59,9 @@
                                     @endforeach
                                 </select>
                                 <div class="invalid-feedback">@lang('lang.please_select_attribute')</div>
-                                @error('attribute_id')
+                                {{-- @error('attribute_id')
 								<div class="alert alert-danger">{{ $message }}</div>
-							    @enderror
+							    @enderror --}}
                             </div>
 
                             <div class="col-md-6 mb-3">
