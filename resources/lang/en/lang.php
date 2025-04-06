@@ -284,5 +284,44 @@
 		"The_attribute_and_category_combination_must_be_unique" => "The attribute and category combination must be unique",
 		"Attribute_field_is_required" => "Attribute field is required",
 		"Category_field_is_required" => "Category field is required",
+		
+		"Rejected_Reason"=> "Rejected Reason",
+		"rejected_reasons"=> "rejected reasons",
+		"add_rejected_reasons"=> "add rejected reasons",
+		"The_name_is_required"=> "The name is required",
+		"The_description_is_required"=> "The description is required",
+		
+	
+
+		"add_ads_type"=> "add ads type",
+		"ads_type"=> "ads type",
+		"accepted_ads"=> "Accepted Ads",
+		"under_review_ads"=> "Under Review Ads",
+		"rejected_ads"=> "Rejected Ads",
+		"outdated_ads"=> "Outdated Ads",
+		"ads"=> "Ads",
+		"no_data"=> "No Data",
+		"all_ads"=> "All Ads",
+		"outdated"=> "Outdated",
+		"accepted"=> "Accepted",
+		"ad_details"=> "Ad Details",
+		"Ad_Number"=> "Ad Number",
+		"Contact_Method"=> "Contact Method",
+		"Possibility_Negotiable"=> "Possibility Negotiable",
+		"Yes"=> "Yes",
+		"No"=> "No",
+		"update_status"=> "Update Status",
+		"ads_time_user"=> "Ads time for user",
+		"ads_time_business"=> "Ads time for business",
+		"free_ads_user"=> "Free ads for user",
+		"free_ads_business"=> "Free ads for business",
+		"not_found"=> "not found",
+		"already_favorited"=> "already favorited",
+		"already_saved"=> "already saved",
+		
+		
+
+
+	
 	]
 ?>

@@ -181,6 +181,62 @@
 				  </ul>
                   	</li>
 
+
+					<li class="sidebar-list">
+						<a class="sidebar-link sidebar-title {{ request()->route()->uri() == 'dashboard/rejected-reasons' ? 'active' : '' }}" href="#"><i data-feather="users"></i>
+							<span class="lan-7">{{ trans('lang.rejected_reasons') }}</span>
+							<div class="according-menu"><i class="fa fa-angle-{{ request()->route()->uri() == 'dashboard/rejected-reasons' ? 'down' : 'right' }}"></i></div>
+						</a>
+						
+	                    <ul class="sidebar-submenu" style="display: {{ request()->route()->uri() == 'dashboard/rejected-reasons' ? 'block;' : 'none;' }}">
+							<li><a href="{{ route('rejected-reasons.index') }}" class="{{ Route::currentRouteName() == 'rejected-reasons' ? 'active' : '' }}">{{ trans('lang.rejected_reasons') }}</a></li>
+                      </ul>
+	                    <ul class="sidebar-submenu" style="display: {{ request()->route()->uri() == 'dashboard/ads_type' ? 'block;' : 'none;' }}">
+							<li><a href="{{ route('ads_type.index') }}" class="{{ Route::currentRouteName() == 'ads_type' ? 'active' : '' }}">{{ trans('lang.ads_type') }}</a></li>
+                      </ul>
+					  
+                 </li>
+
+
+				 <li class="sidebar-list">
+					<a class="sidebar-link sidebar-title {{ request()->route()->uri() == 'dashboard/ads' ? 'active' : '' }}" href="#">
+						<i data-feather="users"></i>
+						<span class="lan-7">{{ trans('lang.ads') }}</span>
+						<div class="according-menu">
+							<i class="fa fa-angle-{{ request()->route()->uri() == 'dashboard/ads' ? 'down' : 'right' }}"></i>
+						</div>
+					</a>
+				
+					<ul class="sidebar-submenu" style="display: {{ request()->route()->uri() == 'dashboard/ads' ? 'block' : 'none;' }}">
+						<li>
+							<a href="{{ route('ads.index') }}" class="{{ request('status') == null ? 'active' : '' }}">
+								{{ trans('lang.all_ads') }}
+							</a>
+						</li>
+						<li>
+							<a href="{{ route('ads.index', ['status' => 'accepted']) }}" class="{{ request('status') === 'accepted' ? 'active' : '' }}">
+								{{ trans('lang.accepted') }}
+							</a>
+						</li>
+						<li>
+							<a href="{{ route('ads.index', ['status' => 'under_review']) }}" class="{{ request('status') === 'under_review' ? 'active' : '' }}">
+								{{ trans('lang.under_review') }}
+							</a>
+						</li>
+						<li>
+							<a href="{{ route('ads.index', ['status' => 'rejected']) }}" class="{{ request('status') === 'rejected' ? 'active' : '' }}">
+								{{ trans('lang.rejected') }}
+							</a>
+						</li>
+						<li>
+							<a href="{{ route('ads.index', ['status' => 'outdated']) }}" class="{{ request('status') === 'outdated' ? 'active' : '' }}">
+								{{ trans('lang.outdated') }}
+							</a>
+						</li>
+					</ul>
+				</li>
+				
+
 					
 
 

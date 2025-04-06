@@ -99,6 +99,67 @@
 				  </ul>
                   	</li>
 
+
+					<li class="sidebar-list">
+						<a class="sidebar-link sidebar-title <?php echo e(request()->route()->uri() == 'dashboard/rejected-reasons' ? 'active' : ''); ?>" href="#"><i data-feather="users"></i>
+							<span class="lan-7"><?php echo e(trans('lang.rejected_reasons')); ?></span>
+							<div class="according-menu"><i class="fa fa-angle-<?php echo e(request()->route()->uri() == 'dashboard/rejected-reasons' ? 'down' : 'right'); ?>"></i></div>
+						</a>
+						
+	                    <ul class="sidebar-submenu" style="display: <?php echo e(request()->route()->uri() == 'dashboard/rejected-reasons' ? 'block;' : 'none;'); ?>">
+							<li><a href="<?php echo e(route('rejected-reasons.index')); ?>" class="<?php echo e(Route::currentRouteName() == 'rejected-reasons' ? 'active' : ''); ?>"><?php echo e(trans('lang.rejected_reasons')); ?></a></li>
+                      </ul>
+	                    <ul class="sidebar-submenu" style="display: <?php echo e(request()->route()->uri() == 'dashboard/ads_type' ? 'block;' : 'none;'); ?>">
+							<li><a href="<?php echo e(route('ads_type.index')); ?>" class="<?php echo e(Route::currentRouteName() == 'ads_type' ? 'active' : ''); ?>"><?php echo e(trans('lang.ads_type')); ?></a></li>
+                      </ul>
+					  
+                 </li>
+
+
+				 <li class="sidebar-list">
+					<a class="sidebar-link sidebar-title <?php echo e(request()->route()->uri() == 'dashboard/ads' ? 'active' : ''); ?>" href="#">
+						<i data-feather="users"></i>
+						<span class="lan-7"><?php echo e(trans('lang.ads')); ?></span>
+						<div class="according-menu">
+							<i class="fa fa-angle-<?php echo e(request()->route()->uri() == 'dashboard/ads' ? 'down' : 'right'); ?>"></i>
+						</div>
+					</a>
+				
+					<ul class="sidebar-submenu" style="display: <?php echo e(request()->route()->uri() == 'dashboard/ads' ? 'block' : 'none;'); ?>">
+						<li>
+							<a href="<?php echo e(route('ads.index')); ?>" class="<?php echo e(request('status') == null ? 'active' : ''); ?>">
+								<?php echo e(trans('lang.all_ads')); ?>
+
+							</a>
+						</li>
+						<li>
+							<a href="<?php echo e(route('ads.index', ['status' => 'accepted'])); ?>" class="<?php echo e(request('status') === 'accepted' ? 'active' : ''); ?>">
+								<?php echo e(trans('lang.accepted')); ?>
+
+							</a>
+						</li>
+						<li>
+							<a href="<?php echo e(route('ads.index', ['status' => 'under_review'])); ?>" class="<?php echo e(request('status') === 'under_review' ? 'active' : ''); ?>">
+								<?php echo e(trans('lang.under_review')); ?>
+
+							</a>
+						</li>
+						<li>
+							<a href="<?php echo e(route('ads.index', ['status' => 'rejected'])); ?>" class="<?php echo e(request('status') === 'rejected' ? 'active' : ''); ?>">
+								<?php echo e(trans('lang.rejected')); ?>
+
+							</a>
+						</li>
+						<li>
+							<a href="<?php echo e(route('ads.index', ['status' => 'outdated'])); ?>" class="<?php echo e(request('status') === 'outdated' ? 'active' : ''); ?>">
+								<?php echo e(trans('lang.outdated')); ?>
+
+							</a>
+						</li>
+					</ul>
+				</li>
+				
+
 					
 
 

@@ -46,7 +46,13 @@ class Category extends Model
         return $this->hasMany(SellerServicesAvailability::class);
     }
     
-    
+    public function ads()
+    {
+        return $this->hasMany(Ad::class, 'category_id');
+    }
+
+
+
 
 
 }

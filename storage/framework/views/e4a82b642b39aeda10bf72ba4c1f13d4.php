@@ -65,7 +65,7 @@
 											<?php endif; ?>
 											
 											
-											<form action="<?php echo e(route('attributes.delete')); ?>" onclick="getId(<?php echo e($attribute->id); ?>)" method="Post" id="form_id">
+											<form action="<?php echo e(route('attributes.delete')); ?>" style="display:inline;" onclick="getId(<?php echo e($attribute->id); ?>)" method="Post" id="form_id">
                                                 <?php echo method_field("delete"); ?>
                                                 <?php echo csrf_field(); ?>
                                                 <input type="hidden" name="id" id="notification_id">

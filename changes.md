@@ -56,3 +56,40 @@ CREATE TABLE ads_attributes (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
+
+
+
+CREATE TABLE ads (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    category_id INT NOT NULL,
+    user_id INT NOT NULL,
+    type_id INT NOT NULL,
+    rejected_id INT NULL,
+    
+    ad_number VARCHAR(100) UNIQUE NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    description TEXT NOT NULL,
+
+    contact_method ENUM('phone', 'chat', 'email') NULL,
+    negotiable BOOLEAN DEFAULT TRUE,
+    
+    status ENUM('under_review', 'accepted', 'rejected') DEFAULT 'under_review',
+    start_date DATETIME NULL,
+    end_date DATETIME NULL,
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+
+
+);          
+
+
+CREATE TABLE ads_type (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    enable BOOLEAN DEFAULT TRUE,
+    name VARCHAR(100) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+

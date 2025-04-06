@@ -5,19 +5,20 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class AdsImage extends Model
+class AdsType extends Model
 {
     use HasFactory;
-    protected $table = 'ads_images';
+
+    protected $table = 'ads_type';
 
     protected $fillable = [
-        'ad_id',
-        'image_path',
+        'name',
+        'enable',
     ];
 
-    public function ad()
+    public function ads()
     {
-        return $this->belongsTo(Ad::class, 'ad_id', 'id');
+        return $this->hasMany(Ad::class, 'type_id');
     }
-        
+    
 }

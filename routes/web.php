@@ -10,8 +10,10 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Session;
 use Laravel\Socialite\Facades\Socialite;
+use App\Http\Controllers\Admin\AdsTypeController;
 use Illuminate\Http\Client\Events\RequestSending;
 use App\Http\Controllers\Admin\AttributeController;
+use App\Http\Controllers\Admin\RejectedReasonController;
 
 // Route::get('test')->name('');
 Route::view('test2', 'test')->name('test');
@@ -121,8 +123,24 @@ Route::group(['middleware' => ['auth:admin','CheckUserActiviation']], function()
         
         Route::resource('category-attributes', Admin\CategoryAttributeController::class);
         Route::delete('category-attributes/delete', [Admin\CategoryAttributeController::class, 'destroy'])->name('categories_attributes.delete');
-
+        
         Route::get('category-attributes/{id}/enable', [Admin\CategoryAttributeController::class, 'enable'])->name('category-attributes.enable');
+        
+        
+        Route::resource('rejected-reasons', RejectedReasonController::class);
+        Route::get('rejected-reasons/{id}/enable', [RejectedReasonController::class, 'enable'])->name('rejected-reasons.enable');
+        Route::post('edit_rejected_reasons', [RejectedReasonController::class, 'update'])->name('dashboard.rejected-reasons.update');
+        
+
+        Route::resource('ads_type', AdsTypeController::class);
+        Route::get('ads_type/{id}/enable', [AdsTypeController::class, 'enable'])->name('ads_type.enable');
+        Route::post('edit_ads_type', [AdsTypeController::class, 'update'])->name('dashboard.ads_type.update');
+        
+        
+        Route::resource('ads', Admin\AdsController::class);
+        Route::get('ads/details/{id}', [Admin\AdsController::class, 'details'])->name('ads.details');
+        Route::get('ads/editStatus/{id}', [Admin\AdsController::class, 'editStatus'])->name('ads.editStatus');
+        Route::post('ads/changeStatus/{id}', [Admin\AdsController::class, 'changeStatus'])->name('ads.changeStatus');
 
 
     });

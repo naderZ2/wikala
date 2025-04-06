@@ -278,7 +278,6 @@
 		"Attributes" => "الخصائص",
 		"add_attribute" => "اضافة خاصية",
 		"edit_attribute" => "تعديل خاصية",
-		
 		"The_Arabic_name_is_required" => "الاسم بالعربية مطلوب",
 		"The_Arabic_name_must_be_unique" => "الاسم بالعربية يجب ان يكون فريد",
 		"The_English_name_is_required" => "الاسم بالانجليزية مطلوب",
@@ -286,14 +285,12 @@
 		"The_image_size_must_not_exceed_1024_kilobytes" => "حجم الصورة لا يجب ان يتجاوز 1024 كيلو بايت",
 		"The_type_field_is_required" => "حقل النوع مطلوب",
 		"The_type_must_be_one_of_the_following_string_number_select" => "يجب ان يكون النوع احد الاتي نص رقم اختيار",
-
 		"category_attributes" => "خصائص الفئات",
 		"add_category_attribute" => "اضافة خاصية للفئة",
 		"mandatory" => "اجباري",
 		"required" => "مطلوب",
 		"not_required" => "غير مطلوب",
 		"Attribute" => "الخاصية",
-		
 		"Mandatory_field_is_required" => "الحقل الاجباري مطلوب",
 		"Mandatory_field_must_be_boolean" => "الحقل الاجباري يجب ان يكون من الاختيارات",
 		"The_category_and_attribute_combination_must_be_unique" => "الفئة والخاصية يجب ان تكون فريدة",
@@ -301,6 +298,43 @@
 		"Attribute_field_is_required" => "حقل الخاصية مطلوب",
 		"Category_field_is_required" => "حقل الفئة مطلوب",
 		
+		"rejected_reasons"=> "اسباب الرفض",
+		"add_rejected_reasons"=> "اضافة سبب رفض",
+		"The_name_is_required"=> "الاسم مطلوب",
+		"The_description_is_required"=> "الوصف مطلوب",
+		"add_ads_type"=> "اضافة نوع اعلان",
+		"ads_type"=> "انواع الاعلانات",
+
+		"accepted_ads"=> "الاعلانات المقبولة",
+		"under_review_ads"=> "الاعلانات تحت المراجعة",
+		"rejected_ads"=> "الاعلانات المرفوضة",
+		"outdated_ads"=> "الاعلانات المنتهية",
+		"ads"=> "الاعلانات",
+		"no_data"=> "لا توجد بيانات",
+		"all_ads"=> "كل الاعلانات",
+		"outdated"=> "منتهية",
+		"accepted"=> "مقبولة",
+		"ad_details"=> "تفاصيل الاعلان",
+		"Ad_Number"=> "رقم الاعلان",
+		"Contact_Method"=> "طريقة التواصل",
+		"Possibility_Negotiable"=> "امكانية التفاوض",
+		"Yes"=> "نعم",
+		"No"=> "لا",
+		"update_status"=> "تحديث الحاله",
+		"Rejected_Reason"=> "سبب الرفض",
+		"ads_time_user"=> "وقت الاعلان للعميل",
+		"ads_time_business"=> "وقت الاعلان للشركة",
+		"free_ads_user"=> "اعلان مجاني للعميل",
+		"free_ads_business"=> "اعلان مجاني للشركة",
+		"not_found"=> "غير موجود",
+		"already_favorited"=> "مفضل بالفعل",
+		"already_saved"=> "محفوظ بالفعل",
 		
-		]
+		
+		
+		
+
+		
+
+	]
 ?>

@@ -163,7 +163,7 @@
 				</div>
 				{{-- <button class="btn btn-primary" type="submit">Submit form</button> --}}
 				<div class="modal-footer">
-					<button class="btn btn-primary" type="button" data-bs-dismiss="modal">Close</button>
+					<button class="btn btn-primary" type="button" data-bs-dismiss="modal">@lang('lang.close')</button>
 					{{-- <button class="btn btn-secondary" type="submit">@lang('lang.edit')</button> --}}
 				 </div>
 			

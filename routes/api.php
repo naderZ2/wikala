@@ -23,6 +23,7 @@ Route::get('reminder', [Admin\NotificationController::class, 'reminder']);
 
 
 Route::middleware(['checkLanguage'])->group(function () {
+
     Route::post('contactUs', [Client\ContactUsController::class, 'store']);
     Route::post('contact_us_store', [Client\ContactUsController::class, 'storeContactUs'])->name('contactUs');
 
@@ -134,7 +135,14 @@ Route::middleware(['auth:api'])->group(function () {
     Route::post('edit_lang', [Client\ProfileController::class, 'updateLang']);
 
 
+    Route::apiResource('saved-ads', Client\SavedAdController::class);
+
+    Route::apiResource('favorite-ads', Client\FavoriteAdController::class);
+
+
+
+    });
+
 });
 
 
-});

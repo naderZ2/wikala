@@ -47,7 +47,7 @@
 
 										<td title="<?php echo e($client?->bio); ?>">
 											
-											<button class="btn btn-primary" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#exampleModalBio"  onclick="getRecord(<?php echo e($client); ?>)"><?php echo app('translator')->get('lang.detelse'); ?></button>
+											<button class="btn btn-primary" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#exampleModalBio"  onclick="getRecord(<?php echo e($client); ?>)"><?php echo app('translator')->get('lang.details'); ?></button>
 											
 											
 
@@ -137,7 +137,7 @@
 	<div class="modal-dialog" role="document">
 	   <div class="modal-content">
 		  <div class="modal-header">
-			 <h5 class="modal-title" id="exampleModalLabel"><?php echo app('translator')->get('lang.edit'); ?></h5>
+			 <h5 class="modal-title" id="exampleModalLabel"><?php echo app('translator')->get('lang.details'); ?></h5>
 			 <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
 		  </div>
 		  <div class="modal-body">
@@ -164,7 +164,7 @@
 				</div>
 				
 				<div class="modal-footer">
-					<button class="btn btn-primary" type="button" data-bs-dismiss="modal">Close</button>
+					<button class="btn btn-primary" type="button" data-bs-dismiss="modal"><?php echo app('translator')->get('lang.close'); ?></button>
 					
 				 </div>
 			

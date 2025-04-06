@@ -9,7 +9,7 @@
 		<meta name="author" content="pixelstrap">
 		<link rel="icon" href="<?php echo e(asset('assets/images/favicon.png')); ?>" type="image/x-icon">
 		<link rel="shortcut icon" href="<?php echo e(asset('assets/images/favicon.png')); ?>" type="image/x-icon">
-		<title>Cuba - Premium Admin Template <?php echo $__env->yieldContent('title'); ?></title>
+		<title>Wikala <?php echo $__env->yieldContent('title'); ?></title>
 		<?php echo $__env->make('layouts.errors.css', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
 		<?php echo $__env->yieldContent('style'); ?>
 	</head>

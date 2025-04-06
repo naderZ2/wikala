@@ -87,10 +87,26 @@ class User extends Authenticatable
         return $this->hasMany(UserLocations::class);
     }
 
-    public function recentlyViewedAds()
-    {
-        return $this->hasMany(RecentlyViewAd::class);
-    }
+
+    public function ads()
+{
+    return $this->hasMany(Ad::class, 'user_id');
+}
+
+public function favoriteAds()
+{
+    return $this->hasMany(FavoriteAd::class);
+}
+
+public function savedAds()
+{
+    return $this->hasMany(SavedAd::class);
+}
+
+public function recentlyViewedAds()
+{
+    return $this->hasMany(RecentlyViewAd::class);
+}
 
 
 
