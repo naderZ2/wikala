@@ -25,7 +25,7 @@
 							<div class="according-menu"><i class="fa fa-angle-{{request()->route()->getPrefix() == '/dashboard' ? 'down' : 'right' }}"></i></div>
 						</a>
 						<ul class="sidebar-submenu" style="display: {{ request()->route()->getPrefix() == '/dashboard' ? 'block;' : 'none;' }}">
-							<li><a class="lan-4 {{ Route::currentRouteName()=='sections.index' ? 'active' : '' }}" href="{{route('sections.index')}}">{{ trans('lang.Sections') }}</a></li>
+							{{-- <li><a class="lan-4 {{ Route::currentRouteName()=='sections.index' ? 'active' : '' }}" href="{{route('sections.index')}}">{{ trans('lang.Sections') }}</a></li> --}}
 							<li><a class="lan-4 {{ Route::currentRouteName()=='category.index' ? 'active' : '' }}" href="{{route('category.index')}}">{{ "category" }}</a></li>
 							<li><a class="lan-4 {{ Route::currentRouteName()=='category.create' ? 'active' : '' }}" href="{{route('category.create')}}">{{ "add category" }}</a></li>
 							{{-- <li><a class="lan-4 {{ Route::currentRouteName()=='index' ? 'active' : '' }}" href="{{route('index')}}">{{ trans('lang.Default') }}</a></li> --}}
@@ -49,8 +49,8 @@
 						
 	                    <ul class="sidebar-submenu" style="display: {{ request()->route()->getPrefix() == '/users' ? 'block;' : 'none;' }}">
                           <li><a href="{{ route('admin.clients') }}" class="{{ Route::currentRouteName() == 'admin.clients' ? 'active' : '' }}">{{ trans('lang.Clients') }}</a></li>
-                          <li><a href="{{ route('consultants.index') }}" class="{{ Route::currentRouteName() == 'consultants.index' ? 'active' : '' }}">الخبراء</a></li>
-                          <li><a href="{{ route('consultants.create') }}" class="{{ Route::currentRouteName() == 'consultants.create' ? 'active' : '' }}">اضافة خبير</a></li>
+                          {{-- <li><a href="{{ route('consultants.index') }}" class="{{ Route::currentRouteName() == 'consultants.index' ? 'active' : '' }}">الخبراء</a></li> --}}
+                          {{-- <li><a href="{{ route('consultants.create') }}" class="{{ Route::currentRouteName() == 'consultants.create' ? 'active' : '' }}">اضافة خبير</a></li> --}}
                           <li><a href="{{ route('seller.index') }}" class="{{ Route::currentRouteName() == 'seller.index' ? 'active' : '' }}">Sellers</a></li>
                           <li><a href="{{ route('seller.create') }}" class="{{ Route::currentRouteName() == 'seller.create' ? 'active' : '' }}"> add Seller</a></li>
                           {{-- <li><a href="{{ route('layout-rtl') }}" class="{{ Route::currentRouteName() == 'layout-rtl' ? 'active' : '' }}">RTL</a></li>
@@ -68,7 +68,7 @@
 							<div class="according-menu"><i class="fa fa-angle-{{request()->route()->getPrefix() == '/chat' ? 'down' : 'right' }}"></i></div>
 						</a>
 						<ul class="sidebar-submenu" style="display: {{request()->route()->getPrefix() == '/chat' ? 'block' : 'none;' }};">
-							<li><a href="{{route('admin.consultation.index')}}" class="{{ Route::currentRouteName()=='admin.consultation.index' ? 'active' : '' }}"> عرض الاستشارات</a></li>
+							{{-- <li><a href="{{route('admin.consultation.index')}}" class="{{ Route::currentRouteName()=='admin.consultation.index' ? 'active' : '' }}"> عرض الاستشارات</a></li> --}}
 						</ul>
 					</li>
 
@@ -78,7 +78,7 @@
 							<div class="according-menu"><i class="fa fa-angle-{{request()->route()->getPrefix() == '/evaluations' ? 'down' : 'right' }}"></i></div>
 						</a>
 						<ul class="sidebar-submenu" style="display: {{request()->route()->getPrefix() == '/evaluations' ? 'block' : 'none;' }};">
-							<li><a href="{{route('admin.evaluations.index')}}" class="{{ Route::currentRouteName()=='admin.evaluations.index' ? 'active' : '' }}"> عرض التقييمات</a></li>
+							{{-- <li><a href="{{route('admin.evaluations.index')}}" class="{{ Route::currentRouteName()=='admin.evaluations.index' ? 'active' : '' }}"> عرض التقييمات</a></li> --}}
 						</ul>
 					</li>
 
@@ -105,10 +105,10 @@
 						</ul>
 
 						<ul class="sidebar-submenu" style="display: {{request()->route()->getPrefix() == '/financial' ? 'block' : 'none;' }};">
-							<li><a href="{{route('admin.packages')}}" class="{{ Route::currentRouteName()=='admin.packages' ? 'active' : '' }}">الباقات </a></li>
+							{{-- <li><a href="{{route('admin.packages')}}" class="{{ Route::currentRouteName()=='admin.packages' ? 'active' : '' }}">الباقات </a></li> --}}
 						</ul>
 						<ul class="sidebar-submenu" style="display: {{request()->route()->getPrefix() == '/financial' ? 'block' : 'none;' }};">
-							<li><a href="{{route('admin.subscriptions')}}" class="{{ Route::currentRouteName()=='admin.subscriptions' ? 'active' : '' }}">المدفوعات </a></li>
+							{{-- <li><a href="{{route('admin.subscriptions')}}" class="{{ Route::currentRouteName()=='admin.subscriptions' ? 'active' : '' }}">المدفوعات </a></li> --}}
 						</ul>
 					</li>
 					

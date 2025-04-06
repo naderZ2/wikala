@@ -38,8 +38,9 @@ class AdsController extends Controller
     public function details(Request $request, $id)
     {
         $this->lang();
-        $ad = Ad::with(['user', "category:id,$this->name", 'adsType', 'rejectedReason'])->findOrFail($id);
-        // Log::info($ad->description);
+        $ad = Ad::with(['user', "category:id,$this->name", "attributes.attribute:id,$this->name,type,image", 'rejectedReason','images'])->findOrFail($id);
+        Log::info($ad);
+        
         return view('admin.ads.details', compact('ad'));
     }
 
