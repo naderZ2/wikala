@@ -101,6 +101,9 @@
 			</div>
 			<div class="card">
 				<div class="card-body">
+					<div class="card-header">
+						<h5>@lang('lang.ad_attributes')</h5>
+					 </div>
 					{{-- <div class="row mb-3">
 						<div class="col-md-3 fw-bold">@lang('lang.ID'):</div>
 						<div class="col-md-9">{{ $ad->id }}</div>

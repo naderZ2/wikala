@@ -329,6 +329,7 @@
 		"not_found"=> "غير موجود",
 		"already_favorited"=> "مفضل بالفعل",
 		"already_saved"=> "محفوظ بالفعل",
+		"ad_attributes"=> "خصائص الاعلان",
 		
 		
 		

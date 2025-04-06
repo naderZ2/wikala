@@ -318,6 +318,7 @@
 		"not_found"=> "not found",
 		"already_favorited"=> "already favorited",
 		"already_saved"=> "already saved",
+		"ad_attributes"=> "Ad Attributes",
 		
 		
 

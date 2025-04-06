@@ -97,6 +97,9 @@
 			</div>
 			<div class="card">
 				<div class="card-body">
+					<div class="card-header">
+						<h5><?php echo app('translator')->get('lang.ad_attributes'); ?></h5>
+					 </div>
 					
 
 					<?php $__currentLoopData = $ad->attributes; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $attributes): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
