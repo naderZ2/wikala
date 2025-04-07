@@ -13,8 +13,11 @@ DB_DATABASE=ezhalhakw_dashboard_dev
 DB_USERNAME=root
 DB_PASSWORD=
 
-DB_USERNAME=ezhalhakw_wikala
-DB_PASSWORD=2Z*b)a_^zc.7
+
+DB_DATABASE=wikala_app
+DB_USERNAME=wikala_app_admin
+DB_PASSWORD=iDF9Y($L_#s&
+
 
 
 BROADCAST_DRIVER=log
