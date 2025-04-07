@@ -1,0 +1,77 @@
+<?php
+
+namespace App\Services;
+
+use App\Traits\ResponsesTrait;
+use App\Traits\FileUploadTrait;
+use App\Repositories\AdRepository;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
+
+class AdService
+{
+    use ResponsesTrait ,FileUploadTrait;
+    protected $adRepository;
+
+    public function __construct(AdRepository $adRepository)
+    {
+        $this->adRepository = $adRepository;
+    }
+
+    public function storeAd($data)
+    {
+        $data['user_id'] = Auth::id();
+        $ad = $this->adRepository->create($data);
+        $ad->ad_number = 10000 + $ad->id;
+        Log::info('Ad number: ' . $ad->ad_number); 
+        $ad->save();
+        return $ad;
+    }
+
+
+    public function storeAdWithImages($data)
+    {
+        // Add the user_id to the data array using Auth::id()
+        $data['user_id'] = Auth::id();
+
+        // Handle the main image upload if available
+        if (isset($data['main_image'])) {
+            $data['main_image'] = $this->uploadFile($data['main_image'], 'ads');
+        }
+
+        // Store the ad with the user_id and image path
+        $ad = $this->adRepository->create($data);
+
+        // If there are additional images, upload them and associate them with the ad
+        if (isset($data['images'])) {
+            foreach ($data['images'] as $img) {
+                $imagePath = $this->uploadFile($img, 'ads');
+                $ad->images()->create([
+                    'image_path' => $imagePath,
+                ]);
+            }
+        }
+
+        return $ad;
+    }
+
+    public function updateAd($id, $data)
+    {
+        return $this->adRepository->update($id, $data);
+    }
+
+    public function deleteAd($id)
+    {
+        return $this->adRepository->delete($id);
+    }
+
+    public function getAllAds()
+    {
+        return $this->adRepository->getAll();
+    }
+
+    public function getAdById($id)
+    {
+        return $this->adRepository->getById($id);
+    }
+}

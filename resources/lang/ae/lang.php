@@ -333,10 +333,42 @@
 		"ad_id_required"=> "رقم الاعلان مطلوب",
 		
 		
+		"category_required"=> "الفئة مطلوبة",
+		"category_not_found"=> "الفئة غير موجودة",
+		"user_required"=> "المستخدم مطلوب",
+		"user_not_found"=> "المستخدم غير موجود",
+		"type_required"=> "النوع مطلوب",
+		"type_not_found"=> "النوع غير موجود",
+		"rejected_reason_not_found"=> "سبب الرفض غير موجود",
+		"ad_number_required"=> "رقم الاعلان مطلوب",
+		"ad_number_taken"=> "رقم الاعلان مستخدم بالفعل",
+		"title_required"=> "العنوان مطلوب",
+		"contact_method_required"=> "طريقة التواصل مطلوبة",
+		"negotiable_required"=> "امكانية التفاوض مطلوبة",
+		"status_required"=> "الحالة مطلوبة",
+		"status_invalid"=> "الحالة غير صالحة",
+		"start_date_required"=> "تاريخ البداية مطلوب",
+		"end_date_required"=> "تاريخ الانتهاء مطلوب",
+		"end_date_after_start"=> "تاريخ الانتهاء يجب أن يكون بعد تاريخ البداية",
+		
+		"main_image_invalid"=> "الصورة الرئيسية غير صالحة",
+		"main_image_mimes"=> "الصورة الرئيسية يجب أن تكون من نوع jpeg,png,jpg,gif,svg",
+		"main_image_max"=> "حجم الصورة الرئيسية يجب أن لا يتجاوز 2048 كيلوبايت",
+		"image_invalid"=> "الصورة غير صالحة",
+		"image_mimes"=> "الصورة يجب أن تكون من نوع jpeg,png,jpg,gif,svg",
+		"image_max"=> "حجم الصورة يجب أن لا يتجاوز 2048 كيلوبايت",
+		"images_array_required"=> "الصور مطلوبة",
 		
 		
 
-		
+
+
+
+
+
+
+
+
 
 	]
 ?>

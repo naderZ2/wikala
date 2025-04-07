@@ -319,10 +319,36 @@
 		"already_favorited"=> "already favorited",
 		"already_saved"=> "already saved",
 		"ad_attributes"=> "Ad Attributes",
-		
+		"ad_id_required"=> "Ad ID is required",
 		
 
 
+		"category_required" => "Category is required",
+		"category_not_found" => "Category not found",
+		"user_required" => "User is required",
+		"user_not_found" => "User not found",
+		"type_required" => "Type is required",
+		"type_not_found" => "Type not found",
+		"rejected_reason_not_found" => "Rejected reason not found",
+		"ad_number_required" => "Ad number is required",
+		"ad_number_taken" => "Ad number is already taken",
+		"title_required" => "Title is required",
+		"contact_method_required" => "Contact method is required",
+		"negotiable_required" => "Negotiable field is required",
+		"status_required" => "Status is required",
+		"status_invalid" => "Status is invalid",
+		"start_date_required" => "Start date is required",
+		"end_date_required" => "End date is required",
+		"end_date_after_start" => "End date must be after start date",
 	
+		"main_image_invalid" => "The main image is invalid",
+		"main_image_mimes" => "The main image must be of type jpeg, png, jpg, gif, svg",
+		"main_image_max" => "The main image size must not exceed 2048 kilobytes",
+		"image_invalid" => "The image is invalid",
+		"image_mimes" => "The image must be of type jpeg, png, jpg, gif, svg",
+		"image_max" => "The image size must not exceed 2048 kilobytes",
+		"images_array_required" => "The images field must be an array",
+
+
 	]
 ?>
