@@ -8,6 +8,7 @@ use App\Traits\ResponsesTrait;
 use App\Services\SavedAdService;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\Client\SavedAd\StoreRequest;
 
 class SavedAdController extends Controller
 {
@@ -25,20 +26,18 @@ class SavedAdController extends Controller
      * Store a newly created resource in storage.
      */
 
-    public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'ad_id' => 'required|exists:ads,id',
-        ]);
-
-        $savedAd = $this->savedAdService->saveAd($validated['ad_id']);
-
-        if (!$savedAd) {
-            return $this->failed(null, trans('lang.already_saved'));
-        }
-
-        return $this->success($savedAd, trans('lang.created'));
-    }
+     public function store(StoreRequest $request)
+     {
+         $validated = $request->validated();  // بيانات الطلب بعد التحقق
+     
+         $savedAd = $this->savedAdService->saveAd($validated['ad_id']);
+     
+         if (!$savedAd) {
+             return $this->failed(null, trans('lang.already_saved'));
+         }
+     
+         return $this->success($savedAd, trans('lang.created'));
+     }
 
     /**
      * Remove the specified resource from storage.

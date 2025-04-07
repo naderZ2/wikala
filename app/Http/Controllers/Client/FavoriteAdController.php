@@ -8,6 +8,7 @@ use App\Traits\ResponsesTrait;
 use App\Services\FavoriteAdService;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\Client\FavoriteAd\StoreRequest;
 
 class FavoriteAdController extends Controller
 {
@@ -21,20 +22,19 @@ class FavoriteAdController extends Controller
         $this->favoriteAdService = $favoriteAdService;
     }
 
-    public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'ad_id' => 'required|exists:ads,id',
-        ]);
+    public function store(StoreRequest $request)
+{
+    $validated = $request->validated();  // بيانات الطلب بعد التحقق
 
-        $favoriteAd = $this->favoriteAdService->favoriteAd($validated['ad_id']);
+    $favoriteAd = $this->favoriteAdService->favoriteAd($validated['ad_id']);
 
-        if (!$favoriteAd) {
-            return $this->failed(null, trans('lang.already_favorited'));
-        }
-
-        return $this->success($favoriteAd, trans('lang.created'));
+    if (!$favoriteAd) {
+        return $this->failed(null, trans('lang.already_favorited'));
     }
+
+    return $this->success($favoriteAd, trans('lang.created'));
+}
+
 
     public function destroy($id)
     {

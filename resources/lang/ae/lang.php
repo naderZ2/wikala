@@ -330,6 +330,7 @@
 		"already_favorited"=> "مفضل بالفعل",
 		"already_saved"=> "محفوظ بالفعل",
 		"ad_attributes"=> "خصائص الاعلان",
+		"ad_id_required"=> "رقم الاعلان مطلوب",
 		
 		
 		
