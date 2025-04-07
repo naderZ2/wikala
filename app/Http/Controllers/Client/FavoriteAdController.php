@@ -5,68 +5,44 @@ namespace App\Http\Controllers\Client;
 use App\Models\FavoriteAd;
 use Illuminate\Http\Request;
 use App\Traits\ResponsesTrait;
+use App\Services\FavoriteAdService;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\Client\FavoriteAd\StoreRequest;
 
 class FavoriteAdController extends Controller
 {
     use ResponsesTrait;
 
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    
+    protected $favoriteAdService;
+
+    public function __construct(FavoriteAdService $favoriteAdService)
     {
-        $favoriteAds = FavoriteAd::where('user_id', Auth::id())->get();
-        return $this->success($favoriteAds);
+        $this->favoriteAdService = $favoriteAdService;
     }
-    /**
-     * Store a newly created resource in storage.
-     */
 
-
-    public function store(Request $request)
+    public function store(StoreRequest $request)
 {
-    $user_id = Auth::id();
+    $validated = $request->validated();  // بيانات الطلب بعد التحقق
 
-    $validated = $request->validate([
-        'ad_id' => 'required|exists:ads,id',
-    ]);
+    $favoriteAd = $this->favoriteAdService->favoriteAd($validated['ad_id']);
 
-    // Check if the ad is already favorited by this user
-    $alreadyExists = FavoriteAd::where('user_id', $user_id)
-                        ->where('ad_id', $validated['ad_id'])
-                        ->exists();
-
-    if ($alreadyExists) {
-        return $this->failed(null, trans('lang.already_favorited')); 
+    if (!$favoriteAd) {
+        return $this->failed(null, trans('lang.already_favorited'));
     }
-
-    $favoriteAd = FavoriteAd::create([
-        'user_id' => $user_id,
-        'ad_id'   => $validated['ad_id'],
-    ]);
 
     return $this->success($favoriteAd, trans('lang.created'));
 }
 
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy($id)
     {
+        $deleted = $this->favoriteAdService->deleteFavoriteAd($id);
 
-        $favoriteAd = FavoriteAd::find($id);
-        if (!$favoriteAd) {
+        if (!$deleted) {
             return $this->failed(null, trans('lang.not_found'));
         }
-
-        if ($favoriteAd->user_id !== Auth::id()) {
-            return $this->failed(null, trans('lang.not_found'));
-        }
-
-        $favoriteAd->delete();
 
         return $this->success(null, trans('lang.deleted'));
     }

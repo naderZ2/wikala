@@ -1,3 +1,4 @@
+
 <?php $__env->startSection('title', 'Basic DataTables'); ?>
 
 <?php $__env->startSection('css'); ?>

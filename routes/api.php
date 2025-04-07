@@ -139,6 +139,7 @@ Route::middleware(['auth:api'])->group(function () {
 
     Route::apiResource('favorite-ads', Client\FavoriteAdController::class);
 
+    Route::apiResource('ads', Client\AdController::class);
 
 
     });

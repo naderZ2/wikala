@@ -20,12 +20,12 @@ class Ad extends Model
         'description',
         'contact_method',
         'negotiable',
+        'main_image',
         'status',
         'start_date',
         'end_date',
     ];
 
-    // 🧩 Relationships
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
