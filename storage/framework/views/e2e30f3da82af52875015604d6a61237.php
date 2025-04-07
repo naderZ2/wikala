@@ -1,3 +1,4 @@
+
 <?php $__env->startSection('title', 'Ad Details'); ?>
 
 <?php $__env->startSection('css'); ?>
