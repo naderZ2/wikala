@@ -42,10 +42,12 @@
             <div class="card-body text-center">
               <div class="ecommerce-widgets media">
                 <div class="media-body">
-                  <h4 class="f-w-500 font-roboto"><?php echo app('translator')->get('lang.Orders_Count'); ?></h4>
-                  <h4 class="f-w-500 mb-0 f-26"><span id="SpanOrders" class="counter"><?php echo e($orders->count()); ?></span></h4>
+                  <h4 class="f-w-500 font-roboto"><?php echo app('translator')->get('lang.all_ads'); ?></h4>
+                  <h4 class="f-w-500 mb-0 f-26"><span id="SpanOrders" class="counter"><?php echo e($allAds); ?></span></h4>
                 </div>
-                <div class="ecommerce-box light-bg-primary"><i style="font-size: 30px" class="icofont icofont-ebook"></i></div>
+                <div class="ecommerce-box light-bg-primary">
+                  
+                  <i style="font-size: 30px" class="fas fa-ad"></i></div>
               </div>
             </div>
           </div>
@@ -56,11 +58,10 @@
             <div class="card-body text-center">
               <div class="ecommerce-widgets media">
                 <div class="media-body">
-                  <h4 class="f-w-500 font-roboto"><?php echo app('translator')->get(
-                  'lang.Order_Delivereds_Number'); ?></h4>
-                  <h4 class="f-w-500 mb-0 f-26"><span id="SpanOrderDelivered" class="counter"><?php echo e($orderDelivered->count()); ?></span></h4>
+                  <h4 class="f-w-500 font-roboto"><?php echo app('translator')->get('lang.active_ads'); ?></h4>
+                  <h4 class="f-w-500 mb-0 f-26"><span id="SpanOrderDelivered" class="counter"><?php echo e($activeAds); ?></span></h4>
                 </div>
-                <div class="ecommerce-box light-bg-primary"><i style="font-size: 30px" class="icofont icofont-thumbs-up"></i></div>
+                <div class="ecommerce-box light-bg-primary"><i style="font-size: 30px" class="fas fa-bullhorn"></i></div>
               </div>
             </div>
           </div>
@@ -70,10 +71,37 @@
             <div class="card-body text-center">
               <div class="ecommerce-widgets media">
                 <div class="media-body">
-                  <h4 class="f-w-500 font-roboto"><?php echo app('translator')->get('lang.Order_Not_Delivereds_Number'); ?></h4>
-                  <h4 class="f-w-500 mb-0 f-26"><span id="SpanOrderNotDelivered" class="counter"><?php echo e($orderNotDelivered->count()); ?></span></h4>
+                  <h4 class="f-w-500 font-roboto"><?php echo app('translator')->get('lang.under_review_ads'); ?></h4>
+                  <h4 class="f-w-500 mb-0 f-26"><span id="SpanOrderNotDelivered" class="counter"><?php echo e($underReviewAds); ?></span></h4>
+                </div>
+                
+                <div class="ecommerce-box light-bg-primary"><i style="font-size: 30px" class="fas fa-search"></i></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-6 box-col-6 col-lg-6 col-md-6 ">
+          <div class="card o-hidden">
+            <div class="card-body text-center">
+              <div class="ecommerce-widgets media">
+                <div class="media-body">
+                  <h4 class="f-w-500 font-roboto"><?php echo app('translator')->get('lang.rejected_ads'); ?></h4>
+                  <h4 class="f-w-500 mb-0 f-26"><span id="SpanOrderNotDelivered" class="counter"><?php echo e($rejectedAds); ?></span></h4>
                 </div>
                 <div class="ecommerce-box light-bg-primary"><i style="font-size: 30px" class="icofont icofont-not-allowed"></i></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-6 box-col-6 col-lg-6 col-md-6 ">
+          <div class="card o-hidden">
+            <div class="card-body text-center">
+              <div class="ecommerce-widgets media">
+                <div class="media-body">
+                  <h4 class="f-w-500 font-roboto"><?php echo app('translator')->get('lang.outdated_ads'); ?></h4>
+                  <h4 class="f-w-500 mb-0 f-26"><span id="SpanOrderNotDelivered" class="counter"><?php echo e($outdatedAds); ?></span></h4>
+                </div>
+                <div class="ecommerce-box light-bg-primary"><i style="font-size: 30px" class="fas fa-clock"></i></div>
               </div>
             </div>
           </div>
@@ -84,6 +112,9 @@
         
 
        
+     
+
+
         <div class="row">
 
 
@@ -94,12 +125,32 @@
               <div class="card-body">
               
 
+                <h4 class="f-w-500 font-roboto"><?php echo app('translator')->get('lang.city'); ?></h4>
+                <div class="d-flex justify-content-start col-sm-12 mt-3">
+                  <select class="js-example-placeholder-multiple col-sm-12" id="sellerSelect" name="seller_id">
+                    <option value="All"><?php echo app('translator')->get('lang.All'); ?></option>
+                    
+                </select>
+              </div>
+              
+
+              
+              </div>
+            </div>
+            
+            
+          </div>
+          <div class="col-sm-6">
+            <div class="card">
+            
+              <div class="card-body">
+              
+
+                <h4 class="f-w-500 font-roboto"><?php echo app('translator')->get('lang.region'); ?></h4>
               <div class="d-flex justify-content-start col-sm-12 mt-3">
                 <select class="js-example-placeholder-multiple col-sm-12" id="sellerSelect" name="seller_id">
                       <option value="All"><?php echo app('translator')->get('lang.All'); ?></option>
-                      <?php $__currentLoopData = $sellers; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $seller): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                          <option value="<?php echo e($seller->id); ?>"><?php echo e($seller->name); ?></option>
-                      <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                      
                 </select>
               </div>
               
@@ -112,6 +163,8 @@
           </div>
           
         </div>
+
+
       </div>
     </div>
 

@@ -358,6 +358,9 @@
 		"image_mimes"=> "الصورة يجب أن تكون من نوع jpeg,png,jpg,gif,svg",
 		"image_max"=> "حجم الصورة يجب أن لا يتجاوز 2048 كيلوبايت",
 		"images_array_required"=> "الصور مطلوبة",
+		"active_ads"=> "الاعلانات النشطة",
+		"city"=> "المدينة",
+		
 		
 		
 

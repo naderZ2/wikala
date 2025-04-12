@@ -43,10 +43,12 @@
             <div class="card-body text-center">
               <div class="ecommerce-widgets media">
                 <div class="media-body">
-                  <h4 class="f-w-500 font-roboto">@lang('lang.Orders_Count')</h4>
-                  <h4 class="f-w-500 mb-0 f-26"><span id="SpanOrders" class="counter">{{ $orders->count() }}</span></h4>
+                  <h4 class="f-w-500 font-roboto">@lang('lang.all_ads')</h4>
+                  <h4 class="f-w-500 mb-0 f-26"><span id="SpanOrders" class="counter">{{ $allAds }}</span></h4>
                 </div>
-                <div class="ecommerce-box light-bg-primary"><i style="font-size: 30px" class="icofont icofont-ebook"></i></div>
+                <div class="ecommerce-box light-bg-primary">
+                  {{-- <i style="font-size: 30px" class="icofont icofont-ebook"></i> --}}
+                  <i style="font-size: 30px" class="fas fa-ad"></i></div>
               </div>
             </div>
           </div>
@@ -57,11 +59,10 @@
             <div class="card-body text-center">
               <div class="ecommerce-widgets media">
                 <div class="media-body">
-                  <h4 class="f-w-500 font-roboto">@lang(
-                  'lang.Order_Delivereds_Number')</h4>
-                  <h4 class="f-w-500 mb-0 f-26"><span id="SpanOrderDelivered" class="counter">{{ $orderDelivered->count() }}</span></h4>
+                  <h4 class="f-w-500 font-roboto">@lang('lang.active_ads')</h4>
+                  <h4 class="f-w-500 mb-0 f-26"><span id="SpanOrderDelivered" class="counter">{{ $activeAds }}</span></h4>
                 </div>
-                <div class="ecommerce-box light-bg-primary"><i style="font-size: 30px" class="icofont icofont-thumbs-up"></i></div>
+                <div class="ecommerce-box light-bg-primary"><i style="font-size: 30px" class="fas fa-bullhorn"></i></div>
               </div>
             </div>
           </div>
@@ -71,10 +72,37 @@
             <div class="card-body text-center">
               <div class="ecommerce-widgets media">
                 <div class="media-body">
-                  <h4 class="f-w-500 font-roboto">@lang('lang.Order_Not_Delivereds_Number')</h4>
-                  <h4 class="f-w-500 mb-0 f-26"><span id="SpanOrderNotDelivered" class="counter">{{ $orderNotDelivered->count() }}</span></h4>
+                  <h4 class="f-w-500 font-roboto">@lang('lang.under_review_ads')</h4>
+                  <h4 class="f-w-500 mb-0 f-26"><span id="SpanOrderNotDelivered" class="counter">{{ $underReviewAds }}</span></h4>
+                </div>
+                
+                <div class="ecommerce-box light-bg-primary"><i style="font-size: 30px" class="fas fa-search"></i></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-6 box-col-6 col-lg-6 col-md-6 ">
+          <div class="card o-hidden">
+            <div class="card-body text-center">
+              <div class="ecommerce-widgets media">
+                <div class="media-body">
+                  <h4 class="f-w-500 font-roboto">@lang('lang.rejected_ads')</h4>
+                  <h4 class="f-w-500 mb-0 f-26"><span id="SpanOrderNotDelivered" class="counter">{{ $rejectedAds }}</span></h4>
                 </div>
                 <div class="ecommerce-box light-bg-primary"><i style="font-size: 30px" class="icofont icofont-not-allowed"></i></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-6 box-col-6 col-lg-6 col-md-6 ">
+          <div class="card o-hidden">
+            <div class="card-body text-center">
+              <div class="ecommerce-widgets media">
+                <div class="media-body">
+                  <h4 class="f-w-500 font-roboto">@lang('lang.outdated_ads')</h4>
+                  <h4 class="f-w-500 mb-0 f-26"><span id="SpanOrderNotDelivered" class="counter">{{ $outdatedAds }}</span></h4>
+                </div>
+                <div class="ecommerce-box light-bg-primary"><i style="font-size: 30px" class="fas fa-clock"></i></div>
               </div>
             </div>
           </div>
@@ -98,6 +126,9 @@
         {{-- @endforeach --}}
 
        
+     
+
+
         <div class="row">
 
 
@@ -108,12 +139,36 @@
               <div class="card-body">
               
 
+                <h4 class="f-w-500 font-roboto">@lang('lang.city')</h4>
+                <div class="d-flex justify-content-start col-sm-12 mt-3">
+                  <select class="js-example-placeholder-multiple col-sm-12" id="sellerSelect" name="seller_id">
+                    <option value="All">@lang('lang.All')</option>
+                    {{-- @foreach ($sellers as $seller)
+                    <option value="{{ $seller->id }}">{{ $seller->name }}</option>
+                      @endforeach --}}
+                </select>
+              </div>
+              
+
+              
+              </div>
+            </div>
+            
+            
+          </div>
+          <div class="col-sm-6">
+            <div class="card">
+            
+              <div class="card-body">
+              
+
+                <h4 class="f-w-500 font-roboto">@lang('lang.region')</h4>
               <div class="d-flex justify-content-start col-sm-12 mt-3">
                 <select class="js-example-placeholder-multiple col-sm-12" id="sellerSelect" name="seller_id">
                       <option value="All">@lang('lang.All')</option>
-                      @foreach ($sellers as $seller)
+                      {{-- @foreach ($sellers as $seller)
                           <option value="{{ $seller->id }}">{{ $seller->name }}</option>
-                      @endforeach
+                      @endforeach --}}
                 </select>
               </div>
               
@@ -126,6 +181,8 @@
           </div>
           
         </div>
+
+
       </div>
     </div>
 

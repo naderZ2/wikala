@@ -142,7 +142,10 @@
 
 
 					<li class="sidebar-list">
-						<a class="sidebar-link sidebar-title {{ (request()->route()->uri() == 'users/admins')||(request()->route()->uri() =='users/roles') ? 'active' : '' }}" href="#"><i data-feather="users"></i>
+						<a class="sidebar-link sidebar-title {{ (request()->route()->uri() == 'users/admins')||(request()->route()->uri() =='users/roles') ? 'active' : '' }}" href="#">
+							<i data-feather="user-check"></i>
+							{{-- <i class="fas fa-user-shield"></i> --}}
+
 							<span class="lan-7">{{ trans('lang.admins') }}</span>
 							<div class="according-menu"><i class="fa fa-angle-{{ (request()->route()->uri() == 'users/admins')||(request()->route()->uri() =='users/roles') ? 'down' : 'right' }}"></i></div>
 						</a>
@@ -168,7 +171,8 @@
 
 
 					<li class="sidebar-list">
-						<a class="sidebar-link sidebar-title {{ request()->route()->uri() == 'dashboard/attributes' ? 'active' : '' }}" href="#"><i data-feather="users"></i>
+						<a class="sidebar-link sidebar-title {{ request()->route()->uri() == 'dashboard/attributes' ? 'active' : '' }}" href="#">
+							<i data-feather="tag"></i>
 							<span class="lan-7">{{ trans('lang.Attributes') }}</span>
 							<div class="according-menu"><i class="fa fa-angle-{{ request()->route()->uri() == 'dashboard/attributes' ? 'down' : 'right' }}"></i></div>
 						</a>
@@ -183,7 +187,8 @@
 
 
 					<li class="sidebar-list">
-						<a class="sidebar-link sidebar-title {{ request()->route()->uri() == 'dashboard/rejected-reasons' ? 'active' : '' }}" href="#"><i data-feather="users"></i>
+						<a class="sidebar-link sidebar-title {{ request()->route()->uri() == 'dashboard/rejected-reasons' ? 'active' : '' }}" href="#">
+							<i data-feather="x-circle"></i>
 							<span class="lan-7">{{ trans('lang.rejected_reasons') }}</span>
 							<div class="according-menu"><i class="fa fa-angle-{{ request()->route()->uri() == 'dashboard/rejected-reasons' ? 'down' : 'right' }}"></i></div>
 						</a>
@@ -200,7 +205,7 @@
 
 				 <li class="sidebar-list">
 					<a class="sidebar-link sidebar-title {{ request()->route()->uri() == 'dashboard/ads' ? 'active' : '' }}" href="#">
-						<i data-feather="users"></i>
+						<i data-feather="radio"></i>
 						<span class="lan-7">{{ trans('lang.ads') }}</span>
 						<div class="according-menu">
 							<i class="fa fa-angle-{{ request()->route()->uri() == 'dashboard/ads' ? 'down' : 'right' }}"></i>

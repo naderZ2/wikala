@@ -348,6 +348,8 @@
 		"image_mimes" => "The image must be of type jpeg, png, jpg, gif, svg",
 		"image_max" => "The image size must not exceed 2048 kilobytes",
 		"images_array_required" => "The images field must be an array",
+		"active_ads" => "Active Ads",
+		"city" => "City",
 
 
 	]

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\Ad;
 use App\Models\Seller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -23,17 +24,36 @@ class StatisticsController extends Controller
         // $gender=$request->gender;
 
     
-        $orders = $this->Order::with('seller')->get();
+        // $orders = $this->Order::with('seller')->get();
 
-        $orderDelivered = $this->Order::whereNotIn('status',['cancel','delivered'])->with('seller')->get();
-        // $orderNotDelivered = $this->Order::where('status','delivered')->get();
-        $orderNotDelivered = $this->Order::whereNotIn('status', ['shipped','out_for_delivery','confirmed','order_placed'])->with('seller')->get();
+        // $orderDelivered = $this->Order::whereNotIn('status',['cancel','delivered'])->with('seller')->get();
+        // // $orderNotDelivered = $this->Order::where('status','delivered')->get();
+        // $orderNotDelivered = $this->Order::whereNotIn('status', ['shipped','out_for_delivery','confirmed','order_placed'])->with('seller')->get();
         
-        $sellers = $this->Seller::where('active','1')->get();
+        // $sellers = $this->Seller::where('active','1')->get();
 
-        // dd($orders);
-        // $searchResult=$searchResult->count();
-        return view('admin.home',compact('orders','orderDelivered','orderNotDelivered','sellers'));
+        $allAds =Ad::get()->count();
+
+        $activeAds = Ad::where('status', 'accepted')
+                ->where('start_date', '<=', now())
+                ->where('end_date', '>=', now())
+                ->count();
+
+        $underReviewAds = Ad::where('status', 'under_review')
+                // ->where('start_date', '<=', now())
+                ->where('end_date', '>=', now())
+                ->count();
+
+        $rejectedAds = Ad::where('status', 'rejected')
+                ->count();
+                
+        $outdatedAds = Ad::where('end_date', '<=', now())->count();
+                        
+
+        // Log::info($activeAds);
+
+        
+        return view('admin.home',compact('allAds','activeAds','underReviewAds','rejectedAds','outdatedAds'));
     }
 
 
