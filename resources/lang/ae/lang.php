@@ -368,6 +368,12 @@
 		"region_required"=> "المنطقة مطلوبة",
 		"region_not_found"=> "المنطقة غير موجودة",
 		
+		"receiver_required" => "المستلم مطلوب",
+		"receiver_not_found" => "المستلم غير موجود",
+		"message_required" => "الرسالة مطلوبة",
+		"message_must_be_string" => "الرسالة يجب أن تكون نص",
+		"message_type_required" => "نوع الرسالة مطلوب",
+		"invalid_message_type" => "نوع الرسالة غير صالح",
 		
 		
 

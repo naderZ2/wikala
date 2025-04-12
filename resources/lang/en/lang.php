@@ -360,6 +360,14 @@
 		"region_not_found"=> "Region not found",
 		
 
+		"receiver_required" => "Receiver is required",
+		"receiver_not_found" => "Receiver not found",
+		"message_required" => "Message is required",
+		"message_must_be_string" => "Message must be a string",
+		"message_type_required" => "Message type is required",
+		"invalid_message_type" => "Invalid message type",
 
+
+		
 	]
 ?>
