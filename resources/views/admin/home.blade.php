@@ -221,16 +221,14 @@
 
 <script>
   $(document).ready(function () {
-      // دالة لتحديث العدادات مع عرض مؤقت "..."
+      
       function updateStats(cityId, regionId) {
-          // عرض "..." أثناء التحميل
           $('#SpanOrders').text('...');
           $('#SpanOrderDelivered').text('...');
           $('#SpanUnderReview').text('...');
           $('#SpanRejected').text('...');
           $('#SpanOutdated').text('...');
 
-          // طلب Ajax لجلب الإحصائيات المفلترة
           $.ajax({
               url: "{{ route('ads.filteredStats') }}",
               type: 'GET',
@@ -253,14 +251,11 @@
           });
       }
 
-      // عند اختيار مدينة - حمل المناطق وأعد تعيين النتائج
       $('#citySelect').on('change', function () {
           let cityId = $(this).val();
 
-          // مؤقت تحميل للمناطق
           $('#regionSelect').html('<option value="All">@lang("lang.Loading")...</option>');
 
-          // طلب Ajax لجلب المناطق التابعة للمدينة
           $.ajax({
               url: "{{ route('regions.byCity') }}",
               type: 'GET',
@@ -276,11 +271,9 @@
               }
           });
 
-          // تحديث الإحصائيات تلقائيًا بناءً على المدينة المختارة فقط
           updateStats(cityId, 'All');
       });
 
-      // عند تغيير المنطقة - تحديث الإحصائيات بناءً على المدينة والمنطقة
       $('#regionSelect').on('change', function () {
           let cityId = $('#citySelect').val();
           let regionId = $(this).val();

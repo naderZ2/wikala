@@ -27,18 +27,18 @@ class StoreRequest extends FormRequest
     {
         return [
             'category_id'    => 'required|exists:categories,id',
-            // 'user_id'        => 'required|exists:users,id',
+            
             'type_id'        => 'required|exists:ads_type,id',
-            // 'rejected_id'    => 'nullable|exists:rejected_reasons,id',
-            // 'ad_number'      => 'required|unique:ads,ad_number',
+            
             'title'          => 'required|string|max:255',
             'description'    => 'required|string',
             'contact_method' => 'required|string',
             'negotiable'     => 'required|boolean',
-            // 'status'         => 'required|in:active,inactive',
+            
             'start_date'     => 'required|date',
             'end_date'       => 'required|date|after:start_date',
-
+            'city_id'        => 'required|exists:cities,id',
+            'region_id'      => 'required|exists:cities,id',
             'main_image'     => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',  
             // 'images'         => 'nullable|array', 
             // 'images.*'       => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048', 

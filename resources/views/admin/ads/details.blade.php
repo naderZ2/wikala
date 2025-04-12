@@ -37,12 +37,20 @@
 
 					<div class="row mb-3">
 						<div class="col-md-3 fw-bold">@lang('lang.Ad_Number'):</div>
-						<div class="col-md-9">{{ $ad->ad_number }}</div>
+						<div class="col-md-9">{{ $ad?->ad_number }}</div>
 					</div>
 
 					<div class="row mb-3">
 						<div class="col-md-3 fw-bold">@lang('lang.Title'):</div>
 						<div class="col-md-9">{{ $ad->title }}</div>
+					</div>
+					<div class="row mb-3">
+						<div class="col-md-3 fw-bold">@lang('lang.city'):</div>
+						<div class="col-md-9">{{ $ad?->city?->name }}</div>
+					</div>
+					<div class="row mb-3">
+						<div class="col-md-3 fw-bold">@lang('lang.region'):</div>
+						<div class="col-md-9">{{ $ad?->region?->name }}</div>
 					</div>
 
 					<div class="row mb-3">

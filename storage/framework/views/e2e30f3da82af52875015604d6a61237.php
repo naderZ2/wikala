@@ -34,12 +34,20 @@
 
 					<div class="row mb-3">
 						<div class="col-md-3 fw-bold"><?php echo app('translator')->get('lang.Ad_Number'); ?>:</div>
-						<div class="col-md-9"><?php echo e($ad->ad_number); ?></div>
+						<div class="col-md-9"><?php echo e($ad?->ad_number); ?></div>
 					</div>
 
 					<div class="row mb-3">
 						<div class="col-md-3 fw-bold"><?php echo app('translator')->get('lang.Title'); ?>:</div>
 						<div class="col-md-9"><?php echo e($ad->title); ?></div>
+					</div>
+					<div class="row mb-3">
+						<div class="col-md-3 fw-bold"><?php echo app('translator')->get('lang.city'); ?>:</div>
+						<div class="col-md-9"><?php echo e($ad?->city?->name); ?></div>
+					</div>
+					<div class="row mb-3">
+						<div class="col-md-3 fw-bold"><?php echo app('translator')->get('lang.region'); ?>:</div>
+						<div class="col-md-9"><?php echo e($ad?->region?->name); ?></div>
 					</div>
 
 					<div class="row mb-3">

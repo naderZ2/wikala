@@ -69,10 +69,10 @@ class   StatisticsController extends Controller
         $allAds = (clone $query)->count();
     
         $activeAds = (clone $query)->where('status', 'accepted')
-                                   ->where('start_date', '<=', now())
-                                   ->where('end_date', '>=', now())
-                                   ->count();
-    
+                                    ->where('start_date', '<=', now())
+                                    ->where('end_date', '>=', now())
+                                    ->count();
+
         $underReviewAds = (clone $query)->where('status', 'under_review')
                                         ->where('end_date', '>=', now())
                                         ->count();

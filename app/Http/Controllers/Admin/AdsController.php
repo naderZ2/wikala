@@ -16,21 +16,21 @@ use App\Http\Requests\Admin\Ads\StoreRequest;
 class AdsController extends Controller
 {
     public function index(Request $request)
-{
-    $status = $request->get('status', 'all');
+    {
+        $status = $request->get('status', 'all');
 
-    $query = Ad::select('id', 'ad_number', 'title', 'start_date', 'end_date');
+        $query = Ad::select('id', 'ad_number', 'title', 'start_date', 'end_date');
 
-    if ($status === 'outdated') {
-        $query->where('end_date', '<', now());
-    } elseif (in_array($status, ['under_review', 'accepted', 'rejected'])) {
-        $query->where('status', $status);
+        if ($status === 'outdated') {
+            $query->where('end_date', '<', now());
+        } elseif (in_array($status, ['under_review', 'accepted', 'rejected'])) {
+            $query->where('status', $status);
+        }
+
+        $ads = $query->latest()->get();
+
+        return view('admin.ads.index', compact('ads', 'status'));
     }
-
-    $ads = $query->latest()->get();
-
-    return view('admin.ads.index', compact('ads', 'status'));
-}
 
 
 
@@ -38,7 +38,7 @@ class AdsController extends Controller
     public function details(Request $request, $id)
     {
         $this->lang();
-        $ad = Ad::with(['user', "category:id,$this->name", "attributes.attribute:id,$this->name,type,image", 'rejectedReason','images'])->findOrFail($id);
+        $ad = Ad::with(['user', "category:id,$this->name", "attributes.attribute:id,$this->name,type,image", 'rejectedReason','images',"city:id,$this->name","region:id,$this->name"])->findOrFail($id);
         Log::info($ad);
         
         return view('admin.ads.details', compact('ad'));

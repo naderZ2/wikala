@@ -9,6 +9,7 @@ class AdRepository
 {
     public function create(array $data)
     {
+        
         return Ad::create($data);
     }
 
