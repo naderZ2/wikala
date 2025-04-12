@@ -73,9 +73,10 @@
               <div class="ecommerce-widgets media">
                 <div class="media-body">
                   <h4 class="f-w-500 font-roboto">@lang('lang.under_review_ads')</h4>
-                  <h4 class="f-w-500 mb-0 f-26"><span id="SpanOrderNotDelivered" class="counter">{{ $underReviewAds }}</span></h4>
+                  {{-- <h4 class="f-w-500 mb-0 f-26"><span id="SpanOrderNotDelivered" class="counter">{{ $underReviewAds }}</span></h4> --}}
+                  <h4 class="f-w-500 mb-0 f-26"><span id="SpanUnderReview" class="counter">{{ $underReviewAds }}</span></h4>
+
                 </div>
-                
                 <div class="ecommerce-box light-bg-primary"><i style="font-size: 30px" class="fas fa-search"></i></div>
               </div>
             </div>
@@ -87,7 +88,9 @@
               <div class="ecommerce-widgets media">
                 <div class="media-body">
                   <h4 class="f-w-500 font-roboto">@lang('lang.rejected_ads')</h4>
-                  <h4 class="f-w-500 mb-0 f-26"><span id="SpanOrderNotDelivered" class="counter">{{ $rejectedAds }}</span></h4>
+                  {{-- <h4 class="f-w-500 mb-0 f-26"><span id="SpanOrderNotDelivered" class="counter">{{ $rejectedAds }}</span></h4> --}}
+                  <h4 class="f-w-500 mb-0 f-26"><span id="SpanRejected" class="counter">{{ $rejectedAds }}</span></h4>
+
                 </div>
                 <div class="ecommerce-box light-bg-primary"><i style="font-size: 30px" class="icofont icofont-not-allowed"></i></div>
               </div>
@@ -100,7 +103,9 @@
               <div class="ecommerce-widgets media">
                 <div class="media-body">
                   <h4 class="f-w-500 font-roboto">@lang('lang.outdated_ads')</h4>
-                  <h4 class="f-w-500 mb-0 f-26"><span id="SpanOrderNotDelivered" class="counter">{{ $outdatedAds }}</span></h4>
+                  {{-- <h4 class="f-w-500 mb-0 f-26"><span id="SpanOrderNotDelivered" class="counter">{{ $outdatedAds }}</span></h4> --}}
+                  <h4 class="f-w-500 mb-0 f-26"><span id="SpanOutdated" class="counter">{{ $outdatedAds }}</span></h4>
+
                 </div>
                 <div class="ecommerce-box light-bg-primary"><i style="font-size: 30px" class="fas fa-clock"></i></div>
               </div>
@@ -141,11 +146,11 @@
 
                 <h4 class="f-w-500 font-roboto">@lang('lang.city')</h4>
                 <div class="d-flex justify-content-start col-sm-12 mt-3">
-                  <select class="js-example-placeholder-multiple col-sm-12" id="sellerSelect" name="seller_id">
+                  <select class="js-example-placeholder-multiple col-sm-12" id="citySelect" name="city_id">
                     <option value="All">@lang('lang.All')</option>
-                    {{-- @foreach ($sellers as $seller)
-                    <option value="{{ $seller->id }}">{{ $seller->name }}</option>
-                      @endforeach --}}
+                    @foreach ($cities as $city)
+                        <option value="{{ $city->id }}">{{ $city->name }}</option>
+                    @endforeach
                 </select>
               </div>
               
@@ -164,12 +169,10 @@
 
                 <h4 class="f-w-500 font-roboto">@lang('lang.region')</h4>
               <div class="d-flex justify-content-start col-sm-12 mt-3">
-                <select class="js-example-placeholder-multiple col-sm-12" id="sellerSelect" name="seller_id">
-                      <option value="All">@lang('lang.All')</option>
-                      {{-- @foreach ($sellers as $seller)
-                          <option value="{{ $seller->id }}">{{ $seller->name }}</option>
-                      @endforeach --}}
-                </select>
+                <select class="js-example-placeholder-multiple col-sm-12" id="regionSelect" name="region_id">
+                  <option value="All">@lang('lang.All')</option>
+                  
+              </select>
               </div>
               
 
@@ -218,57 +221,74 @@
 
 <script>
   $(document).ready(function () {
-      // Handle seller selection
-      $('#sellerSelect').on('change', function () {
-          var sellerId = $(this).val();
-          var sellerDataContainer = $('#sellerData');
-          var SpanOrderNotDelivered = $('#SpanOrderNotDelivered');
-          var SpanOrderDelivered = $('#SpanOrderDelivered');
-          var SpanOrders = $('#SpanOrders');
+      // دالة لتحديث العدادات مع عرض مؤقت "..."
+      function updateStats(cityId, regionId) {
+          // عرض "..." أثناء التحميل
+          $('#SpanOrders').text('...');
+          $('#SpanOrderDelivered').text('...');
+          $('#SpanUnderReview').text('...');
+          $('#SpanRejected').text('...');
+          $('#SpanOutdated').text('...');
 
-          // Clear previous data
-          sellerDataContainer.html('<p class="text-center">@lang("lang.Loading")...</p>');
-
-          // Make an AJAX request to fetch seller data
+          // طلب Ajax لجلب الإحصائيات المفلترة
           $.ajax({
-              url: "{{ route('seller.details') }}", // Add this route in your web.php
+              url: "{{ route('ads.filteredStats') }}",
               type: 'GET',
-              data: { seller_id: sellerId },
+              data: {
+                  city_id: cityId,
+                  region_id: regionId
+              },
               success: function (response) {
-                
-                console.log(response);
-                
-                if (response) {
-                    console.log("done");
-                    SpanOrderNotDelivered.html(`${response.orderNotDelivered}`)
-                      SpanOrderDelivered.html(`${response.orderDelivered}`)
-                        SpanOrders.html(`${response.orders}`)
-
-
-                    // $('#totalOrders').text(response.total_orders || 0);
-                    //     $('#deliveredOrders').text(response.delivered_orders || 0);
-                    //     $('#notDeliveredOrders').text(response.not_delivered_orders || 0);
-                  
-                    
-                      // Populate seller details
-                    
-
-                      
-                
-                      
-                  } else {
-                    // console.log(response.orders);
-                      sellerDataContainer.html('<p class="counter">0</p>');
+                  if (response) {
+                      $('#SpanOrders').text(response.allAds || 0);
+                      $('#SpanOrderDelivered').text(response.activeAds || 0);
+                      $('#SpanUnderReview').text(response.underReviewAds || 0);
+                      $('#SpanRejected').text(response.rejectedAds || 0);
+                      $('#SpanOutdated').text(response.outdatedAds || 0);
                   }
               },
               error: function (xhr) {
                   console.error(xhr.responseText);
-                  // sellerDataContainer.html('<p class="text-center text-danger">@lang("lang.Error_Fetching_Data")</p>');
               }
           });
+      }
+
+      // عند اختيار مدينة - حمل المناطق وأعد تعيين النتائج
+      $('#citySelect').on('change', function () {
+          let cityId = $(this).val();
+
+          // مؤقت تحميل للمناطق
+          $('#regionSelect').html('<option value="All">@lang("lang.Loading")...</option>');
+
+          // طلب Ajax لجلب المناطق التابعة للمدينة
+          $.ajax({
+              url: "{{ route('regions.byCity') }}",
+              type: 'GET',
+              data: { city_id: cityId },
+              success: function (response) {
+                  let options = `<option value="All">@lang('lang.All')</option>`;
+                  if (response && response.length > 0) {
+                      response.forEach(function (region) {
+                          options += `<option value="${region.id}">${region.name}</option>`;
+                      });
+                  }
+                  $('#regionSelect').html(options);
+              }
+          });
+
+          // تحديث الإحصائيات تلقائيًا بناءً على المدينة المختارة فقط
+          updateStats(cityId, 'All');
+      });
+
+      // عند تغيير المنطقة - تحديث الإحصائيات بناءً على المدينة والمنطقة
+      $('#regionSelect').on('change', function () {
+          let cityId = $('#citySelect').val();
+          let regionId = $(this).val();
+          updateStats(cityId, regionId);
       });
   });
 </script>
+
 
 @endsection
 

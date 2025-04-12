@@ -3,12 +3,13 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\Ad;
+use App\Models\City;
 use App\Models\Seller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 
-class StatisticsController extends Controller
+class   StatisticsController extends Controller
 {
     public function __construct()
     {
@@ -21,16 +22,7 @@ class StatisticsController extends Controller
     }
 
     public function index(){
-        // $gender=$request->gender;
-
-    
-        // $orders = $this->Order::with('seller')->get();
-
-        // $orderDelivered = $this->Order::whereNotIn('status',['cancel','delivered'])->with('seller')->get();
-        // // $orderNotDelivered = $this->Order::where('status','delivered')->get();
-        // $orderNotDelivered = $this->Order::whereNotIn('status', ['shipped','out_for_delivery','confirmed','order_placed'])->with('seller')->get();
-        
-        // $sellers = $this->Seller::where('active','1')->get();
+        $this->lang();
 
         $allAds =Ad::get()->count();
 
@@ -48,12 +40,12 @@ class StatisticsController extends Controller
                 ->count();
                 
         $outdatedAds = Ad::where('end_date', '<=', now())->count();
-                        
-
-        // Log::info($activeAds);
-
         
-        return view('admin.home',compact('allAds','activeAds','underReviewAds','rejectedAds','outdatedAds'));
+        $cities = City::whereNull('parent_id')->get(['id',$this->name]);
+
+        $regions = City::whereNotNull('parent_id')->get(['id',$this->name]);
+        
+        return view('admin.home',compact('allAds','activeAds','underReviewAds','rejectedAds','outdatedAds','cities','regions'));
     }
 
 
@@ -61,42 +53,56 @@ class StatisticsController extends Controller
 
 
 
-    public function getSellerDetails(Request $request)
+    public function getFilteredStats(Request $request)
     {
-
-        $sellerId = $request->input('seller_id');
+        Log::info($request->all());
+        $query = Ad::query();
     
-        // Fetch seller details
-
-        if($sellerId === 'All'){
-            $orders = $this->Order::count();
-            $orderDelivered = $this->Order::where('status','delivered')->count();
-            $orderNotDelivered = $this->Order::whereNotIn('status', ['delivered', 'canceled','confirmed'])->count();
-
-            // Log::info($orders);
-            // Log::info($orderDelivered);
-            // Log::info($orderNotDelivered);
-            }else{
-                $orders = $this->Order::where('seller_id',$sellerId)->count();
-                $orderDelivered = $this->Order::where('status','delivered')->where('seller_id',$sellerId)->count();
-                $orderNotDelivered = $this->Order::whereNotIn('status', ['delivered', 'canceled','confirmed'])->where('seller_id',$sellerId)->with('seller')->count();
-            
+        if ($request->filled('city_id') && $request->city_id !== 'All') {
+            $query->where('city_id', $request->city_id);
         }
-            
-
-        // $orderNotDelivered = $this->Order::where('status','delivered')->get();
-
-
-        // dd($seller);
-        // Fetch orders for the selected seller
-        // $orders = $seller ? $seller->orders : [];
+    
+        if ($request->filled('region_id') && $request->region_id !== 'All') {
+            $query->where('region_id', $request->region_id);
+        }
+    
+        $allAds = (clone $query)->count();
+    
+        $activeAds = (clone $query)->where('status', 'accepted')
+                                   ->where('start_date', '<=', now())
+                                   ->where('end_date', '>=', now())
+                                   ->count();
+    
+        $underReviewAds = (clone $query)->where('status', 'under_review')
+                                        ->where('end_date', '>=', now())
+                                        ->count();
+    
+        $rejectedAds = (clone $query)->where('status', 'rejected')->count();
+        $outdatedAds = (clone $query)->where('end_date', '<=', now())->count();
     
         return response()->json([
-            'orders' => $orders,
-            'orderDelivered' => $orderDelivered,
-            'orderNotDelivered' => $orderNotDelivered,
+            'allAds' => $allAds,
+            'activeAds' => $activeAds,
+            'underReviewAds' => $underReviewAds,
+            'rejectedAds' => $rejectedAds,
+            'outdatedAds' => $outdatedAds,
         ]);
-
+        
     }
+
+
+    public function getRegionsByCity(Request $request)
+    {
+        $this->lang();
+        
+        if ($request->filled('city_id') && $request->city_id !== 'All') {
+            $regions = City::where('parent_id', $request->city_id)->get(['id',$this->name]);
+            return response()->json($regions);
+        }
+        return response()->json([]);
+    }
+
+    
+    
 
 }

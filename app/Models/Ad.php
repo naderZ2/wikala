@@ -14,6 +14,8 @@ class Ad extends Model
         'category_id',
         'user_id',
         'type_id',
+        'city_id',
+        'region_id',
         'rejected_id',
         'ad_number',
         'title',
@@ -29,6 +31,16 @@ class Ad extends Model
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function city()
+    {
+        return $this->belongsTo(City::class, 'city_id');
+    }
+
+    public function region()
+    {
+        return $this->belongsTo(City::class, 'region_id');
     }
 
     public function category()

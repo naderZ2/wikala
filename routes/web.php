@@ -82,7 +82,12 @@ Route::group(['middleware' => ['auth:admin','CheckUserActiviation']], function()
     Route::prefix('dashboard')->group(function () {
         // SpecialRequestController
         Route::get('home', [Admin\StatisticsController::class, 'index'])->name('index');
-        Route::get('/seller/details', [Admin\StatisticsController::class, 'getSellerDetails'])->name('seller.details');
+        Route::get('ads/stats', [Admin\StatisticsController::class, 'getFilteredStats'])->name('ads.filteredStats');
+        Route::get('ads/regions/by-city', [Admin\StatisticsController::class, 'getRegionsByCity'])->name('regions.byCity');
+        
+
+
+
 
         Route::get('permissions/{id}', [Admin\RolePermissionController::class, 'show'])->name('admin.permission');
         Route::post('role_permissions', [Admin\RolePermissionController::class, 'update'])->name('admin.role_permission');

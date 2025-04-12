@@ -93,3 +93,8 @@ CREATE TABLE ads_type (
 );
 
 
+
+
+ALTER TABLE ads
+ADD COLUMN city_id INaT AFTER type_id,
+ADD COLUMN region_id INT AFTER city_id;

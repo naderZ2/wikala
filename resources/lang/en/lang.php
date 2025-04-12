@@ -352,6 +352,7 @@
 		"city" => "City",
 		"settings" => "Settings",
 		"image_limit_ad" => "Image Limit Ad",
+		"Loading" => "Loading",
 
 
 	]
