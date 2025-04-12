@@ -74,6 +74,13 @@ class StoreRequest extends FormRequest
             'category_id.exists'     => __('lang.category_not_found'),
             'type_id.required'       => __('lang.type_required'),
             'type_id.exists'         => __('lang.type_not_found'),
+            
+            'city_id.required'       => __('lang.city_required'),
+            'city_id.exists'         => __('lang.city_not_found'),
+
+            'region_id.required'     => __('lang.region_required'),
+            'region_id.exists'       => __('lang.region_not_found'),
+
             'title.required'         => __('lang.title_required'),
             'description.required'   => __('lang.description_required'),
             'contact_method.required'=> __('lang.contact_method_required'),

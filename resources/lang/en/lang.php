@@ -353,6 +353,12 @@
 		"settings" => "Settings",
 		"image_limit_ad" => "Image Limit Ad",
 		"Loading" => "Loading",
+		
+		"city_required"=> "City is required",
+		"city_not_found"=> "City not found",
+		"region_required"=> "Region is required",
+		"region_not_found"=> "Region not found",
+		
 
 
 	]

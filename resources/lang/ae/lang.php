@@ -363,6 +363,10 @@
 		"settings"=> "الاعدادات",
 		"image_limit_ad"=> "عدد الصور للاعلان",
 		"Loading"=> "جار التحميل",
+		"city_required"=> "المدينة مطلوبة",
+		"city_not_found"=> "المدينة غير موجودة",
+		"region_required"=> "المنطقة مطلوبة",
+		"region_not_found"=> "المنطقة غير موجودة",
 		
 		
 		
