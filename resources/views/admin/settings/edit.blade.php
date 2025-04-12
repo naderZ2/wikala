@@ -10,12 +10,12 @@
 @endsection
 
 @section('breadcrumb-title')
-<h3>@lang('lang.contact_us') </h3>
+<h3>@lang('lang.settings') </h3>
 @endsection
 
 @section('breadcrumb-items')
-<li class="breadcrumb-item">@lang('lang.contact_us')</li>
-<li class="breadcrumb-item active">@lang('lang.contact_us')  </li>
+<li class="breadcrumb-item">@lang('lang.Dashboard')</li>
+<li class="breadcrumb-item active">@lang('lang.settings')  </li>
 @endsection
 
 @section('content')
@@ -64,11 +64,15 @@
 								<input class="form-control" id="validationCustom01" type="text" name="insta" value="{{ $settings->insta}}" placeholder="insta" required="">
 								<div class="valid-feedback">Looks good!</div>
                                 <div class="invalid-feedback">Please choose a insta.</div>
-
 							</div>
+							
 							<div class="col-md-6 mb-3">
-			
+								<label for="validationCustom01">@lang('lang.image_limit_ad')</label>
+								<input class="form-control" id="validationCustom01"type="number" name="image_limit" value="{{ $settings->image_limit}}" placeholder="image_limit" required="">
+								<div class="valid-feedback">Looks good!</div>
+								<div class="invalid-feedback">Please choose a image_limit.</div>
 							</div>
+							
 
 							<div class="col-md-6 mb-3">
 								<label for="validationCustom01">@lang('lang.ads_time_user')</label>

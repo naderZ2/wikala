@@ -10,12 +10,12 @@
 <?php $__env->stopSection(); ?>
 
 <?php $__env->startSection('breadcrumb-title'); ?>
-<h3><?php echo app('translator')->get('lang.contact_us'); ?> </h3>
+<h3><?php echo app('translator')->get('lang.settings'); ?> </h3>
 <?php $__env->stopSection(); ?>
 
 <?php $__env->startSection('breadcrumb-items'); ?>
-<li class="breadcrumb-item"><?php echo app('translator')->get('lang.contact_us'); ?></li>
-<li class="breadcrumb-item active"><?php echo app('translator')->get('lang.contact_us'); ?>  </li>
+<li class="breadcrumb-item"><?php echo app('translator')->get('lang.Dashboard'); ?></li>
+<li class="breadcrumb-item active"><?php echo app('translator')->get('lang.settings'); ?>  </li>
 <?php $__env->stopSection(); ?>
 
 <?php $__env->startSection('content'); ?>
@@ -64,11 +64,15 @@
 								<input class="form-control" id="validationCustom01" type="text" name="insta" value="<?php echo e($settings->insta); ?>" placeholder="insta" required="">
 								<div class="valid-feedback">Looks good!</div>
                                 <div class="invalid-feedback">Please choose a insta.</div>
-
 							</div>
+							
 							<div class="col-md-6 mb-3">
-			
+								<label for="validationCustom01"><?php echo app('translator')->get('lang.image_limit_ad'); ?></label>
+								<input class="form-control" id="validationCustom01"type="number" name="image_limit" value="<?php echo e($settings->image_limit); ?>" placeholder="image_limit" required="">
+								<div class="valid-feedback">Looks good!</div>
+								<div class="invalid-feedback">Please choose a image_limit.</div>
 							</div>
+							
 
 							<div class="col-md-6 mb-3">
 								<label for="validationCustom01"><?php echo app('translator')->get('lang.ads_time_user'); ?></label>

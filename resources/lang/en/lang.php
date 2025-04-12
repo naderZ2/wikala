@@ -350,6 +350,8 @@
 		"images_array_required" => "The images field must be an array",
 		"active_ads" => "Active Ads",
 		"city" => "City",
+		"settings" => "Settings",
+		"image_limit_ad" => "Image Limit Ad",
 
 
 	]

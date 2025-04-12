@@ -25,7 +25,7 @@
 							<div class="according-menu"><i class="fa fa-angle-{{request()->route()->getPrefix() == '/dashboard' ? 'down' : 'right' }}"></i></div>
 						</a>
 						<ul class="sidebar-submenu" style="display: {{ request()->route()->getPrefix() == '/dashboard' ? 'block;' : 'none;' }}">
-						    	 <li><a href="{{route('settings.edit')}}" class="{{ Route::currentRouteName()=='settings.edit' ? 'active' : '' }}">@lang('lang.contact_us') </a></li> 
+						    	 <li><a href="{{route('settings.edit')}}" class="{{ Route::currentRouteName()=='settings.edit' ? 'active' : '' }}">@lang('lang.settings') </a></li> 
 							<li><a href="{{route('city.index')}}" class="{{ Route::currentRouteName()=='city.index' ? 'active' : '' }}"> @lang('lang.regions') </a></li>
 							<!--<li><a href="{{route('city.create')}}" class="{{ Route::currentRouteName()=='city.create' ? 'active' : '' }}">@lang('lang.add_region')</a></li>-->
 							

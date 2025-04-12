@@ -30,8 +30,8 @@ class EditSettingRequest extends FormRequest
             'insta' => 'sometimes|nullable',
             'phone' => 'sometimes|nullable',
             'email' => 'sometimes|nullable',
-            // 'terms' => 'sometimes|nullable',
-            // 'privacy' => 'sometimes|nullable',
+            'image_limit' => 'required|numeric|min:1',
+            
             'instance_id' => 'required',
             'access_token' => 'required',
             // 'delivery_fee' => 'required|numeric|min:1',

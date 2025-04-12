@@ -360,6 +360,8 @@
 		"images_array_required"=> "الصور مطلوبة",
 		"active_ads"=> "الاعلانات النشطة",
 		"city"=> "المدينة",
+		"settings"=> "الاعدادات",
+		"image_limit_ad"=> "عدد الصور للاعلان",
 		
 		
 		

@@ -20,7 +20,7 @@
 							<div class="according-menu"><i class="fa fa-angle-<?php echo e(request()->route()->getPrefix() == '/dashboard' ? 'down' : 'right'); ?>"></i></div>
 						</a>
 						<ul class="sidebar-submenu" style="display: <?php echo e(request()->route()->getPrefix() == '/dashboard' ? 'block;' : 'none;'); ?>">
-						    	 <li><a href="<?php echo e(route('settings.edit')); ?>" class="<?php echo e(Route::currentRouteName()=='settings.edit' ? 'active' : ''); ?>"><?php echo app('translator')->get('lang.contact_us'); ?> </a></li> 
+						    	 <li><a href="<?php echo e(route('settings.edit')); ?>" class="<?php echo e(Route::currentRouteName()=='settings.edit' ? 'active' : ''); ?>"><?php echo app('translator')->get('lang.settings'); ?> </a></li> 
 							<li><a href="<?php echo e(route('city.index')); ?>" class="<?php echo e(Route::currentRouteName()=='city.index' ? 'active' : ''); ?>"> <?php echo app('translator')->get('lang.regions'); ?> </a></li>
 							<!--<li><a href="<?php echo e(route('city.create')); ?>" class="<?php echo e(Route::currentRouteName()=='city.create' ? 'active' : ''); ?>"><?php echo app('translator')->get('lang.add_region'); ?></a></li>-->
 							
