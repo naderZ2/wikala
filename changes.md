@@ -101,6 +101,39 @@ ADD COLUMN region_id INT AFTER city_id;
 
 
 
+CREATE TABLE chats (
+    id int AUTO_INCREMENT PRIMARY KEY,
+    sender_id int NOT NULL,
+    receiver_id int NOT NULL,
+    message TEXT NOT NULL,
+    message_type ENUM('text', 'file') NOT NULL DEFAULT 'text',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+    INDEX idx_sender (sender_id),
+    INDEX idx_receiver (receiver_id),
+    INDEX idx_sender_receiver (sender_id, receiver_id),
+    INDEX idx_receiver_sender (receiver_id, sender_id)
+);
+
+
+ALTER TABLE chats
+MODIFY COLUMN message_type ENUM('text', 'file', 'audio') NOT NULL DEFAULT 'text';
+
+
+
+CREATE TABLE websockets_statistics_entries (
+    id bigint unsigned NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    app_id VARCHAR(255) NOT NULL,
+    peak_connection_count INT NOT NULL,
+    websocket_message_count INT NOT NULL,
+    api_message_count INT NOT NULL,
+    created_at TIMESTAMP NULL,
+    updated_at TIMESTAMP NULL
+);
+
+
+
 
 
 
