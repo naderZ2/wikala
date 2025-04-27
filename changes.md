@@ -98,3 +98,105 @@ CREATE TABLE ads_type (
 ALTER TABLE ads
 ADD COLUMN city_id INaT AFTER type_id,
 ADD COLUMN region_id INT AFTER city_id;
+
+
+
+
+
+
+
+
+
+ALTER TABLE `websockets_statistics_entries`
+  ADD INDEX `index_websockets_statistics_entries_app_id` (`app_id`),
+  ADD INDEX `index_websockets_statistics_entries_created_at` (`created_at`);
+
+
+
+
+
+ALTER TABLE `ads`
+  ADD INDEX `index_ads_user_id` (`user_id`),  
+  ADD INDEX `index_ads_status` (`status`),  
+  ADD INDEX `index_ads_created_at` (`created_at`), 
+  ADD INDEX `index_ads_updated_at` (`updated_at`);  
+
+
+ALTER TABLE `ads_attributes`
+  ADD INDEX `index_ads_attributes_ad_id` (`ad_id`);
+
+
+
+ALTER TABLE `ads_images`
+  ADD INDEX `index_ads_images_ad_id` (`ad_id`),  -- Index on ad_id for linking images to ads
+  ADD INDEX `index_ads_images_created_at` (`created_at`);  -- Index on created_at for sorting images by date
+
+
+ALTER TABLE `ads_type`
+  ADD INDEX `index_ads_type_name` (`name`);  -- Index on ad type name for quick lookup by name
+
+
+ALTER TABLE `recently_view_ads`
+  ADD INDEX `index_recently_view_ads_user_id` (`user_id`),  -- Index on user_id for filtering by user
+  ADD INDEX `index_recently_view_ads_ad_id` (`ad_id`);  -- Index on viewed_at for sorting views by date
+
+
+
+ALTER TABLE `saved_ads`
+  ADD INDEX `index_saved_ads_user_id` (`user_id`),  -- Index on user_id for filtering saved ads by user
+  ADD INDEX `index_saved_ads_ad_id` (`ad_id`),  -- Index on ad_id for filtering saved ads by ad
+  ADD INDEX `index_saved_ads_created_at` (`created_at`);  -- Index on created_at for sorting saved ads by date
+
+
+
+ALTER TABLE `favorite_ads`
+  ADD INDEX `index_saved_ads_user_id` (`user_id`),  -- Index on user_id for filtering saved ads by user
+  ADD INDEX `index_saved_ads_ad_id` (`ad_id`),  -- Index on ad_id for filtering saved ads by ad
+  ADD INDEX `index_saved_ads_created_at` (`created_at`);  -- Index on created_at for sorting saved ads by date
+
+
+
+
+
+
+CREATE TABLE followers (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    user_id BIGINT UNSIGNED NOT NULL,  -- User who is following
+    follower_id BIGINT UNSIGNED NOT NULL,  -- User being followed
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (follower_id) REFERENCES users(id) ON DELETE CASCADE,
+    UNIQUE (user_id, follower_id) 
+);
+
+
+CREATE INDEX idx_user_id ON followers (user_id);
+CREATE INDEX idx_follower_id ON followers (follower_id);
+CREATE UNIQUE INDEX idx_user_follower ON followers (user_id, follower_id);
+
+
+
+CREATE TABLE `report_options` (
+  `id` BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  `title_ar` VARCHAR(255) NOT NULL,
+  `title_en` VARCHAR(255) NOT NULL,
+  `created_at` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` TIMESTAMP NULL DEFAULT NULL
+)
+
+
+CREATE TABLE `reports` (
+  `id` BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  `reporter_id` BIGINT UNSIGNED NOT NULL,
+  `reportable_id` BIGINT UNSIGNED NOT NULL, 
+  `reportable_type` ENUM('ad', 'user') NOT NULL, 
+  `report_option_id` BIGINT UNSIGNED NOT NULL,
+  `additional_notes` TEXT DEFAULT NULL, 
+  `created_at` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` TIMESTAMP NULL DEFAULT NULL,
+  
+
+  CONSTRAINT `fk_reports_reporter_id` FOREIGN KEY (`reporter_id`) REFERENCES `users`(`id`) ON DELETE CASCADE,
+  CONSTRAINT `fk_reports_option_id` FOREIGN KEY (`report_option_id`) REFERENCES `report_options`(`id`) ON DELETE CASCADE
+) 

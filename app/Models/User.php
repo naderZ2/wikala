@@ -28,7 +28,7 @@ class User extends Authenticatable
         'name', 'image',
         'phone', 'password', 
         'device_id','email' ,
-        'deleted_at','lang' ,
+        'deleted_at','lang' ,'followers_count',
         'provider_id','provider_name',
         'active','bio','date_of_birth'
     ];
@@ -108,6 +108,17 @@ public function recentlyViewedAds()
     return $this->hasMany(RecentlyViewAd::class);
 }
 
+    // Relationship: Users that this user is following
+    public function following()
+    {
+        return $this->belongsToMany(User::class, 'followers', 'follower_id', 'user_id');
+    }
+
+    // Relationship: Users that are following this user
+    public function followers()
+    {
+        return $this->belongsToMany(User::class, 'followers', 'user_id', 'follower_id');
+    }
 
 
 }

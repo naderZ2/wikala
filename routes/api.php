@@ -142,6 +142,10 @@ Route::middleware(['auth:api'])->group(function () {
     Route::apiResource('ads', Client\AdController::class);
 
 
+    Route::prefix('reports')->group(function () {
+        Route::post('/store', [Client\ReportController::class, 'store']);  
+    });
+
     });
 
 });
