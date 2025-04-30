@@ -387,6 +387,12 @@
 		"Ad_Title" => "Ad Title",
 		"User_Specific_Relation" => "User Specific Relation",
 		"actions" => "Actions",
+		"already_following" => "You are already following this user.",
+
+		"not_following" => "You are not following this user.",
+		"follow_success" => "User followed successfully.",
+		"unfollow_success" => "User unfollowed successfully.",
+
 	
 		]
 ?>

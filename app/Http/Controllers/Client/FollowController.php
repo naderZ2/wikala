@@ -3,8 +3,11 @@
 namespace App\Http\Controllers\Client;
 
 use App\Models\User;
+use App\Models\Follower;
 use Illuminate\Http\Request;
 use App\Traits\ResponsesTrait;
+use App\Services\FollowService;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 
@@ -23,25 +26,44 @@ class FollowController extends Controller
     // Follow a user
     public function follow($userId)
     {
-        return $this->followService->followUser($userId);
-    }
 
+        $existingFollow = Follower::where('user_id', $userId)
+        ->where('follower_id', Auth::id())
+        ->first();
+
+        if ($existingFollow) {
+            return $this->failed(null, __('already_following'));
+        }
+
+        $authUserId = Auth::id();
+        Log::info('User ID: ' . $userId);
+        Log::info('Auth User ID: ' . $authUserId);
+        
+        return $this->followService->followUser($userId, $authUserId);
+    }
+    
     // Unfollow a user
     public function unfollow($userId)
     {
+        
+        
+        
+        
         return $this->followService->unfollowUser($userId);
     }
 
-    // Get followers of a user
+
     public function followers($userId)
     {
-        return $this->followService->getFollowers($userId);
+        $authUserId = Auth::id();
+        return $this->followService->getFollowers($userId, $authUserId);
     }
 
-    // Get users the user is following
+    
     public function following($userId)
     {
-        return $this->followService->getFollowing($userId);
+        $authUserId = Auth::id();
+        return $this->followService->getFollowing($userId, $authUserId);
     }
 
     

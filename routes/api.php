@@ -153,6 +153,14 @@ Route::middleware(['auth:api'])->group(function () {
         Route::post('/store', [Client\ReportController::class, 'store']);  
     });
 
+    // Adding routes for FollowController
+    Route::prefix('follow')->group(function () {
+        Route::post('/{userId}', [Client\FollowController::class, 'follow']);
+        Route::delete('/{userId}', [Client\FollowController::class, 'unfollow']);
+        Route::get('/followers/{userId}', [Client\FollowController::class, 'followers']);
+        Route::get('/following/{userId}', [Client\FollowController::class, 'following']);
+    });
+
     });
 
 });
