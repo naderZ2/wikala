@@ -23,6 +23,11 @@ class ReportService
         return $this->reportRepository->all();
     }
 
+    public function allWithRelations()
+    {
+        return $this->reportRepository->allWithRelations();
+    }
+
     public function update($id, array $data)
     {
         return $this->reportRepository->update($id, $data);
@@ -31,5 +36,13 @@ class ReportService
     public function delete($id)
     {
         return $this->reportRepository->delete($id);
+    }
+    public function find($id)
+    {
+        return $this->reportRepository->find($id);
+    }
+    public function findWithRelations($id)
+    {
+        return $this->reportRepository->findWithRelations($id);
     }
 }

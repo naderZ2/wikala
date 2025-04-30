@@ -368,6 +368,25 @@
 		"invalid_message_type" => "Invalid message type",
 
 
+		"report_options" => "Report Options",
+		"add_report_option" => "Add Report Option",
+		"reports" => "Reports",
+		"report_details" => "Report Details",
+		"add_report_options" => "Add Report Options",
+		"title_ar" => "Title in Arabic",
+		"title_en" => "Title in English",
+		"The_title_ar_must_be_less_than_255_characters" => "The title in Arabic must be less than 255 characters",
+		"The_title_en_must_be_less_than_255_characters" => "The title in English must be less than 255 characters",
+		"The_title_ar_is_required" => "The title in Arabic is required",
+		"The_title_en_is_required" => "The title in English is required",
 		
-	]
+		"Report_ID" => "Report ID",
+		"Reporter" => "Reporter",
+		"Report_Option" => "Report Option",
+		"Additional_Notes" => "Additional Notes",
+		"Ad_Title" => "Ad Title",
+		"User_Specific_Relation" => "User Specific Relation",
+		"actions" => "Actions",
+	
+		]
 ?>

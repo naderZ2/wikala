@@ -376,15 +376,24 @@
 		"invalid_message_type" => "نوع الرسالة غير صالح",
 		
 		
-
-
-
-
-
-
-
-
-
-
+		"report_options" => "خيارات الابلاغ",
+		"add_report_option" => "اضافة خيار ابلاغ",
+		"reports" => "الابلاغات",
+		"report_details" => "تفاصيل الابلاغ",
+		"add_report_options" => "اضافة خيارات ابلاغ",
+		"title_ar" => "العنوان بالعربية",
+		"title_en" => "العنوان بالانجليزية",
+		"The_title_ar_must_be_less_than_255_characters" => "العنوان بالعربية يجب أن يكون أقل من 255 حرفًا",
+		"The_title_en_must_be_less_than_255_characters" => "العنوان بالانجليزية يجب أن يكون أقل من 255 حرفًا",
+		"The_title_ar_is_required" => "العنوان بالعربية مطلوب",
+		"The_title_en_is_required" => "العنوان بالانجليزية مطلوب",
+		"Report_ID" => "رقم التقرير",
+		"Reporter" => "المراسل",
+		"Report_Option" => "خيار الإبلاغ",
+		"Additional_Notes" => "ملاحظات إضافية",
+		"Ad_Title" => "عنوان الإعلان",
+		"User_Specific_Relation" => "علاقة المستخدم المحددة",
+		// "number" => "رقم",
+		"actions" => "الإجراءات",
 	]
 ?>

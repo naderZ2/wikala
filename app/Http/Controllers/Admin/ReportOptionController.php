@@ -18,24 +18,35 @@ class ReportOptionController extends Controller
 
     public function index()
     {
-        return $this->success($this->reportOptionService->all());
+        
+        $reportOption=$this->reportOptionService->all();
+
+        return view('admin.report_options.index', compact('reportOption'));
     }
 
     public function store(StoreRequest $request)
     {
-        $option = $this->reportOptionService->create($request->validated());
-        return response()->json($option, 201);
+        $this->reportOptionService->create($request->validated());
+        return to_route('reportOption.index')->with('success', trans('lang.created'));
+        
+    }
+    
+    public function update(StoreRequest $request)
+    {
+        $id = $request->id;
+        $this->reportOptionService->update($id, $request->validated());
+
+        return to_route('reportOption.index')->with('success', trans('lang.updated'));
     }
 
-    public function update(StoreRequest $request, $id)
-    {
-        $option = $this->reportOptionService->update($id, $request->validated());
-        return response()->json($option);
-    }
 
-    public function destroy($id)
+    public function enable($id)
     {
-        $this->reportOptionService->delete($id);
-        return response()->json(['message' => 'Deleted successfully']);
+        $reason = $this->reportOptionService->find($id);
+
+        $reason->enable = !$reason->enable;
+        $reason->save();
+
+        return redirect()->route('reportOption.index')->with('success', trans('lang.updated'));
     }
 }

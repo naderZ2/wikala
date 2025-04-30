@@ -144,7 +144,12 @@ Route::middleware(['auth:api'])->group(function () {
     Route::apiResource('chats', Client\ChatController::class);
 
 
+
+
     Route::prefix('reports')->group(function () {
+        
+        Route::get('/reportOption', [Client\ReportOptionController::class, 'index']); 
+         
         Route::post('/store', [Client\ReportController::class, 'store']);  
     });
 

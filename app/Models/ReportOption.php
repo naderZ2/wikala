@@ -14,6 +14,7 @@ class ReportOption extends Model
     protected $fillable = [
         'title_ar',
         'title_en',
+        'enable',
     ];
 
 

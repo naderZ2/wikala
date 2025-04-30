@@ -80,7 +80,27 @@ Route::get('contact_us', [Admin\ContactUsControll::class, 'index'])->name('admin
 Route::group(['middleware' => ['auth:admin','CheckUserActiviation']], function(){ 
     
     Route::prefix('dashboard')->group(function () {
-        // SpecialRequestController
+
+
+        Route::prefix('reports')->group(function () {
+            Route::get('index', [Admin\ReportController::class, 'index'])->name('admin.reports.index');
+            Route::get('details/{id}', [Admin\ReportController::class, 'details'])->name('admin.reports.details');
+            // Route::get('create', [Admin\ReportController::class, 'create'])->name('admin.reports.create');
+            // Route::post('store', [Admin\ReportController::class, 'store'])->name('admin.reports.store');
+            // Route::get('edit/{id}', [Admin\ReportController::class, 'edit'])->name('admin.reports.edit');
+            // Route::post('update/{id}', [Admin\ReportController::class, 'update'])->name('admin.reports.update');
+            // Route::delete('delete/{id}', [Admin\ReportController::class, 'destroy'])->name('admin.reports.destroy');
+            
+            Route::prefix('ReportOption')->group(function () {
+                Route::get('index', [Admin\ReportOptionController::class, 'index'])->name('reportOption.index');
+                Route::post('store', [Admin\ReportOptionController::class, 'store'])->name('reportOption.store');
+                Route::post('update', [Admin\ReportOptionController::class, 'update'])->name('reportOption.update');
+                Route::get('/{id}/enable', [Admin\ReportOptionController::class, 'enable'])->name('reportOption.enable');
+
+            });
+        });
+
+    
         Route::get('home', [Admin\StatisticsController::class, 'index'])->name('index');
         Route::get('ads/stats', [Admin\StatisticsController::class, 'getFilteredStats'])->name('ads.filteredStats');
         Route::get('ads/regions/by-city', [Admin\StatisticsController::class, 'getRegionsByCity'])->name('regions.byCity');

@@ -32,4 +32,8 @@ class ReportOptionService
     {
         return $this->reportOptionRepository->delete($id);
     }
+    public function find($id)
+    {
+        return $this->reportOptionRepository->find($id);
+    }
 }

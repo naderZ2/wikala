@@ -187,6 +187,25 @@
 
 
 					<li class="sidebar-list">
+						<a class="sidebar-link sidebar-title {{ request()->route()->uri() == 'dashboard/report-options' ? 'active' : '' }}" href="#">
+							
+							<i data-feather="alert-triangle"></i> 
+							
+							<span class="lan-7">{{ trans('lang.report_options') }}</span>
+							<div class="according-menu"><i class="fa fa-angle-{{ request()->route()->uri() == 'dashboard/report-options' ? 'down' : 'right' }}"></i></div>
+						</a>
+						
+	                    <ul class="sidebar-submenu" style="display: {{ request()->route()->uri() == 'dashboard/reports' ? 'block;' : 'none;' }}">
+							<li><a href="{{ route('admin.reports.index') }}" class="{{ Route::currentRouteName() == 'reports' ? 'active' : '' }}">{{ trans('lang.reports') }}</a></li>
+						</ul>
+
+						<ul class="sidebar-submenu" style="display: {{ request()->route()->uri() == 'dashboard/reports/report-options' ? 'block;' : 'none;' }}">
+							<li><a href="{{ route('reportOption.index') }}" class="{{ Route::currentRouteName() == 'report-options' ? 'active' : '' }}">{{ trans('lang.report_options') }}</a></li>
+					  </ul>
+                 </li>
+
+
+					<li class="sidebar-list">
 						<a class="sidebar-link sidebar-title {{ request()->route()->uri() == 'dashboard/rejected-reasons' ? 'active' : '' }}" href="#">
 							<i data-feather="x-circle"></i>
 							<span class="lan-7">{{ trans('lang.rejected_reasons') }}</span>

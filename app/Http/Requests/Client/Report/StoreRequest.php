@@ -17,9 +17,9 @@ class StoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'reporter_id' => 'required|exists:users,id',
+            // 'reporter_id' => 'required|exists:users,id',
             'reportable_id' => 'required|integer',
-            'reportable_type' => 'required|string|in:User,Ad',
+            'reportable_type' => 'required|string|in:user,ad',
             'report_option_id' => 'required|exists:report_options,id',
             'additional_notes' => 'nullable|string',
         ];

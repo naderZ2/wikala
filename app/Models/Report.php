@@ -9,7 +9,6 @@ class Report extends Model
 {
     use HasFactory;
 
-
     protected $fillable = [
         'reporter_id',
         'reportable_id',
@@ -18,10 +17,12 @@ class Report extends Model
         'additional_notes',
     ];
 
+    protected $appends = ['dynamicRelation'];
 
-
-    
-
+    public function getDynamicRelationAttribute()
+    {
+        return $this->getRelationBasedOnType();
+    }
 
     // A Report belongs to a ReportOption
     public function reportOption()
@@ -39,5 +40,24 @@ class Report extends Model
     public function reportable()
     {
         return $this->morphTo();
+    }
+
+    public function getRelationBasedOnType()
+    {
+        if ($this->reportable_type === 'App\\Models\\Ad') {
+            return $this->adSpecificRelation()->first();
+        } elseif ($this->reportable_type === 'App\\Models\\User') {
+            return $this->userSpecificRelation()->first();
+        }
+
+        return null;
+    }
+
+    public function adSpecificRelation(){
+        return $this->hasOne(Ad::class, 'id', 'reportable_id');
+    }
+
+    public function userSpecificRelation(){
+        return $this->hasOne(User::class, 'id', 'reportable_id');
     }
 }

@@ -34,4 +34,8 @@ class ReportOptionRepository
     {
         return $this->model->destroy($id);
     }
+    public function find($id)
+    {
+        return $this->model->findOrFail($id);
+    }
 }

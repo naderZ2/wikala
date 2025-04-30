@@ -17,8 +17,18 @@ class StoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title_ar' => 'required|string|max:255',
-            'title_en' => 'required|string|max:255',
+            'title_ar' => 'required|max:255',
+            'title_en' => 'required|max:255',
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'title_ar.required' => __('lang.The_title_ar_is_required'),
+            'title_en.required' => __('lang.The_title_en_is_required'),
+            'title_ar.max' => __('lang.The_title_ar_must_be_less_than_255_characters'),
+            'title_en.max' => __('lang.The_title_en_must_be_less_than_255_characters'),
         ];
     }
 }
