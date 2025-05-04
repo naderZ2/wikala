@@ -163,6 +163,8 @@ Route::middleware(['auth:api'])->group(function () {
         Route::get('/following/{userId}', [Client\FollowController::class, 'following']);
     });
 
+    Route::post('attributes_by_category', [Client\AttributeController::class, 'getAttributesByCategoryId']);
+
     });
 
 });

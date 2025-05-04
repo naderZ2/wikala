@@ -12,8 +12,8 @@ class NotificationController extends Controller
 {
     public function __construct()
     {
-        $this->model="App\Models\Notification";
-        $this->User="App\Models\User";
+        $this->model ="App\Models\Notification";
+        $this->User ="App\Models\User";
     }
     
     public function reminder(){
@@ -88,7 +88,7 @@ class NotificationController extends Controller
         if($request->region_id){
             $subscribers = User::whereRegionId($request->region_id)->pluck('device_id');
         }
- 
+
         $this->sendNotification($data_send=$notification,$users=$subscribers);
         return  to_route('admin.notifications.index')->with('success',trans('lang.created'));
     }
@@ -99,10 +99,10 @@ class NotificationController extends Controller
     }
 
     function sendNotification($data_send=array(),$users=array()){
-        #TODO complete
+        
         
         $content = ["en" => $data_send["message"],"ar" => $data_send["message_ar"]];
-        $headings= ["en" => $data_send["title"],"ar" => $data_send["title_ar"]]; //<---- this will add heading
+        $headings= ["en" => $data_send["title"],"ar" => $data_send["title_ar"]]; 
         $fields = array(
             'app_id' => 'dd3cdd89-0c51-4e25-98ca-5b131a25044a',
             'data' => $data_send,
@@ -112,7 +112,7 @@ class NotificationController extends Controller
             'small_icon'    => 'ic_launcher-web',
             //'large_icon' =>"ic_launcher_round.png",
             'contents' => $content,
-            'headings'=> $headings //<---- include it to request
+            'headings'=> $headings 
         );
 
         if(empty($users) || count($users)==0)
