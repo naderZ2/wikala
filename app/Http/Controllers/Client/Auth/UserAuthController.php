@@ -3,25 +3,29 @@
 namespace App\Http\Controllers\Client\Auth;
 
 use DB;
+use Carbon\Carbon;
 use App\Models\User;
 use GuzzleHttp\Client;
 use App\Models\AboutUs;
+use App\Traits\SendSmsTrait;
 use Illuminate\Http\Request;
 use App\Traits\ResponsesTrait;
+use App\Models\ConfirmationCode;
 use App\Models\ConfirmationCodes;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Http\Requests\Client\CheckPhoneExists;
 use App\Http\Requests\Client\CheckPhoneRequest;
 use App\Http\Controllers\Driver\Auth\LoginController;
 use App\Http\Requests\Client\CheckClientExistsRequest;
-use Carbon\Carbon;
 
 class UserAuthController extends Controller
 {
-    use ResponsesTrait;
+    use ResponsesTrait,SendSmsTrait;
+
     public function checkClientExists(CheckClientExistsRequest $request){
         $user = User::where("phone" , $request->phone)->first();
         // where("email" , $request->email)
@@ -41,9 +45,11 @@ class UserAuthController extends Controller
         $user = User::withTrashed()
         // ->where("email" , $request->email)
         ->where("phone" , $request->phone)->first();
-        $confirmationCode=ConfirmationCodes::where('phone',$request->phone)
+        $phone='2'.$request->phone;
+        $confirmationCode=ConfirmationCodes::where('phone',$phone)
         ->orderByDESC('id')
         ->first();
+        Log::info("confirmationCode:-" .$confirmationCode );
 
         if($user && !is_null($user->deleted_at)){
             if(!$confirmationCode || $confirmationCode->code != $request->otpCode || $confirmationCode->active ==0 ){
@@ -62,7 +68,7 @@ class UserAuthController extends Controller
             if(!$confirmationCode || $confirmationCode->code != $request->otpCode || $confirmationCode->active ==0 ){
                 return $this->failed(null, trans('lang.wrong_otp_number'));
             }
-             if ($confirmationCode->created_at->addMinutes(5) < Carbon::now()) {
+            if ($confirmationCode->created_at->addMinutes(5) < Carbon::now()) {
                     return $this->failed(null, trans('lang.otp_expired'));
             }
             $user = User::create($data);
@@ -108,31 +114,27 @@ class UserAuthController extends Controller
     public function sendOtpPassword(Request $request){
         $code   = rand(1111,9999);
         // $phone = '+965'.$request->phone;
-        $phone = $request->phone;
+        $phone = '2'.$request->phone;
         // $this->sendSMS($phone, "OTP code is: $code" );
-        $this->sendOtpAsync($phone, "OTP code is: $code" );
+        // $this->sendOtpAsync($phone, "OTP code is: $code" );
         ConfirmationCodes::create(['phone'=>$request->phone,'code'=>$code]);
+        $res= $this->sendSmsWhatsApp($phone, $code);
+        if (isset($res['data']) && $res['data']['status'] == 'error') {
+            return $this->failed(null,$res['data']['message']);
+        }
         $data['otp_code'] = $code;
         return $this->success($data);
     }
 
     public function sendOtpRegister(CheckPhoneRequest $request){
         $code   = rand(1111,9999);
-        // $phone = '+965'.$request->phone;
-        $phone = $request->phone;
-        // $phone = "+96597266997";
-        // return "here";
-    //   $res= $this->sendSMSWasage($phone, "OTP code is: $code" );
-        $res=$this->sendOtpAsync($phone, "OTP code is: $code" );
-
-       if($res['success']){
-            ConfirmationCodes::create(['phone'=>$request->phone,'code'=>$code]);
-            $data['otp_code'] = $code;
-           // $data['otp_link'] = $res->Clickable;
-            return $this->success($data);
-       }
-       
-         return $this->success(null,"try again later");
+        $phone = '2'.$request->phone;
+        // return $phone;
+        ConfirmationCodes::create(["phone" => $phone,"code"=>$code]);
+        $res= $this->sendSmsWhatsApp($phone, $code);
+        
+        $data['otpCode'] = $code;
+        return $this->success($data);
     }
     
     public function sendSMS($phone, $message){
@@ -248,6 +250,8 @@ class UserAuthController extends Controller
         }
     }
 
+
+    
 
 
 }

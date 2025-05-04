@@ -233,3 +233,34 @@ CREATE TABLE `reports` (
   CONSTRAINT `fk_reports_reporter_id` FOREIGN KEY (`reporter_id`) REFERENCES `users`(`id`) ON DELETE CASCADE,
   CONSTRAINT `fk_reports_option_id` FOREIGN KEY (`report_option_id`) REFERENCES `report_options`(`id`) ON DELETE CASCADE
 ) 
+
+
+
+
+CREATE TABLE `deleted_users` (
+  `id` BIGINT UNSIGNED PRIMARY KEY,
+  `deleted_date` TIMESTAMP NULL,
+  `name` VARCHAR(255),
+  `email` VARCHAR(255),
+  `bio` TEXT,
+  `date_of_birth` DATE,
+  `phone` VARCHAR(20),
+  `password` VARCHAR(255),
+  `image` VARCHAR(255),
+  `device_id` VARCHAR(255),
+  `provider_id` VARCHAR(255),
+  `provider_name` VARCHAR(255),
+  `lang` VARCHAR(10),
+  `created_at` TIMESTAMP NULL,
+  `updated_at` TIMESTAMP NULL,
+  `followers_count` INT DEFAULT 0
+);
+
+
+
+
+
+$2y$10$yOH3HgYMSpwKGECFwXtHSeG88BlzCfk4u4wzd.yCbixpDbsbK3Yfq
+
+
+$2y$10$W.eZtileSLSH52yR8odxKOv57Bd691RanI3YJo/HlFJqs4JJmZsfK

@@ -263,4 +263,9 @@
 			<div class="right-arrow" id="right-arrow"><i data-feather="arrow-right"></i></div>
 		</nav>
 	</div>
-</div><?php /**PATH C:\Users\HP\OneDrive\Desktop\_\codeing\work\mazen\wikala\resources\views/admin/layout/sidebar.blade.php ENDPATH**/ ?>
+</div>
+
+
+
+
+<?php /**PATH C:\Users\HP\OneDrive\Desktop\_\codeing\work\mazen\wikala\resources\views/admin/layout/sidebar.blade.php ENDPATH**/ ?>

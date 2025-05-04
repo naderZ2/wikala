@@ -133,6 +133,8 @@ Route::middleware(['auth:api'])->group(function () {
     Route::delete('profile', [Client\ProfileController::class, 'destroy']);
     Route::post('edit_profile', [Client\ProfileController::class, 'update']);
     Route::post('edit_lang', [Client\ProfileController::class, 'updateLang']);
+    Route::post('create-password', [Client\ProfileController::class, 'createPassword']);
+
 
 
     Route::apiResource('saved-ads', Client\SavedAdController::class);

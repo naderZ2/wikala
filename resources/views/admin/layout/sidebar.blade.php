@@ -509,7 +509,7 @@
 						<a class="sidebar-link sidebar-title {{request()->route()->getPrefix() == '/ecommerce' ? 'active' : '' }}" href="#"><i data-feather="shopping-bag"></i><span>{{ trans('lang.Ecommerce') }}</span>
 							<div class="according-menu"><i class="fa fa-angle-{{request()->route()->getPrefix() == '/ecommerce' ? 'down' : 'right' }}"></i></div>
 						</a>
-						<ul class="sidebar-submenu" style="display: {{request()->route()->getPrefix() == '/ecommerce' ? 'block' : 'none;' }};">
+						<ul class="sidebar-submenu" style="display: {{request()->route()->getPrefix() == '/ecommerce' ? 'block;' : 'none;' }};">
 							<li><a href="{{route('product')}}" class="{{ Route::currentRouteName()=='product' ? 'active' : '' }}">Product</a></li>
 	                        <li><a href="{{route('product-page')}}" class="{{ Route::currentRouteName()=='product-page' ? 'active' : '' }}">Product page</a></li>
 	                        <li><a href="{{route('list-products')}}" class="{{ Route::currentRouteName()=='list-products' ? 'active' : '' }}">Product list</a></li>
@@ -973,3 +973,7 @@
 		</nav>
 	</div>
 </div>
+
+
+
+
