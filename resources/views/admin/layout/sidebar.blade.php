@@ -170,20 +170,46 @@
                   	</li>
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+					
+
 					<li class="sidebar-list">
 						<a class="sidebar-link sidebar-title {{ request()->route()->uri() == 'dashboard/attributes' ? 'active' : '' }}" href="#">
 							<i data-feather="tag"></i>
 							<span class="lan-7">{{ trans('lang.Attributes') }}</span>
-							<div class="according-menu"><i class="fa fa-angle-{{ request()->route()->uri() == 'dashboard/attributes' ? 'down' : 'right' }}"></i></div>
+							<div class="according-menu">
+								<i class="fa fa-angle-{{ request()->route()->uri() == 'dashboard/attributes' ? 'down' : 'right' }}"></i>
+							</div>
 						</a>
-						
-	                    <ul class="sidebar-submenu" style="display: {{ request()->route()->uri() == 'dashboard/attributes' ? 'block;' : 'none;' }}">
-							<li><a href="{{ route('attributes.index') }}" class="{{ Route::currentRouteName() == 'attributes' ? 'active' : '' }}">{{ trans('lang.Attributes') }}</a></li>
-                      </ul>
-					  <ul class="sidebar-submenu" style="display: {{ request()->route()->uri() == 'dashboard/category-attributes' ? 'block;' : 'none;' }}">
-						<li><a href="{{ route('category-attributes.index') }}" class="{{ Route::currentRouteName() == 'category-attributes' ? 'active' : '' }}">{{ trans('lang.category_attributes') }}</a></li>
-				  </ul>
-                  	</li>
+						<ul class="sidebar-submenu" style="display: {{ request()->route()->uri() == 'dashboard/attributes' ? 'block;' : 'none;' }}">
+							<li>
+								<a href="{{ route('attributes.index') }}" class="{{ Route::currentRouteName() == 'attributes' ? 'active' : '' }}">
+									{{ trans('lang.Attributes') }}
+								</a>
+							</li>
+						</ul>
+						<ul class="sidebar-submenu" style="display: {{ request()->route()->uri() == 'dashboard/attributes' ? 'block;' : 'none;' }}">
+							<li>
+								<a href="{{ route('category-attributes.index') }}" class="{{ Route::currentRouteName() == 'category-attributes' ? 'active' : '' }}">
+									{{ trans('lang.category_attributes') }}
+								</a>
+							</li>
+						</ul>
+
+					
+					</li>
 
 
 					<li class="sidebar-list">

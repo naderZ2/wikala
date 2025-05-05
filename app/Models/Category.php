@@ -51,8 +51,15 @@ class Category extends Model
         return $this->hasMany(Ad::class, 'category_id');
     }
 
-
-
-
-
+    public function attributes()
+    {
+        return $this->hasManyThrough(
+            Attribute::class,
+            CategoryAttribute::class,
+            'category_id', // Foreign key on CategoryAttribute table
+            'id', // Foreign key on Attribute table
+            'id', // Local key on Category table
+            'attribute_id' // Local key on CategoryAttribute table
+        );
+    }
 }

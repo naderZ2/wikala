@@ -28,14 +28,17 @@ class AdController extends Controller
         $data = $request->validated(); 
 
         
-        if ($request->hasFile('main_image')) {
-            $data['main_image'] = $this->uploadFile($request->file('main_image'), 'ads');  // Upload the main image
-        }
+        // if ($request->hasFile('main_image')) {
+        //     $data['main_image'] = $this->uploadFile($request->file('main_image'), 'ads');  // Upload the main image
+        // }
 
         
-        $ad = $this->adService->storeAd($data );
-        // $ad = $this->adService->storeAdWithImages($validated);
+        $ad = $this->adService->storeAdWithImages($data );
 
+        
+
+        
+        Log::info('Ad created successfully', ['ad' => $request]);
         return $this->success($ad, trans('lang.created'));
     }
     

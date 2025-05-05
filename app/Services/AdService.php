@@ -22,6 +22,16 @@ class AdService
     {
         $data['user_id'] = Auth::id();
         $ad = $this->adRepository->create($data);
+
+        if (isset($data['attributes']) && is_array($data['attributes'])) {
+            foreach ($data['attributes'] as $attribute) {
+                $ad->attributes()->create([
+                    'attribute_id' => $attribute['id'],
+                    'attribute_value' => $attribute['value'],
+                ]);
+            }
+        }
+        
         $ad->ad_number = 10000 + $ad->id;
         Log::info('Ad number: ' . $ad->ad_number); 
         $ad->save();
@@ -42,13 +52,25 @@ class AdService
         // Store the ad with the user_id and image path
         $ad = $this->adRepository->create($data);
 
+        if (isset($data['attributes']) && is_array($data['attributes'])) {
+            foreach ($data['attributes'] as $attribute) {
+                $ad->attributes()->create([
+                    'attribute_id' => $attribute['id'],
+                    'attribute_value' => $attribute['value'],
+                ]);
+            }
+        }
+        
+
         // If there are additional images, upload them and associate them with the ad
         if (isset($data['images'])) {
             foreach ($data['images'] as $img) {
-                $imagePath = $this->uploadFile($img, 'ads');
-                $ad->images()->create([
-                    'image_path' => $imagePath,
-                ]);
+                if ($img) { // Ensure the image is not null
+                    $imagePath = $this->uploadFile($img, 'ads');
+                    $ad->images()->create([
+                        'image_path' => $imagePath,
+                    ]);
+                }
             }
         }
 

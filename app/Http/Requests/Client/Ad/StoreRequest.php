@@ -40,13 +40,13 @@ class StoreRequest extends FormRequest
             'city_id'        => 'required|exists:cities,id',
             'region_id'      => 'required|exists:cities,id',
             'main_image'     => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',  
-            // 'images'         => 'nullable|array', 
-            // 'images.*'       => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048', 
+            
+            'images'         => 'nullable|array', 
+            'images.*'       => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048', 
         
-            // 'images'         => 'nullable|array', 
-            // 'images.*'       => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048', 
-        
-    
+            'attributes' => 'nullable|array',
+            'attributes.*.id' => 'required|exists:attributes,id',
+            'attributes.*.value' => 'required|string',
         ];
     }
 
