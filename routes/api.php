@@ -24,6 +24,8 @@ Route::get('reminder', [Admin\NotificationController::class, 'reminder']);
 
 Route::middleware(['checkLanguage'])->group(function () {
 
+    Route::get('home', [Client\HomeController::class, 'index']);
+
     Route::post('contactUs', [Client\ContactUsController::class, 'store']);
     Route::post('contact_us_store', [Client\ContactUsController::class, 'storeContactUs'])->name('contactUs');
 
