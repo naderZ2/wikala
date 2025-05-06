@@ -39,6 +39,7 @@ class AdService
     }
 
 
+
     public function storeAdWithImages($data)
     {
         // Add the user_id to the data array using Auth::id()
@@ -82,10 +83,17 @@ class AdService
         return $this->adRepository->update($id, $data);
     }
 
+    
     public function deleteAd($id)
     {
         return $this->adRepository->delete($id);
     }
+
+    public function getAllAdsWithPagination($perPage)
+    {
+        return $this->adRepository->getAllAdsPagination($perPage);
+    }
+
 
     public function getAllAds()
     {

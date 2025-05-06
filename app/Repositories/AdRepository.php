@@ -29,6 +29,10 @@ class AdRepository
         $ad->update($data);
         return $ad;
     }
+    public function getAllAdsPagination($perPage = 10)
+    {
+        return Ad::paginate($perPage);
+    }
 
     public function delete($id)
     {
