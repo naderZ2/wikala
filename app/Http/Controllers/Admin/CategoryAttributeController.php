@@ -24,7 +24,9 @@ class CategoryAttributeController extends Controller
     public function create()
     {
         $this->lang();
-        $categories = Category::select($this->name, 'id')->get();
+        $categories = Category::
+        where('end_point', 1)
+        ->select($this->name, 'id')->get();
         $attributes = Attribute::select($this->name, 'id')->get();
         // return view('admin.categories_attributes.add');
         return view('admin.categories_attributes.add', compact('categories', 'attributes'));
