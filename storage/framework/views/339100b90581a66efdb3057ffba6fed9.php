@@ -34,36 +34,42 @@
 						<table class="display" id="advance-1">
 							<thead>
 								<tr>
+									<th><?php echo app('translator')->get('lang.order'); ?></th>
 									<th><?php echo app('translator')->get('lang.Name'); ?></th>
-									<th><?php echo app('translator')->get('lang.parent_category'); ?></th>
 									<th><?php echo app('translator')->get('lang.Image'); ?></th>
 									<th><?php echo app('translator')->get('lang.Status'); ?></th>
-									<th></th>										
+									<th></th>									
 								</tr>
 							</thead>
 							<tbody>
 								<?php $__empty_1 = true; $__currentLoopData = $categories; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $category): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
 									<tr>
+										<td >
+											<?php echo e($category->order); ?>
+
+										</td>
 										<td>
 											<?php echo e(app()->getLocale() == "en"? $category->name_en:$category->name_ar); ?>
 
 										</td>
 					
-										<td><?php echo e($category->parent->name ?? __('lang.main_category')); ?></td>
 										<td >
 											<img src="<?php echo e(asset($category->image)); ?>"  alt=""  class="image-fluid"  height="90">
 										</td>
+									
 										<td>
 											<?php if($category->end_point ==1): ?>
-												<?php echo app('translator')->get('lang.end_Point'); ?>
+												<?php echo app('translator')->get('lang.active'); ?>
 											<?php else: ?>
-												<?php echo app('translator')->get('lang.Not_end_Point'); ?>
+												<?php echo app('translator')->get('lang.inactive'); ?>
 												
 											<?php endif; ?>
 										</td>										
 										
 										<td>
 											<?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('edit category')): ?>
+											<a class="btn btn-success"  href="<?php echo e(route('category_updateStatus',$category->id)); ?>">
+												<?php echo app('translator')->get('lang.change_status'); ?></a>
 											<button class="btn btn-primary" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#exampleModal"  onclick="getRecord(<?php echo e($category); ?>)"><?php echo app('translator')->get('lang.edit'); ?></button>
 											
 											<?php endif; ?>	
@@ -77,8 +83,8 @@
 							</tbody>
 							<tfoot>
 								<tr>
+									<th><?php echo app('translator')->get('lang.order'); ?></th>
 									<th><?php echo app('translator')->get('lang.Name'); ?></th>
-									<th><?php echo app('translator')->get('lang.parent_category'); ?></th>
 									<th><?php echo app('translator')->get('lang.Image'); ?></th>
 									<th><?php echo app('translator')->get('lang.Status'); ?></th>
 									<th></th>									
@@ -125,7 +131,13 @@
 					</div>
 				
 				</div>
-				
+				<div class="col-md-12 mb-3">
+					<label for="section_name"><?php echo app('translator')->get('lang.order'); ?></label>
+					<input class="form-control" id="section_order" type="number" name="order" value="" placeholder="order" required="">
+					<div class="valid-feedback">Looks good!</div>
+					<div class="invalid-feedback">Please choose a order.</div>
+				</div>
+
 				<div class="mb-3">
 					<div class="col-md-12 mb-3">
 						<div class="col">
@@ -169,7 +181,8 @@
 	function getRecord(data){
 	    document.getElementById("section_name_ar").value=data['name_ar'];
 	    document.getElementById("section_name_en").value=data['name_en'];
+	    document.getElementById("section_order").value=data['order'];
 	    document.getElementById("section_id").value=data['id'];
    }
 </script>
-<?php echo $__env->make('admin.layout.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\Users\HP\OneDrive\Desktop\_\codeing\work\mazen\wikala\resources\views/admin/category/index.blade.php ENDPATH**/ ?>
+<?php echo $__env->make('admin.layout.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\Users\HP\OneDrive\Desktop\_\codeing\work\mazen\wikala\resources\views/admin/category/details.blade.php ENDPATH**/ ?>

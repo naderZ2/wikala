@@ -38,9 +38,18 @@ class Category extends Model
     }
 
     public function subCategories(){
-        $name =request()->header('Lang') == "en" ?"name_en as name":"name_ar as name";
-        return $this->hasMany(Category::class,'parent_id')->select('id',$name,'parent_id','image','end_point','order');
+        $name = request()->header('Lang') == "en" ? "name_en as name" : "name_ar as name";
+        return $this->hasMany(Category::class, 'parent_id')
+            ->select('id', $name, 'parent_id', 'image', 'end_point', 'order')
+            ->with(['subCategories' => function ($query) {
+                $query->with('subCategories'); // Allow recursive fetching of subCategories
+            }])
+            ->orderBy('order');
     }
+
+
+
+
     
     public function sellerServicesAvailability(){
         return $this->hasMany(SellerServicesAvailability::class);

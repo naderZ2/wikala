@@ -13,35 +13,23 @@ class CategoryController extends Controller
 
     public function index(){
         $this->lang();
-        $categories=Category
-        ::whereIn('id', [65, 66])
-        ->select('id','name_ar','name_en','image','end_point','parent_id','order')
-        ->orderBy('order')
+        $categories=Category::with("parent:id,$this->name")
+        ->select('id','name_ar','name_en','image','end_point','parent_id')
         ->get();
         return view('admin.category.index',compact('categories'));  
-    }
-    
-    public function details($id){
-        $this->lang();
-        $categories=Category
-        ::where('parent_id',$id)
-        ->select('id','name_ar','name_en','image','end_point','parent_id','order')
-        ->orderBy('order')
-        ->get();
-        
-        return view('admin.category.details',compact('categories'));  
-        // return $categories;  
     }
 
     public function create(){
         $this->lang();
-        $categories=Category::whereEndPoint(0)
-        ->whereIn('id', [65, 66])
-        ->get(['id',$this->name]);
+        $categories=Category::whereEndPoint(0)->get(['id',$this->name]);
         return view('admin.category.add',compact('categories'));  
     }
     
-     public function store(StoreRequest $request)
+    // public function store(StoreRequest $request){
+    //     Category::create($request->validated());
+    //     return  to_route('categorysa.index')->with('success',trans('lang.created')); 
+    // }
+    public function store(StoreRequest $request)
     {
         $file = $request->file('image');
         $data = $request->validated();
@@ -74,8 +62,24 @@ class CategoryController extends Controller
           return to_route('category.index')->with('success', trans('lang.created'));
     }
 
-    
+    // public function update(EditRequest $request){
+    //     $Category=Category::find($request->id);
+    //     $Category->update($request->validated());
+    //     return  to_route('categorys.index')->with('success',trans('lang.updated')); 
+    // }
 
+
+    // public function details($id){
+    //     $this->lang();
+    //     $categories=Category
+    //     ::where('parent_id',$id)
+    //     ->select('id','name_ar','name_en','image','end_point','parent_id','order')
+    //     ->orderBy('order')
+    //     ->get();
+        
+    //     return view('admin.category.details',compact('categories'));  
+    //     // return $categories;  
+    // }
 
     public function update(EditRequest $request){
         $Category=Category::find($request->id);

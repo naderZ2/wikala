@@ -20,6 +20,15 @@
 
 @section('content')
 <div class="container-fluid">
+	@if ($errors->any())
+		<div class="alert alert-danger">
+			<ul>
+				@foreach ($errors->all() as $error)
+					<li>{{ $error }}</li>
+				@endforeach
+			</ul>
+		</div>
+	@endif
 	<div class="row">
 		<div class="col-sm-12">
 			<div class="card">
@@ -45,15 +54,7 @@
 								<div class="alert alert-danger">{{ $message }}</div>
 							    @enderror --}}
 							</div>											
-							<div class="col-md-6 mb-3">
-								<label for="validationCustom01">@lang('lang.order')</label>
-								<input class="form-control" id="validationCustom01" type="number" name="order" value="{{ old('order') }}" placeholder="" required="">
-								<div class="valid-feedback">Looks good!</div>
-                                <div class="invalid-feedback">Please choose a order.</div>
-                                {{-- @error('phone')
-								<div class="alert alert-danger">{{ $message }}</div>
-							    @enderror --}}
-							</div>											
+																	
 						</div>
 
 						<div class="row">
@@ -73,19 +74,19 @@
                                 <div class="invalid-feedback">Please provide a valid category.</div>
 
                             </div>
-							<!--<div class="col-md-6">-->
-							<!--		<div class="card-body animate-chk">-->
-							<!--			<div class="row">-->
-							<!--				<div class="col">-->
-							<!--					<label class="d-block" for="chk-ani">-->
-							<!--					<input class="checkbox_animated" id="chk-ani" type="checkbox" name="end_point" value="1">           -->
-							<!--					@lang('lang.final_category')-->
-							<!--					</label>-->
+							<div class="col-md-6">
+									<div class="card-body animate-chk">
+										<div class="row">
+											<div class="col">
+												<label class="d-block" for="chk-ani">
+												<input class="checkbox_animated" id="chk-ani" type="checkbox" name="end_point" value="1">           
+												@lang('lang.final_category')
+												</label>
 												
-							<!--				</div>-->
-							<!--			</div>-->
-							<!--		</div>-->
-							<!--</div>-->
+											</div>
+										</div>
+									</div>
+							</div>
 						</div>
 
 						<div class="mb-3">

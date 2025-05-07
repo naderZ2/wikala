@@ -1,3 +1,4 @@
+
 <?php $__env->startSection('title', 'Basic DataTables'); ?>
 
 <?php $__env->startSection('css'); ?>
@@ -22,11 +23,6 @@
 <div class="container-fluid">
 
 	<div class="row">
-	      <div class="d-flex justify-content-end col-sm-12">
-				<?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('add category')): ?>
-					<a href="<?php echo e(route('category.create')); ?>"  class="btn btn-primary"><?php echo app('translator')->get('lang.add_slider'); ?></a>
-				<?php endif; ?>	
-        	</div>
 		<div class="col-sm-12 mt-3">
 			<div class="card">
 				<div class="card-body">
@@ -38,7 +34,7 @@
 									<th><?php echo app('translator')->get('lang.parent_category'); ?></th>
 									<th><?php echo app('translator')->get('lang.Image'); ?></th>
 									<th><?php echo app('translator')->get('lang.Status'); ?></th>
-									<th></th>										
+									<th></th>									
 								</tr>
 							</thead>
 							<tbody>
@@ -105,7 +101,7 @@
 		  </div>
 		  <div class="modal-body">
 
-			<form class="needs-validation" novalidate="" method="POST" enctype="multipart/form-data" action="<?php echo e(route('category.update')); ?>">
+			<form class="needs-validation" novalidate="" method="POST" enctype="multipart/form-data" action="<?php echo e(route('categorysa.update')); ?>">
 				<?php echo csrf_field(); ?>
 				<input type="hidden" id="section_id" name="id">
 				<div class="row">
@@ -172,4 +168,4 @@
 	    document.getElementById("section_id").value=data['id'];
    }
 </script>
-<?php echo $__env->make('admin.layout.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\Users\HP\OneDrive\Desktop\_\codeing\work\mazen\wikala\resources\views/admin/category/index.blade.php ENDPATH**/ ?>
+<?php echo $__env->make('admin.layout.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\Users\HP\OneDrive\Desktop\_\codeing\work\mazen\wikala\resources\views/admin/categorysa/index.blade.php ENDPATH**/ ?>

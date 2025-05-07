@@ -20,6 +20,7 @@ class CategoryController extends Controller
         return $this->success($categories);
     }
 
+
     public function categorySellers(Request $request){        
         $sellers = DB::table('sellers')
         ->join('category_seller','category_seller.seller_id','sellers.id')
@@ -45,49 +46,35 @@ class CategoryController extends Controller
 
     public function index(Request $request)
     {
-        // Check if 'govId' is sent in the request
-        $govId = $request->input('govId');
         $categoryId = $request->input('category_id');
 
-                $this->lang();
+        $this->lang();
         // Fetch categories
         $categoriesQuery = Category::whereNull('parent_id')
-        ->orderBy('order')
-            ->with(['children.sellers:id,name,longitude,latitude,details,img_path']);
-        
-    if ($govId) {
-    // Filter to include only sellers that are related to the city specified by govId
-    $categoriesQuery->whereHas('children.sellers', function ($sellerQuery) use ($govId) {
-        $sellerQuery->whereHas('cities', function ($cityQuery) use ($govId) {
-            $cityQuery->where('cities.id', $govId); // Filter sellers based on the city relationship
-        });
-    })->with(['children.sellers' => function ($sellerQuery) use ($govId) {
-        $sellerQuery->whereHas('cities', function ($cityQuery) use ($govId) {
-            $cityQuery->where('cities.id', $govId); // Ensure only these sellers are included in the response
-        });
-    }]);
-}
+            ->orderBy('order')
+            ->with('subCategories');
 
-         if ($categoryId) {
-        // Filter to get only children with id matching category_id
-        $categoriesQuery->whereHas('children', function ($query) use ($categoryId) {
-            $query->where('id', $categoryId); // Filter children by category_id
-        })
-        ->with(['children' => function ($query) use ($categoryId) {
-            $query->where('id', $categoryId); // Fetch only children with this ID
-        }]);
-    }
+        if ($categoryId) {
+            // Filter to get only children with id matching category_id
+            $categoriesQuery->whereHas('children', function ($query) use ($categoryId) {
+                $query->where('id', $categoryId); // Filter children by category_id
+            })
+            ->with(['children' => function ($query) use ($categoryId) {
+                $query->where('id', $categoryId); // Fetch only children with this ID
+            }]);
+        }
+
         $parents = $categoriesQuery->select('id', $this->name, 'image', 'end_point')->get();
-    
+
         // Fetch sliders
         $sliders = Slider::get();
-    
+
         // Prepare response
         $result = [
             'categories' => $parents,
             'sliders' => $sliders
         ];
-    
+
         return $this->success($result);
     }
 

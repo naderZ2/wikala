@@ -134,13 +134,13 @@ Route::group(['middleware' => ['auth:admin','CheckUserActiviation']], function()
         Route::post('edit_slider', [Admin\SliderController::class, 'update'])->name('dashboard.slider.update');
         Route::delete('delete_slider', [Admin\SliderController::class, 'destroy'])->name('slider.destroy');
         Route::resource('category', 'Admin\CategoryController');
-            Route::get('category_details\{id}', [Admin\CategoryController::class, 'details'])->name('category_details');
-            
+        Route::get('category_details\{id}', [Admin\CategoryController::class, 'details'])->name('category_details');
+        
         Route::get('category_updateStatus\{id}', [Admin\CategoryController::class, 'updateStatus'])->name('category_updateStatus');
         Route::post('edit_category', [Admin\CategoryController::class, 'update'])->name('category.update');
         
-          
-    
+        
+        
         // Route::resource('sections', 'Admin\SectionsController');
 
         // Route::post('edit_section', [Admin\SectionsController::class, 'update'])->name('sections.update');

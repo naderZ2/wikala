@@ -36,7 +36,7 @@ class AttributeController extends Controller
         $attributes = CategoryAttribute::where('category_id', $request->category_id)
             ->with(['attribute' => function ($query) {
                 $query->select('id', 'name_ar', 'name_en', 'type', 'enable')
-                      ->where('enable', 1);
+                        ->where('enable', 1);
             }])
             ->get()
             ->filter(function ($item) {

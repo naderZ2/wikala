@@ -36,10 +36,10 @@
 							<thead>
 								<tr>
 									<th>@lang('lang.Name')</th>
-								
+									<th>@lang('lang.parent_category')</th>
 									<th>@lang('lang.Image')</th>
-									<!--<th>@lang('lang.Status')</th>-->
-									<th></th>									
+									<th>@lang('lang.Status')</th>
+									<th></th>										
 								</tr>
 							</thead>
 							<tbody>
@@ -49,22 +49,20 @@
 											{{ app()->getLocale() == "en"? $category->name_en:$category->name_ar }}
 										</td>
 					
-									
+										<td>{{ $category->parent->name ?? __('lang.main_category')  }}</td>
 										<td >
 											<img src="{{ asset($category->image) }}"  alt=""  class="image-fluid"  height="90">
 										</td>
-										<!--<td>-->
-										<!--	@if ($category->end_point ==1)-->
-										<!--		@lang('lang.end_Point')-->
-										<!--	@else-->
-										<!--		@lang('lang.Not_end_Point')-->
+										<td>
+											@if ($category->end_point ==1)
+												@lang('lang.end_Point')
+											@else
+												@lang('lang.Not_end_Point')
 												
-										<!--	@endif-->
-										<!--</td>										-->
+											@endif
+										</td>										
 										
 										<td>
-										    	<a class="btn btn-success"  href="{{ route('category_details',$category->id) }}">
-												@lang('lang.details')</a>
 											@can('edit category')
 											<button class="btn btn-primary" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#exampleModal"  onclick="getRecord({{ $category }})">@lang('lang.edit')</button>
 											{{-- <button class="btn btn-secondary" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#exampleModal">Delete</button> --}}
@@ -80,8 +78,9 @@
 							<tfoot>
 								<tr>
 									<th>@lang('lang.Name')</th>
+									<th>@lang('lang.parent_category')</th>
 									<th>@lang('lang.Image')</th>
-									<!--<th>@lang('lang.Status')</th>-->
+									<th>@lang('lang.Status')</th>
 									<th></th>									
 								</tr>							
 							</tfoot>

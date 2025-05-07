@@ -68,6 +68,8 @@ Route::middleware(['checkLanguage'])->group(function () {
     Route::get('category_sellers', [Client\CategoryController::class, 'categorySellers']);
     Route::get('categoryUnderSeller', [Client\CategoryController::class, 'categoryUnderSeller']);
 
+
+
 Route::middleware(['auth:api'])->group(function () {
     
         // Route::post('save_special_request', [Client\SpecialRequestController::class, 'saveSpecialRequest'] )->name('save_special_request');

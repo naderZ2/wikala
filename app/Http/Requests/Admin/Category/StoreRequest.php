@@ -29,7 +29,7 @@ class StoreRequest extends FormRequest
             'name_en' => 'required',
             'image' => 'required|max:1024',
             'end_point' => 'sometimes|nullable',
-            'order' => 'required'
+            // 'order' => 'required'
         ];
     }
 
