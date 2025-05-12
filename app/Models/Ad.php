@@ -82,4 +82,9 @@ class Ad extends Model
     {
         return $this->hasMany(RecentlyViewAd::class);
     }
+
+    public function hiddenAds()
+    {
+        return $this->hasMany(HiddenAd::class, 'ad_id');
+    }
 }

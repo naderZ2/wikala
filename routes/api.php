@@ -147,6 +147,8 @@ Route::middleware(['auth:api'])->group(function () {
     Route::apiResource('favorite-ads', Client\FavoriteAdController::class);
 
     Route::apiResource('ads', Client\AdController::class);
+    Route::post('/ads/hide', [Client\AdController::class, 'hideAd']);
+
 
     Route::apiResource('chats', Client\ChatController::class);
 
@@ -170,6 +172,7 @@ Route::middleware(['auth:api'])->group(function () {
 
     Route::post('attributes_by_category', [Client\AttributeController::class, 'getAttributesByCategoryId']);
 
+    // Route::get('/ads', [Client\AdController::class, 'index']);
     });
 
 });

@@ -260,7 +260,12 @@ CREATE TABLE `deleted_users` (
 
 
 
-$2y$10$yOH3HgYMSpwKGECFwXtHSeG88BlzCfk4u4wzd.yCbixpDbsbK3Yfq
-
-
-$2y$10$W.eZtileSLSH52yR8odxKOv57Bd691RanI3YJo/HlFJqs4JJmZsfK
+CREATE TABLE hidden_ads (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    user_id BIGINT UNSIGNED NOT NULL,
+    ad_id BIGINT UNSIGNED NOT NULL,
+    created_at TIMESTAMP NULL DEFAULT NULL,
+    updated_at TIMESTAMP NULL DEFAULT NULL,
+    INDEX idx_user_id (user_id)
+    
+);

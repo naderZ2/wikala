@@ -7,10 +7,11 @@ use Illuminate\Http\Request;
 use App\Traits\ResponsesTrait;
 use App\Traits\FileUploadTrait;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Client\Ad\StoreRequest;
-
-
+use App\Models\HiddenAd;
+use App\Models\Ad;
 
 class AdController extends Controller
 {
@@ -23,21 +24,16 @@ class AdController extends Controller
         $this->adService = $adService;
     }
 
-
-
-    // public function index()
-    // {
-    //     $ads = $this->adService->getAllAds();
-    //     return $this->success($ads);
-    // }
-
-
-
-
     public function index(Request $request)
     {
-        $perPage = $request->get('per_page', 3); 
-        $ads = $this->adService->getAllAdsWithPagination($perPage);
+        $perPage = $request->get('per_page', 10);
+        $userId = auth()->id();
+
+        $ads = Ad::whereDoesntHave('hiddenAds', function ($query) use ($userId) {
+                $query->where('user_id', $userId);
+            })
+                        ->paginate($perPage);
+
         return $this->success([
             'items' => $ads->items(),
             'pagination' => [
@@ -45,28 +41,17 @@ class AdController extends Controller
                 'per_page' => $ads->perPage(),
                 'current_page' => $ads->currentPage(),
                 'last_page' => $ads->lastPage(),
-            ]
+            ],
         ]);
-        
     }
-
-
-
-
-
 
     public function store(StoreRequest $request)
     {
-        $data = $request->validated(); 
-        // if ($request->hasFile('main_image')) {
-        //     $data['main_image'] = $this->uploadFile($request->file('main_image'), 'ads');  // Upload the main image
-        // }
+        $data = $request->validated();
         $ad = $this->adService->storeAdWithImages($data );
         Log::info('Ad created successfully', ['ad' => $request]);
         return $this->success($ad, trans('lang.created'));
     }
-
-
 
     public function show($id)
     {
@@ -74,6 +59,16 @@ class AdController extends Controller
         return $this->success($ad);
     }
 
-
+    public function hideAd(Request $request)
+    {
+        
+        $userId = auth()->id();
+        $adId = $request->ad_id;
+        HiddenAd::create([
+            'user_id' => $userId,
+            'ad_id' => $adId,
+        ]);
+        return $this->success(null, 'Ad hidden successfully.');
+    }
 
 }
