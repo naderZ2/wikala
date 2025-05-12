@@ -12,6 +12,7 @@ use App\Http\Controllers\Controller;
 class CategoryController extends Controller
 {
     use ResponsesTrait;
+
     public function mainCategories(){
         $this->lang();
         $categories = Category::whereNull('parent_id')
@@ -21,7 +22,26 @@ class CategoryController extends Controller
     }
 
 
-    public function categorySellers(Request $request){        
+    public function getSubCategoriesById(Request $request)
+    {
+        $this->lang();
+        $categoryId = $request->input('category_id');
+
+        // Fetch the category and its subcategories
+        $category = Category::where('id', $categoryId)
+            ->with('subCategories')
+            ->select('id', $this->name, 'image', 'end_point')
+            ->first();
+
+        if (!$category) {
+            return $this->failed(trans('category_not_found'));
+        }
+
+        return $this->success($category);
+    }
+
+
+    public function categorySellers(Request $request){
         $sellers = DB::table('sellers')
         ->join('category_seller','category_seller.seller_id','sellers.id')
         ->where('category_id',$request->category_id)
@@ -29,14 +49,14 @@ class CategoryController extends Controller
         return $this->success($sellers);
     }
 
-    public function categoryUnderSeller(Request $request){     
+    public function categoryUnderSeller(Request $request){
         $parents=Category::whereId($request->category_id)->get();
         $id=$parents[0]['id'];
         $categories=[];
         $this->test($parents,$categories);
         return $this->success($categories[$id]);
     }
-    
+
     public function favourite_sellers(Request $request){
         $sellers = DB::table('sellers')
         ->get(['id','name','longitude','latitude','details','img_path']);
@@ -78,7 +98,7 @@ class CategoryController extends Controller
         return $this->success($result);
     }
 
-    
+
     public function test($parents,&$temp){
         $this->lang();
         foreach($parents as $parent){
@@ -106,7 +126,7 @@ class CategoryController extends Controller
                 }
                 else{
                     if(array_key_exists($parent->parent_id, $temp))
-                        $temp[$parent->parent_id]['subCategories'][]=$parent;  
+                        $temp[$parent->parent_id]['subCategories'][]=$parent;
                 }
             }
         }

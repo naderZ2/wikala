@@ -36,18 +36,18 @@ Route::middleware(['checkLanguage'])->group(function () {
     Route::get('cities', [Client\CityController::class, 'cities']);
     Route::get('regions', [Client\CityController::class, 'regions']);
 
-    
+
     Route::post('send_otp_password', [Client\Auth\UserAuthController::class, 'sendOtpPassword']);
     Route::post('send_otp_register', [Client\Auth\UserAuthController::class, 'sendOtpRegister']);
     Route::post('reset_password', [Client\Auth\ResetPasswordController::class, 'resetPassword']);
-    
+
     Route::get('testotpwasage', [Client\Auth\UserAuthController::class, 'testotpwasage']);
     Route::post('login', [Client\Auth\UserAuthController::class, 'login']);
     Route::post('register', [Client\Auth\UserAuthController::class, 'register']);
 
     //Banner
     Route::get('banners', [Client\BannerController::class, 'index']);
-    
+
     //Products
         Route::get('most_selling', [Client\ProductController::class, 'index']);
 
@@ -57,7 +57,7 @@ Route::middleware(['checkLanguage'])->group(function () {
 
     //events
         Route::get('event_categories', [Client\EventController::class, 'index']);
-        
+
         Route::get('families', [Client\EventController::class, 'families']);
         Route::get('events', [Client\EventController::class, 'events']);
 
@@ -67,26 +67,27 @@ Route::middleware(['checkLanguage'])->group(function () {
     Route::get('main_categories', [Client\CategoryController::class, 'mainCategories']);
     Route::get('category_sellers', [Client\CategoryController::class, 'categorySellers']);
     Route::get('categoryUnderSeller', [Client\CategoryController::class, 'categoryUnderSeller']);
+    Route::get('get_subCategories', [Client\CategoryController::class, 'getSubCategoriesById']);
 
 
 
 Route::middleware(['auth:api'])->group(function () {
-    
+
         // Route::post('save_special_request', [Client\SpecialRequestController::class, 'saveSpecialRequest'] )->name('save_special_request');
-        
+
         // Route::post('save_special_request_details', [Client\SpecialRequestController::class, 'saveSpecialRequestDetails'] )->name('save_special_request');
 
 
-    
+
                 Route::post('pay', [Client\PaymentController::class, 'payment']);
 
       Route::get('notifications', [Client\NotificationController::class, 'index']);
-      
+
       Route::post('read_notification', [Client\NotificationController::class, 'readNotification']);
 
 
         Route::get('favourite_sellers', [Client\FavouriteSellerController::class, 'favourite_sellers']);
-        
+
         Route::get('myFavourite_sellers', [Client\FavouriteSellerController::class, 'myIndex']);
 
         Route::post('favourite_sellers', [Client\FavouriteSellerController::class, 'store']);
@@ -97,7 +98,7 @@ Route::middleware(['auth:api'])->group(function () {
         Route::post('add_daily_events', [Client\EventController::class, 'addDailyEvents']);
          Route::post('edit_daily_events', [Client\EventController::class, 'editDailyEvents']);
         Route::delete('user_daily_events', [Client\EventController::class, 'deleteUserDailyEvent']);
-        
+
         Route::delete('daily_event', [Client\EventController::class, 'deleteDailyEvent']);
 
      Route::get('myFavourite_products', [Client\FavouriteProductController::class, 'myIndex']);
@@ -153,10 +154,10 @@ Route::middleware(['auth:api'])->group(function () {
 
 
     Route::prefix('reports')->group(function () {
-        
-        Route::get('/reportOption', [Client\ReportOptionController::class, 'index']); 
-         
-        Route::post('/store', [Client\ReportController::class, 'store']);  
+
+        Route::get('/reportOption', [Client\ReportOptionController::class, 'index']);
+
+        Route::post('/store', [Client\ReportController::class, 'store']);
     });
 
     // Adding routes for FollowController
