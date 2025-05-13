@@ -24,10 +24,10 @@ class OrderController extends Controller
             $orders=Order::where('status','order_placed')->with('user:id,name,phone')->get();
         }elseif($page=='completed')
         {
-            
+
             // Log::info('thecompleted');
             $orders=Order::whereIn('status',['cancel','delivered'])->with('user:id,name,phone')->get();
-            
+
         }elseif($page=='under_preparation')
         {
             // Log::info('theunder_preparation');
@@ -51,7 +51,7 @@ class OrderController extends Controller
         $region_id = User::find($order->user_id)->region_id;
         // $city = City::find($region_id);
         // $drivers_id = $city->drivers->pluck('pivot.driver_id');
-        // $drivers = Driver::whereIn('id',$drivers_id)->get(); 
+        // $drivers = Driver::whereIn('id',$drivers_id)->get();
         return view('admin.order.details',compact('order'));
     }
 
@@ -67,24 +67,24 @@ class OrderController extends Controller
     public function assignDriver(AssignDriverRequest $request){
         $order = Order::find($request->id);
         $order->update(['driver_id' => $request->driver_id]);
-        return to_route('order.index')->with('success',trans('lang.updated')); 
+        return to_route('order.index')->with('success',trans('lang.updated'));
     }
-    
-    
+
+
      public function generateInvoice($id)
     {
 
         // Log::info('order');
         // $this->lang();
 
-        
+
         $mainLang = App::getLocale();
-        
-        
-        
+
+
+
         $order=Order::whereId($id)->with('user:id,name,phone,email,email',"orderDetails.product",'seller:id,email,name','address','address.region')->first();
-        
-        
+
+
         if($order->user->lang =='ar'){
             App::setLocale('ae');
             // Log::info('ae');
@@ -95,7 +95,7 @@ class OrderController extends Controller
         }
 
         // Log::info($order);
-        
+
         $invoice = view('admin.order.invoice', compact('order'))->render();
 
         $pdf = new Mpdf([
@@ -119,7 +119,7 @@ class OrderController extends Controller
 
         $pdf->Output($filePath, 'F');
 
-        $order->bill_url = $path; 
+        $order->bill_url = $path;
         $order->save();
         // return 'sss';
         App::setLocale($mainLang);

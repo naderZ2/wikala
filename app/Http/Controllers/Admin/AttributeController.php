@@ -16,7 +16,7 @@ class AttributeController extends Controller
 
     use FileUploadTrait;
 
-    
+
     public function index(){
         $this->lang();
         $attributes = Attribute::
@@ -48,7 +48,7 @@ class AttributeController extends Controller
     }
 
     public function update(EditRequest $request){
-        
+
         $attribute=Attribute::find($request->id);
         $data = $request->validated();
         if($request->image){
@@ -66,9 +66,9 @@ class AttributeController extends Controller
 
     public function enable($id){
         $attribute = Attribute::find($id);
-        Log::info($attribute->enable);
+        // Log::info($attribute->enable);
         $attribute->update(['enable' => $attribute->enable ? 0 : 1]);
-        Log::info($attribute->enable);
+        // Log::info($attribute->enable);
 
         return to_route('attributes.index')->with('success');
     }

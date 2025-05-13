@@ -27,23 +27,23 @@ class StoreRequest extends FormRequest
     {
         return [
             'category_id'    => 'required|exists:categories,id',
-            
+
             'type_id'        => 'required|exists:ads_type,id',
-            
+
             'title'          => 'required|string|max:255',
             'description'    => 'required|string',
             'contact_method' => 'required|string',
             'negotiable'     => 'required|boolean',
-            
+
             'start_date'     => 'required|date',
             'end_date'       => 'required|date|after:start_date',
             'city_id'        => 'required|exists:cities,id',
             'region_id'      => 'required|exists:cities,id',
-            'main_image'     => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',  
-            
-            'images'         => 'nullable|array', 
-            'images.*'       => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048', 
-        
+            'main_image'     => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:1024',
+
+            'images'         => 'nullable|array',
+            'images.*'       => 'image|mimes:jpeg,png,jpg,gif,svg|max:1024',
+
             'attributes' => 'nullable|array',
             'attributes.*.id' => 'required|exists:attributes,id',
             'attributes.*.value' => 'required|string',
@@ -74,7 +74,7 @@ class StoreRequest extends FormRequest
             'category_id.exists'     => __('lang.category_not_found'),
             'type_id.required'       => __('lang.type_required'),
             'type_id.exists'         => __('lang.type_not_found'),
-            
+
             'city_id.required'       => __('lang.city_required'),
             'city_id.exists'         => __('lang.city_not_found'),
 

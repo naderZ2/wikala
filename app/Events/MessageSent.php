@@ -25,14 +25,14 @@ class MessageSent
 
     public function broadcastOn()
     {
-        Log::info('Message sent event fired');
-        
+        // Log::info('Message sent event fired');
+
         return new PrivateChannel('chat.' . $this->chat->receiver_id);
     }
 
     public function broadcastWith()
     {
-        Log::info('Message sent event fired2');
+        // Log::info('Message sent event fired2');
 
         return [
             'id' => $this->chat->id,

@@ -24,15 +24,15 @@ class ReportController extends Controller
 
         // $reports = $this->reportService->all();
         $reports = $this->reportService->allWithRelations();
-        
+
         return view('admin.reports.index', compact('reports'));
     }
-    
+
     public function details($id)
     {
         $report = $this->reportService->findWithRelations($id);
-        
-        Log::info($report);
+
+        // Log::info($report);
 
         return view('admin.reports.details', compact('report'));
     }

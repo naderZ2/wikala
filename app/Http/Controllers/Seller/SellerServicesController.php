@@ -20,24 +20,24 @@ class SellerServicesController extends Controller
     public function index(){
         $this->lang();
         $sellerServices=SellerServicesAvailability::where('seller_id',auth()->id())->with('category','product')->get();
-        log::info($sellerServices);
+        // Log::info($sellerServices);
         return view('seller.sellerServices.index',compact('sellerServices'));
     }
-    
-    
+
+
     public function updateAvailability(int $id){
         $sellerServices =SellerServicesAvailability::find($id);
         $status= $sellerServices->availability == 0?1:0;
         $sellerServices->update(['availability' => $status]);
         return to_route('seller.sellerServices.index')->with('success',trans('lang.updated'));
     }
-    
-    
+
+
     public function create()
     {
-        $categories = Category::all(); 
-        
-        $sellers = Seller::with('categories')->get(); 
+        $categories = Category::all();
+
+        $sellers = Seller::with('categories')->get();
         return view('seller.sellerServices.create', compact('sellers',  'categories'));
     }
 
@@ -62,21 +62,21 @@ class SellerServicesController extends Controller
         return redirect()->route('seller.sellerServices.index')->with('success',trans('lang.created'));
     }
 
-    
+
 
 
     public function getProductsByCategory(Request $request)
     {
         $categoryId = $request->category_id;
-    
+
         if (!$categoryId) {
             return response()->json(['products' => []]);
         }
-    
+
         $products = Product::where('category_id', $categoryId)->where('seller_id',auth()->id())->get(['id', 'name_en', 'name_ar']);
         return response()->json(['products' => $products]);
     }
-    
+
 
 
 

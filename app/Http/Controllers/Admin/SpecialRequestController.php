@@ -27,7 +27,7 @@ class SpecialRequestController extends Controller
         $this->lang();
         return view('admin.specialRequests.create',compact('id'));
     }
-    
+
     public function details(int $id){
         $this->lang();
 
@@ -37,20 +37,20 @@ class SpecialRequestController extends Controller
 
         // Log::info($specialRequestDetails);
         foreach($specialRequestDetails as $Request ){
-            
-            
+
+
             if($Request->role == 'admin'){
                 $Request::with('admin');
-                Log::info($Request->admin);
+                // Log::info($Request->admin);
             }else{
                 $Request::with('user');
-                Log::info($Request->user);
+                // Log::info($Request->user);
 
             }
         }
         // Log::info($specialRequestDetails);
         // Log::info($specialRequestDetails);
-        return view('admin.specialRequests.details',compact('specialRequest','specialRequestDetails'));  
+        return view('admin.specialRequests.details',compact('specialRequest','specialRequestDetails'));
     }
 
 
@@ -60,7 +60,7 @@ class SpecialRequestController extends Controller
         // SpecialRequestDetails::create($request->validated());
         $specialRequest = $service->createSpecialRequestDetails($validatedData,'admin');
         // return response()->json($specialRequest);
-        return  to_route('admin.specialRequest.details',$validatedData['special_requests_id'])->with('success',trans('lang.created')); 
+        return  to_route('admin.specialRequest.details',$validatedData['special_requests_id'])->with('success',trans('lang.created'));
     }
 
 
@@ -74,7 +74,7 @@ class SpecialRequestController extends Controller
     //         'rejection_reason' => $request->rejection_reason,
     //     ]);
     //     return redirect('events/daily_events?eventiFlter=rejected');
-        
+
     //   }
 
         public function events(Request $request){
@@ -96,13 +96,13 @@ class SpecialRequestController extends Controller
                                 ->where('rejection_reason', Null);
                       });
             });
-            
+
     }elseif($request->eventiFlter=='under_review'){
 
-       
+
        $dailyEvents = $dailyEvents->where('active',0)->where('rejection_reason', Null);
-    
-       
+
+
     }elseif($request->eventiFlter=='expired')
     {
 
@@ -116,8 +116,8 @@ class SpecialRequestController extends Controller
                         ->where('rejection_reason', Null);
             });
     });
-        
-    
+
+
 }elseif($request->eventiFlter=='rejected'){
 
 
@@ -134,29 +134,29 @@ class SpecialRequestController extends Controller
     $dailyEvents = $dailyEvents->with("eventCategory:id,$this->name,image")->get();
     // Log::info($request);
     // Log::info($dailyEvents);
-    return view('admin.events.daily_events',compact('dailyEvents'));  
+    return view('admin.events.daily_events',compact('dailyEvents'));
 
 
 
 
 
     }
-    
 
-    
+
+
     public function changeStatus($id){
          $dailyEvent = DailyEvents::where('id',$id)->first();
          $status=!$dailyEvent->active;
         $dailyEvent->update(['active'=>$status]);
-        return  to_route('daily_events.index');  
+        return  to_route('daily_events.index');
     }
 
 
-    
-    
+
+
     // public function update(EditRequest $request){
     //     $Category=EventCategory::find($request->id);
     //     $Category->update($request->validated());
-    //     return  to_route('event_category.index')->with('success',trans('lang.updated')); 
+    //     return  to_route('event_category.index')->with('success',trans('lang.updated'));
     // }
 }

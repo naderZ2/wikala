@@ -19,9 +19,9 @@ class SavedAdService
     {
         $userId = Auth::id();
 
-        
+
         if ($this->savedAdRepository->exists($userId, $adId)) {
-            return null; 
+            return null;
         }
 
         return $this->savedAdRepository->create([
@@ -32,9 +32,9 @@ class SavedAdService
 
     public function deleteAd($id)
     {
-        Log::info($id);
+        // Log::info($id);
         $savedAd = $this->savedAdRepository->findById($id);
-        Log::info($savedAd);
+        // Log::info($savedAd);
         if ($savedAd && $savedAd->user_id == Auth::id()) {
             $this->savedAdRepository->delete($id);
             return true;

@@ -35,27 +35,27 @@ class CityController extends Controller
     public function create(){
         $this->lang();
         $cities=City::whereNull('parent_id')->get(['id',$this->name]);
-        return view('admin.city.add',compact('cities'));  
+        return view('admin.city.add',compact('cities'));
     }
 
     public function store(StoreRequest $request){
         City::create($request->validated());
-        return  to_route('city.index')->with('success',trans('lang.created')); 
+        return  to_route('city.index')->with('success',trans('lang.created'));
     }
 
     // public function edit(Request $request){
-        
+
     //     $city=City::find($request->city);
     //     // $city->update($request->validated());
-    //     return  view('admin.city.edit',compact('city')); 
+    //     return  view('admin.city.edit',compact('city'));
     // }
     public function update(EditRequest $request){
         $city=City::find($request->id);
         $city->update($request->validated());
-        // return  to_route('city.index')->with('success',trans('lang.updated')); 
-        return  to_route('city.index')->with('success',trans('lang.updated')); 
+        // return  to_route('city.index')->with('success',trans('lang.updated'));
+        return  to_route('city.index')->with('success',trans('lang.updated'));
     }
-    
+
     public function destroy(Request $request){
 
         $city=UserAdress::where('region_id',$request->id)->first();
@@ -66,7 +66,7 @@ class CityController extends Controller
             return back()->withErrors(['city' => "لا يمكنك حذف المنطقة لان هناك بيانات  متعلقة بها"]);
         }
         City::destroy($request->id);
-        return  to_route('city.index')->with('success',trans('lang.deleted')); 
+        return  to_route('city.index')->with('success',trans('lang.deleted'));
     }
 
 }

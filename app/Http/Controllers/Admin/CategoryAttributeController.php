@@ -20,7 +20,7 @@ class CategoryAttributeController extends Controller
         // Log::info($categoryAttributes);
         return view('admin.categories_attributes.index', compact('categoryAttributes'));
     }
-    
+
     public function create()
     {
         $this->lang();
@@ -34,12 +34,12 @@ class CategoryAttributeController extends Controller
 
     public function store(StoreRequests $request)
     {
-        
-        
+
+
 
         CategoryAttribute::create($request->validated());
 
-        
+
         return redirect()->route('category-attributes.index')->with('success',trans('lang.created'));
     }
 
@@ -54,7 +54,7 @@ class CategoryAttributeController extends Controller
 
     public function update(EditRequest $request, $id)
     {
-        
+
         // $request->validated();
         $categoryAttribute = CategoryAttribute::findOrFail($id);
         $categoryAttribute->update($request->validated());

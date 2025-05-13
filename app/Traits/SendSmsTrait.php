@@ -12,7 +12,7 @@ trait SendSmsTrait
 
     public function sendSmsWhatsApp($phone, $otp)
     {
-        Log::info("sendSmsWhatsApp:-" .$phone );
+        // Log::info("sendSmsWhatsApp:-" .$phone );
 
         $message ="your OTP is :- $otp";
         $url = 'https://app.arrivewhats.com/api/send';
@@ -34,7 +34,7 @@ trait SendSmsTrait
             $response = $promise->wait(); // Block until the request is complete
             $responseData = json_decode($response->getBody(), true);
 
-            Log::info('WhatsApp OTP sent successfully.', ['response' => $responseData]);
+            // Log::info('WhatsApp OTP sent successfully.', ['response' => $responseData]);
 
             return [
                 'success' => true,
@@ -42,7 +42,7 @@ trait SendSmsTrait
             ];
         } catch (\Throwable $exception) {
             Log::error('Failed to send WhatsApp OTP.', ['error' => $exception->getMessage()]);
-                Log::info("sendOtpAsync:success"  );
+                // Log::info("sendOtpAsync:success"  );
 
             return [
                 'success' => false,
@@ -51,5 +51,5 @@ trait SendSmsTrait
         }
     }
 
-    
+
 }

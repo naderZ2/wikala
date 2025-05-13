@@ -26,19 +26,19 @@ class BasketController extends Controller
     }
 
     public function addToBasket(StoreRequest $request ,OrderService $service){
-                Log::info("newItem " .json_encode($request->validated()) );
+                // Log::info("newItem " .json_encode($request->validated()) );
 
         $result = $service->addToBasket($request);
         return $result;
     }
-    
+
     public function cancelItem(CancelRequest $request){
         $orderItem=OrderDetails::where('id',$request->id)->first();
         $order = $orderItem->order;
         $totalPrice=$order->total_price - $orderItem->price;
-      
+
         if($order->status != "out_for_delivery" || $order->status != "delivered" ){
-            
+
               $order->update(['total_price' => $totalPrice]);
               $orderItem->delete();
             return $this->success(null,trans('lang.item_deleted'));

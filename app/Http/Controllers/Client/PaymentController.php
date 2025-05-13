@@ -18,21 +18,21 @@ class PaymentController extends Controller
     {
         $this->model="App\Models\Payment";
     }
-    
+
   public function payment(PaymentRequest $request){
             $req=$request->validated();
             // $coupon_code=$req['coupon_code']?:null;
             $payment_option=$req['payment_option'];
             $order=Order::where('id',$req['order_id'])->first();
-            $order_total_price=$order->total_price + $order->delivery_fee; //testQ 
+            $order_total_price=$order->total_price + $order->delivery_fee; //testQ
             $client=$order->user;
            if($request->payment_method == 'knet'){
             $payment_method = 'knet';
-            
-            
+
+
         }else if($request->payment_method == 'credit'){
             $payment_method = 'cc';
-            
+
         }
         $data = array(
             "order" => array(
@@ -62,9 +62,9 @@ class PaymentController extends Controller
 
     // Encode the array into a JSON string
         $json_data = json_encode($data);
-        
+
         $curl = curl_init();
-        
+
         curl_setopt_array($curl, array(
             CURLOPT_URL => 'https://sandboxapi.upayments.com/api/v1/charge',
             CURLOPT_RETURNTRANSFER => true,
@@ -81,7 +81,7 @@ class PaymentController extends Controller
                 'content-type: application/json'
             ),
         ));
-        
+
         $result = curl_exec($curl);
         curl_close($curl);
         $resp=json_decode($result, true);
@@ -97,12 +97,12 @@ class PaymentController extends Controller
 
     }
 
-    
-    
+
+
     public function successUrl(Request $request){
         // return $request->all;
-        $merchantTxnId = $_GET['requested_order_id']; 
-        $paymentId= $_GET['payment_id']; 
+        $merchantTxnId = $_GET['requested_order_id'];
+        $paymentId= $_GET['payment_id'];
         $payment=Payment::where('payment_order_id',$merchantTxnId)->first();
         Order::where('id',$payment->order_id)->update(['payment_status'=>"success"]);
         $path= $this->generateInvoice($payment->order_id);
@@ -113,25 +113,25 @@ class PaymentController extends Controller
     }
 
     public function failUrl(Request $request){
-        $merchantTxnId = $_GET['requested_order_id']; 
-        $paymentId= $_GET['payment_id']; 
+        $merchantTxnId = $_GET['requested_order_id'];
+        $paymentId= $_GET['payment_id'];
         $payment=Payment::where('payment_order_id',$merchantTxnId)->first();
         Order::where('id',$payment->order_id)->update(['payment_status'=>"failed"]);
         $payment->update(['status' => "failed",'payment_id'=>$paymentId]);
 
-        // $merchantTxnId = $_GET['merchantTxnId']; 
+        // $merchantTxnId = $_GET['merchantTxnId'];
         // Payment::whereOrderId($merchantTxnId)->update(['status' => "failed"]);
         return $this->failed(null,"عملية غير ناجحة");
     }
-    
-    
+
+
     public static function sendOtpAsync($phoneNumber, $message)
     {
         $countryCode = '20';
         // $formattedNumber = $countryCode . ltrim($phoneNumber, '');
         $formattedNumber = ltrim($phoneNumber, '+');
         // $formattedNumber = $phoneNumber;
-                  Log::info("sendOtpAsync:-" .$formattedNumber );
+                  // Log::info("sendOtpAsync:-" .$formattedNumber );
 
 
         $url = 'https://app.arrivewhats.com/api/send';
@@ -153,7 +153,7 @@ class PaymentController extends Controller
             $response = $promise->wait(); // Block until the request is complete
             $responseData = json_decode($response->getBody(), true);
 
-            Log::info('WhatsApp OTP sent successfully.', ['response' => $responseData]);
+            // Log::info('WhatsApp OTP sent successfully.', ['response' => $responseData]);
 
             return [
                 'success' => true,
@@ -161,7 +161,7 @@ class PaymentController extends Controller
             ];
         } catch (\Throwable $exception) {
             Log::error('Failed to send WhatsApp OTP.', ['error' => $exception->getMessage()]);
-                Log::info("sendOtpAsync:success"  );
+                // Log::info("sendOtpAsync:success"  );
 
             return [
                 'success' => false,
@@ -169,21 +169,21 @@ class PaymentController extends Controller
             ];
         }
     }
-    
+
     public function generateInvoice($id)
     {
 
         // Log::info('order');
         // $this->lang();
 
-        
+
         $mainLang = App::getLocale();
-        
-        
-        
+
+
+
         $order=Order::whereId($id)->with('user:id,name,phone,email,email',"orderDetails.product",'seller:id,email,name','address','address.region')->first();
-        
-        
+
+
         if($order->user->lang =='ar'){
             App::setLocale('ae');
             // Log::info('ae');
@@ -194,7 +194,7 @@ class PaymentController extends Controller
         }
 
         // Log::info($order);
-        
+
         $invoice = view('admin.order.invoice', compact('order'))->render();
 
         $pdf = new Mpdf([
@@ -218,7 +218,7 @@ class PaymentController extends Controller
 
         $pdf->Output($filePath, 'F');
 
-        $order->bill_url = $path; 
+        $order->bill_url = $path;
         $order->save();
         return $path;
         // return 'sss';

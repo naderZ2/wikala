@@ -35,13 +35,13 @@ class UserAuthController extends Controller
         return $this->success();
     }
     public function testotpwasage(Request $request){
-          Log::info("testotpwasage" );
+          // Log::info("testotpwasage" );
         return $this->success();
     }
 
     public function register(RegisterRequest $request){
         $data=$request->validated();
-        
+
         $user = User::withTrashed()
         // ->where("email" , $request->email)
         ->where("phone" , $request->phone)->first();
@@ -49,7 +49,7 @@ class UserAuthController extends Controller
         $confirmationCode=ConfirmationCodes::where('phone',$phone)
         ->orderByDESC('id')
         ->first();
-        Log::info("confirmationCode:-" .$confirmationCode );
+        // Log::info("confirmationCode:-" .$confirmationCode );
 
         if($user && !is_null($user->deleted_at)){
             if(!$confirmationCode || $confirmationCode->code != $request->otpCode || $confirmationCode->active ==0 ){
@@ -86,13 +86,13 @@ class UserAuthController extends Controller
         else{
             if (str_contains($request->phone, 'driver')) {
               return  $driver->login($request);
-            }            
+            }
             $data['email']=$request->phone;
         }
-           
-        if (!auth()->attempt($data)) 
+
+        if (!auth()->attempt($data))
             return $this->failed(null,trans('lang.wrong_username_or_password'));
-        
+
         $user=auth()->user();
         auth()->user()->update(['device_id'=>$request->device_id]);
         $user->token = $user->createToken('API Token')->accessToken;
@@ -132,11 +132,11 @@ class UserAuthController extends Controller
         // return $phone;
         ConfirmationCodes::create(["phone" => $phone,"code"=>$code]);
         $res= $this->sendSmsWhatsApp($phone, $code);
-        
+
         $data['otpCode'] = $code;
         return $this->success($data);
     }
-    
+
     public function sendSMS($phone, $message){
         $curl = curl_init();
         $obj=json_encode(["src"=> "+14152225555",
@@ -163,15 +163,15 @@ class UserAuthController extends Controller
             'Content-Type: application/json'
           ),
         ));
-        
+
         $response = curl_exec($curl);
-        
+
         curl_close($curl);
         // echo $response;
     }
-    
+
     public function sendSMSWasage($phone, $message){
-        
+
         $curl = curl_init();
         curl_setopt_array($curl, array(
           CURLOPT_URL => 'https://wasage.com/api/otp/',
@@ -194,26 +194,26 @@ class UserAuthController extends Controller
             'Content-Type: application/json'
           ),
         ));
-        
+
         $response = curl_exec($curl);
         curl_close($curl);
- 
+
         $res=json_decode($response);
         return $res;
     }
-    
-    
+
+
     public static function sendOtpAsync($phoneNumber, $message)
     {
         $countryCode = '20';
         // $formattedNumber = $countryCode . ltrim($phoneNumber, '');
         $formattedNumber = ltrim($phoneNumber, '+');
         // $formattedNumber = $phoneNumber;
-                //   Log::info("sendOtpAsync:-" .$formattedNumber );
+                //   // Log::info("sendOtpAsync:-" .$formattedNumber );
 
 
         $url = 'https://app.arrivewhats.com/api/send';
-        
+
         $data = AboutUs::whereId(1)->get();
 
         $params = [
@@ -233,7 +233,7 @@ class UserAuthController extends Controller
             $response = $promise->wait(); // Block until the request is complete
             $responseData = json_decode($response->getBody(), true);
 
-            Log::info('WhatsApp OTP sent successfully.', ['response' => $responseData]);
+            // Log::info('WhatsApp OTP sent successfully.', ['response' => $responseData]);
 
             return [
                 'success' => true,
@@ -241,7 +241,7 @@ class UserAuthController extends Controller
             ];
         } catch (\Throwable $exception) {
             Log::error('Failed to send WhatsApp OTP.', ['error' => $exception->getMessage()]);
-                Log::info("sendOtpAsync:success"  );
+                // Log::info("sendOtpAsync:success"  );
 
             return [
                 'success' => false,
@@ -251,7 +251,7 @@ class UserAuthController extends Controller
     }
 
 
-    
+
 
 
 }

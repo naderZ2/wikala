@@ -36,19 +36,19 @@ class FollowController extends Controller
         }
 
         $authUserId = Auth::id();
-        Log::info('User ID: ' . $userId);
-        Log::info('Auth User ID: ' . $authUserId);
-        
+        // Log::info('User ID: ' . $userId);
+        // Log::info('Auth User ID: ' . $authUserId);
+
         return $this->followService->followUser($userId, $authUserId);
     }
-    
+
     // Unfollow a user
     public function unfollow($userId)
     {
-        
-        
-        
-        
+
+
+
+
         return $this->followService->unfollowUser($userId);
     }
 
@@ -59,12 +59,12 @@ class FollowController extends Controller
         return $this->followService->getFollowers($userId, $authUserId);
     }
 
-    
+
     public function following($userId)
     {
         $authUserId = Auth::id();
         return $this->followService->getFollowing($userId, $authUserId);
     }
 
-    
+
 }

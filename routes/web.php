@@ -27,7 +27,7 @@ Route::view('QA_ar', 'QA_ar');
 
 
 // Route::get('auth/google/callback', function (Request $request) {
-    
+
 //     dd($request->all());
 // });
 
@@ -41,13 +41,13 @@ Route::middleware(['web'])->get('login/redirect', [Client\Auth\SocialController:
 Route::middleware(['web'])->get('login/google/callback', [Client\Auth\SocialController::class, 'handleGoogleCallback'] );
 
 // Route::middleware(['web'])->get('login/google/callback', function (Request $request) {
-//     Log::info('Google callback', $request->all());
+//     // Log::info('Google callback', $request->all());
 
 //     // Get user data from Google via Socialite
 //     // $user = Socialite::driver('google')->user();
 
 //     $githubUser = Socialite::driver('google')->user();
- 
+
 //     $user = User::updateOrCreate([
 //         'github_id' => $githubUser->id,
 //     ], [
@@ -63,8 +63,8 @@ Route::middleware(['web'])->get('login/google/callback', [Client\Auth\SocialCont
 
 
 
-Route::group(['middleware' => ['guest:admin']], function(){ 
-    
+Route::group(['middleware' => ['guest:admin']], function(){
+
     Route::get('/', function () {
         return redirect()->route('login-bs-validation');
     })->name('/');
@@ -81,8 +81,8 @@ Route::get('contact_us', [Admin\ContactUsControll::class, 'index'])->name('admin
 
 
 
-Route::group(['middleware' => ['auth:admin','CheckUserActiviation']], function(){ 
-    
+Route::group(['middleware' => ['auth:admin','CheckUserActiviation']], function(){
+
     Route::prefix('dashboard')->group(function () {
 
 
@@ -94,7 +94,7 @@ Route::group(['middleware' => ['auth:admin','CheckUserActiviation']], function()
             // Route::get('edit/{id}', [Admin\ReportController::class, 'edit'])->name('admin.reports.edit');
             // Route::post('update/{id}', [Admin\ReportController::class, 'update'])->name('admin.reports.update');
             // Route::delete('delete/{id}', [Admin\ReportController::class, 'destroy'])->name('admin.reports.destroy');
-            
+
             Route::prefix('ReportOption')->group(function () {
                 Route::get('index', [Admin\ReportOptionController::class, 'index'])->name('reportOption.index');
                 Route::post('store', [Admin\ReportOptionController::class, 'store'])->name('reportOption.store');
@@ -104,11 +104,11 @@ Route::group(['middleware' => ['auth:admin','CheckUserActiviation']], function()
             });
         });
 
-    
+
         Route::get('home', [Admin\StatisticsController::class, 'index'])->name('index');
         Route::get('ads/stats', [Admin\StatisticsController::class, 'getFilteredStats'])->name('ads.filteredStats');
         Route::get('ads/regions/by-city', [Admin\StatisticsController::class, 'getRegionsByCity'])->name('regions.byCity');
-        
+
 
 
 
@@ -135,12 +135,12 @@ Route::group(['middleware' => ['auth:admin','CheckUserActiviation']], function()
         Route::delete('delete_slider', [Admin\SliderController::class, 'destroy'])->name('slider.destroy');
         Route::resource('category', 'Admin\CategoryController');
         Route::get('category_details\{id}', [Admin\CategoryController::class, 'details'])->name('category_details');
-        
+
         Route::get('category_updateStatus\{id}', [Admin\CategoryController::class, 'updateStatus'])->name('category_updateStatus');
         Route::post('edit_category', [Admin\CategoryController::class, 'update'])->name('category.update');
-        
-        
-        
+
+
+
         // Route::resource('sections', 'Admin\SectionsController');
 
         // Route::post('edit_section', [Admin\SectionsController::class, 'update'])->name('sections.update');
@@ -148,24 +148,24 @@ Route::group(['middleware' => ['auth:admin','CheckUserActiviation']], function()
         Route::resource('attributes', AttributeController::class);
         Route::get('attributes/{id}/enable', [AttributeController::class, 'enable'])->name('attributes.enable');
         Route::delete('attributes/delete', [AttributeController::class, 'destroy'])->name('attributes.delete');
-        
-        
+
+
         Route::resource('category-attributes', Admin\CategoryAttributeController::class);
         Route::delete('category-attributes/delete', [Admin\CategoryAttributeController::class, 'destroy'])->name('categories_attributes.delete');
-        
+
         Route::get('category-attributes/{id}/enable', [Admin\CategoryAttributeController::class, 'enable'])->name('category-attributes.enable');
-        
-        
+
+
         Route::resource('rejected-reasons', RejectedReasonController::class);
         Route::get('rejected-reasons/{id}/enable', [RejectedReasonController::class, 'enable'])->name('rejected-reasons.enable');
         Route::post('edit_rejected_reasons', [RejectedReasonController::class, 'update'])->name('dashboard.rejected-reasons.update');
-        
+
 
         Route::resource('ads_type', AdsTypeController::class);
         Route::get('ads_type/{id}/enable', [AdsTypeController::class, 'enable'])->name('ads_type.enable');
         Route::post('edit_ads_type', [AdsTypeController::class, 'update'])->name('dashboard.ads_type.update');
-        
-        
+
+
         Route::resource('ads', Admin\AdsController::class);
         Route::get('ads/details/{id}', [Admin\AdsController::class, 'details'])->name('ads.details');
         Route::get('ads/editStatus/{id}', [Admin\AdsController::class, 'editStatus'])->name('ads.editStatus');
@@ -179,26 +179,26 @@ Route::group(['middleware' => ['auth:admin','CheckUserActiviation']], function()
     Route::get('change_active\{id}',[Admin\DiscountController::class, 'changeActive'])->name('change_active');
 
     Route::prefix('events')->group(function () {
-            
+
         Route::get('daily_events', [Admin\DailyEventController::class, 'events'])->name('daily_events.index');
         Route::post('daily_events\{id}', [Admin\DailyEventController::class, 'destroy'])->name('daily_events.destroy');
         Route::post('daily_events/rejection', [Admin\DailyEventController::class, 'rejection'])->name('daily_events.rejection');
-        
-        
-        
+
+
+
         Route::get('daily_event_details\{id}', [Admin\DailyEventController::class, 'details'])->name('daily_events.details');
         Route::get('daily_event_status\{id}', [Admin\DailyEventController::class, 'changeStatus'])->name('daily_events.change_status');
-        
+
         Route::get('daily_events/create', [Admin\DailyEventController::class, 'create'])->name('daily_events.create');
-        
+
         Route::resource('event_category', 'Admin\EventCategoryController');
         Route::post('edit_event_category', [Admin\EventCategoryController::class, 'update'])->name('event_category.update');
         Route::post('edit_event_category\{id}', [Admin\EventCategoryController::class, 'destroy'])->name('event_category.destroy');
         Route::post('\event-categories\{id}\move-up', [Admin\EventCategoryController::class, 'moveUp'])->name('event-categories.moveUp');
         Route::post('\event-categories\{id}\move-down', [Admin\EventCategoryController::class, 'moveDown'])->name('event-categories.moveDown');
-        
+
     });
-        
+
 
 
 
@@ -208,7 +208,7 @@ Route::group(['middleware' => ['auth:admin','CheckUserActiviation']], function()
         Route::get('clients', [Admin\UsersController::class, 'index'])->name('admin.clients');
 
         Route::post('clients', [Admin\UsersController::class, 'resetPassword'])->name('admin.clients.reset_password');
-        
+
         Route::get('we', [Admin\AdminController::class, 'update']);
 
         Route::resource('admins', 'Admin\AdminController');
@@ -219,7 +219,7 @@ Route::group(['middleware' => ['auth:admin','CheckUserActiviation']], function()
         Route::resource('seller', 'Admin\SellerController');
         Route::put('update_seller\{id}', [Admin\SellerController::class, 'update'])->name('seller.update');
         Route::post('change_activity_status', [Admin\SellerController::class, 'changeActivityStatus'])->name('seller.change_activity_status');
-        
+
         Route::resource('driver', 'Admin\DriverController');
         Route::put('update_driver\{id}', [Admin\DriverController::class, 'update'])->name('driver.update');
         Route::post('change_driver_status', [Admin\DriverController::class, 'changeActivityStatus'])->name('driver.change_activity_status');
@@ -236,7 +236,7 @@ Route::group(['middleware' => ['auth:admin','CheckUserActiviation']], function()
         // Route::get('view_consultations', [Admin\ConsultationsController::class, 'index'])->name('admin.consultation.index');
         // Route::get('view_consultation\{id}', [Admin\ConsultationsController::class, 'details'])->name('admin.consultation.review');
     });
-  
+
     Route::prefix('settings')->group(function () {
         Route::get('settings', [Admin\AboutUsController::class, 'edit'])->name('settings.edit');
         Route::post('edit_settings', [Admin\AboutUsController::class, 'update'])->name('settings.update');
@@ -245,12 +245,12 @@ Route::group(['middleware' => ['auth:admin','CheckUserActiviation']], function()
     Route::prefix('evaluations')->group(function () {
         // Route::get('view_evaluations', [Admin\EvaluationController::class, 'index'])->name('admin.evaluations.index');
         // Route::get('view_evaluations2', [Admin\EvaluationController::class, 'index'])->name('admin_evaluations');
-        
+
         // Route::get('accept_evaluation/{id}', [Admin\EvaluationController::class, 'accept'])->name('admin.evaluations.accept');
-        
+
         // Route::get('refuse_evaluation/{id}', [Admin\EvaluationController::class, 'refuse'])->name('admin.evaluations.refuse');
     });
-   
+
     Route::prefix('notifications')->group(function () {
         Route::get('view_notifications', [Admin\NotificationController::class, 'index'])->name('admin.notifications.index');
         Route::post('store_notification', [Admin\NotificationController::class, 'store'])->name('admin.notifications.store');
@@ -260,7 +260,7 @@ Route::group(['middleware' => ['auth:admin','CheckUserActiviation']], function()
 
     Route::prefix('orders')->group(function () {
 
-        
+
         Route::get('products', [Admin\ProductController::class, 'index'])->name('product.index');
         Route::get('products/{product}/edit', [Admin\ProductController::class, 'edit'])->name('product.edit');
         Route::get('products/create', [Admin\ProductController::class, 'create'])->name('product.create');
@@ -273,14 +273,14 @@ Route::group(['middleware' => ['auth:admin','CheckUserActiviation']], function()
         Route::get('orders/completed', [Admin\OrderController::class, 'index'])->name('order.completed');
         Route::get('orders/new', [Admin\OrderController::class, 'index'])->name('order.new');
         Route::get('orders/under_preparation', [Admin\OrderController::class, 'index'])->name('order.under_preparation');
-        
+
         Route::get('order/{id}', [Admin\OrderController::class, 'details'])->name('order.details');
         Route::get('invoice/{id}', [Admin\OrderController::class, 'generateInvoice'])->name('order.generate_nvoice');
         Route::get('invoice/show/{id}', [Admin\OrderController::class, 'ShowInvoice'])->name('order.show_invoice');
         Route::get('change_status/{id}/{action}', [Admin\OrderController::class, 'changeOrderStatus'])->name('order.change_status');
         Route::post('assign_driver', [Admin\OrderController::class, 'assignDriver'])->name('order.assign_driver');
 
-     
+
 
         // Route::get('packages',[Admin\PackageController::class, 'index'])->name('admin.packages');
         // Route::get('subscriptions',[Admin\PackageController::class, 'subscriptions'])->name('admin.subscriptions');
@@ -288,7 +288,7 @@ Route::group(['middleware' => ['auth:admin','CheckUserActiviation']], function()
         // Route::post('edit_package',[Admin\PackageController::class, 'update'])->name('admin.package.edit');
         // Route::get('delete_package',[Admin\PackageController::class, 'destroy'])->name('admin.package.delete');
     });
-    
+
     Route::prefix('special_request')->group(function () {
         Route::get('index', [Admin\SpecialRequestController::class, 'index'])->name('admin.specialRequest.index');
         Route::get('details/{id}', [Admin\SpecialRequestController::class, 'details'])->name('admin.specialRequest.details');
@@ -312,7 +312,7 @@ Route::group(['middleware' => ['auth:admin','CheckUserActiviation']], function()
 
 
 
-// seller serves availability 
+// seller serves availability
 
 
 
@@ -329,12 +329,12 @@ Route::view('login-bs-validation','authentication.login-bs-validation')->name('l
 Route::get('lang/{locale}', function ($locale) {
     if (! in_array($locale, ['en', 'de', 'es','fr','pt', 'cn', 'ae'])) {
         abort(400);
-    }   
+    }
     Session()->put('locale', $locale);
     Session::get('locale');
     return redirect()->back();
 })->name('lang');
-    
+
 
 
 Route::prefix('widgets')->group(function () {
@@ -343,14 +343,14 @@ Route::prefix('widgets')->group(function () {
 });
 
 Route::prefix('page-layouts')->group(function () {
-    Route::view('box-layout', 'page-layout.box-layout')->name('box-layout');    
-    Route::view('layout-rtl', 'page-layout.layout-rtl')->name('layout-rtl');    
-    Route::view('layout-dark', 'page-layout.layout-dark')->name('layout-dark');    
-    Route::view('hide-on-scroll', 'page-layout.hide-on-scroll')->name('hide-on-scroll');    
-    Route::view('footer-light', 'page-layout.footer-light')->name('footer-light');    
-    Route::view('footer-dark', 'page-layout.footer-dark')->name('footer-dark');    
-    Route::view('footer-fixed', 'page-layout.footer-fixed')->name('footer-fixed');    
-}); 
+    Route::view('box-layout', 'page-layout.box-layout')->name('box-layout');
+    Route::view('layout-rtl', 'page-layout.layout-rtl')->name('layout-rtl');
+    Route::view('layout-dark', 'page-layout.layout-dark')->name('layout-dark');
+    Route::view('hide-on-scroll', 'page-layout.hide-on-scroll')->name('hide-on-scroll');
+    Route::view('footer-light', 'page-layout.footer-light')->name('footer-light');
+    Route::view('footer-dark', 'page-layout.footer-dark')->name('footer-dark');
+    Route::view('footer-fixed', 'page-layout.footer-fixed')->name('footer-fixed');
+});
 
 Route::prefix('project')->group(function () {
     Route::view('projects', 'project.projects')->name('projects');

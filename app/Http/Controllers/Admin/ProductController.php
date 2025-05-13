@@ -17,7 +17,7 @@ class ProductController extends Controller
 {
     use FileUploadTrait;
 
-    
+
     public function index(){
         $this->lang();
         $products=Product::with('images:id,product_id,name','seller:id,name',"category:id,$this->name")
@@ -30,13 +30,13 @@ class ProductController extends Controller
         $this->lang();
         $categories=Category::get(['id' , 'parent_id' , $this->name , 'end_point']);
         $sellers=Seller::where('active','1')->get(['id','name']);
-        Log::info($categories);
-        Log::info($sellers);
-        
-        return view('admin.product.add',compact('categories','sellers'));        
-        
+        // Log::info($categories);
+        // Log::info($sellers);
+
+        return view('admin.product.add',compact('categories','sellers'));
+
         // $temp = [];
-        
+
     }
     public function edit(string $id ){
         $this->lang();
@@ -50,9 +50,9 @@ class ProductController extends Controller
 
 
     public function updateProduct(Request $request){
-        Log::info('product');
+        // Log::info('product');
         $product=Product::withTrashed()->find($request->id);
-        Log::info($product);
+        // Log::info($product);
         // $data= $request->validated();
         $product->update([
             'title_ar'=>$request->title_ar,
@@ -95,8 +95,8 @@ class ProductController extends Controller
                 }
             }
         }
-    
-        return  to_route('product.index')->with('success',trans('lang.updated')); 
+
+        return  to_route('product.index')->with('success',trans('lang.updated'));
     }
 
 
@@ -108,7 +108,7 @@ class ProductController extends Controller
 
 
     public function store(StoreRequest $request){
-        
+
         $data=$request->validated();
         $data['seller_id'] =$request->seller_id ;
         $data['main_image'] = $this->uploadFile($request->main_image,'products');
@@ -118,12 +118,12 @@ class ProductController extends Controller
                 'name' =>  $this->uploadFile($img,'products'),
             ]);
         }
-        Log::info($data);
-        return  to_route('product.index')->with('success',trans('lang.created')); 
+        // Log::info($data);
+        return  to_route('product.index')->with('success',trans('lang.created'));
 
         // return 'test';
     }
-    
+
     public function update($id){
         #TODO complete
         $product =Product::find($id);
@@ -132,23 +132,23 @@ class ProductController extends Controller
         return to_route('product.index')->with('success',trans('lang.updated'));
     }
     public function hide_product($id){
-        
-        Log::info($id);
+
+        // Log::info($id);
         $product =Product::withTrashed()->find($id);
-        Log::info($product);
+        // Log::info($product);
         // $status= $product->deleted_at == null? 1:0;
         // $product->update(['is_available' => $status]);
-        
+
         if(is_null($product->deleted_at)){
-            Log::info('delete');
-            
+            // Log::info('delete');
+
             $product->delete();
-            
+
         }else{
-            Log::info('restore');
-            
+            // Log::info('restore');
+
             $product->restore();
-            
+
 
         }
 

@@ -23,7 +23,7 @@ class ServerNotificationController extends Controller
         $data = $request->getData();
 
         if (! $this->isParsable($data)) {
-            Log::info(sprintf("Google Play malformed RTDN: %s", json_encode($request->all())));
+            // Log::info(sprintf("Google Play malformed RTDN: %s", json_encode($request->all())));
 
             return;
         }
@@ -33,7 +33,7 @@ class ServerNotificationController extends Controller
 
         if ($googleNotification->isTest()) {
             $version = $developerNotification->getTestNotification()->getVersion();
-            Log::info(sprintf("Google Play Test Notification, version: %s", $version));
+            // Log::info(sprintf("Google Play Test Notification, version: %s", $version));
         }
 
         if ($developerNotification->isSubscriptionNotification()) {
@@ -52,7 +52,7 @@ class ServerNotificationController extends Controller
         $appStoreNotification = new AppStoreServerNotification($serverNotification);
 
         if ($appStoreNotification->isTest()) {
-            Log::info("AppStore Test Notification");
+            // Log::info("AppStore Test Notification");
         }
 
         $event = AppStoreEventFactory::create($appStoreNotification);

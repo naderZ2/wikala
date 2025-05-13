@@ -24,10 +24,10 @@ class OrderController extends Controller
             $orders=Order::whereSellerId(auth()->id())->where('status','order_placed')->with('user:id,name,phone')->get();
         }elseif($page=='completed')
         {
-            
+
             // Log::info('thecompleted');
             $orders=Order::whereSellerId(auth()->id())->whereIn('status',['cancel','delivered'])->with('user:id,name,phone')->get();
-            
+
         }elseif($page=='under_preparation')
         {
             // Log::info('theunder_preparation');
@@ -37,7 +37,7 @@ class OrderController extends Controller
         {
             $orders=Order::whereSellerId(auth()->id())
             ->with('user:id,name,phone')->get();
-            
+
         }
 
         return view('seller.order.index',compact('orders'));
@@ -52,23 +52,23 @@ class OrderController extends Controller
     public function changeStatus(EditStatusRequest $request){
         #TODO complete
         Order::whereId($request->id)->update(['status' =>""]);
-        return back()->with('success',trans('lang.updatted')); 
+        return back()->with('success',trans('lang.updatted'));
     }
-    
+
       public function generateInvoice($id)
     {
 
         // Log::info('order');
         // $this->lang();
 
-        
+
         $mainLang = App::getLocale();
-        
-        
-        
+
+
+
         $order=Order::whereId($id)->with('user:id,name,phone,email,email',"orderDetails.product",'seller:id,email,name','address','address.region')->first();
-        
-        
+
+
         if($order->user->lang =='ar'){
             App::setLocale('ae');
             // Log::info('ae');
@@ -79,7 +79,7 @@ class OrderController extends Controller
         }
 
         // Log::info($order);
-        
+
         $invoice = view('admin.order.invoice', compact('order'))->render();
 
         $pdf = new Mpdf([
@@ -103,7 +103,7 @@ class OrderController extends Controller
 
         $pdf->Output($filePath, 'F');
 
-        $order->bill_url = $path; 
+        $order->bill_url = $path;
         $order->save();
         // return 'sss';
         App::setLocale($mainLang);
@@ -113,7 +113,7 @@ class OrderController extends Controller
         // return response()->json(['message' => 'Invoice saved successfully!', 'path' => $filePath]);
 
     }
-    
+
       public function changeOrderStatus($id,$action=null,OrderService $service){
         $request =(object) [
             "id" => $id,

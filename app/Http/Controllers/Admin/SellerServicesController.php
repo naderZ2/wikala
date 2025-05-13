@@ -17,19 +17,19 @@ class SellerServicesController extends Controller
     public function index(){
         $this->lang();
         $sellerServices=SellerServicesAvailability::with('category','product','seller')->get();
-        // log::info($sellerServices);
+        // Log::info($sellerServices);
         return view('admin.sellerServices.index',compact('sellerServices'));
     }
-    
-    
+
+
     public function updateAvailability(int $id){
         $sellerServices =SellerServicesAvailability::find($id);
         $status= $sellerServices->availability == 0?1:0;
         $sellerServices->update(['availability' => $status]);
         return to_route('admin.sellerServices.index')->with('success',trans('lang.updated'));
     }
-    
-    
+
+
     public function create()
     {
 
@@ -66,30 +66,30 @@ class SellerServicesController extends Controller
         return redirect()->route('admin.sellerServices.index')->with('success',trans('lang.created'));
     }
 
-    
+
 
 
     public function getCategoriesBySeller(Request $request)
     {
         $sellerId = $request->input('seller_id');
-    
+
         // Fetch categories associated with the selected seller
         $categories = Category::whereHas('sellers', function ($query) use ($sellerId) {
             $query->where('sellers.id', $sellerId);
         })->get();
-    
+
         return response()->json(['categories' => $categories]);
     }
-    
+
     public function getProductsByCategory(Request $request)
     {
         $categoryId = $request->input('category_id');
-    
+
         // Fetch products associated with the selected category
         $products = Product::where('category_id', $categoryId)->where('is_available', 1)->get();
-    
+
         return response()->json(['products' => $products]);
     }
-    
+
 
 }

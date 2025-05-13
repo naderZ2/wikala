@@ -9,8 +9,8 @@ use App\Http\Controllers\Controller;
 
 class ContactUsControll extends Controller
 {
-    
-    
+
+
     public function index()
     {
         $contact=AboutUs::find(1);

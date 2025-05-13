@@ -34,13 +34,13 @@ class AdsController extends Controller
 
 
 
-    
+
     public function details(Request $request, $id)
     {
         $this->lang();
         $ad = Ad::with(['user', "category:id,$this->name", "attributes.attribute:id,$this->name,type,image", 'rejectedReason','images',"city:id,$this->name","region:id,$this->name"])->findOrFail($id);
-        Log::info($ad);
-        
+        // Log::info($ad);
+
         return view('admin.ads.details', compact('ad'));
     }
 
@@ -54,12 +54,12 @@ class AdsController extends Controller
         $rejectedReasons = RejectedReason::all();
         return view('admin.ads.editStatus', compact('ad','rejectedReasons'));
     }
-    
+
 
     public function changeStatus(Request $request, $id)
     {
         $this->lang();
-        Log::info($request->all(), ['id' => $id]);
+        // Log::info($request->all(), ['id' => $id]);
 
 
         $request->validate([
@@ -68,23 +68,23 @@ class AdsController extends Controller
         ], [
             'rejected_id.required_if' => __('lang.rejected_reason_required'),
         ]);
-    
+
         $ad = Ad::findOrFail($id);
-    
+
         $ad->status = $request->status;
-    
+
         // Handle rejected reason logic
         if ($request->status === 'rejected') {
             $ad->rejected_id = $request->rejected_id;
         } else {
             $ad->rejected_id = null; // Clear it if not rejected
         }
-    
+
         $ad->save();
-    
+
         // return redirect()->route('ads.index')->with('success', trans('lang.updated'));
         return redirect()->route('ads.details',$id)->with('success', trans('lang.updated'));
     }
-    
+
 
 }

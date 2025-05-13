@@ -38,13 +38,13 @@ class   StatisticsController extends Controller
 
         $rejectedAds = Ad::where('status', 'rejected')
                 ->count();
-                
+
         $outdatedAds = Ad::where('end_date', '<=', now())->count();
-        
+
         $cities = City::whereNull('parent_id')->get(['id',$this->name]);
 
         $regions = City::whereNotNull('parent_id')->get(['id',$this->name]);
-        
+
         return view('admin.home',compact('allAds','activeAds','underReviewAds','rejectedAds','outdatedAds','cities','regions'));
     }
 
@@ -55,19 +55,19 @@ class   StatisticsController extends Controller
 
     public function getFilteredStats(Request $request)
     {
-        Log::info($request->all());
+        // Log::info($request->all());
         $query = Ad::query();
-    
+
         if ($request->filled('city_id') && $request->city_id !== 'All') {
             $query->where('city_id', $request->city_id);
         }
-    
+
         if ($request->filled('region_id') && $request->region_id !== 'All') {
             $query->where('region_id', $request->region_id);
         }
-    
+
         $allAds = (clone $query)->count();
-    
+
         $activeAds = (clone $query)->where('status', 'accepted')
                                     ->where('start_date', '<=', now())
                                     ->where('end_date', '>=', now())
@@ -76,10 +76,10 @@ class   StatisticsController extends Controller
         $underReviewAds = (clone $query)->where('status', 'under_review')
                                         ->where('end_date', '>=', now())
                                         ->count();
-    
+
         $rejectedAds = (clone $query)->where('status', 'rejected')->count();
         $outdatedAds = (clone $query)->where('end_date', '<=', now())->count();
-    
+
         return response()->json([
             'allAds' => $allAds,
             'activeAds' => $activeAds,
@@ -87,14 +87,14 @@ class   StatisticsController extends Controller
             'rejectedAds' => $rejectedAds,
             'outdatedAds' => $outdatedAds,
         ]);
-        
+
     }
 
 
     public function getRegionsByCity(Request $request)
     {
         $this->lang();
-        
+
         if ($request->filled('city_id') && $request->city_id !== 'All') {
             $regions = City::where('parent_id', $request->city_id)->get(['id',$this->name]);
             return response()->json($regions);
@@ -102,7 +102,7 @@ class   StatisticsController extends Controller
         return response()->json([]);
     }
 
-    
-    
+
+
 
 }

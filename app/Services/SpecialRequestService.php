@@ -33,13 +33,13 @@ class SpecialRequestService
         // $specialRequest = $this->createSpecialRequestDetails($data,$specialRequest->id);
 
         return $specialRequest;
-        
+
     }
 
     public function createSpecialRequestDetails($data ,$role = 'client')
     {
-        Log::info($role);
-        Log::info($data);
+        // Log::info($role);
+        // Log::info($data);
         if ($data['type'] === 'file') {
             // Handle file upload
 
@@ -75,7 +75,7 @@ class SpecialRequestService
             'role' => $role,
             'content' => $content,
         ]);
-        
+
 
 
         return $specialRequestDetails;
