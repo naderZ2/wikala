@@ -151,3 +151,7 @@
 [06-Feb-2025 06:14:30 UTC] PHP Deprecated:  Required parameter $service follows optional parameter $action in /home/ezhalhakw/public_html/ezhalha/app/Http/Controllers/Admin/OrderController.php on line 58
 [06-Feb-2025 06:15:10 UTC] PHP Deprecated:  Required parameter $service follows optional parameter $action in /home/ezhalhakw/public_html/ezhalha/app/Http/Controllers/Admin/OrderController.php on line 58
 [06-Feb-2025 06:15:15 UTC] PHP Deprecated:  Required parameter $service follows optional parameter $action in /home/ezhalhakw/public_html/ezhalha/app/Http/Controllers/Admin/OrderController.php on line 58
+[13-May-2025 04:07:25 UTC] PHP Fatal error:  Allowed memory size of 33554432 bytes exhausted (tried to allocate 2621440 bytes) in /home/wikala/public_html/wikala/vendor/composer/autoload_static.php on line 711
+[13-May-2025 04:07:28 UTC] PHP Fatal error:  Allowed memory size of 33554432 bytes exhausted (tried to allocate 2621440 bytes) in /home/wikala/public_html/wikala/vendor/composer/autoload_static.php on line 711
+[13-May-2025 04:07:31 UTC] PHP Fatal error:  Allowed memory size of 33554432 bytes exhausted (tried to allocate 2621440 bytes) in /home/wikala/public_html/wikala/vendor/composer/autoload_static.php on line 711
+[13-May-2025 04:07:34 UTC] PHP Fatal error:  Allowed memory size of 33554432 bytes exhausted (tried to allocate 2621440 bytes) in /home/wikala/public_html/wikala/vendor/composer/autoload_static.php on line 711
