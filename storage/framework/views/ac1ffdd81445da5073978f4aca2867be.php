@@ -9,13 +9,11 @@
 <link rel="stylesheet" type="text/css" href="<?php echo e(asset('assets/css/vendors/feather-icon.css')); ?>">
 <!-- Plugins css start-->
 <?php echo $__env->yieldContent('css'); ?>
-<link rel="stylesheet" type="text/css" href="<?php echo e(asset('assets/css/vendors/scrollbar.css')); ?>">
+<!-- Plugins css Ends-->
 <!-- Bootstrap css-->
 <link rel="stylesheet" type="text/css" href="<?php echo e(asset('assets/css/vendors/bootstrap.css')); ?>">
 <!-- App css-->
 <link rel="stylesheet" type="text/css" href="<?php echo e(asset('assets/css/style.css')); ?>">
 <link id="color" rel="stylesheet" href="<?php echo e(asset('assets/css/color-1.css')); ?>" media="screen">
 <!-- Responsive css-->
-<link rel="stylesheet" type="text/css" href="<?php echo e(asset('assets/css/responsive.css')); ?>">
-
-<?php /**PATH C:\Users\HP\OneDrive\Desktop\_\codeing\work\mazen\wikala\resources\views/layouts/simple/css.blade.php ENDPATH**/ ?>
+<link rel="stylesheet" type="text/css" href="<?php echo e(asset('assets/css/responsive.css')); ?>"><?php /**PATH /home/wikala/public_html/wikala/resources/views/layouts/authentication/css.blade.php ENDPATH**/ ?>

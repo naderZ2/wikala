@@ -72,4 +72,4 @@
     <script class="empty-template" type="text/x-handlebars-template"><div class="EmptyMessage">Your search turned up 0 results. This most likely means the backend is down, yikes!</div></script>
   </div>
 </div>
-<?php /**PATH C:\Users\HP\OneDrive\Desktop\_\codeing\work\mazen\wikala\resources\views/admin/layout/header.blade.php ENDPATH**/ ?>
+<?php /**PATH /home/wikala/public_html/wikala/resources/views/admin/layout/header.blade.php ENDPATH**/ ?>

@@ -28,4 +28,4 @@
 <?php $__env->startSection('script'); ?>
 
 <?php $__env->stopSection(); ?>
-<?php echo $__env->make('layouts.errors.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\Users\HP\OneDrive\Desktop\_\codeing\work\mazen\wikala\resources\views/errors/404.blade.php ENDPATH**/ ?>
+<?php echo $__env->make('layouts.errors.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH /home/wikala/public_html/wikala/resources/views/errors/404.blade.php ENDPATH**/ ?>

@@ -296,4 +296,4 @@
 
 
 
-<?php /**PATH C:\Users\HP\OneDrive\Desktop\_\codeing\work\mazen\wikala\resources\views/admin/layout/sidebar.blade.php ENDPATH**/ ?>
+<?php /**PATH /home/wikala/public_html/wikala/resources/views/admin/layout/sidebar.blade.php ENDPATH**/ ?>

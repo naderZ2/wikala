@@ -61,4 +61,4 @@
 	}
 	
 	
-</script><?php /**PATH C:\Users\HP\OneDrive\Desktop\_\codeing\work\mazen\wikala\resources\views/layouts/simple/script.blade.php ENDPATH**/ ?>
+</script><?php /**PATH /home/wikala/public_html/wikala/resources/views/admin/layout/script.blade.php ENDPATH**/ ?>
