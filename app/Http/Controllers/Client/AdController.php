@@ -28,13 +28,15 @@ class AdController extends Controller
 
     public function index(Request $request)
     {
-        // Log::info('Ad index method called', ['request' => $request->current_page]);
         $perPage = $request->get('per_page', 10);
         $userId = auth()->id();
+
         $ads = Ad::whereDoesntHave('hiddenAds', function ($query) use ($userId) {
                 $query->where('user_id', $userId);
             })
-                ->paginate($perPage);
+            ->where('status', 'accepted') 
+            ->paginate($perPage);
+
         return $this->success([
             'items' => $ads->items(),
             'pagination' => [
@@ -49,8 +51,9 @@ class AdController extends Controller
     public function store(StoreRequest $request)
     {
         $data = $request->validated();
-        $ad = $this->adService->storeAdWithImages($data );
-        // Log::info('Ad created successfully', ['ad' => $request]);
+        $ad = $this->adService->storeAdWithImages($data);
+        Log::info('Ad created successfully', ['ad' => $request]);
+
         return $this->success($ad, trans('lang.created'));
     }
 
@@ -62,12 +65,9 @@ class AdController extends Controller
 
     public function update(AdUpdateRequest $request, $id)
     {
-        // Log::info('Ad updated successfully', ['ad' => $request]);
         $data = $request->validated();
-        // dd($request->all());
-        // Log::info('Ad updated successfully', ['ad' => $request->title]);
-        // $data = $request->all();
         $ad = $this->adService->updateAd($id, $data);
+
         return $this->success($ad, 'Ad updated successfully.');
     }
 

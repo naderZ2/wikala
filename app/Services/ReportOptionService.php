@@ -22,6 +22,10 @@ class ReportOptionService
     {
         return $this->reportOptionRepository->all();
     }
+    public function getEnable()
+    {
+        return $this->reportOptionRepository->getEnable();
+    }
 
     public function update($id, array $data)
     {

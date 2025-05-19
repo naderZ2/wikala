@@ -393,13 +393,16 @@
 		"Additional_Notes" => "ملاحظات إضافية",
 		"Ad_Title" => "عنوان الإعلان",
 		"User_Specific_Relation" => "علاقة المستخدم المحددة",
-		// "number" => "رقم",
 		"actions" => "الإجراءات",
-		
 		
 		"already_following" => "أنت تتابع هذا المستخدم بالفعل.",
 		"not_following" => "أنت لا تتابع هذا المستخدم.",
 		"follow_success" => "تمت متابعة المستخدم بنجاح.",
 		"unfollow_success" => "تم إلغاء متابعة المستخدم بنجاح.",
+		
+		"attribute_not_found" => "الخاصية غير موجودة",
+		"attribute_id_required" => "رقم الخاصية مطلوب",
+		"attribute_value_required" => "قيمة الخاصية مطلوبة",
+		
 	]
 ?>

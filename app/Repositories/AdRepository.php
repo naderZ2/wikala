@@ -32,6 +32,7 @@ class AdRepository
             return response()->json(['message' => 'Unauthorized'], 403);
         }
         $ad->update($data);
+        $ad->status = 'under_review';
         $ad->save();
         // Log::info('Ad updated successfully', ['ad' => $ad]);
         return $ad;

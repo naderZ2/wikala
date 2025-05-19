@@ -393,6 +393,10 @@
 		"follow_success" => "User followed successfully.",
 		"unfollow_success" => "User unfollowed successfully.",
 
-	
+		"attribute_not_found" => "Attribute not found",
+		"attribute_id_required" => "Attribute ID is required",
+		"attribute_value_required" => "Attribute value is required",
+
+
 		]
 ?>

@@ -121,17 +121,23 @@
 					
 					<div class="row mb-3">
 						<div class="col-md-3 fw-bold">@lang('lang.Name'):</div>
-						<div class="col-md-9">{{ $attributes->attribute->name }}</div>
+						<div class="col-md-9">{{ $attributes?->attribute?->name }}</div>
 					</div>
 					<div class="row mb-3">
+						<div class="col-md-3 fw-bold">@lang('lang.Image'):
+
+
+
+							
+						</div>
+
 						{{-- <div class="col-md-9">{{ $attributes->attribute->image }}</div> --}}
-						<div class="col-md-3 fw-bold">@lang('lang.Image'):</div>
-					</div>
-					<div class="gallery my-gallery card-body row" itemscope="">
-						<figure class="col-xl-3 col-md-4 col-6" itemprop="associatedMedia" itemscope="">
-							<a href="{{asset($attributes->attribute->image)}}" itemprop="contentUrl" data-size="1600x950"><img class="img-thumbnail" src='{{asset($attributes->attribute->image)}}' itemprop="thumbnail" alt="Image description"></a>
-							{{-- <figcaption itemprop="caption description"></figcaption> --}}
-						</figure>
+						<div class="gallery my-gallery card-body row"  itemscope="">
+							<figure class="col-xl-3 col-md-4 col-6" itemprop="associatedMedia" itemscope="">
+								<a href="{{asset($attributes?->attribute?->image)}}" itemprop="contentUrl" data-size="1600x950"><img class="img-thumbnail" src='{{asset($attributes?->attribute?->image)}}' itemprop="thumbnail" alt="Image description"></a>
+								{{-- <figcaption itemprop="caption description"></figcaption> --}}
+							</figure>
+						</div>
 					</div>
 					@endforeach
 

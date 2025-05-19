@@ -91,6 +91,11 @@ class AdUpdateRequest extends FormRequest
             'main_image.image'       => __('lang.main_image_invalid'),
             'main_image.mimes'       => __('lang.main_image_mimes'),
             'main_image.max'         => __('lang.main_image_max'),
+            
+            'attributes.exists'         => __('lang.attribute_not_found'),
+            'attributes.*.id.required'  => __('lang.attribute_id_required'),
+            'attributes.*.id.exists'    => __('lang.attribute_not_found'),
+            'attributes.*.value.required' => __('lang.attribute_value_required'),
         ];
     }
 }

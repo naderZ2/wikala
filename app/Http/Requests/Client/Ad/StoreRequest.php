@@ -22,7 +22,9 @@ class StoreRequest extends FormRequest
      * Get the validation rules that apply to the request.
      *
      * @return array
+     *
      */
+
     public function rules()
     {
         return [
@@ -56,17 +58,18 @@ class StoreRequest extends FormRequest
      * @param Validator $validator
      * @return void
      */
+
     public function failedValidation(Validator $validator)
     {
         throw new HttpResponseException($this->failed(null, $validator->errors()->first()));
     }
 
 
-        /**
-     * Custom validation messages.
-     *
-     * @return array
-     */
+    /**
+    * Custom validation messages.
+    *
+    * @return array
+    */
     public function messages(): array
     {
         return [
@@ -91,6 +94,11 @@ class StoreRequest extends FormRequest
             'main_image.image'       => __('lang.main_image_invalid'),
             'main_image.mimes'       => __('lang.main_image_mimes'),
             'main_image.max'         => __('lang.main_image_max'),
+
+            'attributes.exists'         => __('lang.attribute_not_found'),
+            'attributes.*.id.required'  => __('lang.attribute_id_required'),
+            'attributes.*.id.exists'    => __('lang.attribute_not_found'),
+            'attributes.*.value.required' => __('lang.attribute_value_required'),
         ];
     }
 

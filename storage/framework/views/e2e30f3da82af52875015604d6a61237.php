@@ -115,17 +115,23 @@
 					
 					<div class="row mb-3">
 						<div class="col-md-3 fw-bold"><?php echo app('translator')->get('lang.Name'); ?>:</div>
-						<div class="col-md-9"><?php echo e($attributes->attribute->name); ?></div>
+						<div class="col-md-9"><?php echo e($attributes?->attribute?->name); ?></div>
 					</div>
 					<div class="row mb-3">
-						
-						<div class="col-md-3 fw-bold"><?php echo app('translator')->get('lang.Image'); ?>:</div>
-					</div>
-					<div class="gallery my-gallery card-body row" itemscope="">
-						<figure class="col-xl-3 col-md-4 col-6" itemprop="associatedMedia" itemscope="">
-							<a href="<?php echo e(asset($attributes->attribute->image)); ?>" itemprop="contentUrl" data-size="1600x950"><img class="img-thumbnail" src='<?php echo e(asset($attributes->attribute->image)); ?>' itemprop="thumbnail" alt="Image description"></a>
+						<div class="col-md-3 fw-bold"><?php echo app('translator')->get('lang.Image'); ?>:
+
+
+
 							
-						</figure>
+						</div>
+
+						
+						<div class="gallery my-gallery card-body row"  itemscope="">
+							<figure class="col-xl-3 col-md-4 col-6" itemprop="associatedMedia" itemscope="">
+								<a href="<?php echo e(asset($attributes?->attribute?->image)); ?>" itemprop="contentUrl" data-size="1600x950"><img class="img-thumbnail" src='<?php echo e(asset($attributes?->attribute?->image)); ?>' itemprop="thumbnail" alt="Image description"></a>
+								
+							</figure>
+						</div>
 					</div>
 					<?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 

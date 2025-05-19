@@ -22,6 +22,10 @@ class ReportOptionRepository
     {
         return $this->model->all();
     }
+    public function getEnable()
+    {
+        return $this->model->where('enable', 1)->get();
+    }
 
     public function update($id, array $data)
     {
