@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
+    
     public function lang(){
         if(app()->getLocale() == "en" || request()->header('Lang') == "en"){
             $this->name="name_en as name";

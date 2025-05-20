@@ -140,6 +140,8 @@ Route::middleware(['auth:api'])->group(function () {
     Route::post('edit_lang', [Client\ProfileController::class, 'updateLang']);
     Route::post('create-password', [Client\ProfileController::class, 'createPassword']);
 
+    Route::get('profile/show/{id}', [Client\ProfileController::class, 'showProfile']);
+
 
 
     Route::apiResource('saved-ads', Client\SavedAdController::class);
@@ -147,7 +149,16 @@ Route::middleware(['auth:api'])->group(function () {
     Route::apiResource('favorite-ads', Client\FavoriteAdController::class);
 
     Route::apiResource('ads', Client\AdController::class);
-    Route::post('/ads/hide', [Client\AdController::class, 'hideAd']);
+    Route::prefix('ads')->group(function () {
+
+        Route::get('/user/{id}', [Client\AdController::class, 'userAds']);
+        Route::get('/my_ads/index', [Client\AdController::class, 'myAds']);
+        Route::get('/types/index', [Client\AdController::class, 'typesIndex']);
+        Route::post('/hide', [Client\AdController::class, 'hideAd']);
+        Route::get('/top/commercials', [Client\AdController::class, 'topCommercials']);
+        Route::get('/top/automotive', [Client\AdController::class, 'topAutomotive']);
+        Route::get('/top/real-estate', [Client\AdController::class, 'topRealEstate']);
+    });
 
 
     Route::apiResource('chats', Client\ChatController::class);

@@ -269,3 +269,12 @@ CREATE TABLE hidden_ads (
     INDEX idx_user_id (user_id)
     
 );
+
+
+
+
+
+
+UPDATE `ads` SET `status`='accepted' WHERE 1
+
+ALTER TABLE `ads_type` ADD COLUMN `name_ar` VARCHAR(100) NULL AFTER `id`, ADD COLUMN `name_en` VARCHAR(100) NULL AFTER `name_ar`;

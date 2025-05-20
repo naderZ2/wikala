@@ -129,6 +129,15 @@ class AdService
     {
         return $this->adRepository->getById($id);
     }
+
+    public function getTopAdsByCategory($categoryId)
+    {
+        return $this->adRepository->getTopAdsByCategory($categoryId);
+    }
+
+
+
+
 }
 
 

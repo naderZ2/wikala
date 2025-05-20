@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\Ad;
+use App\Models\AdsType;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 
@@ -20,7 +21,7 @@ class AdRepository
 
     public function getById($id)
     {
-        return Ad::findOrFail($id);
+        return Ad::with('images','user:id,name,image,created_at')->findOrFail($id);
     }
 
     public function update($id, array $data)
@@ -42,10 +43,26 @@ class AdRepository
     {
         return Ad::paginate($perPage);
     }
-
+    
     public function delete($id)
     {
         $ad = $this->getById($id);
         return $ad->delete();
     }
+
+    public function getTopAdsByCategory($categoryId)
+    {
+        $ads = Ad::
+        where('category_id', $categoryId)
+        ->where('status', 'accepted')
+        ->latest()
+        ->take(10)
+        ->get();
+
+
+
+        return $ads;
+    }
+
+
 }

@@ -12,7 +12,8 @@ class AdsType extends Model
     protected $table = 'ads_type';
 
     protected $fillable = [
-        'name',
+        'name_ar',
+        'name_en',  
         'enable',
     ];
 
