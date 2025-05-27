@@ -280,3 +280,19 @@ UPDATE `ads` SET `status`='accepted' WHERE 1
 ALTER TABLE `ads_type` ADD COLUMN `name_ar` VARCHAR(100) NULL AFTER `id`, ADD COLUMN `name_en` VARCHAR(100) NULL AFTER `name_ar`;
 
 
+
+
+
+
+CREATE TABLE home_page_category (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    category_id BIGINT UNSIGNED NOT NULL,
+    name_ar VARCHAR(255) NOT NULL,
+    name_en VARCHAR(255) NOT NULL,
+    sort_order INT DEFAULT 0,
+    created_at TIMESTAMP NULL DEFAULT NULL,
+    updated_at TIMESTAMP NULL DEFAULT NULL,
+
+    FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE CASCADE
+);
+

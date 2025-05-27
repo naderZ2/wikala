@@ -7,6 +7,7 @@ use App\Models\Slider;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Traits\ResponsesTrait;
+use App\Models\HomePageCategory;
 use App\Http\Controllers\Controller;
 
 class HomeController extends Controller
@@ -27,6 +28,9 @@ class HomeController extends Controller
             $result['banners'] = Banner::whereNull('category_id')->get();
         }
         $result['categories'] = Category::select('id',  $this->name )->get();
+        $result['HomePageCategories'] = HomePageCategory::orderBy('sort_order')
+        ->with('category.ads')
+        ->select('id','category_id',  $this->name )->get();
         return $this->success($result);
     }
 }

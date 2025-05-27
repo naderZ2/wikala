@@ -397,6 +397,23 @@
 		"attribute_id_required" => "Attribute ID is required",
 		"attribute_value_required" => "Attribute value is required",
 		"Old_Rejected_Reason" => "Old Rejected Reason",
+		'id_required' => 'ID is required',
+		'id_exists' => 'The selected ID does not exist',
+		'category_id_required' => 'Category is required',
+		'category_id_exists' => 'The selected category does not exist',
+		'name_ar_required' => 'The Arabic name is required',
+		'name_ar_string' => 'The Arabic name must be a string',
+		'name_en_required' => 'The English name is required',
+		'name_en_string' => 'The English name must be a string',
+		'sort_order_required' => 'Sort order is required',
+		'sort_order_integer' => 'Sort order must be an integer',		
+		"Sort_Order" => "Sort Order",
+		"Add" => "Add",
+		"home_page_categories" => "Home Page Categories",
+		"add_home_page_category" => "Add Home Page Category",
+		"Choose" => "Choose",
+		"edit_home_page_category" => "Edit Home Page Category",
+	
 
 
 		]

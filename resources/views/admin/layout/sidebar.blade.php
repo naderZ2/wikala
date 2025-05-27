@@ -35,6 +35,8 @@
 							<!--<li><a class="lan-4 {{ Route::currentRouteName()=='banner.create' ? 'active' : '' }}" href="{{route('banner.create')}}">@lang('lang.add_banner')</a></li>-->
 
 							<li><a class="lan-4 {{ Route::currentRouteName()=='category.index' ? 'active' : '' }}" href="{{route('category.index')}}">@lang('lang.Categories')</a></li>
+							<li><a class="lan-4 {{ Route::currentRouteName()=='home_page_category.index' ? 'active' : '' }}" href="{{route('home_page_category.index')}}">@lang('lang.home_page_categories')</a></li>
+
 							<!--@can('add category')-->
 							<!--<li><a class="lan-4 {{ Route::currentRouteName()=='category.create' ? 'active' : '' }}" href="{{route('category.create')}}">@lang('lang.add_Category')</a></li>-->
 							<!--@endcan	-->
