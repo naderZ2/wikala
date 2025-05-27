@@ -11,20 +11,7 @@
 
 @section('breadcrumb-title')
 
-{{-- 
-@if(Route::currentRouteName() == 'order.under_preparation')
 
-<h3> @lang('lang.Under_Preparation_Orders') </h3>
-
-@elseif(Route::currentRouteName() == 'order.completed')
-
-<h3> @lang('lang.Completed_Orders') </h3>
-
-@elseif(Route::currentRouteName() == 'order.new')
-
-<h3> @lang('lang.New_Orders') </h3>
-
-@else --}}
 
 <h3>
     @switch(request('status'))

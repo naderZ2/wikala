@@ -403,6 +403,7 @@
 		"attribute_not_found" => "الخاصية غير موجودة",
 		"attribute_id_required" => "رقم الخاصية مطلوب",
 		"attribute_value_required" => "قيمة الخاصية مطلوبة",
+		"Old_Rejected_Reason" => "السبب القديم للرفض",
 		
 	]
 ?>

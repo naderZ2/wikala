@@ -396,6 +396,7 @@
 		"attribute_not_found" => "Attribute not found",
 		"attribute_id_required" => "Attribute ID is required",
 		"attribute_value_required" => "Attribute value is required",
+		"Old_Rejected_Reason" => "Old Rejected Reason",
 
 
 		]

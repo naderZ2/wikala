@@ -38,7 +38,7 @@ class AdsController extends Controller
     public function details(Request $request, $id)
     {
         $this->lang();
-        $ad = Ad::with(['user', "category:id,$this->name", "attributes.attribute:id,$this->name,type,image", 'rejectedReasons','images',"city:id,$this->name","region:id,$this->name"])->findOrFail($id);
+        $ad = Ad::with(['user', "category:id,$this->name", "attributes.attribute:id,$this->name,type,image", 'rejectedReason','images',"city:id,$this->name","region:id,$this->name"])->findOrFail($id);
         Log::info($ad->rejectedReason);
 
         return view('admin.ads.details', compact('ad'));
@@ -51,7 +51,7 @@ class AdsController extends Controller
         $rejectedReasons = RejectedReason::all();
         // return view('admin.ads.editStatus', compact('ad', 'ads', 'rejectedReasons'));
         $ads = Ad::select('id','ad_number','title')->get();
-        $rejectedReasons = RejectedReason::all();
+        $rejectedReasons = RejectedReason::where('enable',1)->get();
         return view('admin.ads.editStatus', compact('ad','rejectedReasons'));
     }
 
