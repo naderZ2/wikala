@@ -88,4 +88,9 @@ class Ad extends Model
     {
         return $this->hasMany(HiddenAd::class, 'ad_id');
     }
+
+    public function auctions()
+    {
+        return $this->hasMany(Auction::class, 'ad_id');
+    }
 }

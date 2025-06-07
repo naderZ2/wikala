@@ -423,5 +423,17 @@
 		'sort_order_required' => 'الترتيب مطلوب',
 
 
+
+		
+	'user_id_exists' => 'المستخدم المحدد غير موجود',
+	// 'ad_id_required' => 'الإعلان مطلوب',
+	'ad_id_exists' => 'الإعلان المحدد غير موجود',
+	'price_required' => 'السعر مطلوب',
+	'price_numeric' => 'يجب أن يكون السعر رقمًا',
+	'price_min' => 'يجب ألا يقل السعر عن 0',
+	'invalid_type' => 'نوع المزاد غير صالح',
+	'price_must_be_greater_than_last' => 'يجب أن يكون سعر المزاد أكبر من آخر سعر (:price).',
+
+
 	]
 ?>

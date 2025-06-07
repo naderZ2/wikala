@@ -88,23 +88,7 @@ class AdController extends Controller
 
 
 
-    public function topCommercials()
-    {
-        $ad = $this->adService->getTopAdsByCategory(100); 
-        return $this->success($ad);
-    }
-
-    public function topAutomotive()
-    {
-        $ad = $this->adService->getTopAdsByCategory(99); 
-        return $this->success($ad);
-    }
-
-    public function topRealEstate()
-    {
-        $ad = $this->adService->getTopAdsByCategory(102); 
-        return $this->success($ad);
-    }
+   
     
     public function typesIndex()
     {

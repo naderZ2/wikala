@@ -4,6 +4,7 @@ use Log;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Laravel\Socialite\Facades\Socialite;
+use App\Http\Controllers\Client\AuctionController;
 
 //Country
 // Route::get('countries', [Api\CountriesController::class, 'index']);
@@ -19,7 +20,6 @@ Route::get('reminder', [Admin\NotificationController::class, 'reminder']);
 
 
 // Route::get('auth/google/', [Client\Auth\SocialController::class, 'redirect']);
-
 
 
 Route::middleware(['checkLanguage'])->group(function () {
@@ -77,6 +77,11 @@ Route::middleware(['auth:api'])->group(function () {
 
         // Route::post('save_special_request_details', [Client\SpecialRequestController::class, 'saveSpecialRequestDetails'] )->name('save_special_request');
 
+    Route::get('auction/test', function () {
+        return response()->json(['message' => 'Auction test route is working']);
+    });
+    Route::post('auction/store', [AuctionController::class, 'store'])->name('client.auction.store');
+    Route::get('auction/ad/{ad_id}', [AuctionController::class, 'getByAd'])->name('client.auction.by_ad');
 
 
                 Route::post('pay', [Client\PaymentController::class, 'payment']);
@@ -155,10 +160,7 @@ Route::middleware(['auth:api'])->group(function () {
         Route::get('/my_ads/index', [Client\AdController::class, 'myAds']);
         Route::get('/types/index', [Client\AdController::class, 'typesIndex']);
         Route::post('/hide', [Client\AdController::class, 'hideAd']);
-        Route::get('/top/commercials', [Client\AdController::class, 'topCommercials']);
-        Route::get('/top/automotive', [Client\AdController::class, 'topAutomotive']);
-        Route::get('/top/real-estate', [Client\AdController::class, 'topRealEstate']);
-    });
+        });
 
 
     Route::apiResource('chats', Client\ChatController::class);
@@ -182,6 +184,10 @@ Route::middleware(['auth:api'])->group(function () {
     });
 
     Route::post('attributes_by_category', [Client\AttributeController::class, 'getAttributesByCategoryId']);
+
+
+
+
 
     // Route::get('/ads', [Client\AdController::class, 'index']);
     });

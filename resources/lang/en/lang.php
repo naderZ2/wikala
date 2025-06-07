@@ -413,7 +413,16 @@
 		"add_home_page_category" => "Add Home Page Category",
 		"Choose" => "Choose",
 		"edit_home_page_category" => "Edit Home Page Category",
-	
+		"user_id_required' => 'User is required',
+		
+    'user_id_exists' => 'The selected user does not exist',
+    'ad_id_required' => 'Ad is required',
+    'ad_id_exists' => 'The selected ad does not exist',
+    'price_required' => 'Price is required',
+    'price_numeric' => 'Price must be a number',
+    'price_min' => 'Price must be at least 0',
+    'invalid_type' => 'Invalid type for auction',
+    'price_must_be_greater_than_last' => 'The auction price must be greater than the last price (:price).',
 
 
 		]
