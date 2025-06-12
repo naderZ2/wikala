@@ -403,6 +403,37 @@
 		"attribute_not_found" => "الخاصية غير موجودة",
 		"attribute_id_required" => "رقم الخاصية مطلوب",
 		"attribute_value_required" => "قيمة الخاصية مطلوبة",
+		"Old_Rejected_Reason" => "السبب القديم للرفض",
+
+		"Sort_Order" => "الترتيب",
+		"Add" => "اضافة",
+		"home_page_categories" => "اقسام الصفحة الرئيسية",
+		"add_home_page_category" => "اضافة قسم للصفحة الرئيسية",
+		"Choose" => "اختر",
+		"edit_home_page_category" => "تعديل قسم الصفحة الرئيسية",
+		'id_required' => 'رقم التعريف مطلوب',
+		'id_exists' => 'رقم التعريف المحدد غير موجود',
+		'category_id_exists' => 'الفئة المحددة غير موجودة',
+		'name_ar_string' => 'الاسم بالعربية يجب أن يكون نصاً',
+		'name_en_string' => 'الاسم بالإنجليزية يجب أن يكون نصاً',
+		'sort_order_integer' => 'الترتيب يجب أن يكون رقماً صحيحاً',
+		'category_id_required' => 'الفئة مطلوبة',
+		'name_ar_required' => 'الاسم بالعربية مطلوب',
+		'name_en_required' => 'الاسم بالإنجليزية مطلوب',
+		'sort_order_required' => 'الترتيب مطلوب',
+
+
+
 		
+	'user_id_exists' => 'المستخدم المحدد غير موجود',
+	// 'ad_id_required' => 'الإعلان مطلوب',
+	'ad_id_exists' => 'الإعلان المحدد غير موجود',
+	'price_required' => 'السعر مطلوب',
+	'price_numeric' => 'يجب أن يكون السعر رقمًا',
+	'price_min' => 'يجب ألا يقل السعر عن 0',
+	'invalid_type' => 'نوع المزاد غير صالح',
+	'price_must_be_greater_than_last' => 'يجب أن يكون سعر المزاد أكبر من آخر سعر (:price).',
+	'price_must_be_positive' => 'يجب أن يكون السعر أكبر من أو يساوي 0',
+	'price_must_be_number' => 'يجب أن يكون السعر رقمًا',
 	]
 ?>

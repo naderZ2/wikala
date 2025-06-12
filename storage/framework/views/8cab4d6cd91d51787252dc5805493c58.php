@@ -30,6 +30,8 @@
 							<!--<li><a class="lan-4 <?php echo e(Route::currentRouteName()=='banner.create' ? 'active' : ''); ?>" href="<?php echo e(route('banner.create')); ?>"><?php echo app('translator')->get('lang.add_banner'); ?></a></li>-->
 
 							<li><a class="lan-4 <?php echo e(Route::currentRouteName()=='category.index' ? 'active' : ''); ?>" href="<?php echo e(route('category.index')); ?>"><?php echo app('translator')->get('lang.Categories'); ?></a></li>
+							<li><a class="lan-4 <?php echo e(Route::currentRouteName()=='home_page_category.index' ? 'active' : ''); ?>" href="<?php echo e(route('home_page_category.index')); ?>"><?php echo app('translator')->get('lang.home_page_categories'); ?></a></li>
+
 							<!--<?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('add category')): ?>-->
 							<!--<li><a class="lan-4 <?php echo e(Route::currentRouteName()=='category.create' ? 'active' : ''); ?>" href="<?php echo e(route('category.create')); ?>"><?php echo app('translator')->get('lang.add_Category'); ?></a></li>-->
 							<!--<?php endif; ?>	-->
@@ -296,4 +298,4 @@
 
 
 
-<?php /**PATH /home/wikala/public_html/wikala/resources/views/admin/layout/sidebar.blade.php ENDPATH**/ ?>
+<?php /**PATH C:\Users\HP\OneDrive\Desktop\_\codeing\work\mazen\wikala\resources\views/admin/layout/sidebar.blade.php ENDPATH**/ ?>

@@ -269,3 +269,52 @@ CREATE TABLE hidden_ads (
     INDEX idx_user_id (user_id)
     
 );
+
+
+
+
+
+
+UPDATE `ads` SET `status`='accepted' WHERE 1
+
+ALTER TABLE `ads_type` ADD COLUMN `name_ar` VARCHAR(100) NULL AFTER `id`, ADD COLUMN `name_en` VARCHAR(100) NULL AFTER `name_ar`;
+
+
+
+
+
+
+CREATE TABLE home_page_category (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    category_id BIGINT UNSIGNED NOT NULL,
+    name_ar VARCHAR(255) NOT NULL,
+    name_en VARCHAR(255) NOT NULL,
+    sort_order INT DEFAULT 0,
+    created_at TIMESTAMP NULL DEFAULT NULL,
+    updated_at TIMESTAMP NULL DEFAULT NULL,
+
+    FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE CASCADE
+);
+
+
+
+CREATE TABLE Auction (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    ad_id INT NOT NULL,
+    price DECIMAL(10, 2) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+
+
+
+
+
+
+
+
+
+ALTER TABLE `ads`
+ADD COLUMN `price` DECIMAL(10,2) UNSIGNED NOT NULL DEFAULT 0.00 AFTER `views_count`;

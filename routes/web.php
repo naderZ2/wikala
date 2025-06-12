@@ -172,6 +172,8 @@ Route::group(['middleware' => ['auth:admin','CheckUserActiviation']], function()
         Route::post('ads/changeStatus/{id}', [Admin\AdsController::class, 'changeStatus'])->name('ads.changeStatus');
 
 
+        Route::resource('home_page_category', Admin\HomePageCategoryController::class);
+
     });
 
 
@@ -670,3 +672,4 @@ Route::get('/clear-cache', function() {
     Artisan::call('route:clear');
     return "Cache is cleared";
 })->name('clear.cache');
+

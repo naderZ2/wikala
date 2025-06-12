@@ -23,4 +23,4 @@
     <!-- latest jquery-->
     <?php echo $__env->make('layouts.authentication.script', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?> 
   </body>
-</html><?php /**PATH /home/wikala/public_html/wikala/resources/views/layouts/authentication/master.blade.php ENDPATH**/ ?>
+</html><?php /**PATH C:\Users\HP\OneDrive\Desktop\_\codeing\work\mazen\wikala\resources\views/layouts/authentication/master.blade.php ENDPATH**/ ?>

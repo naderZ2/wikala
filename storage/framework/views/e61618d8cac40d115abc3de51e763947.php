@@ -1,3 +1,4 @@
+
 <?php $__env->startSection('title', 'Ecommerce'); ?>
 
 <?php $__env->startSection('css'); ?>
@@ -270,4 +271,4 @@
 <?php $__env->stopSection(); ?>
 
 
-<?php echo $__env->make('admin.layout.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH /home/wikala/public_html/wikala/resources/views/admin/home.blade.php ENDPATH**/ ?>
+<?php echo $__env->make('admin.layout.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\Users\HP\OneDrive\Desktop\_\codeing\work\mazen\wikala\resources\views/admin/home.blade.php ENDPATH**/ ?>

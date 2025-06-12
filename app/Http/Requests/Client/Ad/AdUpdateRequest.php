@@ -39,6 +39,7 @@ class AdUpdateRequest extends FormRequest
             'attributes.*.id' => 'required|exists:attributes,id',
             'attributes.*.value' => 'required|string',
 
+            'price' => 'nullable|numeric|min:0',
         ];
     }
 
@@ -96,6 +97,8 @@ class AdUpdateRequest extends FormRequest
             'attributes.*.id.required'  => __('lang.attribute_id_required'),
             'attributes.*.id.exists'    => __('lang.attribute_not_found'),
             'attributes.*.value.required' => __('lang.attribute_value_required'),
+            'price.numeric' => __('lang.price_must_be_number'),
+            'price.min'     => __('lang.price_must_be_positive'),
         ];
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Client;
 use PgSql\Lob;
+use App\Models\User;
 use App\Models\DeletedUser;
 use Illuminate\Http\Request;
 use App\Traits\ResponsesTrait;
@@ -18,6 +19,23 @@ class ProfileController extends Controller
     function index(){
         $this->lang();
         $user = auth()->user();
+        $userAddress = $user->address;
+        
+        foreach ($userAddress as $address) {
+            $address->region = $address->region()->select('id', 'parent_id', $this->name)->first();
+            
+            if ($address->region) {
+                $address->region_parent = $address->region->parent()->select('id', 'parent_id', $this->name)->first();
+            } else {
+                $address->region_parent = null;
+            }
+        }
+        
+        return $this->success($user);
+    }
+    function showProfile($id){
+        $this->lang();
+        $user = User::findOrFail($id);
         $userAddress = $user->address;
         
         foreach ($userAddress as $address) {

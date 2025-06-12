@@ -5,10 +5,11 @@
 <script src="<?php echo e(asset('assets/js/icons/feather-icon/feather.min.js')); ?>"></script>
 <script src="<?php echo e(asset('assets/js/icons/feather-icon/feather-icon.js')); ?>"></script>
 <!-- scrollbar js-->
-<?php echo $__env->yieldContent('script'); ?>
 <!-- Sidebar jquery-->
 <script src="<?php echo e(asset('assets/js/config.js')); ?>"></script>
 <!-- Plugins JS start-->
+<?php echo $__env->yieldContent('script'); ?>
 <!-- Plugins JS Ends-->
 <!-- Theme js-->
-<script src="<?php echo e(asset('assets/js/script.js')); ?>"></script><?php /**PATH /home/wikala/public_html/wikala/resources/views/layouts/errors/script.blade.php ENDPATH**/ ?>
+<script src="<?php echo e(asset('assets/js/script.js')); ?>"></script>
+<!-- Plugin used-->  <?php /**PATH C:\Users\HP\OneDrive\Desktop\_\codeing\work\mazen\wikala\resources\views/layouts/authentication/script.blade.php ENDPATH**/ ?>

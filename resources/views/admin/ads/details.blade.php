@@ -92,6 +92,11 @@
 						<div class="col-md-3 fw-bold">@lang('lang.Rejected_Reason'):</div>
 						<div class="col-md-9">{{ $ad?->rejectedReason?->name ?? '-' }}</div>
 					</div>
+					@elseif($ad->rejectedReason)
+					<div class="row mb-3">
+						<div class="col-md-3 fw-bold">@lang('lang.Old_Rejected_Reason'):</div>
+						<div class="col-md-9">{{ $ad?->rejectedReason?->name ?? '-' }}</div>
+					</div>
 					@endif
 
 					<div class="row mb-3">

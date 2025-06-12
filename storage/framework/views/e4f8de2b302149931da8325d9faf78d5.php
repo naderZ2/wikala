@@ -91,4 +91,4 @@
       }
     </script>
   </body>
-</html><?php /**PATH /home/wikala/public_html/wikala/resources/views/admin/layout/master.blade.php ENDPATH**/ ?>
+</html><?php /**PATH C:\Users\HP\OneDrive\Desktop\_\codeing\work\mazen\wikala\resources\views/admin/layout/master.blade.php ENDPATH**/ ?>
