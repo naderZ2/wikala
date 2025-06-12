@@ -29,12 +29,20 @@ class AdController extends Controller
 
     public function index(Request $request)
     {
+        $this->lang();
         $perPage = $request->get('per_page', 10);
         $userId = auth()->id();
 
         $ads = Ad::whereDoesntHave('hiddenAds', function ($query) use ($userId) {
                 $query->where('user_id', $userId);
             })
+            ->when($request->has('category_id'), function ($query) use ($request) {
+                $query->where('category_id', $request->category_id);
+            })
+            ->when($request->has('type_id'), function ($query) use ($request) {
+                $query->where('type_id', $request->type_id);
+            })
+            ->with(["city:id,$this->name", "region:id,$this->name", "adsType:id,$this->name"])
             ->where('status', 'accepted') 
             ->paginate($perPage);
 
