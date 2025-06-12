@@ -7,10 +7,11 @@ use App\Models\AdsType;
 use App\Models\HiddenAd;
 use App\Services\AdService;
 use Illuminate\Http\Request;
+use App\Models\RecentlyViewAd;
 use App\Traits\ResponsesTrait;
 use App\Traits\FileUploadTrait;
-use Illuminate\Support\Facades\Log;
 // use App\Http\Requests\Client\Ad\AdUpdateRequest;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\Client\Ad\StoreRequest;
@@ -42,7 +43,14 @@ class AdController extends Controller
             ->when($request->has('type_id'), function ($query) use ($request) {
                 $query->where('type_id', $request->type_id);
             })
-            ->with(["city:id,$this->name", "region:id,$this->name", "adsType:id,$this->name"])
+            ->when($request->has('min_price'), function ($query) use ($request) {
+                $query->where('price', '>=', $request->min_price);
+            })
+            ->when($request->has('max_price'), function ($query) use ($request) {
+                $query->where('price', '<=', $request->max_price);
+            })
+
+            ->with(["city:id,$this->name", "region:id,$this->name", "adsType:id,$this->name as type", "category:id,$this->name"])
             ->where('status', 'accepted') 
             ->paginate($perPage);
 
@@ -68,10 +76,23 @@ class AdController extends Controller
     
     public function show($id)
     {
-        $ad = $this->adService->getAdById($id);
+        $this->lang();
+        $name = $this->name;
         
-        $related_ads = $this->adService->getTopAdsByCategory($ad->category_id); 
-     
+        // Record the view if user is authenticated
+        
+        $ad = $this->adService->getAdById($id, $name);
+
+        if (auth()->check() && $ad) {
+            $userId = auth()->id();
+            // Create or update recent view
+            RecentlyViewAd::updateOrCreate(
+                ['user_id' => $userId, 'ad_id' => $id],
+                ['created_at' => now()]
+            );
+        }
+        $related_ads = $this->adService->getTopAdsByCategory($ad->category_id, $name);
+
         return $this->success(['ad'=>$ad,'related_ads'=>$related_ads]);
     }
 
@@ -112,6 +133,7 @@ class AdController extends Controller
             ->whereDoesntHave('hiddenAds', function ($query) use ($userId) {
                 $query->where('user_id', $userId);
             })
+            ->with(["city:id,$this->name", "region:id,$this->name", "adsType:id,$this->name as type", "category:id,$this->name"])
             ->where('status', 'accepted') 
             ->get();
 
@@ -126,6 +148,8 @@ class AdController extends Controller
             ->whereDoesntHave('hiddenAds', function ($query) use ($myId) {
                 $query->where('user_id', $myId);
             })
+            ->with(["city:id,$this->name", "region:id,$this->name", "adsType:id,$this->name as type", "category:id,$this->name"])
+
             ->where('status', 'accepted') 
             ->get();
 

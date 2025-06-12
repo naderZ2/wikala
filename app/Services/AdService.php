@@ -125,14 +125,14 @@ class AdService
         return $this->adRepository->getAll();
     }
 
-    public function getAdById($id)
+    public function getAdById($id, $name='name_ar')
     {
-        return $this->adRepository->getById($id);
+        return $this->adRepository->getById($id, $name);
     }
 
-    public function getTopAdsByCategory($categoryId)
+    public function getTopAdsByCategory($categoryId, $name='name_ar')
     {
-        return $this->adRepository->getTopAdsByCategory($categoryId);
+        return $this->adRepository->getTopAdsByCategory($categoryId,$name);
     }
 
 

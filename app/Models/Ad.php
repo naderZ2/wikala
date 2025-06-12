@@ -18,6 +18,8 @@ class Ad extends Model
         'region_id',
         'rejected_id',
         'ad_number',
+        
+        'price',
         'title',
         'description',
         'contact_method',
@@ -92,5 +94,11 @@ class Ad extends Model
     public function auctions()
     {
         return $this->hasMany(Auction::class, 'ad_id');
+    }
+
+
+    public function getPriceAttribute($value)
+    {
+        return $value . ' KWD';
     }
 }

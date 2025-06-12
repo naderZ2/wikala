@@ -433,7 +433,7 @@
 	'price_min' => 'يجب ألا يقل السعر عن 0',
 	'invalid_type' => 'نوع المزاد غير صالح',
 	'price_must_be_greater_than_last' => 'يجب أن يكون سعر المزاد أكبر من آخر سعر (:price).',
-
-
+	'price_must_be_positive' => 'يجب أن يكون السعر أكبر من أو يساوي 0',
+	'price_must_be_number' => 'يجب أن يكون السعر رقمًا',
 	]
 ?>

@@ -26,4 +26,8 @@ class Auction extends Model
     {
         return $this->belongsTo(Ad::class);
     }
+        public function getPriceAttribute($value)
+    {
+        return $value . ' KWD';
+    }
 }

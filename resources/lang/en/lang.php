@@ -423,7 +423,8 @@
     'price_min' => 'Price must be at least 0',
     'invalid_type' => 'Invalid type for auction',
     'price_must_be_greater_than_last' => 'The auction price must be greater than the last price (:price).',
-
-
+	'price_must_be_positive' => 'Price must be greater than or equal to 0',
+	'price_must_be_number' => 'Price must be a number',
+	
 		];
 ?>
