@@ -49,6 +49,15 @@ class AdController extends Controller
             ->when($request->has('max_price'), function ($query) use ($request) {
                 $query->where('price', '<=', $request->max_price);
             })
+            ->when($request->has('city_id'), function ($query) use ($request) {
+                $query->where('city_id', $request->city_id);
+            })
+            ->when($request->has('region_id'), function ($query) use ($request) {
+                $query->where('region_id', $request->region_id);
+            })
+            ->when($request->has('type_id'), function ($query) use ($request) {
+                $query->where('type_id', $request->type_id);
+            })
 
             ->with(["city:id,$this->name", "region:id,$this->name", "adsType:id,$this->name as type", "category:id,$this->name"])
             ->where('status', 'accepted') 
