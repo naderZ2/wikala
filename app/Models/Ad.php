@@ -98,6 +98,6 @@ class Ad extends Model
 
     public function getPriceAttribute($value)
     {
-        return $value . ' KWD';
+        return (int)$value ;
     }
 }

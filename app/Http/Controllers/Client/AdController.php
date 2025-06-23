@@ -75,10 +75,10 @@ class AdController extends Controller
         ]);
     }
 
-    public function store(StoreRequest $request)
+public function store(StoreRequest $request)
     {
         if (auth()->user()->limit_ad <= 0) {
-            return $this->failed(null, trans('limit_reached'));
+            return $this->failed(null, trans('lang.limit_reached'));
         }
         $data = $request->validated();
         $ad = $this->adService->storeAdWithImages($data);
@@ -147,7 +147,10 @@ class AdController extends Controller
     public function myAds()
     {
         $this->lang();
+<<<<<<< HEAD
 
+=======
+>>>>>>> temp-fix-branch
         $userId = auth()->id();
         $ads = Ad::where('user_id', $userId)
             ->whereDoesntHave('hiddenAds', function ($query) use ($userId) {
