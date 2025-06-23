@@ -74,12 +74,13 @@ class UserAuthController extends Controller
 
             
             if ($data['type'] == 'user') {
-                $limit = AboutUs::whereId(1)->select('free_ads_user')->first()->value('free_ads_user');
+                $limit = AboutUs::whereId(1)->select('free_ads_user')->first();
+                $data['limit_ad'] = $limit->value('free_ads_user');
             } elseif ($data['type'] == 'business') {
-                $limit = AboutUs::whereId(1)->select('free_ads_business')->first()->value('free_ads_business');
+                $limit = AboutUs::whereId(1)->select('free_ads_business')->first();
+                $data['limit_ad'] = $limit->value('free_ads_business');
             }
 
-            $data['limit_ad'] = $limit;
             $user = User::create($data);
             $confirmationCode->update(['active'=>0]);
 
