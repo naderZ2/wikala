@@ -43,6 +43,8 @@ class User extends Authenticatable
         "region_id",
         'birth_date',
         'password',
+        'type',
+        'limit_ad',
         // 'device_id',
         'updated_at',
         'created_at',

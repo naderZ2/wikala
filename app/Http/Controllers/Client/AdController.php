@@ -79,11 +79,14 @@ class AdController extends Controller
     {
         $data = $request->validated();
         $ad = $this->adService->storeAdWithImages($data);
+        $user= auth()->user();
+        $user->limit_ad--;
+
         Log::info('Ad created successfully', ['ad' => $request]);
-        
+
         return $this->success($ad, trans('lang.created'));
     }
-    
+
     public function show($id)
     {
         $this->lang();

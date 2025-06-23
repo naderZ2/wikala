@@ -318,3 +318,15 @@ CREATE TABLE Auction (
 
 ALTER TABLE `ads`
 ADD COLUMN `price` DECIMAL(10,2) UNSIGNED NOT NULL DEFAULT 0.00 AFTER `views_count`;
+
+
+
+
+
+
+ALTER TABLE users
+ADD COLUMN type ENUM('user', 'business') NOT NULL DEFAULT 'user';
+
+
+ALTER TABLE users
+ADD COLUMN limit_ad INT DEFAULT 0;

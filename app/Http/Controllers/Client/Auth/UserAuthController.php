@@ -71,6 +71,15 @@ class UserAuthController extends Controller
             if ($confirmationCode->created_at->addMinutes(5) < Carbon::now()) {
                     return $this->failed(null, trans('lang.otp_expired'));
             }
+
+            if ($data['type'] == 'user') {
+                $limit = AboutUs::whereId(1)->select('free_ads_user')->first()->value('free_ads_user');
+            } elseif ($data['type'] == 'business') {
+                $limit = AboutUs::whereId(1)->select('free_ads_business')->first()->value('free_ads_business');
+            }
+
+            $data['limit_ad'] = $limit;
+
             $user = User::create($data);
             $confirmationCode->update(['active'=>0]);
 
