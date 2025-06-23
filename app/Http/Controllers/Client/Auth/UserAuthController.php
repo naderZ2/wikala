@@ -72,6 +72,7 @@ class UserAuthController extends Controller
                     return $this->failed(null, trans('lang.otp_expired'));
             }
 
+            
             if ($data['type'] == 'user') {
                 $limit = AboutUs::whereId(1)->select('free_ads_user')->first()->value('free_ads_user');
             } elseif ($data['type'] == 'business') {
@@ -79,7 +80,6 @@ class UserAuthController extends Controller
             }
 
             $data['limit_ad'] = $limit;
-
             $user = User::create($data);
             $confirmationCode->update(['active'=>0]);
 
