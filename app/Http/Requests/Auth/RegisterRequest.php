@@ -44,7 +44,7 @@ class RegisterRequest extends FormRequest
                     ->symbols(),     
             ],
             'otpCode' => 'required',
-            'type' => 'required|in:user,business',
+            'type' => 'sometimes|in:user,business',
             'device_id' => 'sometimes|nullable',
             // 'country_id' => 'required',
             // 'gender' => 'required',

@@ -18,9 +18,12 @@ class ProfileController extends Controller
     use ResponsesTrait;
     function index(){
         $this->lang();
-        $user = auth()->user();
-        $userAddress = $user->address;
-        
+        $userId = auth()->id() ;
+        Log::info('User ID: ' . $userId);
+        $user = User::where('id', $userId)->first();
+        Log::info('User data: ' . $user);
+        $userAddress = $user ? $user->address : [];
+
         foreach ($userAddress as $address) {
             $address->region = $address->region()->select('id', 'parent_id', $this->name)->first();
             
@@ -30,7 +33,8 @@ class ProfileController extends Controller
                 $address->region_parent = null;
             }
         }
-        
+        Log::info('User profile data', ['user' => $user->limit_ad]);
+
         return $this->success($user);
     }
     function showProfile($id){
