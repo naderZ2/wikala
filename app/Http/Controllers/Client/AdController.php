@@ -31,6 +31,7 @@ class AdController extends Controller
     public function index(Request $request)
     {
         $this->lang();
+        
         $perPage = $request->get('per_page', 10);
         $userId = auth()->id();
 
@@ -137,6 +138,8 @@ class AdController extends Controller
     }
     public function myAds()
     {
+        $this->lang();
+
         $userId = auth()->id();
         $ads = Ad::where('user_id', $userId)
             ->whereDoesntHave('hiddenAds', function ($query) use ($userId) {
@@ -151,6 +154,8 @@ class AdController extends Controller
 
     public function userAds($id)
     {
+        $this->lang();
+
         $myId = Auth::id();
 
         $ads = Ad::where('user_id', $id)

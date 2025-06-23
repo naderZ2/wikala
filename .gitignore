@@ -1,0 +1,23 @@
+# Laravel Defaults
+/node_modules
+/public/hot
+/public/storage
+/storage
+/vendor
+.env
+.env.*
+.phpunit.result.cache
+
+# Homestead
+Homestead.json
+Homestead.yaml
+
+# NPM/Yarn Logs
+npm-debug.log
+yarn-error.log
+
+# IDEs and Editors
+.idea
+.vscode
+*.sublime-project
+*.sublime-workspace
