@@ -425,6 +425,7 @@
     'price_must_be_greater_than_last' => 'The auction price must be greater than the last price (:price).',
 	'price_must_be_positive' => 'Price must be greater than or equal to 0',
 	'price_must_be_number' => 'Price must be a number',
-	
+	'limit_reached' => 'You have reached the maximum limit of ads allowed.',
+
 		];
 ?>

@@ -77,10 +77,15 @@ class AdController extends Controller
 
     public function store(StoreRequest $request)
     {
+        if (auth()->user()->limit_ad <= 0) {
+            return $this->failed(null, trans('limit_reached'));
+        }
         $data = $request->validated();
         $ad = $this->adService->storeAdWithImages($data);
         $user= auth()->user();
-        $user->limit_ad--;
+        $user->update(
+            ['limit_ad' => $user->limit_ad - 1]
+        );
 
         Log::info('Ad created successfully', ['ad' => $request]);
 
