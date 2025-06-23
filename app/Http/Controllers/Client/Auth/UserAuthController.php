@@ -40,7 +40,9 @@ class UserAuthController extends Controller
     }
 
     public function register(RegisterRequest $request){
+        Log::info("register request type:-" . $request->type );
         $data=$request->validated();
+        Log::info("register request data:-" . json_encode($data));
 
         $user = User::withTrashed()
         // ->where("email" , $request->email)
@@ -71,11 +73,26 @@ class UserAuthController extends Controller
             if ($confirmationCode->created_at->addMinutes(5) < Carbon::now()) {
                     return $this->failed(null, trans('lang.otp_expired'));
             }
+
+            
+            if ($data['type'] == 'business') {
+                $limit = AboutUs::whereId(1)->select('free_ads_business')->first();
+                $data['limit_ad'] = $limit->value('free_ads_business');
+                Log::info("business  limit:-" . $limit );
+                Log::info("  limit in business:-" . $data['limit_ad'] );
+            } else {
+                $limit = AboutUs::whereId(1)->select('free_ads_user')->first();
+                $data['limit_ad'] = $limit->value('free_ads_user');
+                Log::info("user limit:-" . $limit );
+                Log::info("  limit in user:-" . $data['limit_ad'] );
+            }
+            Log::info("befor create data:-" . json_encode($data));
             $user = User::create($data);
             $confirmationCode->update(['active'=>0]);
 
         }
         $user->token = $user->createToken('API Token')->accessToken;
+        Log::info( "user data:-" . $user);
         return $this->success($user);
     }
 

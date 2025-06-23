@@ -27,7 +27,8 @@ class User extends Authenticatable
     [
         'name', 'image',
         'phone', 'password', 
-        'device_id','email' ,
+        'device_id','email' , 'type',
+        'limit_ad',
         'deleted_at','lang' ,'followers_count',
         'provider_id','provider_name',
         'active','bio','date_of_birth'
