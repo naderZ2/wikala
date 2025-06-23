@@ -147,10 +147,6 @@ public function store(StoreRequest $request)
     public function myAds()
     {
         $this->lang();
-<<<<<<< HEAD
-
-=======
->>>>>>> temp-fix-branch
         $userId = auth()->id();
         $ads = Ad::where('user_id', $userId)
             ->whereDoesntHave('hiddenAds', function ($query) use ($userId) {
