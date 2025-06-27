@@ -40,8 +40,8 @@ class AuctionController extends Controller
     {
         $auctions = Auction::where('ad_id', $ad_id)->with('user:id,name,image')->orderByDesc('created_at')->get();
         $lowestAuction = Ad::where('id', $ad_id)->value('price');
-        
-        $auctions['lowestAuction']=$lowestAuction;
+
+        $auctions->lowestAuction = $lowestAuction;
         return $this->success($auctions);
     }
 }
