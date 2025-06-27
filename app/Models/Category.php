@@ -47,6 +47,16 @@ class Category extends Model
             ->orderBy('order');
     }
 
+    /**
+     * Get main category and all its subcategories recursively.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function subCategoriesRecursive()
+    {
+        return $this->hasMany(Category::class, 'parent_id')->with('subCategoriesRecursive');
+    }
+
 
 
 

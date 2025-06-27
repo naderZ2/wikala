@@ -4,13 +4,14 @@ namespace App\Http\Controllers\Client;
 
 use App\Models\Ad;
 use App\Models\AdsType;
+use App\Models\Category;
 use App\Models\HiddenAd;
 use App\Services\AdService;
 use Illuminate\Http\Request;
 use App\Models\RecentlyViewAd;
 use App\Traits\ResponsesTrait;
-use App\Traits\FileUploadTrait;
 // use App\Http\Requests\Client\Ad\AdUpdateRequest;
+use App\Traits\FileUploadTrait;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -39,7 +40,11 @@ class AdController extends Controller
                 $query->where('user_id', $userId);
             })
             ->when($request->has('category_id'), function ($query) use ($request) {
-                $query->where('category_id', $request->category_id);
+                // Get all subcategory IDs for the given category_id
+                $categoryIds = Category::where('parent_id', $request->category_id)
+                    ->orWhere('id', $request->category_id)
+                    ->pluck('id');
+                $query->whereIn('category_id', $categoryIds);
             })
             ->when($request->has('type_id'), function ($query) use ($request) {
                 $query->where('type_id', $request->type_id);
