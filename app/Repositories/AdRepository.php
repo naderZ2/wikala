@@ -22,7 +22,7 @@ class AdRepository
 
     public function getById($id, $name = 'name_ar')
     {
-        return Ad::with('images','user:id,name,image,created_at')->findOrFail($id);
+        return Ad::with('images','user:id,name,image,phone,created_at')->findOrFail($id);
     }
 
     public function update($id, array $data)
