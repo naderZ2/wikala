@@ -29,7 +29,7 @@ class StoreRequest extends FormRequest
     public function rules()
     {
         return [
-            "id" => "required",
+            // "id" => "required",
             "street" => "sometimes|nullable",
             "block_no" => "sometimes|nullable",
             "avenue" => "sometimes|nullable",

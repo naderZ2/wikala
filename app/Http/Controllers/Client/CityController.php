@@ -29,7 +29,7 @@ class CityController extends Controller
         
         $data=$request->validated();
         $data['region_id'] = $request->id;
-        unset($data['id']);
+        // unset($data['id']);
         auth()->user()->address()->create($data);
         return $this->success(null,trans('lang.created'));
     }

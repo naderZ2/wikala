@@ -59,6 +59,9 @@ class AdController extends Controller
             ->when($request->has('type_id'), function ($query) use ($request) {
                 $query->where('type_id', $request->type_id);
             })
+            ->when($request->has('search'), function ($query) use ($request) {
+                $query->where('title', 'like', '%' . $request->search . '%')->orWhere('description', 'like', '%' . $request->search . '%');
+            })
 
             ->with(["city:id,$this->name", "region:id,$this->name", "adsType:id,$this->name as type", "category:id,$this->name"])
             ->where('status', 'accepted') 
