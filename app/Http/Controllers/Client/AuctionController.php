@@ -27,11 +27,11 @@ class AuctionController extends Controller
             return $this->failed(null,__('lang.price_must_be_greater_than_last', ['price' => $lastAuction->price]));
         }
         // Get the main price of the ad
-        $mainPrice = Ad::where('id', $data['ad_id'])->value('price');
-        if ($mainPrice !== null && $data['price'] < $mainPrice) {
+        $lowestAuction = Ad::where('id', $data['ad_id'])->value('price');
+        if ($lowestAuction !== null && $data['price'] < $lowestAuction) {
             return $this->failed(null, __('lang.price_must_be_greater_than_main', ['price' => $mainPrice]));
         }
-
+        
         $auction = Auction::create($data);
         return $this->success($auction);
     }
@@ -39,6 +39,9 @@ class AuctionController extends Controller
     public function getByAd($ad_id)
     {
         $auctions = Auction::where('ad_id', $ad_id)->with('user:id,name,image')->orderByDesc('created_at')->get();
+        $lowestAuction = Ad::where('id', $ad_id)->value('price');
+        
+        $auctions['lowestAuction']=$lowestAuction;
         return $this->success($auctions);
     }
 }
