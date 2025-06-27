@@ -26,6 +26,11 @@ class AuctionController extends Controller
         if ($lastAuction && $data['price'] <= $lastAuction->price) {
             return $this->failed(null,__('lang.price_must_be_greater_than_last', ['price' => $lastAuction->price]));
         }
+        // Get the main price of the ad
+        $mainPrice = Ad::where('id', $data['ad_id'])->value('price');
+        if ($mainPrice !== null && $data['price'] < $mainPrice) {
+            return $this->failed(null, __('lang.price_must_be_greater_than_main', ['price' => $mainPrice]));
+        }
 
         $auction = Auction::create($data);
         return $this->success($auction);
