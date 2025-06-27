@@ -33,7 +33,7 @@ class AuctionController extends Controller
 
     public function getByAd($ad_id)
     {
-        $auctions = Auction::where('ad_id', $ad_id)->orderByDesc('created_at')->get();
+        $auctions = Auction::where('ad_id', $ad_id)->with('user')->orderByDesc('created_at')->get();
         return $this->success($auctions);
     }
 }
