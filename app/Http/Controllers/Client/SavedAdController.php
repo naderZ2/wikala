@@ -26,6 +26,9 @@ class SavedAdController extends Controller
      * Store a newly created resource in storage.
      */
 
+
+
+     
      public function store(StoreRequest $request)
      {
          $validated = $request->validated();  // بيانات الطلب بعد التحقق
@@ -52,5 +55,15 @@ class SavedAdController extends Controller
         }
 
         return $this->success(null, trans('lang.deleted'));
+    }
+
+    /**
+     * Display a listing of the resource.
+     */
+    public function index()
+    {
+        $userId = auth()->id();
+        $savedAds = $this->savedAdService->getUserSavedAds($userId);
+        return $this->success($savedAds);
     }
 }

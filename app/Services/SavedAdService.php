@@ -42,4 +42,9 @@ class SavedAdService
 
         return false;
     }
+
+    public function getUserSavedAds($userId)
+    {
+        return \App\Models\SavedAd::where('user_id', $userId)->with('ad')->get();
+    }
 }
