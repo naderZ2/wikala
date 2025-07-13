@@ -83,7 +83,7 @@ class AdController extends Controller
         ]);
     }
 
-public function store(StoreRequest $request)
+    public function store(StoreRequest $request)
     {
         if (auth()->user()->limit_ad <= 0) {
             return $this->failed(null, trans('lang.limit_reached'));
@@ -141,9 +141,6 @@ public function store(StoreRequest $request)
         return $this->success(null, 'Ad hidden successfully.');
     }
 
-
-
-   
     
     public function typesIndex()
     {
