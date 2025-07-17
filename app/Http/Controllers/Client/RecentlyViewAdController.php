@@ -34,7 +34,8 @@ class RecentlyViewAdController extends Controller
     // Store a new recently viewed ad (optional, usually handled automatically)
     public function store(Request $request)
     {
-        $userId = auth()->id();
+        $userId = auth('api')->id();
+
         $adId = $request->input('ad_id');
         if (!$adId) {
             return $this->failed(null, __('lang.ad_id_required'));
@@ -49,7 +50,7 @@ class RecentlyViewAdController extends Controller
     // Remove a recently viewed ad
     public function destroy($id)
     {
-        $userId = auth()->id();
+        $userId = auth('api')->id();
         $deleted = RecentlyViewAd::where('user_id', $userId)->where('id', $id)->delete();
         if (!$deleted) {
             return $this->failed(null, __('lang.not_found'));
