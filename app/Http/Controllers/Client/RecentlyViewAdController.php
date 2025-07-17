@@ -16,8 +16,13 @@ class RecentlyViewAdController extends Controller
     public function index()
     {
         $userId = auth()->id();
+
+        // Get all ads created by the authenticated user
+        $myAds = \App\Models\Ad::where('user_id', $userId)->pluck('id');
+
+        // Get recently viewed records for those ads
         $recentViews = RecentlyViewAd::with('ad')
-            ->where('user_id', $userId)
+            ->whereIn('ad_id', $myAds)
             ->orderByDesc('created_at')
             ->get();
         return $this->success($recentViews);

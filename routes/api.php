@@ -5,7 +5,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Laravel\Socialite\Facades\Socialite;
 use App\Http\Controllers\Client\AuctionController;
-use App\Http\Controllers\Client\RecentlyViewAdController;
+// use App\Http\Controllers\Client\RecentlyViewAdController;
 
 //Country
 // Route::get('countries', [Api\CountriesController::class, 'index']);
@@ -195,8 +195,8 @@ Route::middleware(['auth:api'])->group(function () {
 
 });
 
-Route::get('recently-viewed-ads', [RecentlyViewAdController::class, 'index'])->name('client.recently_viewed_ads.index');
-Route::post('recently-viewed-ads', [RecentlyViewAdController::class, 'store'])->name('client.recently_viewed_ads.store');
-Route::delete('recently-viewed-ads/{id}', [RecentlyViewAdController::class, 'destroy'])->name('client.recently_viewed_ads.destroy');
+Route::get('recently-viewed-ads', [Client\RecentlyViewAdController::class, 'index'])->name('client.recently_viewed_ads.index');
+Route::post('recently-viewed-ads', [Client\RecentlyViewAdController::class, 'store'])->name('client.recently_viewed_ads.store');
+Route::delete('recently-viewed-ads/{id}', [Client\RecentlyViewAdController::class, 'destroy'])->name('client.recently_viewed_ads.destroy');
 
 

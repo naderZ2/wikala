@@ -13,7 +13,7 @@ class AdRepository
     public function create(array $data)
     {
 
-        Log::info('Creating ad with data: ' . json_encode($data));
+        // Log::info('Creating ad with data: ' . json_encode($data));
         return Ad::create($data);
     }
 

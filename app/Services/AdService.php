@@ -48,7 +48,7 @@ class AdService
         $data['is_commercial'] = $user->type === 'business';
 
         // $data['user'] = Auth::user()->type() ? 'user' : 'business'; // Assuming you want to set the user type as well
-        Log::info('Storing ad for user: ' . $data['is_commercial'] .'user id'. $data['user_id']);
+        // Log::info('Storing ad for user: ' . $data['is_commercial'] .'user id'. $data['user_id']);
 
 
 
