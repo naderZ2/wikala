@@ -30,14 +30,14 @@ class CityController extends Controller
         $data=$request->validated();
         $data['region_id'] = $request->id;
         // unset($data['id']);
-        auth()->user()->address()->create($data);
-        return $this->success(null,trans('lang.created'));
+        $address = auth()->user()->address()->create($data);
+        return $this->success($address,trans('lang.created'));
     }
 
     public function editClientRegion(EditRequest $request){
         $data=$request->validated();
-        auth()->user()->address()->whereId( $request->id)->update($data);
-        return $this->success(null,trans('lang.updated'));
+        $address = auth()->user()->address()->whereId( $request->id)->update($data);
+        return $this->success($address,trans('lang.updated'));
     }
 
     public function deleteClientRegion(CheckRequest $request){
@@ -47,7 +47,7 @@ class CityController extends Controller
 
     public function updateMainAddress(CheckRequest $request){
         $region_id = UserAdress::find($request->id);
-        auth()->user()->update(['region_id' => $region_id]);
-        return $this->success(null,trans('lang.updated'));
+        $address = auth()->user()->update(['region_id' => $region_id]);
+        return $this->success($address,trans('lang.updated'));
     }
 }
