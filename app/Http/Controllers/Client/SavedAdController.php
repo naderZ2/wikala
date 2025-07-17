@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Client;
 
 use App\Models\SavedAd;
+use App\Models\Ad;
 use Illuminate\Http\Request;
 use App\Traits\ResponsesTrait;
 use App\Services\SavedAdService;
@@ -38,8 +39,11 @@ class SavedAdController extends Controller
          if (!$savedAd) {
              return $this->failed(null, trans('lang.already_saved'));
          }
-     
-         return $this->success($savedAd, trans('lang.created'));
+        
+        $data['savedAd']=$savedAd;
+        $data['ad']=Ad::where('id',$validated)->first();
+        
+         return $this->success($data, trans('lang.created'));
      }
 
     /**
