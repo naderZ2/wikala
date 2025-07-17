@@ -43,7 +43,9 @@ class AdService
     public function storeAdWithImages($data)
     {
         // Add the user_id to the data array using Auth::id()
-        $data['user_id'] = Auth::id();
+        $user = Auth::user(); 
+        $data['user_id'] = $user->id;
+        $data['is_commercial'] = $user->type === 'business';
 
         // Handle the main image upload if available
         if (isset($data['main_image'])) {
