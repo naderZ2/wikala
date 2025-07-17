@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\Client;
 
-use App\Models\RecentlyViewAd;
+use App\Models\Ad;
 use Illuminate\Http\Request;
+use App\Models\RecentlyViewAd;
 use App\Traits\ResponsesTrait;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 
@@ -15,13 +17,14 @@ class RecentlyViewAdController extends Controller
     // List all recently viewed ads for the authenticated user
     public function index()
     {
-        $userId = auth()->id();
-
+        $user = auth('api')->id();
+        // dd($user);
+        // Log::info('User ' . $user . ' is viewing their recently viewed ads.');
         // Get all ads created by the authenticated user
-        $myAds = \App\Models\Ad::where('user_id', $userId)->pluck('id');
-
+        $myAds = Ad::where('user_id', $user)->pluck('id');
+        Log::info($myAds);
         // Get recently viewed records for those ads
-        $recentViews = RecentlyViewAd::with('ad')
+        $recentViews = RecentlyViewAd::with('ad','user')
             ->whereIn('ad_id', $myAds)
             ->orderByDesc('created_at')
             ->get();
