@@ -330,3 +330,8 @@ ADD COLUMN type ENUM('user', 'business') NOT NULL DEFAULT 'user';
 
 ALTER TABLE users
 ADD COLUMN limit_ad INT DEFAULT 0;
+
+
+ALTER TABLE ads
+ADD COLUMN is_commercial BOOLEAN DEFAULT FALSE AFTER price;
+
