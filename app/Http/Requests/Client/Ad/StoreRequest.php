@@ -61,10 +61,6 @@ class StoreRequest extends FormRequest
      * @return void
      */
 
-    public function failedValidation(Validator $validator)
-    {
-        throw new HttpResponseException($this->failed(null, $validator->errors()->first()));
-    }
 
 
     /**
