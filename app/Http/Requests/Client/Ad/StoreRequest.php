@@ -32,7 +32,7 @@ class StoreRequest extends FormRequest
 
             'type_id'        => 'required|exists:ads_type,id',
 
-            'title'          => 'requirnullableed|string|max:255',
+            'title'          => 'required|string|max:255',
             'description'    => 'required|string',
             'contact_method' => 'required|string',
             'negotiable'     => 'required|boolean',
