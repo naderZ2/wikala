@@ -30,25 +30,25 @@ class StoreRequest extends FormRequest
         return [
             'category_id'    => 'nullable|exists:categories,id',
 
-            'type_id'        => 'required|exists:ads_type,id',
+            'type_id'        => 'nullable|exists:ads_type,id',
 
-            'title'          => 'required|string|max:255',
-            'description'    => 'required|string',
-            'contact_method' => 'required|string',
-            'negotiable'     => 'required|boolean',
+            'title'          => 'nullable|string|max:255',
+            'description'    => 'nullable|string',
+            'contact_method' => 'nullable|string',
+            'negotiable'     => 'nullable|boolean',
 
-            'start_date'     => 'required|date',
-            'end_date'       => 'required|date|after:start_date',
-            'city_id'        => 'required|exists:cities,id',
-            'region_id'      => 'required|exists:cities,id',
+            'start_date'     => 'nullable|date',
+            'end_date'       => 'nullable|date|after:start_date',
+            'city_id'        => 'nullable|exists:cities,id',
+            'region_id'      => 'nullable|exists:cities,id',
             'main_image'     => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:1024',
 
             'images'         => 'nullable|array',
             'images.*'       => 'image|mimes:jpeg,png,jpg,gif,svg|max:1024',
 
             'attributes' => 'nullable|array',
-            'attributes.*.id' => 'required|exists:attributes,id',
-            'attributes.*.value' => 'required|string',
+            'attributes.*.id' => 'nullable|exists:attributes,id',
+            'attributes.*.value' => 'nullable|string',
 
             'price' => 'nullable|numeric|min:0',
         ];
