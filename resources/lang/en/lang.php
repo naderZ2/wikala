@@ -399,7 +399,7 @@
 		"Old_Rejected_Reason" => "Old Rejected Reason",
 		'id_required' => 'ID is required',
 		'id_exists' => 'The selected ID does not exist',
-		'category_id_required' => 'Category is required',
+		'categorycategory_id_required_id_required' => 'Category is required',
 		'category_id_exists' => 'The selected category does not exist',
 		'name_ar_required' => 'The Arabic name is required',
 		'name_ar_string' => 'The Arabic name must be a string',

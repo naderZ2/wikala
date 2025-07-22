@@ -28,11 +28,11 @@ class StoreRequest extends FormRequest
     public function rules()
     {
         return [
-            'category_id'    => 'required|exists:categories,id',
+            'category_id'    => 'nullable|exists:categories,id',
 
             'type_id'        => 'required|exists:ads_type,id',
 
-            'title'          => 'required|string|max:255',
+            'title'          => 'requirnullableed|string|max:255',
             'description'    => 'required|string',
             'contact_method' => 'required|string',
             'negotiable'     => 'required|boolean',
@@ -75,7 +75,7 @@ class StoreRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'category_id.required'   => __('lang.category_required'),
+            // 'category_id.required'   => __('lang.category_required'),
             'category_id.exists'     => __('lang.category_not_found'),
             'type_id.required'       => __('lang.type_required'),
             'type_id.exists'         => __('lang.type_not_found'),

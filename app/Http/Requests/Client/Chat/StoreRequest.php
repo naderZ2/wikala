@@ -25,7 +25,7 @@ class StoreRequest extends FormRequest
             'receiver_id'   => 'required|exists:users,id',
             'message'       => 'required',
             'message_type'  => 'required|in:text,file,audio',
-        ];
+        ];  
     }
 
     public function messages(): array
@@ -37,7 +37,6 @@ class StoreRequest extends FormRequest
             'message.string'         => __('lang.message_must_be_string'),
             'message_type.required'  => __('lang.message_type_required'),
             'message_type.in'        => __('lang.invalid_message_type'),
-            
-        ];
+        ]; 
     }
 }
