@@ -42,7 +42,7 @@ class AdService
 
 
     // In AdService@storeAdWithImages
-use App\Models\User;
+
 
 public function storeAdWithImages($data)
 {
