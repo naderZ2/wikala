@@ -7,6 +7,7 @@ use App\Models\City;
 use App\Models\User;
 use App\Models\AdsType;
 use App\Models\Category;
+use App\Services\AdService;
 use Illuminate\Http\Request;
 use App\Models\RejectedReason;
 use Illuminate\Support\Facades\Log;
@@ -16,6 +17,14 @@ use App\Http\Requests\Admin\Ads\StoreRequest;
 
 class AdsController extends Controller
 {
+
+        protected $adService;
+
+    public function __construct(AdService $adService)
+    {
+        $this->adService = $adService;
+    }
+
     public function index(Request $request)
     {
         $status = $request->get('status', 'all');
@@ -111,7 +120,12 @@ public function create()
         if ($request->hasFile('image')) {
             $data['image'] = $this->uploadFile($request->image, 'ads');
         }
-        Ad::create($data);
+        $ad = $this->adService->storeAdWithImages($data);
+        // $user= auth()->user();
+        // $user->update(
+        //     ['limit_ad' => $user->limit_ad - 1]
+        // );
+        // Ad::create($data);
         return to_route('admin.ads.index')->with('success', trans('lang.created'));
     }
 
