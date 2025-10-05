@@ -126,7 +126,7 @@ public function create()
         //     ['limit_ad' => $user->limit_ad - 1]
         // );
         // Ad::create($data);
-        return to_route('admin.ads.index')->with('success', trans('lang.created'));
+        return to_route('ads.index')->with('success', trans('lang.created'));
     }
 
 
