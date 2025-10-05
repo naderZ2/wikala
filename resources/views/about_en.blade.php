@@ -32,6 +32,6 @@
 </head>
 <body>
 
-    <img src="terms_en1.jpg" alt="Image 1">
+    <img src="about_us_en.jpg" alt="Image 1">
 </body>
 </html>

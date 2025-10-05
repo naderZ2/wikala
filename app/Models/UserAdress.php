@@ -12,10 +12,10 @@ class UserAdress extends Model
     use HasFactory;
     protected $table="address_user";
     protected $fillable = [
-        'user_id' , 'region_id' , 
+        'user_id' , 'region_id' , 'region_id' , 
         'floor_no' ,'flat_no' , 
         'building_no' ,'block_no' , 
-        'street'  , 'notes'
+        'street'  , 'notes','latitude' , 'longitude' 
     ]; 
 
     public function region(){

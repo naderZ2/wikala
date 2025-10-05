@@ -38,6 +38,8 @@ class StoreRequest extends FormRequest
             "floor_no" => "sometimes|nullable",
             "notes" => "sometimes|nullable",
             "building_type" => "sometimes|nullable",
+            "longitude" => "sometimes|nullable",
+            "latitude" => "sometimes|nullable",
         ];
     }
 

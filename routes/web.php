@@ -17,8 +17,8 @@ use App\Http\Controllers\Admin\RejectedReasonController;
 
 // Route::get('test')->name('');
 Route::view('test2', 'test')->name('test');
-Route::view('terms_ar', 'terms_ar');
-Route::view('terms_en', 'terms_en');
+// Route::view('terms_ar', 'terms_ar');
+// Route::view('terms_en', 'terms_en');
 Route::view('about_ar', 'about_ar');
 Route::view('about_en', 'about_en');
 Route::view('QA_en', 'QA_en');

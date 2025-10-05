@@ -32,6 +32,6 @@
 </head>
 <body>
 
-    <img src="terms_ar1.jpg" alt="Image 1">
+    <img src="about_us_ar.jpg" alt="Image 1">
 </body>
 </html>
