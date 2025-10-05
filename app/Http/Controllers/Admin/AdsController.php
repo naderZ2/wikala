@@ -104,10 +104,10 @@ public function create()
 }
 
     // public function store(StoreRequest $request)
-    public function store(Request $request)
+    public function store(StoreRequest $request)
     {
-        // $data = $request->validated();
-        $data[] = $request;
+        $data = $request->validated();
+        // $data[] = $request;
         if ($request->hasFile('image')) {
             $data['image'] = $this->uploadFile($request->image, 'ads');
         }
