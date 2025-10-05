@@ -30,7 +30,7 @@
         <div class="col-sm-12">
             <div class="card">
                 <div class="card-body">
-                    <form class="needs-validation" novalidate method="POST" enctype="multipart/form-data" action="{{ route('admin.ads.store') }}">
+                    <form class="needs-validation" novalidate method="POST" enctype="multipart/form-data" action="{{ route('ads.store') }}">
                         @csrf
 
                         <div class="row mb-3">

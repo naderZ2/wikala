@@ -170,6 +170,8 @@ Route::group(['middleware' => ['auth:admin','CheckUserActiviation']], function()
         Route::get('ads/details/{id}', [Admin\AdsController::class, 'details'])->name('ads.details');
         Route::get('ads/editStatus/{id}', [Admin\AdsController::class, 'editStatus'])->name('ads.editStatus');
         Route::post('ads/changeStatus/{id}', [Admin\AdsController::class, 'changeStatus'])->name('ads.changeStatus');
+        Route::get('ads/create', [Admin\AdsController::class, 'create'])->name('ads.create');
+        Route::post('ads/store', [Admin\AdsController::class, 'store'])->name('ads.store');
 
 
         Route::resource('home_page_category', Admin\HomePageCategoryController::class);
