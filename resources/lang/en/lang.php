@@ -428,5 +428,7 @@
 	'price_must_be_greater_than_main' => 'The auction price must be greater than or equal to the main ad price (:price).',
 	'limit_reached' => 'You have reached the maximum limit of ads allowed.',
 
+
+	"add_ad" => "add Ad",
 		];
 ?>

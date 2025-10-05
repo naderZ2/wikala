@@ -93,11 +93,12 @@ class AdsController extends Controller
 public function create()
 {
     $this->lang();
+    $thename=$this->name;
     $users = User::select('id', 'name')->get();
-    $categories = Category::select('id', 'name')->get();
-    $types = AdsType::select('id', 'name')->get();
-    $cities = City::select('id', 'name')->whereNull('parent_id')->get();
-    $regions = City::select('id', 'name')->whereNotNull('parent_id')->get();
+    $categories = Category::select('id', $thename)->get();
+    $types = AdsType::select('id', $thename)->get();
+    $cities = City::select('id', $thename)->whereNull('parent_id')->get();
+    $regions = City::select('id', $thename)->whereNotNull('parent_id')->get();
 
     return view('admin.ads.add', compact('users','categories','types','cities','regions'));
 }
