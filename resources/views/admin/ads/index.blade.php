@@ -47,7 +47,7 @@
 	<div class="row">
 		<div class="d-flex justify-content-end col-sm-12">
 			{{-- @can('add category') --}}
-				<a href="{{route('ads.create')}}"  class="btn btn-primary">@lang('lang.ads')</a>
+				<a href="{{route('ads.create')}}"  class="btn btn-primary">@lang('lang.add_ad')</a>
 			{{-- @endcan	 --}}
 		</div>
 		<div class="col-sm-12">
