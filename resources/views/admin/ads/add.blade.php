@@ -99,7 +99,7 @@
                             <div class="col-md-3">
                                 <label class="form-label d-block">@lang('lang.Possibility_Negotiable')</label>
                                 <input type="hidden" name="negotiable" value="0">
-                                <input type="checkbox" name="negotiable" value="1" @checked(old('negotiable'))> @lang('lang.yes')
+                                <input type="checkbox" name="negotiable" value="1" @checked(old('negotiable'))> @lang('lang.Yes')
                             </div>
 
                             <div class="col-md-3">
