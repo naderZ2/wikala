@@ -13,7 +13,7 @@
 @endsection
 
 @section('breadcrumb-items')
-<li class="breadcrumb-item">@lang('lang.Ads')</li>
+<li class="breadcrumb-item">@lang('lang.ads')</li>
 <li class="breadcrumb-item active">@lang('lang.add_ad')</li>
 @endsection
 
@@ -42,18 +42,18 @@
                         {{-- Client & Category --}}
                         <div class="row mb-3">
                             <div class="col-md-6">
-                                <label class="form-label">@lang('lang.client')</label>
+                                <label class="form-label">@lang('lang.Client')</label>
                                 <select name="user_id" class="js-example-basic-single form-control" required>
                                     <option value="">@lang('lang.select')</option>
                                     @foreach ($users as $user)
                                         <option value="{{ $user->id }}" @selected(old('user_id') == $user->id)>{{ $user->name }}</option>
                                     @endforeach
                                 </select>
-                                <div class="invalid-feedback">@lang('lang.client') @lang('lang.required')</div>
+                                <div class="invalid-feedback">@lang('lang.Client') @lang('lang.required')</div>
                             </div>
 
                             <div class="col-md-6">
-                                <label class="form-label">@lang('lang.category')</label>
+                                <label class="form-label">@lang('lang.Category')</label>
                                 <select name="category_id" class="js-example-basic-single form-control" required>
                                     <option value="">@lang('lang.select')</option>
                                     @foreach ($categories as $category)
@@ -66,7 +66,7 @@
                         {{-- Type & Contact --}}
                         <div class="row mb-3">
                             <div class="col-md-6">
-                                <label class="form-label">@lang('lang.type')</label>
+                                <label class="form-label">@lang('lang.Type')</label>
                                 <select name="type_id" class="js-example-basic-single form-control" required>
                                     <option value="">@lang('lang.select')</option>
                                     @foreach ($types as $type)
@@ -76,7 +76,7 @@
                             </div>
 
                             <div class="col-md-6">
-                                <label class="form-label">@lang('lang.contact_method')</label>
+                                <label class="form-label">@lang('lang.Contact_Method')</label>
                                 <input type="text" name="contact_method" class="form-control" value="{{ old('contact_method') }}" required>
                             </div>
                         </div>
@@ -84,7 +84,7 @@
                         {{-- Title & Price --}}
                         <div class="row mb-3">
                             <div class="col-md-6">
-                                <label class="form-label">@lang('lang.title')</label>
+                                <label class="form-label">@lang('lang.Title')</label>
                                 <input type="text" name="title" class="form-control" value="{{ old('title') }}" required>
                             </div>
 
@@ -97,23 +97,23 @@
                         {{-- Negotiable & Dates --}}
                         <div class="row mb-3">
                             <div class="col-md-3">
-                                <label class="form-label d-block">@lang('lang.negotiable')</label>
+                                <label class="form-label d-block">@lang('lang.Possibility_Negotiable')</label>
                                 <input type="hidden" name="negotiable" value="0">
                                 <input type="checkbox" name="negotiable" value="1" @checked(old('negotiable'))> @lang('lang.yes')
                             </div>
 
                             <div class="col-md-3">
-                                <label class="form-label">@lang('lang.start_date')</label>
+                                <label class="form-label">@lang('lang.Start_Date')</label>
                                 <input type="date" name="start_date" class="form-control" value="{{ old('start_date') }}" required>
                             </div>
 
                             <div class="col-md-3">
-                                <label class="form-label">@lang('lang.end_date')</label>
+                                <label class="form-label">@lang('lang.End_Date')</label>
                                 <input type="date" name="end_date" class="form-control" value="{{ old('end_date') }}" required>
                             </div>
 
                             <div class="col-md-3">
-                                <label class="form-label">@lang('lang.status')</label>
+                                <label class="form-label">@lang('lang.Status')</label>
                                 <select name="status" class="form-control">
                                     <option value="under_review" @selected(old('status')=='under_review')>@lang('lang.under_review')</option>
                                     <option value="accepted" @selected(old('status')=='accepted')>@lang('lang.accepted')</option>
@@ -153,29 +153,29 @@
 
                         {{-- Main Image + Preview --}}
                         <div class="mb-3">
-                            <label class="form-label">@lang('lang.main_image')</label>
+                            <label class="form-label">@lang('lang.Main_Image')</label>
                             <input type="file" name="main_image" id="main_image" class="form-control" accept="image/*">
                             <div id="mainImagePreview" class="mt-2"></div>
                         </div>
 
                         {{-- Gallery Images + Preview --}}
                         <div class="mb-3">
-                            <label class="form-label">@lang('lang.gallery_images')</label>
+                            <label class="form-label">@lang('lang.images')</label>
                             <input type="file" name="images[]" id="images" class="form-control" multiple accept="image/*">
                             <div id="imagesPreview" class="d-flex flex-wrap mt-2"></div>
                         </div>
 
                         {{-- Attributes --}}
                         <div class="mb-2 d-flex align-items-center justify-content-between">
-                            <label class="form-label m-0">@lang('lang.attributes')</label>
-                            <button type="button" id="addAttributeRow" class="btn btn-sm btn-outline-primary">@lang('lang.add') @lang('lang.attribute')</button>
+                            <label class="form-label m-0">@lang('lang.Attributes')</label>
+                            <button type="button" id="addAttributeRow" class="btn btn-sm btn-outline-primary">@lang('lang.add_attribute') </button>
                         </div>
 
                         <div id="attributesWrapper">
                             {{-- first row (template instance 0) --}}
                             <div class="attribute-row row g-2 align-items-end mb-2" data-index="0">
                                 <div class="col-md-5">
-                                    <label class="form-label">@lang('lang.attribute')</label>
+                                    <label class="form-label">@lang('lang.Attribute')</label>
                                     <select name="attributes[0][id]" class="js-example-basic-single form-control">
                                         <option value="">@lang('lang.select')</option>
                                         @foreach($attributes as $attr)
@@ -184,8 +184,8 @@
                                     </select>
                                 </div>
                                 <div class="col-md-5">
-                                    <label class="form-label">@lang('lang.value')</label>
-                                    <input type="text" name="attributes[0][value]" class="form-control" placeholder="@lang('lang.value')">
+                                    <label class="form-label">@lang('lang.Value')</label>
+                                    <input type="text" name="attributes[0][value]" class="form-control" placeholder="@lang('lang.Value')">
                                 </div>
                                 <div class="col-md-2">
                                     <button type="button" class="btn btn-outline-danger w-100 remove-attr" disabled>&times;</button>
@@ -252,7 +252,7 @@
 
     row.innerHTML = `
       <div class="col-md-5">
-        <label class="form-label">@lang('lang.attribute')</label>
+        <label class="form-label">@lang('lang.Attribute')</label>
         <select name="attributes[${idx}][id]" class="js-example-basic-single form-control">
           <option value="">@lang('lang.select')</option>
           @foreach($attributes as $attr)
@@ -261,8 +261,8 @@
         </select>
       </div>
       <div class="col-md-5">
-        <label class="form-label">@lang('lang.value')</label>
-        <input type="text" name="attributes[${idx}][value]" class="form-control" placeholder="@lang('lang.value')">
+        <label class="form-label">@lang('lang.Value')</label>
+        <input type="text" name="attributes[${idx}][value]" class="form-control" placeholder="@lang('lang.Value')">
       </div>
       <div class="col-md-2">
         <button type="button" class="btn btn-outline-danger w-100 remove-attr">&times;</button>
