@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\User;
 use App\Traits\ResponsesTrait;
 use App\Traits\FileUploadTrait;
 use App\Repositories\AdRepository;
@@ -40,53 +41,50 @@ class AdService
 
 
 
-    public function storeAdWithImages($data)
-    {
-        // Add the user_id to the data array using Auth::id()
+    // In AdService@storeAdWithImages
+use App\Models\User;
 
-        $user = Auth::user(); // Assuming you want to set the user type as well
-        $data['user_id'] = $user->id;
-        $data['is_commercial'] = $user->type === 'business';
+public function storeAdWithImages($data)
+{
+    // If admin passed user_id, use it; otherwise Auth user
+    $userId = $data['user_id'] ?? Auth::id();
+    $user   = User::findOrFail($userId);
 
-        // $data['user'] = Auth::user()->type() ? 'user' : 'business'; // Assuming you want to set the user type as well
-        // Log::info('Storing ad for user: ' . $data['is_commercial'] .'user id'. $data['user_id']);
+    $data['user_id']      = $user->id;
+    $data['is_commercial']= ($user->type === 'business');
 
+    if (isset($data['main_image']) && $data['main_image']) {
+        $data['main_image'] = $this->uploadFile($data['main_image'], 'ads');
+    }
 
+    $ad = $this->adRepository->create($data);
 
-
-        // Handle the main image upload if available
-        if (isset($data['main_image'])) {
-            $data['main_image'] = $this->uploadFile($data['main_image'], 'ads');
-        }
-
-        // Store the ad with the user_id and image path
-        $ad = $this->adRepository->create($data);
-
-        if (isset($data['attributes']) && is_array($data['attributes'])) {
-            foreach ($data['attributes'] as $attribute) {
+    if (!empty($data['attributes']) && is_array($data['attributes'])) {
+        foreach ($data['attributes'] as $attribute) {
+            if (!empty($attribute['id']) && isset($attribute['value'])) {
                 $ad->attributes()->create([
-                    'attribute_id' => $attribute['id'],
-                    'attribute_value' => $attribute['value'],
+                    'attribute_id'   => $attribute['id'],
+                    'attribute_value'=> $attribute['value'],
                 ]);
             }
         }
+    }
 
-
-        if (isset($data['images'])) {
-            foreach ($data['images'] as $img) {
-                if ($img) { // Ensure the image is not null
-                    $imagePath = $this->uploadFile($img, 'ads');
-                    $ad->images()->create([
-                        'image_path' => $imagePath,
-                    ]);
-                }
+    if (!empty($data['images']) && is_array($data['images'])) {
+        foreach ($data['images'] as $img) {
+            if ($img) {
+                $imagePath = $this->uploadFile($img, 'ads');
+                $ad->images()->create(['image_path' => $imagePath]);
             }
         }
-        $ad->ad_number = 10000 + $ad->id;
-        $ad->save();
-
-        return $ad;
     }
+
+    $ad->ad_number = 10000 + $ad->id;
+    $ad->save();
+
+    return $ad;
+}
+
 
     public function updateAd($id, $data)
     {

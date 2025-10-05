@@ -7,6 +7,7 @@ use App\Models\City;
 use App\Models\User;
 use App\Models\AdsType;
 use App\Models\Category;
+use App\Models\Attribute;
 use App\Services\AdService;
 use Illuminate\Http\Request;
 use App\Models\RejectedReason;
@@ -108,18 +109,22 @@ public function create()
     $types = AdsType::select('id', $thename)->get();
     $cities = City::select('id', $thename)->whereNull('parent_id')->get();
     $regions = City::select('id', $thename)->whereNotNull('parent_id')->get();
-
-    return view('admin.ads.add', compact('users','categories','types','cities','regions'));
+    $attributes  = Attribute::select('id', $thename)->get();
+    return view('admin.ads.add', compact('users','categories','types','cities','regions','attributes'));
 }
 
     // public function store(StoreRequest $request)
     public function store(StoreRequest $request)
     {
         $data = $request->validated();
+        $data['images']     = $request->file('images', []);
+        $data['main_image'] = $request->file('main_image');
         // $data[] = $request;
         if ($request->hasFile('image')) {
             $data['image'] = $this->uploadFile($request->image, 'ads');
         }
+
+        
         $ad = $this->adService->storeAdWithImages($data);
         // $user= auth()->user();
         // $user->update(
