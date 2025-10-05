@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\Ad;
+use App\Models\City;
 use App\Models\User;
 use App\Models\AdsType;
 use App\Models\Category;
@@ -84,6 +85,33 @@ class AdsController extends Controller
 
         // return redirect()->route('ads.index')->with('success', trans('lang.updated'));
         return redirect()->route('ads.details',$id)->with('success', trans('lang.updated'));
+    }
+
+
+
+
+public function create()
+{
+    $this->lang();
+    $users = User::select('id', 'name')->get();
+    $categories = Category::select('id', 'name')->get();
+    $types = AdsType::select('id', 'name')->get();
+    $cities = City::select('id', 'name')->whereNull('parent_id')->get();
+    $regions = City::select('id', 'name')->whereNotNull('parent_id')->get();
+
+    return view('admin.ads.add', compact('users','categories','types','cities','regions'));
+}
+
+    // public function store(StoreRequest $request)
+    public function store(Request $request)
+    {
+        // $data = $request->validated();
+        $data[] = $request;
+        if ($request->hasFile('image')) {
+            $data['image'] = $this->uploadFile($request->image, 'ads');
+        }
+        Ad::create($data);
+        return to_route('admin.ads.index')->with('success', trans('lang.created'));
     }
 
 
