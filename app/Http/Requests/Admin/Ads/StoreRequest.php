@@ -34,9 +34,9 @@ class StoreRequest extends FormRequest
             'start_date' => 'nullable|date',
             'end_date' => 'nullable|date|after_or_equal:start_date',
             // 'rejected_id' => 'nullable|exists:rejected_reason,id',
-            'main_image'     => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:1024',
+            'main_image'     => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'images'         => 'nullable|array',
-            'images.*'       => 'image|mimes:jpeg,png,jpg,gif,svg|max:1024',
+            'images.*'       => 'image|mimes:jpeg,png,jpg,gif,svg|max:12288',
 
             'attributes'             => 'nullable|array',
             'attributes.*.id'        => 'required|exists:attributes,id',
