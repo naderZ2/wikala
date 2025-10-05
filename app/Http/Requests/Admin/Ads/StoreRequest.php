@@ -26,6 +26,8 @@ class StoreRequest extends FormRequest
             'user_id' => 'required|exists:users,id',
             'type_id' => 'required|exists:ads_type,id',
             // 'ad_number' => 'required|string|unique:ads,ad_number',
+            'city_id'        => 'required|exists:cities,id',
+            'region_id'      => 'required|exists:cities,id',
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'contact_method' => 'nullable|in:phone,chat,email',
