@@ -213,6 +213,13 @@ Route::group(['middleware' => ['auth:admin', 'CheckUserActiviation']], function 
     Route::prefix('users')->group(function () {
 
 
+
+        // User Category Limits
+        Route::get('category-limits/{userId}', [Admin\UserCategoryLimitController::class, 'index'])->name('admin.userCategoryLimits.index');
+        Route::get('category-limits/{userId}/{categoryId}/edit', [Admin\UserCategoryLimitController::class, 'edit'])->name('admin.userCategoryLimits.edit');
+        Route::post('category-limits/{userId}/{categoryId}', [Admin\UserCategoryLimitController::class, 'update'])->name('admin.userCategoryLimits.update');
+        Route::delete('category-limits/{userId}/{categoryId}', [Admin\UserCategoryLimitController::class, 'destroy'])->name('admin.userCategoryLimits.destroy');
+
         Route::get('clients', [Admin\UsersController::class, 'index'])->name('admin.clients');
 
         Route::post('clients', [Admin\UsersController::class, 'resetPassword'])->name('admin.clients.reset_password');

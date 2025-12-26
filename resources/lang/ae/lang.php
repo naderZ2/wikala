@@ -467,6 +467,19 @@ return  [
 	'paid' => 'مدفوع',
 	'not_paid' => 'غير مدفوع',
 
+	// Category Free Ads Limits 
+	'is_free' => 'فئة إعلانات مجانية',
+	'is_free_hint' => 'السماح بإعلانات مجانية في هذه الفئة',
+	'free_ads_limit' => 'حد الإعلانات المجانية',
+	'free_ads_limit_hint' => 'الحد الأقصى للإعلانات المجانية لكل مستخPدم (0 = غير محدود)',
+	'category_limit_reached' => 'لقد وصلت إلى الحد الأقصى للإعلانات المجانية في هذه الفئة',
+	'user_category_limits' => 'حدود فئات المستخدم',
+	'default_limit' => 'الحد الافتراضي',
+	'custom_limit' => 'حد مخصص',
+	'used_ads' => 'الإعلانات المستخدمة',
+	'remaining_ads' => 'المتبقي',
+	'reset_to_default' => 'إعادة للافتراضي',
+	'edit_limit' => 'تعديل الحد',
 
 ];
 ?>

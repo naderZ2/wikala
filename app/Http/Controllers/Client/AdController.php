@@ -29,7 +29,6 @@ class AdController extends Controller
         $this->adService = $adService;
 
         $this->middleware('auth:api')->except(['index', 'show', 'typesIndex', 'userAds']);
-
     }
 
     public function index(Request $request)
@@ -91,15 +90,30 @@ class AdController extends Controller
 
     public function store(StoreRequest $request)
     {
-        if (auth()->user()->limit_ad <= 0) {
+        $user = auth()->user();
+        $categoryId = $request->category_id;
+
+        // Check global limit
+        if ($user->limit_ad <= 0) {
             return $this->failed(null, trans('lang.limit_reached'));
         }
+
+        // Check category-specific limit
+        if (!$user->canCreateFreeAdInCategory($categoryId)) {
+            return $this->failed(null, trans('lang.category_limit_reached'));
+        }
+
         $data = $request->validated();
         $ad = $this->adService->storeAdWithImages($data);
-        $user = auth()->user();
-        $user->update(
-            ['limit_ad' => $user->limit_ad - 1]
-        );
+
+        // Decrement global limit
+        $user->update(['limit_ad' => $user->limit_ad - 1]);
+
+        // Increment category-specific used count
+        $userLimit = $user->getCategoryLimit($categoryId);
+        if ($userLimit) {
+            $userLimit->increment('used_ads_count');
+        }
 
         Log::info('Ad created successfully', ['ad' => $request]);
 
@@ -187,8 +201,4 @@ class AdController extends Controller
 
         return $this->success($ads);
     }
-    
-
-
-
 }
