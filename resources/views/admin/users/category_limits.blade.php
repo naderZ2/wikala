@@ -30,6 +30,7 @@
                                 <tr>
                                     <th>#</th>
                                     <th>@lang('lang.Category')</th>
+                                    <th>@lang('lang.Status')</th>
                                     <th>@lang('lang.default_limit')</th>
                                     <th>@lang('lang.custom_limit')</th>
                                     <th>@lang('lang.used_ads')</th>
@@ -42,6 +43,13 @@
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $category['category_name'] }}</td>
+                                    <td>
+                                        @if($category['is_free'])
+                                        <span class="badge bg-success">@lang('lang.free')</span>
+                                        @else
+                                        <span class="badge bg-warning">@lang('lang.not_free')</span>
+                                        @endif
+                                    </td>
                                     <td>{{ $category['default_limit'] }}</td>
                                     <td>
                                         @if($category['has_custom_limit'])

@@ -11,6 +11,23 @@ use App\Http\Controllers\Controller;
 class UserCategoryLimitController extends Controller
 {
     /**
+     * Get category path with parent hierarchy.
+     */
+    private function getCategoryPath($category)
+    {
+        $path = [];
+        $current = $category;
+
+        while ($current) {
+            $name = request()->header('Lang') == "en" ? $current->name_en : $current->name_ar;
+            array_unshift($path, $name);
+            $current = $current->parent;
+        }
+
+        return implode(' - ', $path);
+    }
+
+    /**
      * Display user's category limits.
      */
     public function index($userId)
@@ -18,10 +35,10 @@ class UserCategoryLimitController extends Controller
         $this->lang();
         $user = User::findOrFail($userId);
 
-        // Get all end-point categories with user's limits
+        // Get all end-point categories with user's limits (both free and not free)
         $categories = Category::where('end_point', 1)
-            ->where('is_free', 1)
-            ->select('id', $this->name, 'free_ads_limit')
+            ->with('parent.parent.parent') // Load up to 3 levels of parents
+            ->select('id', 'name_ar', 'name_en', 'free_ads_limit', 'parent_id', 'is_free')
             ->get()
             ->map(function ($category) use ($user) {
                 $userLimit = $user->getCategoryLimit($category->id);
@@ -29,7 +46,8 @@ class UserCategoryLimitController extends Controller
 
                 return [
                     'category_id' => $category->id,
-                    'category_name' => $category->name,
+                    'category_name' => $this->getCategoryPath($category),
+                    'is_free' => $category->is_free,
                     'default_limit' => $category->free_ads_limit,
                     'user_limit' => $userLimit ? $userLimit->free_ads_limit : null,
                     'used_ads_count' => $userLimit ? $userLimit->used_ads_count : $usedAds,
