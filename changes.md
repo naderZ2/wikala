@@ -335,3 +335,10 @@ ADD COLUMN limit_ad INT DEFAULT 0;
 ALTER TABLE ads
 ADD COLUMN is_commercial BOOLEAN DEFAULT FALSE AFTER price;
 
+
+
+
+-- Add sponsored ads columns to the ads table
+ALTER TABLE ads ADD COLUMN is_sponsored TINYINT(1) DEFAULT 0;
+ALTER TABLE ads ADD COLUMN sponsored_price DECIMAL(10, 2) DEFAULT 0.00;
+ALTER TABLE ads ADD COLUMN sponsored_at TIMESTAMP NULL;
