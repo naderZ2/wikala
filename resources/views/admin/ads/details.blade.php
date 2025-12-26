@@ -34,7 +34,7 @@
 						@lang('lang.remove_sponsor')
 					</button>
 				</form>
-				<span class="badge bg-success ms-2">@lang('lang.sponsored') - {{ $ad->sponsored_price }} @lang('lang.sar')</span>
+				<span class="badge bg-success ms-2">@lang('lang.sponsored') - {{ $ad->sponsored_price }} @lang('lang.egy')</span>
 				@else
 				<a href="{{ route('ads.editSponsor', $ad->id) }}" class="btn btn-success">
 					@lang('lang.set_sponsor')
