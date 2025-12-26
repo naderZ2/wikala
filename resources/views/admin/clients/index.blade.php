@@ -60,7 +60,9 @@
 										<td>{{ $client?->created_at?->format('Y-m-d') }}</td>
 										<td>
 											<button class="btn btn-primary" type="button" data-bs-toggle="modal" onclick="getRndInteger(),getId({{ $client->id }})" data-original-title="test" data-bs-target="#exampleModal" >@lang('lang.reset_password')</button>
-
+										<a href="{{ route('admin.userCategoryLimits.index', $client->id) }}" class="btn btn-success">
+										<i class="fa fa-edit"></i> @lang('lang.edit_limit')
+									</a>
 										</td>
 									</tr>
 								@empty
