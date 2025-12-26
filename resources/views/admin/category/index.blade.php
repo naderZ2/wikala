@@ -68,9 +68,6 @@
 								@else
 									<span class="badge bg-secondary">@lang('lang.not_free')</span>
 								@endif
-								<button class="btn btn-sm btn-outline-primary ms-1" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="getRecord({{ $category }})">
-									<i class="fa fa-edit"></i>
-								</button>
 							</td>
 									<td>
 										@can('edit category')

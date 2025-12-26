@@ -39,6 +39,7 @@
 									<th>@lang('lang.Name')</th>
 									<th>@lang('lang.Image')</th>
 									<th>@lang('lang.Status')</th>
+									<th>@lang('lang.free_ads_limit')</th>
 									<th></th>
 								</tr>
 							</thead>
@@ -62,6 +63,14 @@
 										@else
 										@lang('lang.inactive')
 
+										@endif
+									</td>
+
+									<td>
+										@if($category->is_free)
+										<span class="badge bg-success">{{ $category->free_ads_limit }}</span>
+										@else
+										<span class="badge bg-secondary">@lang('lang.not_free')</span>
 										@endif
 									</td>
 
