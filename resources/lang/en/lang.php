@@ -471,6 +471,7 @@ return  [
 	'remaining_ads' => 'Remaining',
 	'reset_to_default' => 'Reset to Default',
 	'edit_limit' => 'Edit Limit',
+	'not_free' => 'Not Free',
 
 ];
 ?>
