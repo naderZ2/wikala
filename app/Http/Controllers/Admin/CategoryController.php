@@ -112,6 +112,10 @@ class CategoryController extends Controller
         if ($request->image) {
             $data['image'] = $this->uploadFile($request->image, 'categories', $Category->image);
         }
+
+        // Handle is_free checkbox - when unchecked, it doesn't submit a value
+        $data['is_free'] = $request->has('is_free') ? true : false;
+
         $Category->update($data);
         return  to_route('category.index')->with('success', trans('lang.updated'));
     }
