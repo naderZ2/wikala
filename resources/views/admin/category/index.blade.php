@@ -62,7 +62,16 @@
 
 										@endif
 									</td>
-
+							<td>
+								@if($category->is_free)
+									<span class="badge bg-success">{{ $category->free_ads_limit }}</span>
+								@else
+									<span class="badge bg-secondary">@lang('lang.not_free')</span>
+								@endif
+								<button class="btn btn-sm btn-outline-primary ms-1" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="getRecord({{ $category }})">
+									<i class="fa fa-edit"></i>
+								</button>
+							</td>
 									<td>
 										@can('edit category')
 										<button class="btn btn-primary" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#exampleModal" onclick="getRecord({{ $category }})">@lang('lang.edit')</button>
@@ -73,11 +82,11 @@
 											@lang('lang.details')
 										</a>
 										@endif
-										<form action="{{ route('category.destroy') }}" method="POST" style="display:inline-block">
+										<form action="{{ route('category.destroy') }}" method="POST" style="displayPinline-block">
 											@csrf
 											@method('DELETE')
 											<input type="hidden" name="id" value="{{ $category->id }}">
-											<button type="submit" class="btn btn-danger"
+											<button type="submit" class="btn btn-danger" style="display:inline-block"
 												onclick="return confirm('@lang('lang.are_you_sure_delete')');">
 												@lang('lang.delete')
 											</button>

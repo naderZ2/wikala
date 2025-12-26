@@ -480,6 +480,7 @@ return  [
 	'remaining_ads' => 'المتبقي',
 	'reset_to_default' => 'إعادة للافتراضي',
 	'edit_limit' => 'تعديل الحد',
+	'not_free' => 'غير مجاني',
 
 ];
 ?>
