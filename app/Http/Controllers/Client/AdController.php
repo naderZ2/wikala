@@ -27,7 +27,7 @@ class AdController extends Controller
     public function __construct(AdService $adService)
     {
         $this->adService = $adService;
-        
+
         $this->middleware('auth:api')->except(['index', 'show', 'typesIndex', 'userAds']);
 
     }
@@ -35,13 +35,13 @@ class AdController extends Controller
     public function index(Request $request)
     {
         $this->lang();
-        
+
         $perPage = $request->get('per_page', 10);
         $userId = auth()->id();
 
         $ads = Ad::whereDoesntHave('hiddenAds', function ($query) use ($userId) {
-                $query->where('user_id', $userId);
-            })
+            $query->where('user_id', $userId);
+        })
             ->when($request->has('category_id'), function ($query) use ($request) {
                 // Get all subcategory IDs for the given category_id
                 $categoryIds = Category::where('parent_id', $request->category_id)
@@ -72,7 +72,10 @@ class AdController extends Controller
             })
 
             ->with(["city:id,$this->name", "region:id,$this->name", "adsType:id,$this->name as type", "category:id,$this->name"])
-            ->where('status', 'accepted') 
+            ->where('status', 'accepted')
+            ->orderBy('is_sponsored', 'desc')
+            ->orderBy('sponsored_price', 'desc')
+            ->orderBy('created_at', 'desc')
             ->paginate($perPage);
 
         return $this->success([
@@ -93,7 +96,7 @@ class AdController extends Controller
         }
         $data = $request->validated();
         $ad = $this->adService->storeAdWithImages($data);
-        $user= auth()->user();
+        $user = auth()->user();
         $user->update(
             ['limit_ad' => $user->limit_ad - 1]
         );
@@ -107,9 +110,9 @@ class AdController extends Controller
     {
         $this->lang();
         $name = $this->name;
-        
+
         // Record the view if user is authenticated
-        
+
         $ad = $this->adService->getAdById($id, $name);
 
         if (auth()->check() && $ad) {
@@ -122,7 +125,7 @@ class AdController extends Controller
         }
         $related_ads = $this->adService->getTopAdsByCategory($ad->category_id, $name);
 
-        return $this->success(['ad'=>$ad,'related_ads'=>$related_ads]);
+        return $this->success(['ad' => $ad, 'related_ads' => $related_ads]);
     }
 
     public function update(AdUpdateRequest $request, $id)
@@ -144,12 +147,12 @@ class AdController extends Controller
         return $this->success(null, 'Ad hidden successfully.');
     }
 
-    
+
     public function typesIndex()
     {
         $this->lang();
         Log::info('Fetching types index');
-        $ad = AdsType::where('enable', 1)->select('id',$this->name)->get();
+        $ad = AdsType::where('enable', 1)->select('id', $this->name)->get();
         return $this->success($ad);
     }
     public function myAds()
@@ -161,7 +164,7 @@ class AdController extends Controller
                 $query->where('user_id', $userId);
             })
             ->with(["city:id,$this->name", "region:id,$this->name", "adsType:id,$this->name as type", "category:id,$this->name"])
-            ->where('status', 'accepted') 
+            ->where('status', 'accepted')
             ->get();
 
         return $this->success($ads);
@@ -179,7 +182,7 @@ class AdController extends Controller
             })
             ->with(["city:id,$this->name", "region:id,$this->name", "adsType:id,$this->name as type", "category:id,$this->name"])
 
-            ->where('status', 'accepted') 
+            ->where('status', 'accepted')
             ->get();
 
         return $this->success($ads);

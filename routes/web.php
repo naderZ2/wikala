@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\User;
@@ -36,9 +37,9 @@ Route::view('QA_ar', 'QA_ar');
 //     return Socialite::driver('google')->redirect();
 // });
 
-Route::middleware(['web'])->get('login/redirect', [Client\Auth\SocialController::class, 'redirect'] );
+Route::middleware(['web'])->get('login/redirect', [Client\Auth\SocialController::class, 'redirect']);
 
-Route::middleware(['web'])->get('login/google/callback', [Client\Auth\SocialController::class, 'handleGoogleCallback'] );
+Route::middleware(['web'])->get('login/google/callback', [Client\Auth\SocialController::class, 'handleGoogleCallback']);
 
 // Route::middleware(['web'])->get('login/google/callback', function (Request $request) {
 //     // Log::info('Google callback', $request->all());
@@ -63,14 +64,13 @@ Route::middleware(['web'])->get('login/google/callback', [Client\Auth\SocialCont
 
 
 
-Route::group(['middleware' => ['guest:admin']], function(){
+Route::group(['middleware' => ['guest:admin']], function () {
 
     Route::get('/', function () {
         return redirect()->route('login-bs-validation');
     })->name('/');
 
     Route::view('login', 'authentication.login-bs-validation')->name('login');
-
 });
 
 Route::get('notifications_reminder', [Admin\NotificationController::class, 'reminder'])->name('admin.notifications.reminder');
@@ -81,7 +81,7 @@ Route::get('contact_us', [Admin\ContactUsControll::class, 'index'])->name('admin
 
 
 
-Route::group(['middleware' => ['auth:admin','CheckUserActiviation']], function(){
+Route::group(['middleware' => ['auth:admin', 'CheckUserActiviation']], function () {
 
     Route::prefix('dashboard')->group(function () {
 
@@ -100,7 +100,6 @@ Route::group(['middleware' => ['auth:admin','CheckUserActiviation']], function()
                 Route::post('store', [Admin\ReportOptionController::class, 'store'])->name('reportOption.store');
                 Route::post('update', [Admin\ReportOptionController::class, 'update'])->name('reportOption.update');
                 Route::get('/{id}/enable', [Admin\ReportOptionController::class, 'enable'])->name('reportOption.enable');
-
             });
         });
 
@@ -117,13 +116,13 @@ Route::group(['middleware' => ['auth:admin','CheckUserActiviation']], function()
         Route::post('role_permissions', [Admin\RolePermissionController::class, 'update'])->name('admin.role_permission');
 
         Route::resource('city', 'Admin\CityController');
-        Route::get('get_city', [Admin\CityController::class,'get_city'])->name('get_city');
-        Route::get('city/{id}/edit', [Admin\CityController::class,'edit'])->name('dashboard.city.edit');
+        Route::get('get_city', [Admin\CityController::class, 'get_city'])->name('get_city');
+        Route::get('city/{id}/edit', [Admin\CityController::class, 'edit'])->name('dashboard.city.edit');
         Route::post('edit_city', [Admin\CityController::class, 'update'])->name('dashboard.city.update');
         Route::delete('delete_city', [Admin\CityController::class, 'destroy'])->name('dashboard.city.destroy');
 
         Route::resource('discounts', 'Admin\DiscountController');
-        Route::get('change_active\{id}',[Admin\DiscountController::class, 'changeActive'])->name('change_active');
+        Route::get('change_active\{id}', [Admin\DiscountController::class, 'changeActive'])->name('change_active');
         // Route::view('home', 'dashboard.index')->name('index');
 
         Route::view('dashboard-02', 'dashboard.dashboard-02')->name('dashboard-02');
@@ -174,14 +173,19 @@ Route::group(['middleware' => ['auth:admin','CheckUserActiviation']], function()
         Route::get('ads/create', [Admin\AdsController::class, 'create'])->name('ads.create');
         Route::post('ads/store', [Admin\AdsController::class, 'store'])->name('ads.store');
 
+        // Sponsored Ads Routes
+        Route::get('ads/sponsored', [Admin\AdsController::class, 'sponsoredAds'])->name('ads.sponsored');
+        Route::get('ads/editSponsor/{id}', [Admin\AdsController::class, 'editSponsor'])->name('ads.editSponsor');
+        Route::post('ads/setSponsor/{id}', [Admin\AdsController::class, 'setSponsor'])->name('ads.setSponsor');
+        Route::post('ads/removeSponsor/{id}', [Admin\AdsController::class, 'removeSponsor'])->name('ads.removeSponsor');
+
 
         Route::resource('home_page_category', Admin\HomePageCategoryController::class);
-
     });
 
 
     Route::resource('discounts', 'Admin\DiscountController');
-    Route::get('change_active\{id}',[Admin\DiscountController::class, 'changeActive'])->name('change_active');
+    Route::get('change_active\{id}', [Admin\DiscountController::class, 'changeActive'])->name('change_active');
 
     Route::prefix('events')->group(function () {
 
@@ -201,7 +205,6 @@ Route::group(['middleware' => ['auth:admin','CheckUserActiviation']], function()
         Route::post('edit_event_category\{id}', [Admin\EventCategoryController::class, 'destroy'])->name('event_category.destroy');
         Route::post('\event-categories\{id}\move-up', [Admin\EventCategoryController::class, 'moveUp'])->name('event-categories.moveUp');
         Route::post('\event-categories\{id}\move-down', [Admin\EventCategoryController::class, 'moveDown'])->name('event-categories.moveDown');
-
     });
 
 
@@ -231,7 +234,6 @@ Route::group(['middleware' => ['auth:admin','CheckUserActiviation']], function()
 
         Route::resource('roles', 'Admin\RoleController');
         Route::post('edit_role', [Admin\RoleController::class, 'update'])->name('roles.update');
-
     });
 
 
@@ -309,15 +311,12 @@ Route::group(['middleware' => ['auth:admin','CheckUserActiviation']], function()
 
         Route::get('/get-categories-by-seller', [Admin\SellerServicesController::class, 'getCategoriesBySeller'])->name('admin.sellerServices.get.categories.by.seller');
         Route::get('/get-products-by-category', [Admin\SellerServicesController::class, 'getProductsByCategory'])->name('admin.productServices.get.products.by.category');
-
-
-
     });
 
 
 
 
-// seller serves availability
+    // seller serves availability
 
 
 
@@ -329,10 +328,10 @@ Route::post('login', [Admin\Auth\LoginController::class, 'login'])->name('admin.
 Route::get('/', function () {
     return redirect()->route('login');
 })->name('/');
-Route::view('login-bs-validation','authentication.login-bs-validation')->name('login-bs-validation');
+Route::view('login-bs-validation', 'authentication.login-bs-validation')->name('login-bs-validation');
 //Language Change
 Route::get('lang/{locale}', function ($locale) {
-    if (! in_array($locale, ['en', 'de', 'es','fr','pt', 'cn', 'ae'])) {
+    if (! in_array($locale, ['en', 'de', 'es', 'fr', 'pt', 'cn', 'ae'])) {
         abort(400);
     }
     Session()->put('locale', $locale);
@@ -506,7 +505,7 @@ Route::prefix('forms')->group(function () {
     Route::view('form-wizard', 'forms.form-wizard')->name('form-wizard');
     Route::view('form-wizard-two', 'forms.form-wizard-two')->name('form-wizard-two');
     Route::view('form-wizard-three', 'forms.form-wizard-three')->name('form-wizard-three');
-    Route::post('form-wizard-three', function(){
+    Route::post('form-wizard-three', function () {
         return redirect()->route('form-wizard-three');
     })->name('form-wizard-three-post');
 });
@@ -553,8 +552,7 @@ Route::prefix('charts')->group(function () {
 Route::view('sample-page', 'pages.sample-page')->name('sample-page');
 Route::view('internationalization', 'pages.internationalization')->name('internationalization');
 
-Route::prefix('starter-kit')->group(function () {
-});
+Route::prefix('starter-kit')->group(function () {});
 
 Route::prefix('others')->group(function () {
     Route::view('400', 'errors.400')->name('error-400');
@@ -656,18 +654,17 @@ Route::prefix('layouts')->group(function () {
     Route::view('modern-layout', 'admin_unique_layouts.modern-layout');
 });
 
-Route::get('layout-{light}', function($light){
+Route::get('layout-{light}', function ($light) {
     session()->put('layout', $light);
     session()->get('layout');
-    if($light == 'vertical-layout')
-    {
+    if ($light == 'vertical-layout') {
         return redirect()->route('pages-vertical-layout');
     }
     return redirect()->route('index');
     // return 1;
 });
 
-Route::get('/clear-cache', function() {
+Route::get('/clear-cache', function () {
     Artisan::call('config:cache');
     Artisan::call('cache:clear');
     Artisan::call('config:clear');
@@ -675,4 +672,3 @@ Route::get('/clear-cache', function() {
     Artisan::call('route:clear');
     return "Cache is cleared";
 })->name('clear.cache');
-

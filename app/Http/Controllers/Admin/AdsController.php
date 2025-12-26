@@ -19,7 +19,7 @@ use App\Http\Requests\Admin\Ads\StoreRequest;
 class AdsController extends Controller
 {
 
-        protected $adService;
+    protected $adService;
 
     public function __construct(AdService $adService)
     {
@@ -30,7 +30,7 @@ class AdsController extends Controller
     {
         $status = $request->get('status', 'all');
 
-        $query = Ad::select('id', 'ad_number', 'title', 'start_date', 'end_date','user_id');
+        $query = Ad::select('id', 'ad_number', 'title', 'start_date', 'end_date', 'user_id');
 
         if ($status === 'outdated') {
             $query->where('end_date', '<', now());
@@ -50,7 +50,7 @@ class AdsController extends Controller
     public function details(Request $request, $id)
     {
         $this->lang();
-        $ad = Ad::with(['user', "category:id,$this->name", "attributes.attribute:id,$this->name,type,image", 'rejectedReason','images',"city:id,$this->name","region:id,$this->name"])->findOrFail($id);
+        $ad = Ad::with(['user', "category:id,$this->name", "attributes.attribute:id,$this->name,type,image", 'rejectedReason', 'images', "city:id,$this->name", "region:id,$this->name"])->findOrFail($id);
         Log::info($ad->rejectedReason);
 
         return view('admin.ads.details', compact('ad'));
@@ -62,9 +62,9 @@ class AdsController extends Controller
         $ad = Ad::findOrFail($id);
         $rejectedReasons = RejectedReason::all();
         // return view('admin.ads.editStatus', compact('ad', 'ads', 'rejectedReasons'));
-        $ads = Ad::select('id','ad_number','title')->get();
-        $rejectedReasons = RejectedReason::where('enable',1)->get();
-        return view('admin.ads.editStatus', compact('ad','rejectedReasons'));
+        $ads = Ad::select('id', 'ad_number', 'title')->get();
+        $rejectedReasons = RejectedReason::where('enable', 1)->get();
+        return view('admin.ads.editStatus', compact('ad', 'rejectedReasons'));
     }
 
 
@@ -95,24 +95,24 @@ class AdsController extends Controller
         $ad->save();
 
         // return redirect()->route('ads.index')->with('success', trans('lang.updated'));
-        return redirect()->route('ads.details',$id)->with('success', trans('lang.updated'));
+        return redirect()->route('ads.details', $id)->with('success', trans('lang.updated'));
     }
 
 
 
 
-public function create()
-{
-    $this->lang();
-    $thename=$this->name;
-    $users = User::select('id', 'name')->get();
-    $categories = Category::select('id', $thename)->get();
-    $types = AdsType::select('id', $thename)->get();
-    $cities = City::select('id', $thename)->whereNull('parent_id')->get();
-    $regions = City::select('id', $thename)->whereNotNull('parent_id')->get();
-    $attributes  = Attribute::select('id', $thename)->get();
-    return view('admin.ads.add', compact('users','categories','types','cities','regions','attributes'));
-}
+    public function create()
+    {
+        $this->lang();
+        $thename = $this->name;
+        $users = User::select('id', 'name')->get();
+        $categories = Category::select('id', $thename)->get();
+        $types = AdsType::select('id', $thename)->get();
+        $cities = City::select('id', $thename)->whereNull('parent_id')->get();
+        $regions = City::select('id', $thename)->whereNotNull('parent_id')->get();
+        $attributes  = Attribute::select('id', $thename)->get();
+        return view('admin.ads.add', compact('users', 'categories', 'types', 'cities', 'regions', 'attributes'));
+    }
 
     // public function store(StoreRequest $request)
     public function store(StoreRequest $request)
@@ -128,7 +128,7 @@ public function create()
 
         $ad = $this->adService->storeAdWithImages($data);
         // $user= auth()->user();
-        $userId = $data['user_id'] ;
+        $userId = $data['user_id'];
         $user   = User::findOrFail($userId);
         $user->update(
             ['limit_ad' => $user->limit_ad - 1]
@@ -137,5 +137,60 @@ public function create()
         return to_route('ads.index')->with('success', trans('lang.created'));
     }
 
+    /**
+     * Show sponsored ads management page
+     */
+    public function sponsoredAds()
+    {
+        $ads = Ad::select('id', 'ad_number', 'title', 'is_sponsored', 'sponsored_price', 'sponsored_at', 'user_id')
+            ->where('is_sponsored', 1)
+            ->orderBy('sponsored_price', 'desc')
+            ->with('user')
+            ->get();
 
+        return view('admin.ads.sponsored', compact('ads'));
+    }
+
+    /**
+     * Show set sponsor form
+     */
+    public function editSponsor($id)
+    {
+        $ad = Ad::findOrFail($id);
+        return view('admin.ads.editSponsor', compact('ad'));
+    }
+
+    /**
+     * Set an ad as sponsored with price
+     */
+    public function setSponsor(Request $request, $id)
+    {
+        $request->validate([
+            'sponsored_price' => 'required|numeric|min:0',
+        ]);
+
+        $ad = Ad::findOrFail($id);
+        $ad->update([
+            'is_sponsored' => true,
+            'sponsored_price' => $request->sponsored_price,
+            'sponsored_at' => now(),
+        ]);
+
+        return redirect()->route('ads.details', $id)->with('success', trans('lang.ad_sponsored_successfully'));
+    }
+
+    /**
+     * Remove sponsored status from an ad
+     */
+    public function removeSponsor($id)
+    {
+        $ad = Ad::findOrFail($id);
+        $ad->update([
+            'is_sponsored' => false,
+            'sponsored_price' => 0,
+            'sponsored_at' => null,
+        ]);
+
+        return redirect()->route('ads.details', $id)->with('success', trans('lang.sponsor_removed'));
+    }
 }

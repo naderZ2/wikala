@@ -28,6 +28,15 @@ class Ad extends Model
         'status',
         'start_date',
         'end_date',
+        'is_sponsored',
+        'sponsored_price',
+        'sponsored_at',
+    ];
+
+    protected $casts = [
+        'is_sponsored' => 'boolean',
+        'sponsored_price' => 'decimal:2',
+        'sponsored_at' => 'datetime',
     ];
 
     public function user()
