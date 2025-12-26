@@ -28,12 +28,15 @@ class EditRequest extends FormRequest
             'name_ar' => 'sometimes|nullable',
             'name_en' => 'sometimes|nullable',
             'image' => 'sometimes|nullable|max:1024',
-            'order' => 'sometimes|nullable'
+            'order' => 'sometimes|nullable',
+            'is_free' => 'sometimes|nullable|boolean',
+            'free_ads_limit' => 'sometimes|nullable|integer|min:0',
         ];
     }
 
 
-    public function messages(): array {
+    public function messages(): array
+    {
         return [
             'image.max'  => 'The image size must not exceed 1MB.',
         ];

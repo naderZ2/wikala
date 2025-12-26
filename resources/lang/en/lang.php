@@ -458,5 +458,19 @@ return  [
 	'paid' => 'Paid',
 	'not_paid' => 'Not Paid',
 
+	// Category Free Ads Limits
+	'is_free' => 'Free Ads Category',
+	'is_free_hint' => 'Allow free ads in this category',
+	'free_ads_limit' => 'Free Ads Limit',
+	'free_ads_limit_hint' => 'Maximum free ads per user (0 = unlimited)',
+	'category_limit_reached' => 'You have reached the maximum free ads limit for this category',
+	'user_category_limits' => 'User Category Limits',
+	'default_limit' => 'Default Limit',
+	'custom_limit' => 'Custom Limit',
+	'used_ads' => 'Used Ads',
+	'remaining_ads' => 'Remaining',
+	'reset_to_default' => 'Reset to Default',
+	'edit_limit' => 'Edit Limit',
+
 ];
 ?>

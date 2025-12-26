@@ -29,12 +29,15 @@ class StoreRequest extends FormRequest
             'name_en' => 'required',
             'image' => 'required|max:1024',
             'end_point' => 'sometimes|nullable',
+            'is_free' => 'sometimes|nullable|boolean',
+            'free_ads_limit' => 'sometimes|nullable|integer|min:0',
             // 'order' => 'required'
         ];
     }
 
 
-    public function messages(): array {
+    public function messages(): array
+    {
         return [
             'image.max'  => 'The image size must not exceed 1MB.',
         ];
