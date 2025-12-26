@@ -201,4 +201,55 @@ class AdController extends Controller
 
         return $this->success($ads);
     }
+
+    /**
+     * Get user's ad limits for all categories.
+     */
+    public function myLimits()
+    {
+        $this->lang();
+        $user = auth()->user();
+
+        // Get all end-point categories
+        $categories = Category::where('end_point', 1)
+            ->with('parent')
+            ->select('id', 'name_ar', 'name_en', 'free_ads_limit', 'parent_id', 'is_free')
+            ->get()
+            ->map(function ($category) use ($user) {
+                $userLimit = $user->getCategoryLimit($category->id);
+                $usedAds = $user->ads()->where('category_id', $category->id)->count();
+
+                // Get effective limit (custom or default)
+                $effectiveLimit = $userLimit ? $userLimit->free_ads_limit : $category->free_ads_limit;
+                $usedCount = $userLimit ? $userLimit->used_ads_count : $usedAds;
+                $remaining = max(0, $effectiveLimit - $usedCount);
+
+                // Build category path
+                $categoryName = request()->header('Lang') == 'en' ? $category->name_en : $category->name_ar;
+                if ($category->parent) {
+                    $parentName = request()->header('Lang') == 'en' ? $category->parent->name_en : $category->parent->name_ar;
+                    $categoryName = $parentName . ' - ' . $categoryName;
+                }
+
+                return [
+                    'category_id' => $category->id,
+                    'category_name' => $categoryName,
+                    'is_free' => (bool) $category->is_free,
+                    'limit' => $effectiveLimit,
+                    'used' => $usedCount,
+                    'remaining' => $remaining,
+                    'can_create' => $remaining > 0,
+                ];
+            });
+
+        // Also return global limit
+        $globalLimit = [
+            'global_limit' => $user->limit_ad,
+        ];
+
+        return $this->success([
+            'global' => $globalLimit,
+            'categories' => $categories,
+        ]);
+    }
 }
