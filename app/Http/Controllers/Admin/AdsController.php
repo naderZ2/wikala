@@ -30,7 +30,7 @@ class AdsController extends Controller
     {
         $status = $request->get('status', 'all');
 
-        $query = Ad::select('id', 'ad_number', 'title', 'start_date', 'end_date', 'user_id');
+        $query = Ad::select('id', 'ad_number', 'title', 'start_date', 'end_date', 'user_id', 'is_sponsored', 'sponsored_price');
 
         if ($status === 'outdated') {
             $query->where('end_date', '<', now());

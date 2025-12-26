@@ -453,5 +453,9 @@ return  [
 	'sponsor_removed' => 'Sponsor removed successfully',
 	'confirm_remove_sponsor' => 'Are you sure you want to remove sponsor from this ad?',
 	'sar' => 'SAR',
+	'egy' => 'EGP',
+	'is_paid' => 'Is Paid',
+	'paid' => 'Paid',
+	'not_paid' => 'Not Paid',
 
 ];
