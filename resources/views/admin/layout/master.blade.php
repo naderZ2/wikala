@@ -15,8 +15,38 @@
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,500,500i,700,700i,900&amp;display=swap" rel="stylesheet">
     {{-- add font-awesome --}}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    
+
+<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+<script>
+window.OneSignalDeferred = window.OneSignalDeferred || [];
+OneSignalDeferred.push(async function(OneSignal) {
+
+    await OneSignal.init({
+        appId: "26f52c77-8d12-4c55-b3f5-c7c8c3aa5e80",
+        safari_web_id: "", // if needed
+    });
+
+    // Ask the user to allow notifications
+    await OneSignal.showSlidedownPrompt();
+});
+</script>
+
+    
+
+    
     @include('layouts.simple.css')
     @yield('style')
+<style>
+.form-message, .wpcf7-response-output, .success-message {
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    color: #28a745 !important; /* green */
+    padding: 10px;
+}
+
+</style>
   </head>
   <body class="{{ $_COOKIE['theme']??"default"}}">
   

@@ -72,6 +72,7 @@ Route::middleware(['checkLanguage'])->group(function () {
 
 
 
+
 Route::middleware(['auth:api'])->group(function () {
 
         // Route::post('save_special_request', [Client\SpecialRequestController::class, 'saveSpecialRequest'] )->name('save_special_request');
@@ -194,6 +195,12 @@ Route::middleware(['auth:api'])->group(function () {
     });
 
 });
+
+
+Route::get('ads', [Client\AdController::class, 'index']);
+Route::get('ads/{id}', [Client\AdController::class, 'show']);
+
+
 
 Route::get('recently-viewed-ads', [Client\RecentlyViewAdController::class, 'index'])->name('client.recently_viewed_ads.index');
 Route::post('recently-viewed-ads', [Client\RecentlyViewAdController::class, 'store'])->name('client.recently_viewed_ads.store');

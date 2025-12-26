@@ -6,18 +6,32 @@ use App\Models\Category;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Category\{StoreRequest,EditRequest};
 use App\Traits\FileUploadTrait;
+use Illuminate\Http\Request;
+
 
 class CategoryController extends Controller
 {
     use FileUploadTrait;
 
-    public function index(){
-        $this->lang();
-        $categories=Category::with("parent:id,$this->name")
-        ->select('id','name_ar','name_en','image','end_point','parent_id')
-        ->get();
-        return view('admin.category.index',compact('categories'));  
-    }
+    // public function index(){
+    //     $this->lang();
+    //     $categories=Category::with("parent:id,$this->name")
+    //     ->select('id','name_ar','name_en','image','end_point','parent_id')
+    //     ->get();
+    //     return view('admin.category.index',compact('categories'));  
+    // }
+        public function index(){
+            $this->lang();
+        
+            $categories = Category::whereNull('parent_id') 
+                ->with('children')                   
+                ->select('id','name_ar','name_en','image','end_point','parent_id','order')
+                ->orderBy('order')
+                ->get();
+        
+                // dd($categories);
+            return view('admin.category.index', compact('categories'));
+        }
 
     public function create(){
         $this->lang();
@@ -25,10 +39,7 @@ class CategoryController extends Controller
         return view('admin.category.add',compact('categories'));  
     }
     
-    // public function store(StoreRequest $request){
-    //     Category::create($request->validated());
-    //     return  to_route('categorysa.index')->with('success',trans('lang.created')); 
-    // }
+   
     public function store(StoreRequest $request)
     {
         $file = $request->file('image');
@@ -80,6 +91,18 @@ class CategoryController extends Controller
     //     return view('admin.category.details',compact('categories'));  
     //     // return $categories;  
     // }
+    public function details($id){
+        $this->lang();
+    
+        $categories = Category::where('parent_id', $id)
+            ->with('children')                   // برضه نحسب عدد الـ sub
+            ->select('id','name_ar','name_en','image','end_point','parent_id','order')
+            ->orderBy('order')
+            ->get();
+    
+        return view('admin.category.details', compact('categories'));
+    }
+
 
     public function update(EditRequest $request){
         $Category=Category::find($request->id);
@@ -98,4 +121,21 @@ class CategoryController extends Controller
         $Category->update(['end_point'=>$data]);
         return  back()->with('success',trans('lang.updated')); 
     }
+    public function destroy(Request $request)
+    {
+        $category = Category::findOrFail($request->id);
+    
+        if ($category->children()->exists()) {
+            return back()->with('error', __('lang.cannot_delete_has_children'));
+        }
+    
+        if ($category->image && file_exists(public_path($category->image))) {
+            @unlink(public_path($category->image));
+        }
+    
+        $category->delete();
+    
+        return back()->with('success', __('lang.deleted'));
+    }   
+
 }

@@ -80,6 +80,7 @@
 								<tr>
 									<th>@lang('lang.number')</th>
 									<th class="text-center">@lang('lang.Title')</th>
+									<th class="text-center">@lang('lang.phone')</th>
 									<th class="text-center">@lang('lang.Start_Date')</th>
 									<th class="text-center">@lang('lang.End_Date')</th>
 									
@@ -93,6 +94,7 @@
 									<tr>
 										<td>{{ $ad->ad_number }}</td>
 										<td class="text-center">{{ $ad->title }}</td>
+										<td class="text-center">{{ $ad?->user?->phone }}</td>
 										<td class="text-center">{{ $ad->start_date }}</td>
 										<td class="text-center">{{ $ad->end_date }}</td>
 										<td class="text-center">
@@ -111,6 +113,7 @@
 								<tr>
 									<th>@lang('lang.number')</th>
 									<th class="text-center">@lang('lang.Title')</th>
+									<th class="text-center">@lang('lang.phone')</th>
 									<th class="text-center">@lang('lang.Start_Date')</th>
 									<th class="text-center">@lang('lang.End_Date')</th>
 									<th></th>

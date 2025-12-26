@@ -27,6 +27,9 @@ class AdController extends Controller
     public function __construct(AdService $adService)
     {
         $this->adService = $adService;
+        
+        $this->middleware('auth:api')->except(['index', 'show', 'typesIndex', 'userAds']);
+
     }
 
     public function index(Request $request)

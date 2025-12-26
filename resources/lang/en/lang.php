@@ -430,5 +430,10 @@
 
 
 	"add_ad" => "add Ad",
+	
+	'cannot_delete_has_children' => 'This category cannot be deleted because it has subcategories.',
+'are_you_sure_delete'        => 'Are you sure you want to delete this item?',
+'delete'                     => 'Delete',
+
 		];
 ?>

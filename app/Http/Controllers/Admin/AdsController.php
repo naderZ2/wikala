@@ -30,7 +30,7 @@ class AdsController extends Controller
     {
         $status = $request->get('status', 'all');
 
-        $query = Ad::select('id', 'ad_number', 'title', 'start_date', 'end_date');
+        $query = Ad::select('id', 'ad_number', 'title', 'start_date', 'end_date','user_id');
 
         if ($status === 'outdated') {
             $query->where('end_date', '<', now());
@@ -38,7 +38,8 @@ class AdsController extends Controller
             $query->where('status', $status);
         }
 
-        $ads = $query->latest()->get();
+        $ads = $query->latest()->with('user')->get();
+        // dd( $ads);
 
         return view('admin.ads.index', compact('ads', 'status'));
     }

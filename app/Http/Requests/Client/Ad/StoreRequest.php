@@ -41,10 +41,10 @@ class StoreRequest extends FormRequest
             'end_date'       => 'required|date|after:start_date',
             'city_id'        => 'required|exists:cities,id',
             'region_id'      => 'required|exists:cities,id',
-            'main_image'     => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:1024',
+            'main_image'     => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:5120',
 
             'images'         => 'nullable|array',
-            'images.*'       => 'image|mimes:jpeg,png,jpg,gif,svg|max:1024',
+            'images.*'       => 'image|mimes:jpeg,png,jpg,gif,svg|max:5120',
 
             'attributes' => 'nullable|array',
             'attributes.*.id' => 'required|exists:attributes,id',
