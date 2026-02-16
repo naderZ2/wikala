@@ -56,14 +56,31 @@ class CategoryController extends Controller
         return $this->success($sellers);
     }
 
-    public function categoryUnderSeller(Request $request){
-        $parents=Category::whereId($request->category_id)->get();
-       
-        $id=$parents[0]['id'];
-        $categories=[];
-        $this->test($parents,$categories);
-        return $this->success($categories[$id] ?? null);
+    public function categoryUnderSeller(Request $request)
+{
+    $this->lang();
+
+    $request->validate([
+        'category_id' => ['required', 'integer', 'exists:categories,id'],
+    ]);
+
+    // get single category (not a collection)
+    $parent = Category::select('id', $this->name, 'image', 'end_point', 'parent_id')
+        ->with('subCategories') // optional, but fine to keep if you use it elsewhere
+        ->find($request->category_id);
+
+    if (!$parent) {
+        return $this->failed(trans('category_not_found'));
     }
+
+    $categories = [];
+
+    // test() expects an iterable, so wrap in array/collection
+    $this->test(collect([$parent]), $categories);
+
+    return $this->success($categories[$parent->id] ?? null);
+}
+
 
     public function favourite_sellers(Request $request){
         $sellers = DB::table('sellers')
