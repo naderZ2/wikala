@@ -58,10 +58,13 @@ class CategoryController extends Controller
 
     public function categoryUnderSeller(Request $request){
         $parents=Category::whereId($request->category_id)->get();
+        if($parents->isEmpty()){
+             return $this->fail('Category not found');
+        }
         $id=$parents[0]['id'];
         $categories=[];
         $this->test($parents,$categories);
-        return $this->success($categories[$id]);
+        return $this->success($categories[$id] ?? null);
     }
 
     public function favourite_sellers(Request $request){

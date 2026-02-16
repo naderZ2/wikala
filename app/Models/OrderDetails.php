@@ -10,10 +10,15 @@ class OrderDetails extends Model
     use HasFactory;
     protected $fillable = [
         'product_id' , 'price',
-        'quantity' , 'order_id'
+        'quantity' , 'order_id', 'product_variation_id'
     ];
 
     protected $hidden = ['created_at','updated_at','order_id','product_id'];
+    
+    public function variation(){
+        return $this->belongsTo(ProductVariation::class, 'product_variation_id');
+    }
+
     public function product(){
         return $this->belongsTo(Product::class);
     }

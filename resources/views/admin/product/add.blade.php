@@ -168,6 +168,14 @@
                                     {{-- Attributes will be loaded here via AJAX --}}
                                 </div>
                             </div>
+
+                            <div class="col-md-12 mb-3">
+                                <label>Variations</label>
+                                <button type="button" class="btn btn-secondary btn-sm mb-2" id="addVariation">Add Variation</button>
+                                <div id="variations-container">
+                                    {{-- Variations will be added here --}}
+                                </div>
+                            </div>
                             
                             <div class="col-md-12 mb-3">
 
@@ -238,6 +246,9 @@
         $(this).closest('#inputFormRow').remove();
     });
 
+    var availableAttributes = [];
+    var variationIndex = 0;
+
     // Fetch attributes when category changes
     $('select[name="category_id"]').on('change', function() {
         var categoryId = $(this).val();
@@ -248,12 +259,14 @@
                 data: { category_id: categoryId },
                 success: function(response) {
                     $('#attributes-container').empty();
-                    if (response.attributes && response.attributes.length > 0) {
-                        $.each(response.attributes, function(key, attribute) {
-                            var inputType = 'text'; // Default to text, extend logic if attribute has type
+                    availableAttributes = response.attributes || [];
+                    
+                    if (availableAttributes.length > 0) {
+                        $.each(availableAttributes, function(key, attribute) {
+                            var inputType = 'text'; // Default to text
                             
                             var html = '<div class="col-md-6 mb-3">';
-                            html += '<label>' + (attribute.name_ar || attribute.name_en) + '</label>'; // Adjust based on locale if needed
+                            html += '<label>' + (attribute.name_ar || attribute.name_en) + '</label>';
                             html += '<input type="' + inputType + '" name="attributes[' + attribute.id + ']" class="form-control" placeholder="' + (attribute.name_en || '') + '">';
                             html += '</div>';
                             
@@ -262,11 +275,54 @@
                     } else {
                         $('#attributes-container').html('<div class="col-12"><p class="text-muted">No attributes found for this category.</p></div>');
                     }
+                    // Clear variations when category changes as attributes might change
+                    $('#variations-container').empty();
+                    variationIndex = 0;
                 }
             });
         } else {
             $('#attributes-container').empty();
+            availableAttributes = [];
+            $('#variations-container').empty();
         }
+    });
+
+    // Add Variation
+    $("#addVariation").click(function () {
+        if(availableAttributes.length === 0){
+            alert("Please select a category with attributes first.");
+            return;
+        }
+
+        var html = '<div class="variation-row card body p-3 mb-3" style="border: 1px solid #ddd;">';
+        html += '<h6 class="mb-3">Variation ' + (variationIndex + 1) + ' <button type="button" class="btn btn-danger btn-xs float-right removeVariation">X</button></h6>';
+        html += '<div class="row">';
+
+        // Add attribute inputs for this variation
+        $.each(availableAttributes, function(key, attribute) {
+            html += '<div class="col-md-4 mb-2">';
+            html += '<label>' + (attribute.name_ar || attribute.name_en) + '</label>';
+            html += '<input type="text" name="variations[' + variationIndex + '][attributes][' + attribute.id + ']" class="form-control" placeholder="Value (e.g., Red)">';
+            html += '</div>';
+        });
+
+        html += '</div>'; // End attributes row
+
+        html += '<div class="row mt-2">';
+        html += '<div class="col-md-4"><label>Price (Override)</label><input type="number" step="0.01" name="variations[' + variationIndex + '][price]" class="form-control" placeholder="Original Price"></div>';
+        html += '<div class="col-md-4"><label>Quantity</label><input type="number" name="variations[' + variationIndex + '][quantity]" class="form-control" value="0"></div>';
+        html += '<div class="col-md-4"><label>SKU</label><input type="text" name="variations[' + variationIndex + '][sku]" class="form-control" placeholder="SKU"></div>';
+        html += '</div>'; // End details row
+
+        html += '</div>'; // End variation-row
+
+        $('#variations-container').append(html);
+        variationIndex++;
+    });
+
+    // Remove variation
+    $(document).on('click', '.removeVariation', function () {
+        $(this).closest('.variation-row').remove();
     });
 </script>
 @endsection

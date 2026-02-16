@@ -76,6 +76,27 @@ class ProductController extends Controller
             }
         }
 
+        if($request->has('variations')){
+             foreach($request->variations as $variation){
+                 $newVariation = $product->variations()->create([
+                     'price' => $variation['price'] ?? null,
+                     'quantity' => $variation['quantity'] ?? 0,
+                     'sku' => $variation['sku'] ?? null,
+                 ]);
+
+                 if(isset($variation['attributes'])){
+                     foreach($variation['attributes'] as $attrId => $val){
+                         if($val){
+                             $newVariation->attributes()->create([
+                                 'attribute_id' => $attrId,
+                                 'value' => $val
+                             ]);
+                         }
+                     }
+                 }
+             }
+        }
+
         foreach($request->images as $img){
             $product->images()->create([
                 'name' =>  $this->uploadFile($img,'products'),

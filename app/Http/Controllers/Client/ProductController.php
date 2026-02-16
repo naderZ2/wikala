@@ -80,7 +80,7 @@ class ProductController extends Controller
 
     public function details(CheckProductDetailsRequest $request){
         $this->lang();
-        $product=Product::whereId($request->id)->with(['images:id,product_id,name','extraServices','attributes.attribute'])
+        $product=Product::whereId($request->id)->with(['images:id,product_id,name','extraServices','attributes.attribute', 'variations.attributes.attribute'])
         ->select('id',$this->name ,$this->description ,$this->title,'price','main_image','picture','serving')
         ->first();
         return $this->success($product);
