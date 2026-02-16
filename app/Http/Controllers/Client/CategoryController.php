@@ -42,12 +42,15 @@ class CategoryController extends Controller
 
 
     public function categorySellers(Request $request){
-        $sellers = DB::table('sellers')
-        ->join('category_seller','category_seller.seller_id','sellers.id')
-        ->where('category_id',$request->category_id)
-        ->get(['sellers.id','name', 'about','img_path as image'])
+        $sellers = \App\Models\Seller::whereHas('categories', function($q) use($request){
+            $q->where('category_id', $request->category_id);
+        })
+        ->where('active', 1)
+        ->withAvg('reviews', 'rating')
+        ->select('id','name', 'about','img_path as image')
+        ->get()
         ->map(function($seller){
-            $seller->rate = 5;
+             $seller->rate = round($seller->reviews_avg_rating ?? 0, 1);
             return $seller;
         });
         return $this->success($sellers);

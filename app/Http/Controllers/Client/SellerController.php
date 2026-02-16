@@ -15,9 +15,10 @@ class SellerController extends Controller
     {
         $this->lang();
         $sellers = Seller::where('active', 1)
+            ->withAvg('reviews', 'rating')
             ->get()
             ->map(function($seller){
-                $seller->rate = 5; // Placeholder rating
+                $seller->rate = round($seller->reviews_avg_rating ?? 0, 1); 
                 $seller->image = $seller->img_path; 
                 $seller->description = $seller->about ?? $seller->details;
                 return $seller;
@@ -34,13 +35,14 @@ class SellerController extends Controller
             ->with(['products' => function($q){
                 $q->where('is_available', 1)->latest();
             }])
+            ->withAvg('reviews', 'rating')
             ->first();
 
         if (!$seller) {
             return $this->fail('Seller not found or inactive');
         }
 
-        $seller->rate = 5; // Placeholder rating
+        $seller->rate = round($seller->reviews_avg_rating ?? 0, 1);
         $seller->image = $seller->img_path; 
         $seller->description = $seller->about ?? $seller->details;
 

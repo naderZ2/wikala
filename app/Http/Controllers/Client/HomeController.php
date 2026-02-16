@@ -34,11 +34,12 @@ class HomeController extends Controller
             ->withCount(['orders' => function ($query) {
                 $query->where('status', 'delivered');
             }])
+            ->withAvg('reviews', 'rating')
             ->orderByDesc('orders_count')
             ->take(10)
             ->get()
             ->map(function($seller){
-                $seller->rate = 5; // Placeholder rating
+                $seller->rate = round($seller->reviews_avg_rating ?? 0, 1); 
                 $seller->image = $seller->img_path; 
                 $seller->description = $seller->about ?? $seller->details;
                 return $seller;
@@ -51,11 +52,13 @@ class HomeController extends Controller
                 });
             }], 'quantity')
             ->orderByDesc('order_details_sum_quantity')
-            ->with('seller') // Eager load seller for display
+            ->with(['seller' => function($q) {
+                $q->withAvg('reviews', 'rating');
+            }]) 
             ->take(10)
             ->get()
              ->map(function($product){
-                $product->rate = 5; // Placeholder rating
+                $product->rate = round($product->seller->reviews_avg_rating ?? 0, 1);
                 return $product;
             });
 
