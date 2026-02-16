@@ -64,6 +64,10 @@ Route::middleware(['checkLanguage'])->group(function () {
     Route::get('families', [Client\EventController::class, 'families']);
     Route::get('events', [Client\EventController::class, 'events']);
 
+    //Sellers
+    Route::get('sellers', [Client\SellerController::class, 'index']);
+    Route::get('sellers/{id}', [Client\SellerController::class, 'show']);
+
     //Categories
     Route::get('categories', [Client\CategoryController::class, 'index']);
 
@@ -199,8 +203,9 @@ Route::middleware(['checkLanguage'])->group(function () {
 });
 
 
-Route::get('ads', [Client\AdController::class, 'index']);
-Route::get('ads/{id}', [Client\AdController::class, 'show']);
+
+Route::get('ads', [Client\ProductController::class, 'index']);
+Route::get('ads/{id}', [Client\ProductController::class, 'details']);
 
 
 

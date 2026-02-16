@@ -162,6 +162,15 @@
                             </div>
 
 
+                            </div>
+
+                            <div class="col-md-12 mb-3">
+                                <label>@lang('lang.Attributes')</label>
+                                <div id="attributes-container" class="row">
+                                    {{-- Attributes will be loaded here via AJAX or pre-filled --}}
+                                </div>
+                            </div>
+
                             <div class="col-md-12 mb-3">
 
                                 <div class="row">
@@ -229,6 +238,54 @@
     // remove row
     $(document).on('click', '#removeRow', function () {
         $(this).closest('#inputFormRow').remove();
+    });
+
+    var existingAttributes = @json($product->attributes);
+
+    function loadAttributes(categoryId) {
+        if (categoryId) {
+            $.ajax({
+                url: "{{ route('product.getCategoryAttributes') }}",
+                type: "GET",
+                data: { category_id: categoryId },
+                success: function(response) {
+                    $('#attributes-container').empty();
+                    if (response.attributes && response.attributes.length > 0) {
+                        $.each(response.attributes, function(key, attribute) {
+                            var inputType = 'text'; 
+                            
+                            // Find existing value for this attribute
+                            var existingValue = '';
+                            var existingAttr = existingAttributes.find(attr => attr.attribute_id == attribute.id);
+                            if (existingAttr) {
+                                existingValue = existingAttr.value;
+                            }
+
+                            var html = '<div class="col-md-6 mb-3">';
+                            html += '<label>' + (attribute.name_ar || attribute.name_en) + '</label>'; 
+                            html += '<input type="' + inputType + '" name="attributes[' + attribute.id + ']" class="form-control" value="' + existingValue + '" placeholder="' + (attribute.name_en || '') + '">';
+                            html += '</div>';
+                            
+                            $('#attributes-container').append(html);
+                        });
+                    } else {
+                        $('#attributes-container').html('<div class="col-12"><p class="text-muted">No attributes found for this category.</p></div>');
+                    }
+                }
+            });
+        } else {
+            $('#attributes-container').empty();
+        }
+    }
+
+    // Load attributes on page load if category is selected
+    var initialCategoryId = $('select[name="category_id"]').val();
+    loadAttributes(initialCategoryId);
+
+    // Fetch attributes when category changes
+    $('select[name="category_id"]').on('change', function() {
+        var categoryId = $(this).val();
+        loadAttributes(categoryId);
     });
 </script>
 @endsection

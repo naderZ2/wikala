@@ -14,44 +14,55 @@ class RecentlyViewAdController extends Controller
 {
     use ResponsesTrait;
 
-    // List all recently viewed ads for the authenticated user
+    // List all recently viewed products for the authenticated user
     public function index()
     {
         $user = auth('api')->id();
-        // dd($user);
-        // Log::info('User ' . $user . ' is viewing their recently viewed ads.');
-        // Get all ads created by the authenticated user
-        $myAds = Ad::where('user_id', $user)->pluck('id');
-        Log::info($myAds);
-        // Get recently viewed records for those ads
-        $recentViews = RecentlyViewAd::with('ad','user')
-            ->whereIn('ad_id', $myAds)
+        // Get all products created by the authenticated user (if applicable, or just viewed)
+        // logic changed: assuming we want to see products the user VIEWED, not products the user OWNS that were viewed by others?
+        // Original code: $myAds = Ad::where('user_id', $user)->pluck('id'); -> viewed by OTHERS?
+        // "RecentlyViewAd" usually means "Ads I viewed".
+        // Let's look at the original code: 
+        // $myAds = Ad::where('user_id', $user)->pluck('id'); 
+        // $recentViews = RecentlyViewAd::with('ad','user')->whereIn('ad_id', $myAds)...
+        // PROBABLY: "Who viewed MY ads".
+        
+        // IF the user wants "Who viewed MY products":
+        $myProducts = \App\Models\Product::where('seller_id', $user)->pluck('id'); // Assuming seller_id is user_id
+        
+        $recentViews = \App\Models\RecentlyViewedProduct::with('product','user')
+            ->whereIn('product_id', $myProducts)
             ->orderByDesc('created_at')
             ->get();
+            
         return $this->success($recentViews);
     }
 
-    // Store a new recently viewed ad (optional, usually handled automatically)
+    // Store a new recently viewed product
     public function store(Request $request)
     {
         $userId = auth('api')->id();
 
-        $adId = $request->input('ad_id');
-        if (!$adId) {
-            return $this->failed(null, __('lang.ad_id_required'));
+        $productId = $request->input('product_id');
+        if (!$productId) {
+            $productId = $request->input('ad_id'); // Fallback for backward compatibility
         }
-        $recentView = RecentlyViewAd::updateOrCreate(
-            ['user_id' => $userId, 'ad_id' => $adId],
+        
+        if (!$productId) {
+            return $this->failed(null, __('lang.product_id_required')); // Update lang key if needed
+        }
+        $recentView = \App\Models\RecentlyViewedProduct::updateOrCreate(
+            ['user_id' => $userId, 'product_id' => $productId],
             ['created_at' => now()]
         );
         return $this->success($recentView, __('lang.created'));
     }
 
-    // Remove a recently viewed ad
+    // Remove a recently viewed product record
     public function destroy($id)
     {
         $userId = auth('api')->id();
-        $deleted = RecentlyViewAd::where('user_id', $userId)->where('id', $id)->delete();
+        $deleted = \App\Models\RecentlyViewedProduct::where('user_id', $userId)->where('id', $id)->delete();
         if (!$deleted) {
             return $this->failed(null, __('lang.not_found'));
         }

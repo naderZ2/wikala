@@ -65,7 +65,7 @@
 												<a class="btn btn-success mt-1"  href="{{ route('category-attributes.enable', $value->id) }}" >@lang('lang.Enable')</a>
 											@endif
 											
-											<form action="{{ route('categories_attributes.delete') }}" style="display:inline;" onclick="getId({{ $value->id }})" method="Post" id="form_id">
+											<form action="{{ route('category-attributes.delete') }}" style="display:inline;" onclick="getId({{ $value->id }})" method="Post" id="form_id">
                                                 @method("delete")
                                                 @csrf
                                                 <input type="hidden" name="id" id="notification_id">

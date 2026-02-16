@@ -18,7 +18,7 @@ class Seller extends Authenticatable
         'name' , 'email',
         'password' , 'active',
         'latitude','longitude',
-        'details','img_path'
+        'details','img_path','about'
     ];
 
     protected $hidden = 
@@ -45,10 +45,19 @@ class Seller extends Authenticatable
     {
         return $this->belongsToMany(City::class);
     }
+
+    public function products()
+    {
+        return $this->hasMany(Product::class);
+    }
     
        public function setImgPathAttribute($value)
     {
         $this->attributes['img_path'] = $this->uploadFile($value,'profiles',$this->attributes['img_path'] ?? "");
     }
 
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
 }

@@ -40,7 +40,7 @@ class ProductController extends Controller
     }
     public function edit(string $id ){
         $this->lang();
-        $product=Product::withTrashed()->find($id );
+        $product=Product::withTrashed()->with('attributes')->find($id );
         // dd($product->category_id);
         $categories=Category::get(['id' , 'parent_id' , $this->name , 'end_point']);
         $sellers=Seller::where('active','1')->get(['id','name']);
@@ -49,6 +49,52 @@ class ProductController extends Controller
 
 
 
+    public function getCategoryAttributes(Request $request)
+    {
+        $category = Category::with('attributes')->find($request->category_id);
+        if (!$category) {
+            return response()->json(['attributes' => []]);
+        }
+        return response()->json(['attributes' => $category->attributes]);
+    }
+
+    public function store(StoreRequest $request){
+
+        $data=$request->validated();
+        $data['seller_id'] =$request->seller_id ;
+        $data['main_image'] = $this->uploadFile($request->main_image,'products');
+        $product = Product::create($data);
+        
+        if($request->has('attributes')){
+            foreach($request->attributes as $attribute_id => $value){
+                if($value){
+                    $product->attributes()->create([
+                        'attribute_id' => $attribute_id,
+                        'value' => $value
+                    ]);
+                }
+            }
+        }
+
+        foreach($request->images as $img){
+            $product->images()->create([
+                'name' =>  $this->uploadFile($img,'products'),
+            ]);
+        }
+        // Log::info($data);
+        return  to_route('product.index')->with('success',trans('lang.created'));
+
+        // return 'test';
+    }
+
+    public function update($id){
+        #TODO complete
+        $product =Product::find($id);
+        $status= $product->is_available == 0?1:0;
+        $product->update(['is_available' => $status]);
+        return to_route('product.index')->with('success',trans('lang.updated'));
+    }
+    
     public function updateProduct(Request $request){
         // Log::info('product');
         $product=Product::withTrashed()->find($request->id);
@@ -71,6 +117,22 @@ class ProductController extends Controller
             'is_available'=>$request->old_price,
         ]);
 
+        if($request->has('attributes')){
+            // Remove old attributes to avoid duplication or stale data (simple approach) or update existing
+            // For simplicity, we can delete and recreate or update if exists. 
+            // Let's delete old ones for this product and re-create.
+            $product->attributes()->forceDelete(); 
+            
+            foreach($request->attributes as $attribute_id => $value){
+                if($value){
+                    $product->attributes()->create([
+                        'attribute_id' => $attribute_id,
+                        'value' => $value
+                    ]);
+                }
+            }
+        }
+
         if($request->images){
             foreach($request->images as $img){
                 $product->images()->create([
@@ -84,6 +146,7 @@ class ProductController extends Controller
                 File::delete($img);
             }
             $data['main_image'] = $this->uploadFile($request->file('main_image'),'products');
+            $product->update(['main_image' => $data['main_image']]);
         }
         if($request->deleted_images){
             $images = ProductImage::find($request->deleted_images);
@@ -99,38 +162,6 @@ class ProductController extends Controller
         return  to_route('product.index')->with('success',trans('lang.updated'));
     }
 
-
-
-
-
-
-
-
-
-    public function store(StoreRequest $request){
-
-        $data=$request->validated();
-        $data['seller_id'] =$request->seller_id ;
-        $data['main_image'] = $this->uploadFile($request->main_image,'products');
-        $product = Product::create($data);
-        foreach($request->images as $img){
-            $product->images()->create([
-                'name' =>  $this->uploadFile($img,'products'),
-            ]);
-        }
-        // Log::info($data);
-        return  to_route('product.index')->with('success',trans('lang.created'));
-
-        // return 'test';
-    }
-
-    public function update($id){
-        #TODO complete
-        $product =Product::find($id);
-        $status= $product->is_available == 0?1:0;
-        $product->update(['is_available' => $status]);
-        return to_route('product.index')->with('success',trans('lang.updated'));
-    }
     public function hide_product($id){
 
         // Log::info($id);

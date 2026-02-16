@@ -282,6 +282,25 @@ Route::group(['middleware' => ['auth:admin', 'CheckUserActiviation']], function 
         Route::get('edit_product/{id}', [Admin\ProductController::class, 'update'])->name('product.update');
         Route::get('hide_product/{id}', [Admin\ProductController::class, 'hide_product'])->name('product.hide_product');
         Route::put('updateProduct/{id}', [Admin\ProductController::class, 'updateProduct'])->name('product.updateProduct');
+        Route::get('get-category-attributes', [Admin\ProductController::class, 'getCategoryAttributes'])->name('product.getCategoryAttributes');
+
+        // Attribute Routes
+        Route::get('attributes', [Admin\AttributeController::class, 'index'])->name('attributes.index');
+        Route::get('attributes/create', [Admin\AttributeController::class, 'create'])->name('attributes.create');
+        Route::post('attributes/store', [Admin\AttributeController::class, 'Store'])->name('attributes.store');
+        Route::get('attributes/{id}/edit', [Admin\AttributeController::class, 'edit'])->name('attributes.edit');
+        Route::post('attributes/update', [Admin\AttributeController::class, 'update'])->name('attributes.update');
+        Route::get('attributes/{id}/enable', [Admin\AttributeController::class, 'enable'])->name('attributes.enable');
+        Route::delete('attributes/delete', [Admin\AttributeController::class, 'destroy'])->name('attributes.delete');
+
+        // Category Attribute Routes
+        Route::get('category-attributes', [Admin\CategoryAttributeController::class, 'index'])->name('category-attributes.index');
+        Route::get('category-attributes/create', [Admin\CategoryAttributeController::class, 'create'])->name('category-attributes.create');
+        Route::post('category-attributes/store', [Admin\CategoryAttributeController::class, 'store'])->name('category-attributes.store');
+        Route::get('category-attributes/{id}/edit', [Admin\CategoryAttributeController::class, 'edit'])->name('category-attributes.edit');
+        Route::post('category-attributes/update/{id}', [Admin\CategoryAttributeController::class, 'update'])->name('category-attributes.update');
+        Route::delete('category-attributes/delete', [Admin\CategoryAttributeController::class, 'destroy'])->name('category-attributes.delete');
+        Route::get('category-attributes/{id}/enable', [Admin\CategoryAttributeController::class, 'enable'])->name('category-attributes.enable');
 
         Route::get('orders', [Admin\OrderController::class, 'index'])->name('order.index');
         Route::get('orders/completed', [Admin\OrderController::class, 'index'])->name('order.completed');

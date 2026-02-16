@@ -37,4 +37,16 @@ class Product extends Model
        public function sellerServicesAvailability(){
         return $this->hasMany(SellerServicesAvailability::class);
     }
+
+    public function orderDetails(){
+        return $this->hasMany(OrderDetails::class);
+    }
+    
+    public function recentlyViewedProducts(){
+        return $this->hasMany(RecentlyViewedProduct::class);
+    }
+
+    public function attributes(){
+        return $this->hasMany(ProductAttribute::class);
+    }
 }

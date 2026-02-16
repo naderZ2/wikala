@@ -45,7 +45,7 @@ class CategoryController extends Controller
         $sellers = DB::table('sellers')
         ->join('category_seller','category_seller.seller_id','sellers.id')
         ->where('category_id',$request->category_id)
-        ->get(['sellers.id','name']);
+        ->get(['sellers.id','name', 'about','img_path as image']);
         return $this->success($sellers);
     }
 
@@ -63,6 +63,11 @@ class CategoryController extends Controller
         return $this->success($sellers);
     }
 
+    public function all_sellers(Request $request){
+        $sellers = Seller::all();
+        return $this->success($sellers);
+    }
+    
 
     public function index(Request $request)
     {

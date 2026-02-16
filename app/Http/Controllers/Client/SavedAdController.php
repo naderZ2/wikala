@@ -32,16 +32,20 @@ class SavedAdController extends Controller
      
      public function store(StoreRequest $request)
      {
-         $validated = $request->validated();  // بيانات الطلب بعد التحقق
+         $validated = $request->validated();
+         $productId = $validated['ad_id'] ?? $request->input('product_id'); // Handle both
+
+         // Check if already favorite/saved
+         $savedAd = \App\Models\FavouriteProduct::where(['user_id'=> auth()->id(), 'product_id'=> $productId])->first();
      
-         $savedAd = $this->savedAdService->saveAd($validated['ad_id']);
-     
-         if (!$savedAd) {
+         if ($savedAd) {
              return $this->failed(null, trans('lang.already_saved'));
          }
+
+         $savedAd = \App\Models\FavouriteProduct::create(['user_id'=> auth()->id(), 'product_id'=> $productId]);
         
         $data['savedAd']=$savedAd;
-        $data['ad']=Ad::where('id',$validated)->first();
+        $data['ad']= \App\Models\Product::where('id',$productId)->first(); // Return product instead of ad
         
          return $this->success($data, trans('lang.created'));
      }
@@ -52,7 +56,7 @@ class SavedAdController extends Controller
     
     public function destroy($id)
     {
-        $deleted = $this->savedAdService->deleteAd($id);
+        $deleted = \App\Models\FavouriteProduct::where(['user_id'=> auth()->id(), 'product_id'=> $id])->delete();
 
         if (!$deleted) {
             return $this->failed(null, trans('lang.not_found'));
@@ -66,8 +70,10 @@ class SavedAdController extends Controller
      */
     public function index()
     {
-        $userId = auth()->id();
-        $savedAds = $this->savedAdService->getUserSavedAds($userId);
-        return $this->success($savedAds);
+        $products = \App\Models\Product::join('favourite_products','product_id','products.id')
+        ->select('favourite_products.id as favourite_id','products.id' ,$this->name ,$this->description,$this->title,'price','old_price','serving','main_image')
+        ->where('favourite_products.user_id',auth()->id())
+        ->get();
+        return $this->success($products);
     }
 }
