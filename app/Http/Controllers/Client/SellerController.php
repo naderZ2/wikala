@@ -16,6 +16,9 @@ class SellerController extends Controller
         $this->lang();
         $sellers = Seller::where('active', 1)
             ->withAvg('reviews', 'rating')
+            ->with(['products' => function($q){
+                $q->where('is_available', 1)->latest();
+            }])
             ->get()
             ->map(function($seller){
                 $seller->rate = round($seller->reviews_avg_rating ?? 0, 1); 
