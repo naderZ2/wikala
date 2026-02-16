@@ -12,6 +12,7 @@ use App\Models\SellerServicesAvailability;
 class ProductController extends Controller
 {
     use ResponsesTrait;
+
     public function index(Request $request){;
        
         #TODO complete
@@ -79,7 +80,7 @@ class ProductController extends Controller
 
     public function details(CheckProductDetailsRequest $request){
         $this->lang();
-        $product=Product::whereId($request->id)->with(['images:id,product_id,name','extraServices'])
+        $product=Product::whereId($request->id)->with(['images:id,product_id,name','extraServices','attributes.attribute'])
         ->select('id',$this->name ,$this->description ,$this->title,'price','main_image','picture','serving')
         ->first();
         return $this->success($product);
