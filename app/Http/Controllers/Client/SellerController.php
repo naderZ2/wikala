@@ -14,6 +14,7 @@ class SellerController extends Controller
     public function index()
     {
         $this->lang();
+        dd($sellers);
         $sellers = Seller::where('active', 1)
             ->withAvg('reviews', 'rating')
             ->with(['products' => function($q){
@@ -38,12 +39,10 @@ class SellerController extends Controller
         $seller = Seller::where('id', $id)
             ->where('active', 1)
             ->with(['products' => function($q){
-                $q->where('is_available', 1)->latest()
-                  ->select('id', $this->name, $this->description, $this->title, 'price', 'old_price', 'main_image', 'serving', 'category_id');
+                $q->where('is_available', 1)->latest();
             }])
             ->withAvg('reviews', 'rating')
             ->first();
-        dd($seller);
 
         if (!$seller) {
             return $this->fail('Seller not found or inactive');
