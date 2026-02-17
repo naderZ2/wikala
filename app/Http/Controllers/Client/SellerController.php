@@ -19,7 +19,7 @@ class SellerController extends Controller
             ->with(['products' => function($q){
                                 $q->where('is_available', 1)->latest()
                                     ->with(["category:id,{$this->name}", "attributes.attribute"])
-                                    ->select('id', $this->name, $this->description, $this->title, 'price', 'old_price', 'main_image', 'serving', 'category_id');
+                                    ->select('id', 'seller_id', $this->name, $this->description, $this->title, 'price', 'old_price', 'main_image', 'serving', 'category_id');
             }])
             ->get()
 
@@ -40,7 +40,7 @@ class SellerController extends Controller
             ->with(['products' => function($q){
                 $q->where('is_available', 1)->latest()
                   ->with(["category:id,{$this->name}", "attributes.attribute"])
-                  ->select('id', $this->name, $this->description, $this->title, 'price', 'old_price', 'main_image', 'serving', 'category_id');
+                  ->select('id', 'seller_id', $this->name, $this->description, $this->title, 'price', 'old_price', 'main_image', 'serving', 'category_id');
             }])
             ->withAvg('reviews', 'rating')
             ->first();
