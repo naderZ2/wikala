@@ -22,13 +22,14 @@ class SellerController extends Controller
                   ->select('id', $this->name, $this->description, $this->title, 'price', 'old_price', 'main_image', 'serving', 'category_id');
             }])
             ->get()
+
             ->map(function($seller){
                 $seller->rate = round($seller->reviews_avg_rating ?? 0, 1); 
                 $seller->image = $seller->img_path; 
                 $seller->description = $seller->about ?? $seller->details;
                 return $seller;
             });
-            
+            dd($sellers);
         return $this->success($sellers);
     }
 
