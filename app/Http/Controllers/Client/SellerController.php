@@ -17,7 +17,9 @@ class SellerController extends Controller
         $sellers = Seller::where('active', 1)
             ->withAvg('reviews', 'rating')
             ->with(['products' => function($q){
-                $q->where('is_available', 1)->latest();
+                $q->where('is_available', 1)->latest()
+                  ->with(["category:id,$this->name", "attributes.attribute"])
+                  ->select('id', $this->name, $this->description, $this->title, 'price', 'old_price', 'main_image', 'serving', 'category_id');
             }])
             ->get()
             ->map(function($seller){

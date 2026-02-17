@@ -104,7 +104,7 @@ class NotificationController extends Controller
         $content = ["en" => $data_send["message"],"ar" => $data_send["message_ar"]];
         $headings= ["en" => $data_send["title"],"ar" => $data_send["title_ar"]]; 
         $fields = array(
-            'app_id' => 'dd3cdd89-0c51-4e25-98ca-5b131a25044a',
+            'app_id' => 'dd3cdd8-0c51-4e25-98ca-5b131a25044a',
             'data' => $data_send,
             'isAndroid'=>true,
             'isIos'=>true,
@@ -130,7 +130,7 @@ class NotificationController extends Controller
         curl_setopt($ch, CURLOPT_URL, "https://onesignal.com/api/v1/notifications");
         curl_setopt($ch, CURLOPT_HTTPHEADER, array(
             'Content-Type: application/json; charset=utf-8',
-            'Authorization: Basic NDg4Yjk3OTEtNzA1Yi00NWE3LWFlYzItZjI3NDYyODlmODBm'
+            'Authorization: Basic NDg4Yjk3OTEtNzAYi00NWE3LWFlYzItZjI3NDYyODlmODBm'
         ));
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
         curl_setopt($ch, CURLOPT_HEADER, FALSE);

@@ -16,13 +16,15 @@ class FavouriteProductController extends Controller
 
     public function index(){
         $this->lang();
-        $products = Product::join('favourite_products','product_id','products.id')
-        ->select('favourite_products.id as favourite_id','products.id' ,$this->name ,$this->description,$this->title,'price','old_price','serving','main_image')
-        ->where('favourite_products.user_id',auth()->id())
+        $products = Product::whereIn('id', function($query) {
+            $query->select('product_id')
+                ->from('favourite_products')
+                ->where('user_id', auth()->id());
+        })
+        ->where('is_available', 1)
+        ->with(["category:id,$this->name", "attributes.attribute"])
+        ->select('id', $this->name, $this->description, $this->title, 'price', 'old_price', 'main_image', 'serving', 'category_id')
         ->get();
-        // ->where([['is_available',1]])
-        // 
-        // ->get();
         return $this->success($products);
     }
     
