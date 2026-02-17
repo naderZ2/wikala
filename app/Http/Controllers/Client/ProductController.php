@@ -29,7 +29,11 @@ class ProductController extends Controller
         }
          $products = Product::where($cond)
         ->where([['is_available',1]])
-        ->with(["category:id,{$this->name}", "attributes:id,{$this->name},.attribute", "seller"])
+        ->with([
+            'category' => function($q) { $q->select('id', $this->name); },
+            'attributes' => function($q) { $q->select('id', $this->name)->withPivot('attribute'); },
+            'seller'
+        ])
         // ->where([['is_available',1],['quantity','>',0]])
       ;
       
@@ -80,7 +84,13 @@ class ProductController extends Controller
 
     public function details(CheckProductDetailsRequest $request){
         $this->lang();
-        $product=Product::whereId($request->id)->with(['images:id,product_id,name','extraServices','attributes:id,{$this->name},.attribute', 'variations.attributes.attribute', 'seller'])
+        $product=Product::whereId($request->id)->with([
+            'images' => function($q) { $q->select('id', 'product_id', 'name'); },
+            'extraServices',
+            'attributes' => function($q) { $q->select('id', $this->name)->withPivot('attribute'); },
+            'variations.attributes.attribute',
+            'seller'
+        ])
         ->select('id',$this->name ,$this->description ,$this->title,'price','main_image','picture','serving')
         ->first();
         return $this->success($product);
