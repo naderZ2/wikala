@@ -44,7 +44,7 @@ class SellerController extends Controller
             }])
             ->withAvg('reviews', 'rating')
             ->first();
-        dd($sellers);
+        dd($seller);
 
         if (!$seller) {
             return $this->fail('Seller not found or inactive');
