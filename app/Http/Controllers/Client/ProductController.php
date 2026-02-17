@@ -88,7 +88,7 @@ class ProductController extends Controller
             'images' => function($q) { $q->select('id', 'product_id', 'name'); },
             'extraServices',
             'attributes' => function($q) { $q->select('id', 'product_id', 'value'); },
-            'variations.attributes.attribute',
+            'variations.attributes.attribute' => function($q) { $q->select('id', $this->name, 'type', 'image', 'enable', 'deleted_at', 'created_at', 'updated_at'); },
             'seller'
         ])
         ->select('id',$this->name ,$this->description ,$this->title,'price','main_image','picture','serving','seller_id','category_id')
