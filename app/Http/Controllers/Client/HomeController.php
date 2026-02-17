@@ -56,7 +56,7 @@ class HomeController extends Controller
                     $q->where('status', 'delivered');
                 });
             }], 'quantity')
-            ->orderByDesc('order_details_sum_quantity')
+            // ->orderByDesc('order_details_sum_quantity')
             ->with(['seller' => function($q) {
                 $q->withAvg('reviews', 'rating');
             }]) 
