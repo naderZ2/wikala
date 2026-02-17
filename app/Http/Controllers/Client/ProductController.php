@@ -16,7 +16,7 @@ class ProductController extends Controller
     public function index(Request $request){;
        
         #TODO complete
-        $this->lang();
+        $this->ling();
         $cond=[];
       
         
@@ -29,7 +29,7 @@ class ProductController extends Controller
         }
          $products = Product::where($cond)
         ->where([['is_available',1]])
-        ->with(["category:id,$this->name", "attributes.attribute"])
+        ->with(["category:id,{$this->name}", "attributes:id,{$this->name},.attribute", "seller"])
         // ->where([['is_available',1],['quantity','>',0]])
       ;
       
@@ -79,8 +79,8 @@ class ProductController extends Controller
     }
 
     public function details(CheckProductDetailsRequest $request){
-        $this->lang();
-        $product=Product::whereId($request->id)->with(['images:id,product_id,name','extraServices','attributes.attribute', 'variations.attributes.attribute'])
+        $this->ling();
+        $product=Product::whereId($request->id)->with(['images:id,product_id,name','extraServices','attributes:id,{$this->name},.attribute', 'variations.attributes.attribute', 'seller'])
         ->select('id',$this->name ,$this->description ,$this->title,'price','main_image','picture','serving')
         ->first();
         return $this->success($product);
