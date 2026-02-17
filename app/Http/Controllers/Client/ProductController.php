@@ -31,7 +31,7 @@ class ProductController extends Controller
         ->where([['is_available',1]])
         ->with([
             'category' => function($q) { $q->select('id', $this->name); },
-            'attributes' => function($q) { $q->select('id', $this->name)->withPivot('attribute'); },
+            'attributes' => function($q) { $q->select('id', $this->name); },
             'seller'
         ])
         // ->where([['is_available',1],['quantity','>',0]])
@@ -87,7 +87,7 @@ class ProductController extends Controller
         $product=Product::whereId($request->id)->with([
             'images' => function($q) { $q->select('id', 'product_id', 'name'); },
             'extraServices',
-            'attributes' => function($q) { $q->select('id', $this->name)->withPivot('attribute'); },
+            'attributes' => function($q) { $q->select('id', $this->name); },
             'variations.attributes.attribute',
             'seller'
         ])
