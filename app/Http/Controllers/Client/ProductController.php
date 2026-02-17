@@ -91,7 +91,7 @@ class ProductController extends Controller
             'variations.attributes.attribute',
             'seller'
         ])
-        ->select('id',$this->name ,$this->description ,$this->title,'price','main_image','picture','serving')
+        ->select('id',$this->name ,$this->description ,$this->title,'price','main_image','picture','serving','seller_id','category_id')
         ->first();
         return $this->success($product);
     }
