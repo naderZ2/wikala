@@ -34,6 +34,7 @@ class ProductController extends Controller
             'attributes' => function($q) { $q->select('id', 'product_id', 'value'); },
             'seller'
         ])
+        
         // ->where([['is_available',1],['quantity','>',0]])
       ;
       
@@ -77,7 +78,7 @@ class ProductController extends Controller
              });
         }
 
-        $products = $products->select('id' ,$this->name ,$this->description,$this->title,'price','old_price','main_image','serving',"category_id")
+        $products = $products->select('id' ,$this->name ,$this->description,$this->title,'price','old_price','main_image','serving',"category_id","seller_id")
         ->get();
         return $this->success($products);
     }
