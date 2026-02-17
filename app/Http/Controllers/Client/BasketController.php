@@ -20,7 +20,8 @@ class BasketController extends Controller
         $orders=Order::where(['user_id'=>auth()->id(),"type"=>'basket'])
         // ->with("orderDetails.extraService.extraDetails:id,$this->description")
         ->with([
-            "orderDetails.product:id,$this->description,$this->title,$this->name,main_image,seller_id,seller",
+            "orderDetails.product:id,$this->description,$this->title,$this->name,main_image,seller_id",
+            "orderDetails.product.seller:id,name,img_path,details,about",
             "orderDetails.variation.attributes.attribute",
             "orderDetails.extraService.extraDetails:id,$this->description"
         ])
