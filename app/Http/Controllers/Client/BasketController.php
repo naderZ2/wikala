@@ -19,7 +19,7 @@ class BasketController extends Controller
         $this->lang();
         $orders=Order::where(['user_id'=>auth()->id(),"type"=>'basket'])
         // ->with("orderDetails.extraService.extraDetails:id,$this->description")
-        ->with(["orderDetails.product:id,$this->description,$this->title,$this->name,main_image","orderDetails.extraService.extraDetails:id,$this->description"])
+        ->with(["orderDetails.product:id,$this->description,$this->title,$this->name,main_image","orderDetails.variation.attributes.attribute","orderDetails.extraService.extraDetails:id,$this->description"])
         ->select('id','total_price','status','order_number','updated_at','delivery_fee')
         ->get();
         return $this->success($orders);

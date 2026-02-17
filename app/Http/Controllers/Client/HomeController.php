@@ -36,6 +36,11 @@ class HomeController extends Controller
             }])
             ->withAvg('reviews', 'rating')
             ->orderByDesc('orders_count')
+            ->with(['products' => function($q){
+                $q->where('is_available', 1)->latest()
+                  ->with(["category:id,$this->name", "attributes.attribute"])
+                  ->select('id', $this->name, $this->description, $this->title, 'price', 'old_price', 'main_image', 'serving', 'category_id');
+            }])
             ->take(10)
             ->get()
             ->map(function($seller){
@@ -55,6 +60,7 @@ class HomeController extends Controller
             ->with(['seller' => function($q) {
                 $q->withAvg('reviews', 'rating');
             }]) 
+            ->select('id', $this->name, $this->description, $this->title, 'price', 'old_price', 'main_image', 'serving', 'category_id', 'seller_id')
             ->take(10)
             ->get()
              ->map(function($product){

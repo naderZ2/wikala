@@ -86,6 +86,9 @@ class OrderService{
         // $orderDetails['quantity'] = $product['quantity'];
         $orderDetails['product_id'] =$request->product_id;
         $orderDetails['price'] =$actualProduct->price;
+        if($request->has('product_variation_id')){
+            $orderDetails['product_variation_id'] = $request->product_variation_id;
+        }
         $orderDetails=$order->orderDetails()->create($orderDetails);
         $totalPrice =$order->total_price + $orderDetails['price'];
        
