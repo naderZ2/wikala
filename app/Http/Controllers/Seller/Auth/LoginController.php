@@ -31,7 +31,7 @@ class LoginController extends Controller
             return $this->failed(null, 'Your account is under review by admin');
         }
 
-        $token = $seller->createToken('seller-token', ['seller'])->accessToken;
+        $token = $seller->createToken('seller-token')->accessToken;
 
         return $this->success([
             'token' => $token,
