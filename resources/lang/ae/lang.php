@@ -490,6 +490,14 @@ return  [
 	'entire_city' => 'المدينة بأكملها (جميع المناطق)',
 	'save_delivery_options' => 'حفظ خيارات التوصيل',
 	'total_income' => 'إجمالي الدخل',
+	'approved' => 'مقبول',
+	'under_review' => 'قيد المراجعة',
+	'rejected' => 'مرفوض',
+	'approve' => 'قبول',
+	'reject' => 'رفض',
+	'reject_product' => 'رفض المنتج',
+	'rejection_reason' => 'سبب الرفض',
+	'rejection_reason_placeholder' => 'أدخل سبب رفض هذا المنتج...',
 
 ];
 ?>

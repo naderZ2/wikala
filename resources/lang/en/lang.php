@@ -481,6 +481,14 @@ return  [
 	'entire_city' => 'Entire City (All Regions)',
 	'save_delivery_options' => 'Save Delivery Options',
 	'total_income' => 'Total Income',
+	'approved' => 'Approved',
+	'under_review' => 'Under Review',
+	'rejected' => 'Rejected',
+	'approve' => 'Approve',
+	'reject' => 'Reject',
+	'reject_product' => 'Reject Product',
+	'rejection_reason' => 'Rejection Reason',
+	'rejection_reason_placeholder' => 'Enter the reason for rejecting this product...',
 
 ];
 ?>

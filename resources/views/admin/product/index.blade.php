@@ -95,11 +95,11 @@
                                         </td>
                                         <td>
                                             @if($product->is_available == 1)
-                                                <span class="product-status-badge approved">Approved</span>
+                                                <span class="product-status-badge approved">@lang('lang.approved')</span>
                                             @elseif($product->is_available == 0)
-                                                <span class="product-status-badge pending">Under Review</span>
+                                                <span class="product-status-badge pending">@lang('lang.under_review')</span>
                                             @else
-                                                <span class="product-status-badge rejected" title="{{ $product->rejection_reason }}">Rejected</span>
+                                                <span class="product-status-badge rejected" title="{{ $product->rejection_reason }}">@lang('lang.rejected')</span>
                                                 @if($product->rejection_reason)
                                                     <br><small class="text-danger mt-1" style="display:inline-block;">{{ Str::limit($product->rejection_reason, 30) }}</small>
                                                 @endif
@@ -113,14 +113,14 @@
                                             {{-- Approve button (show when not approved) --}}
                                             @if ($product->is_available != 1)
                                             <a href="{{ route('product.approve', $product->id) }}" class="btn btn-success btn-sm mt-1">
-                                                Approve
+                                                @lang('lang.approve')
                                             </a>
                                             @endif
 
                                             {{-- Reject button (show when not already rejected) --}}
                                             @if ($product->is_available != -1)
                                             <button type="button" class="btn btn-danger btn-sm mt-1" data-bs-toggle="modal" data-bs-target="#rejectModal{{ $product->id }}">
-                                                Reject
+                                                @lang('lang.reject')
                                             </button>
                                             @endif
 
@@ -182,7 +182,7 @@
                     @if($product->is_available == -1 && $product->rejection_reason)
                     <div class="col-md-12 mb-3">
                         <div class="alert alert-danger">
-                            <strong><i class="fa fa-ban"></i> Rejection Reason:</strong><br>
+                            <strong><i class="fa fa-ban"></i> @lang('lang.rejection_reason'):</strong><br>
                             {{ $product->rejection_reason }}
                         </div>
                     </div>
@@ -244,20 +244,20 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header bg-danger text-white">
-                <h5 class="modal-title"><i class="fa fa-ban"></i> Reject Product: {{ $product->name }}</h5>
+                <h5 class="modal-title"><i class="fa fa-ban"></i> @lang('lang.reject_product'): {{ $product->name }}</h5>
                 <button class="btn-close btn-close-white" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <form action="{{ route('product.reject', $product->id) }}" method="POST">
                 @csrf
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label for="rejection_reason_{{ $product->id }}" class="form-label"><strong>Rejection Reason <span class="text-danger">*</span></strong></label>
-                        <textarea class="form-control" id="rejection_reason_{{ $product->id }}" name="rejection_reason" rows="4" placeholder="Enter the reason for rejecting this product..." required></textarea>
+                        <label for="rejection_reason_{{ $product->id }}" class="form-label"><strong>@lang('lang.rejection_reason') <span class="text-danger">*</span></strong></label>
+                        <textarea class="form-control" id="rejection_reason_{{ $product->id }}" name="rejection_reason" rows="4" placeholder="@lang('lang.rejection_reason_placeholder')" required></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Cancel</button>
-                    <button class="btn btn-danger" type="submit"><i class="fa fa-ban"></i> Reject Product</button>
+                    <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">@lang('lang.Cancel')</button>
+                    <button class="btn btn-danger" type="submit"><i class="fa fa-ban"></i> @lang('lang.reject_product')</button>
                 </div>
             </form>
         </div>
