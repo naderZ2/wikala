@@ -1,60 +1,70 @@
 <?php
-namespace App\Http\Controllers;
+
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Seller;
 
-Route::prefix('seller')->name('seller.')->group(function () {
- 
-    Route::group(['middleware' => ['guest:seller']], function(){ 
-        Route::view('login','seller.auth.login');
-        Route::post('login', [Seller\Auth\LoginController::class, 'login'])->name('login');
-    });
-    
-    Route::group(['middleware' => ['auth:seller']], function(){ 
-        Route::get('home', [Seller\StatisticsController::class, 'index'])->name('home');
+/*
+|--------------------------------------------------------------------------
+| Seller API Routes
+|--------------------------------------------------------------------------
+| Prefix: /seller (set in RouteServiceProvider)
+| Middleware: api (set in RouteServiceProvider)
+*/
 
-        Route::get('logout', [Seller\Auth\LoginController::class, 'logout'])->name('logout');
-    
-        //Product
-        Route::resource('product', Seller\ProductController::class);
-        Route::post('edit_product', [Seller\ProductController::class, 'update'])->name('product.update');
+// ==========================================
+// Public routes (no auth required)
+// ==========================================
+Route::post('login', [Seller\Auth\LoginController::class, 'login']);
+Route::post('register', [Seller\Auth\LoginController::class, 'register']);
+Route::post('verify-otp', [Seller\Auth\LoginController::class, 'verifyOtp']);
 
-    
-        //Order 
-        Route::get('orders/invoice/{id}', [Seller\OrderController::class, 'generateInvoice'])->name('order.generate_nvoice');
+// ==========================================
+// Protected routes (auth:seller-api required)
+// ==========================================
+Route::middleware('auth:seller-api')->group(function () {
 
-        Route::get('orders', [Seller\OrderController::class, 'index'])->name('order.index');
-        Route::get('change_status/{id}/{action}', [Seller\OrderController::class, 'changeOrderStatus'])->name('order.change_status');
+    // Auth
+    Route::post('logout', [Seller\Auth\LoginController::class, 'logout']);
 
+    // Dashboard / Home
+    Route::get('home', [Seller\StatisticsController::class, 'index']);
 
-        Route::get('orders/completed', [Seller\OrderController::class, 'index'])->name('order.completed');
-        Route::get('orders/new', [Seller\OrderController::class, 'index'])->name('order.new');
-        Route::get('orders/under_preparation', [Seller\OrderController::class, 'index'])->name('order.under_preparation');
+    // Profile
+    Route::get('profile', [Seller\ProfileController::class, 'index']);
+    Route::put('profile', [Seller\ProfileController::class, 'update']);
+    Route::post('profile', [Seller\ProfileController::class, 'update']); // POST for file uploads
+    Route::delete('profile', [Seller\ProfileController::class, 'destroy']);
 
-        Route::get('order/{id}', [Seller\OrderController::class, 'details'])->name('order.details');
-    
+    // Products
+    Route::get('products', [Seller\ProductController::class, 'index']);
+    Route::post('products', [Seller\ProductController::class, 'store']);
+    Route::get('products/{id}', [Seller\ProductController::class, 'show']);
+    Route::put('products/{id}', [Seller\ProductController::class, 'update']);
+    Route::post('products/{id}', [Seller\ProductController::class, 'update']); // POST for file uploads
+    Route::delete('products/{id}', [Seller\ProductController::class, 'destroy']);
+    Route::post('products/{id}/variations', [Seller\ProductController::class, 'storeVariations']);
 
+    // Categories (for product form)
+    Route::get('categories', [Seller\ProductController::class, 'categories']);
 
+    // Orders
+    Route::get('orders', [Seller\OrderController::class, 'index']);
+    Route::get('orders/{id}', [Seller\OrderController::class, 'details']);
+    Route::put('orders/{id}/status', [Seller\OrderController::class, 'changeOrderStatus']);
+    Route::get('orders/{id}/invoice', [Seller\OrderController::class, 'generateInvoice']);
 
+    // Delivery Options
+    Route::get('delivery-options', [Seller\DeliveryController::class, 'index']);
+    Route::put('delivery-options', [Seller\DeliveryController::class, 'update']);
+    Route::post('delivery-options', [Seller\DeliveryController::class, 'update']); // POST alternative
 
+    // Settings
+    Route::get('settings', [Seller\SettingsController::class, 'index']);
+    Route::post('settings/language', [Seller\SettingsController::class, 'updateLanguage']);
 
-
-
-
-
-        Route::prefix('/seller_services')->group(function () {
-            Route::get('index', [Seller\SellerServicesController::class, 'index'])->name('sellerServices.index');
-            Route::get('edit_availability/{id}', [Seller\SellerServicesController::class, 'updateAvailability'])->name('sellerServices.updateAvailability');
-            Route::get('create', [Seller\SellerServicesController::class, 'create'])->name('sellerServices.create');
-            Route::post('/store', [Seller\SellerServicesController::class, 'store'])->name('sellerServices.store');
-            Route::get('/products-by-category', [Seller\SellerServicesController::class, 'getProductsByCategory'])->name('productServices.get.products.by.category');
-        });
-
-
-
-
-
-
-
-
-    });
+    // Seller Services
+    Route::get('services', [Seller\SellerServicesController::class, 'index']);
+    Route::post('services', [Seller\SellerServicesController::class, 'store']);
+    Route::put('services/{id}/toggle', [Seller\SellerServicesController::class, 'updateAvailability']);
+    Route::get('services/products-by-category', [Seller\SellerServicesController::class, 'getProductsByCategory']);
 });

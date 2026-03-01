@@ -1,0 +1,719 @@
+{
+	"info": {
+		"name": "Seller API",
+		"description": "E-EXPO Seller API Collection - All endpoints for the seller mobile app",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://127.0.0.1:8000",
+			"type": "string"
+		},
+		{
+			"key": "token",
+			"value": "",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"if (jsonData.success && jsonData.result && jsonData.result.token) {",
+									"    pm.collectionVariables.set('token', jsonData.result.token);",
+									"    console.log('Token saved!');",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{"key": "Accept", "value": "application/json"},
+							{"key": "Content-Type", "value": "application/json"}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"phone\": \"96551110001\",\n    \"password\": \"password\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/seller/login",
+							"host": ["{{base_url}}"],
+							"path": ["seller", "login"]
+						}
+					}
+				},
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [
+							{"key": "Accept", "value": "application/json"}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{"key": "name", "value": "Test Seller", "type": "text"},
+								{"key": "phone", "value": "96599990001", "type": "text"},
+								{"key": "password", "value": "password", "type": "text"},
+								{"key": "shop_name_en", "value": "My Test Shop", "type": "text"},
+								{"key": "shop_name_ar", "value": "متجري التجريبي", "type": "text"},
+								{"key": "category_id", "value": "261", "type": "text"},
+								{"key": "logo", "type": "file", "src": ""},
+								{"key": "banner", "type": "file", "src": ""}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/seller/register",
+							"host": ["{{base_url}}"],
+							"path": ["seller", "register"]
+						}
+					}
+				},
+				{
+					"name": "Verify OTP",
+					"request": {
+						"method": "POST",
+						"header": [
+							{"key": "Accept", "value": "application/json"},
+							{"key": "Content-Type", "value": "application/json"}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"phone\": \"96551110001\",\n    \"code\": \"1234\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/seller/verify-otp",
+							"host": ["{{base_url}}"],
+							"path": ["seller", "verify-otp"]
+						}
+					}
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"method": "POST",
+						"header": [
+							{"key": "Accept", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{token}}"}
+						],
+						"url": {
+							"raw": "{{base_url}}/seller/logout",
+							"host": ["{{base_url}}"],
+							"path": ["seller", "logout"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Dashboard",
+			"item": [
+				{
+					"name": "Home / Dashboard",
+					"request": {
+						"method": "GET",
+						"header": [
+							{"key": "Accept", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{token}}"}
+						],
+						"url": {
+							"raw": "{{base_url}}/seller/home",
+							"host": ["{{base_url}}"],
+							"path": ["seller", "home"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Profile",
+			"item": [
+				{
+					"name": "Get Profile",
+					"request": {
+						"method": "GET",
+						"header": [
+							{"key": "Accept", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{token}}"}
+						],
+						"url": {
+							"raw": "{{base_url}}/seller/profile",
+							"host": ["{{base_url}}"],
+							"path": ["seller", "profile"]
+						}
+					}
+				},
+				{
+					"name": "Update Profile",
+					"request": {
+						"method": "POST",
+						"header": [
+							{"key": "Accept", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{token}}"}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{"key": "name", "value": "Updated Name", "type": "text"},
+								{"key": "phone", "value": "96551110001", "type": "text"},
+								{"key": "shop_name_en", "value": "Updated Shop EN", "type": "text"},
+								{"key": "shop_name_ar", "value": "متجر محدث", "type": "text"},
+								{"key": "details", "value": "Salmiya Block 5", "type": "text"},
+								{"key": "about", "value": "Best shop in town", "type": "text"},
+								{"key": "category_id", "value": "261", "type": "text"},
+								{"key": "logo", "type": "file", "src": ""},
+								{"key": "banner", "type": "file", "src": ""}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/seller/profile",
+							"host": ["{{base_url}}"],
+							"path": ["seller", "profile"]
+						}
+					}
+				},
+				{
+					"name": "Delete Account",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{"key": "Accept", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{token}}"}
+						],
+						"url": {
+							"raw": "{{base_url}}/seller/profile",
+							"host": ["{{base_url}}"],
+							"path": ["seller", "profile"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Products",
+			"item": [
+				{
+					"name": "List Products (All)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{"key": "Accept", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{token}}"}
+						],
+						"url": {
+							"raw": "{{base_url}}/seller/products",
+							"host": ["{{base_url}}"],
+							"path": ["seller", "products"]
+						}
+					}
+				},
+				{
+					"name": "List Products (Approved)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{"key": "Accept", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{token}}"}
+						],
+						"url": {
+							"raw": "{{base_url}}/seller/products?status=approved",
+							"host": ["{{base_url}}"],
+							"path": ["seller", "products"],
+							"query": [{"key": "status", "value": "approved"}]
+						}
+					}
+				},
+				{
+					"name": "List Products (Under Review)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{"key": "Accept", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{token}}"}
+						],
+						"url": {
+							"raw": "{{base_url}}/seller/products?status=under_review",
+							"host": ["{{base_url}}"],
+							"path": ["seller", "products"],
+							"query": [{"key": "status", "value": "under_review"}]
+						}
+					}
+				},
+				{
+					"name": "List Products (Rejected)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{"key": "Accept", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{token}}"}
+						],
+						"url": {
+							"raw": "{{base_url}}/seller/products?status=rejected",
+							"host": ["{{base_url}}"],
+							"path": ["seller", "products"],
+							"query": [{"key": "status", "value": "rejected"}]
+						}
+					}
+				},
+				{
+					"name": "Search Products",
+					"request": {
+						"method": "GET",
+						"header": [
+							{"key": "Accept", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{token}}"}
+						],
+						"url": {
+							"raw": "{{base_url}}/seller/products?search=iphone",
+							"host": ["{{base_url}}"],
+							"path": ["seller", "products"],
+							"query": [{"key": "search", "value": "iphone"}]
+						}
+					}
+				},
+				{
+					"name": "Get Single Product",
+					"request": {
+						"method": "GET",
+						"header": [
+							{"key": "Accept", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{token}}"}
+						],
+						"url": {
+							"raw": "{{base_url}}/seller/products/200",
+							"host": ["{{base_url}}"],
+							"path": ["seller", "products", "200"]
+						}
+					}
+				},
+				{
+					"name": "Create Product",
+					"request": {
+						"method": "POST",
+						"header": [
+							{"key": "Accept", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{token}}"}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{"key": "name_ar", "value": "منتج تجريبي", "type": "text"},
+								{"key": "name_en", "value": "Test Product", "type": "text"},
+								{"key": "title_ar", "value": "عنوان تجريبي", "type": "text"},
+								{"key": "title_en", "value": "Test Title", "type": "text"},
+								{"key": "description_ar", "value": "وصف المنتج التجريبي", "type": "text"},
+								{"key": "description_en", "value": "Test product description", "type": "text"},
+								{"key": "price", "value": "25.00", "type": "text"},
+								{"key": "old_price", "value": "35.00", "type": "text"},
+								{"key": "quantity", "value": "100", "type": "text"},
+								{"key": "category_id", "value": "261", "type": "text"},
+								{"key": "main_image", "type": "file", "src": ""},
+								{"key": "images[]", "type": "file", "src": ""}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/seller/products",
+							"host": ["{{base_url}}"],
+							"path": ["seller", "products"]
+						}
+					}
+				},
+				{
+					"name": "Update Product",
+					"request": {
+						"method": "POST",
+						"header": [
+							{"key": "Accept", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{token}}"}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{"key": "name_ar", "value": "منتج محدث", "type": "text"},
+								{"key": "name_en", "value": "Updated Product", "type": "text"},
+								{"key": "title_ar", "value": "عنوان محدث", "type": "text"},
+								{"key": "title_en", "value": "Updated Title", "type": "text"},
+								{"key": "description_ar", "value": "وصف محدث", "type": "text"},
+								{"key": "description_en", "value": "Updated description", "type": "text"},
+								{"key": "price", "value": "30.00", "type": "text"},
+								{"key": "old_price", "value": "40.00", "type": "text"},
+								{"key": "quantity", "value": "50", "type": "text"},
+								{"key": "main_image", "type": "file", "src": ""},
+								{"key": "images[]", "type": "file", "src": ""},
+								{"key": "deleted_images[]", "value": "", "type": "text", "disabled": true}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/seller/products/200",
+							"host": ["{{base_url}}"],
+							"path": ["seller", "products", "200"]
+						}
+					}
+				},
+				{
+					"name": "Delete Product",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{"key": "Accept", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{token}}"}
+						],
+						"url": {
+							"raw": "{{base_url}}/seller/products/200",
+							"host": ["{{base_url}}"],
+							"path": ["seller", "products", "200"]
+						}
+					}
+				},
+				{
+					"name": "Add Variations to Product",
+					"request": {
+						"method": "POST",
+						"header": [
+							{"key": "Accept", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{token}}"},
+							{"key": "Content-Type", "value": "application/json"}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"variations\": [\n        {\n            \"price\": 25.00,\n            \"quantity\": 10,\n            \"sku\": \"PROD-S\",\n            \"options\": [\n                {\"attribute_id\": 1, \"value\": \"S\"},\n                {\"attribute_id\": 2, \"value\": \"Red\"}\n            ]\n        },\n        {\n            \"price\": 25.00,\n            \"quantity\": 15,\n            \"sku\": \"PROD-M\",\n            \"options\": [\n                {\"attribute_id\": 1, \"value\": \"M\"},\n                {\"attribute_id\": 2, \"value\": \"Blue\"}\n            ]\n        },\n        {\n            \"price\": 28.00,\n            \"quantity\": 8,\n            \"sku\": \"PROD-L\",\n            \"options\": [\n                {\"attribute_id\": 1, \"value\": \"L\"},\n                {\"attribute_id\": 2, \"value\": \"Black\"}\n            ]\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/seller/products/200/variations",
+							"host": ["{{base_url}}"],
+							"path": ["seller", "products", "200", "variations"]
+						}
+					}
+				},
+				{
+					"name": "Get Categories",
+					"request": {
+						"method": "GET",
+						"header": [
+							{"key": "Accept", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{token}}"}
+						],
+						"url": {
+							"raw": "{{base_url}}/seller/categories",
+							"host": ["{{base_url}}"],
+							"path": ["seller", "categories"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Orders",
+			"item": [
+				{
+					"name": "List Orders (All)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{"key": "Accept", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{token}}"}
+						],
+						"url": {
+							"raw": "{{base_url}}/seller/orders",
+							"host": ["{{base_url}}"],
+							"path": ["seller", "orders"]
+						}
+					}
+				},
+				{
+					"name": "List Orders (Confirmed)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{"key": "Accept", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{token}}"}
+						],
+						"url": {
+							"raw": "{{base_url}}/seller/orders?status=confirmed",
+							"host": ["{{base_url}}"],
+							"path": ["seller", "orders"],
+							"query": [{"key": "status", "value": "confirmed"}]
+						}
+					}
+				},
+				{
+					"name": "List Orders (Under Processing)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{"key": "Accept", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{token}}"}
+						],
+						"url": {
+							"raw": "{{base_url}}/seller/orders?status=under_processing",
+							"host": ["{{base_url}}"],
+							"path": ["seller", "orders"],
+							"query": [{"key": "status", "value": "under_processing"}]
+						}
+					}
+				},
+				{
+					"name": "List Orders (Out for Delivery)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{"key": "Accept", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{token}}"}
+						],
+						"url": {
+							"raw": "{{base_url}}/seller/orders?status=out_for_delivery",
+							"host": ["{{base_url}}"],
+							"path": ["seller", "orders"],
+							"query": [{"key": "status", "value": "out_for_delivery"}]
+						}
+					}
+				},
+				{
+					"name": "List Orders (Delivered)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{"key": "Accept", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{token}}"}
+						],
+						"url": {
+							"raw": "{{base_url}}/seller/orders?status=delivered",
+							"host": ["{{base_url}}"],
+							"path": ["seller", "orders"],
+							"query": [{"key": "status", "value": "delivered"}]
+						}
+					}
+				},
+				{
+					"name": "List Orders (Cancelled)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{"key": "Accept", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{token}}"}
+						],
+						"url": {
+							"raw": "{{base_url}}/seller/orders?status=cancelled",
+							"host": ["{{base_url}}"],
+							"path": ["seller", "orders"],
+							"query": [{"key": "status", "value": "cancelled"}]
+						}
+					}
+				},
+				{
+					"name": "Order Details",
+					"request": {
+						"method": "GET",
+						"header": [
+							{"key": "Accept", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{token}}"}
+						],
+						"url": {
+							"raw": "{{base_url}}/seller/orders/500",
+							"host": ["{{base_url}}"],
+							"path": ["seller", "orders", "500"]
+						}
+					}
+				},
+				{
+					"name": "Change Order Status",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{"key": "Accept", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{token}}"},
+							{"key": "Content-Type", "value": "application/json"}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"status\": \"confirmed\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/seller/orders/500/status",
+							"host": ["{{base_url}}"],
+							"path": ["seller", "orders", "500", "status"]
+						}
+					}
+				},
+				{
+					"name": "Generate Invoice",
+					"request": {
+						"method": "GET",
+						"header": [
+							{"key": "Accept", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{token}}"}
+						],
+						"url": {
+							"raw": "{{base_url}}/seller/orders/500/invoice",
+							"host": ["{{base_url}}"],
+							"path": ["seller", "orders", "500", "invoice"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Delivery Options",
+			"item": [
+				{
+					"name": "Get Delivery Options",
+					"request": {
+						"method": "GET",
+						"header": [
+							{"key": "Accept", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{token}}"}
+						],
+						"url": {
+							"raw": "{{base_url}}/seller/delivery-options",
+							"host": ["{{base_url}}"],
+							"path": ["seller", "delivery-options"]
+						}
+					}
+				},
+				{
+					"name": "Update Delivery Options",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{"key": "Accept", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{token}}"},
+							{"key": "Content-Type", "value": "application/json"}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"areas\": [\n        {\n            \"city_id\": 6,\n            \"region_id\": null,\n            \"delivery_price\": 1.50,\n            \"active\": true\n        },\n        {\n            \"city_id\": 14,\n            \"region_id\": null,\n            \"delivery_price\": 2.50,\n            \"active\": true\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/seller/delivery-options",
+							"host": ["{{base_url}}"],
+							"path": ["seller", "delivery-options"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Settings",
+			"item": [
+				{
+					"name": "Get Settings",
+					"request": {
+						"method": "GET",
+						"header": [
+							{"key": "Accept", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{token}}"}
+						],
+						"url": {
+							"raw": "{{base_url}}/seller/settings",
+							"host": ["{{base_url}}"],
+							"path": ["seller", "settings"]
+						}
+					}
+				},
+				{
+					"name": "Update Language",
+					"request": {
+						"method": "POST",
+						"header": [
+							{"key": "Accept", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{token}}"},
+							{"key": "Content-Type", "value": "application/json"}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"lang\": \"ar\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/seller/settings/language",
+							"host": ["{{base_url}}"],
+							"path": ["seller", "settings", "language"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Services",
+			"item": [
+				{
+					"name": "List Services",
+					"request": {
+						"method": "GET",
+						"header": [
+							{"key": "Accept", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{token}}"}
+						],
+						"url": {
+							"raw": "{{base_url}}/seller/services",
+							"host": ["{{base_url}}"],
+							"path": ["seller", "services"]
+						}
+					}
+				},
+				{
+					"name": "Create Service",
+					"request": {
+						"method": "POST",
+						"header": [
+							{"key": "Accept", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{token}}"},
+							{"key": "Content-Type", "value": "application/json"}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"category_id\": 261,\n    \"product_id\": 200,\n    \"date\": \"2026-03-15\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/seller/services",
+							"host": ["{{base_url}}"],
+							"path": ["seller", "services"]
+						}
+					}
+				},
+				{
+					"name": "Toggle Service Availability",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{"key": "Accept", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{token}}"}
+						],
+						"url": {
+							"raw": "{{base_url}}/seller/services/1/toggle",
+							"host": ["{{base_url}}"],
+							"path": ["seller", "services", "1", "toggle"]
+						}
+					}
+				},
+				{
+					"name": "Products by Category",
+					"request": {
+						"method": "GET",
+						"header": [
+							{"key": "Accept", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{token}}"}
+						],
+						"url": {
+							"raw": "{{base_url}}/seller/services/products-by-category?category_id=261",
+							"host": ["{{base_url}}"],
+							"path": ["seller", "services", "products-by-category"],
+							"query": [{"key": "category_id", "value": "261"}]
+						}
+					}
+				}
+			]
+		}
+	]
+}

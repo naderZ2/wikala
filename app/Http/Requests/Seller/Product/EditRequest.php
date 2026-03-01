@@ -3,53 +3,55 @@
 namespace App\Http\Requests\Seller\Product;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class EditRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     *
-     * @return bool
-     */
     public function authorize()
     {
         return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array
-     */
     public function rules()
     {
         return [
             'name_ar' => "required",
             'name_en' => "required",
-            'title_ar' => "required",
-            'title_en' => "required",
+            'title_ar' => "sometimes|nullable",
+            'title_en' => "sometimes|nullable",
             'description_ar' => "required",
             'description_en' => "required",
             'serving' => "sometimes|nullable|numeric",
             'price' => "required|numeric",
-            'old_price' => "required|numeric",
-            'category_id' => "sometimes|nullable",
-            'images' => "sometimes|nullable|max:1024",
-            'main_image' => "sometimes|nullable|max:1024",
-            // 'picture' => "required",
+            'old_price' => "sometimes|nullable|numeric",
+            'quantity' => "sometimes|nullable|numeric",
+            'category_id' => "sometimes|nullable|exists:categories,id",
+            'images' => "sometimes|nullable|array",
+            'images.*' => "image|max:2048",
+            'main_image' => "sometimes|nullable|image|max:2048",
+            'deleted_images' => "sometimes|nullable|array",
         ];
     }
-    
-        public function messages(): array {
+
+    public function messages(): array
+    {
         return [
-            // 'code.exists'  => 'The code Is Not found.',
-            'name_ar.required'  => 'The name_ar are required',
-            'name_en.required'  => 'The name_en are required',
-            'description_ar.required'  => 'The description_ar are required',
-            'price.required'  => 'The price are required',
-            'description_en.required'  => 'The description_en are required',
-            'main_image.max'  => 'The image size must not exceed 1MB.',
-            'images.max'  => 'The image size must not exceed 1MB.',
+            'name_ar.required' => 'The Arabic name is required',
+            'name_en.required' => 'The English name is required',
+            'description_ar.required' => 'The Arabic description is required',
+            'description_en.required' => 'The English description is required',
+            'main_image.max' => 'The main image must not exceed 2MB.',
+            'images.*.max' => 'Each image must not exceed 2MB.',
         ];
+    }
+
+    protected function failedValidation(Validator $validator)
+    {
+        throw new HttpResponseException(response()->json([
+            'success' => false,
+            'result' => $validator->errors(),
+            'msg' => 'Validation failed'
+        ], 422));
     }
 }

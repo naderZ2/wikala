@@ -59,6 +59,10 @@ return [
             'driver' => 'session',
             'provider' => 'sellers',
         ],
+        'seller-api' => [
+            'driver' => 'passport',
+            'provider' => 'sellers',
+        ],
     ],
 
     /*

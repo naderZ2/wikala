@@ -1,89 +1,170 @@
 <?php
 
 namespace App\Http\Controllers\Seller;
-use App\Services\OrderService;
 
+use App\Services\OrderService;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Seller\Order\EditStatusRequest;
 use App\Models\Order;
+use App\Traits\ResponsesTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Mpdf\Mpdf;
+
 class OrderController extends Controller
 {
-    public function index(){
+    use ResponsesTrait;
 
-        $page = request()->segments();
-        $page =end($page);
+    /**
+     * List orders with status filter
+     * GET /seller/orders?status=confirmed
+     */
+    public function index(Request $request)
+    {
+        $seller = $request->user();
 
+        $query = Order::where('seller_id', $seller->id)
+            ->with('user:id,name,phone');
 
+        // Filter by status
+        if ($request->status && $request->status !== 'all') {
+            $statusMap = [
+                'confirmed' => ['confirmed'],
+                'under_processing' => ['order_placed'],
+                'out_for_delivery' => ['out_for_delivery', 'shipped'],
+                'delivered' => ['delivered'],
+                'cancelled' => ['cancel'],
+            ];
 
-        if($page=='new')
-        {
-            // Log::info('thenew');
-            $orders=Order::whereSellerId(auth()->id())->where('status','order_placed')->with('user:id,name,phone')->get();
-        }elseif($page=='completed')
-        {
-
-            // Log::info('thecompleted');
-            $orders=Order::whereSellerId(auth()->id())->whereIn('status',['cancel','delivered'])->with('user:id,name,phone')->get();
-
-        }elseif($page=='under_preparation')
-        {
-            // Log::info('theunder_preparation');
-            $orders=Order::whereSellerId(auth()->id())->whereIn('status', ['shipped', 'out_for_delivery', 'confirmed'])->with('user:id,name,phone')->get();
-            // Log::info($orders);
-        }else
-        {
-            $orders=Order::whereSellerId(auth()->id())
-            ->with('user:id,name,phone')->get();
-
+            $statuses = $statusMap[$request->status] ?? [$request->status];
+            $query->whereIn('status', $statuses);
         }
 
-        return view('seller.order.index',compact('orders'));
+        $orders = $query->orderBy('created_at', 'desc')->get()->map(function ($order) {
+            return [
+                'id' => $order->id,
+                'order_number' => $order->order_number,
+                'date' => $order->created_at ? $order->created_at->format('d-m-Y') : null,
+                'payment_type' => $order->payment_type,
+                'status' => $order->status,
+                'user' => $order->user ? [
+                    'name' => $order->user->name,
+                    'phone' => $order->user->phone,
+                ] : null,
+            ];
+        });
+
+        return $this->success($orders, 'Orders list');
     }
 
-    public function details($id){
-        $this->lang();
-        $order=Order::whereId($id)->with('user:id,name',"orderDetails.product:id,$this->name")->first();
-        return view('seller.order.details',compact('order'));
-    }
-
-    public function changeStatus(EditStatusRequest $request){
-        #TODO complete
-        Order::whereId($request->id)->update(['status' =>""]);
-        return back()->with('success',trans('lang.updatted'));
-    }
-
-      public function generateInvoice($id)
+    /**
+     * Order details
+     * GET /seller/orders/{id}
+     */
+    public function details(Request $request, $id)
     {
+        $order = Order::where('id', $id)
+            ->where('seller_id', $request->user()->id)
+            ->with([
+                'user:id,name,phone,email',
+                'orderDetails.product:id,name_en,name_ar,price',
+                'orderDetails.variation.attributes',
+                'address.region',
+            ])
+            ->firstOrFail();
 
-        // Log::info('order');
-        // $this->lang();
+        $items = $order->orderDetails->map(function ($detail) {
+            $options = '';
+            if ($detail->variation && $detail->variation->attributes) {
+                $options = $detail->variation->attributes->pluck('value')->implode('/');
+            }
 
+            return [
+                'name' => $detail->product ? ($detail->product->name_en ?? $detail->product->name_ar) : 'Unknown',
+                'qty' => $detail->quantity,
+                'options' => $options,
+                'price' => $detail->price,
+            ];
+        });
 
+        return $this->success([
+            'order_number' => $order->order_number,
+            'customer_name' => $order->user ? $order->user->name : 'Unknown',
+            'date' => $order->created_at ? $order->created_at->format('d-m-Y H:i') : null,
+            'total_amount' => $order->total_price,
+            'payment_type' => $order->payment_type,
+            'whatsapp' => $order->user ? $order->user->phone : null,
+            'address' => $order->address ? [
+                'street' => $order->address->street,
+                'block' => $order->address->block_no,
+                'building' => $order->address->building_no,
+                'floor' => $order->address->floor_no,
+                'region' => $order->address->region ? $order->address->region->name_en : null,
+            ] : null,
+            'items' => $items,
+            'status' => $order->status,
+            'bill_url' => $order->bill_url,
+            'delivery_fee' => $order->delivery_fee,
+        ], 'Order details');
+    }
+
+    /**
+     * Change order status
+     * PUT /seller/orders/{id}/status
+     */
+    public function changeOrderStatus(Request $request, $id)
+    {
+        $request->validate([
+            'status' => 'required|in:confirmed,shipped,out_for_delivery,delivered,cancel',
+        ]);
+
+        $order = Order::where('id', $id)
+            ->where('seller_id', $request->user()->id)
+            ->firstOrFail();
+
+        $statusTimeMap = [
+            'confirmed' => 'confirmed_time',
+            'shipped' => 'shipped_time',
+            'out_for_delivery' => 'out_for_delivery_time',
+            'delivered' => 'actual_delivery_time',
+            'cancel' => 'cancel_time',
+        ];
+
+        $updateData = ['status' => $request->status];
+        if (isset($statusTimeMap[$request->status])) {
+            $updateData[$statusTimeMap[$request->status]] = now();
+        }
+
+        $order->update($updateData);
+
+        return $this->success([
+            'order_id' => $order->id,
+            'status' => $order->status,
+        ], 'Order status updated');
+    }
+
+    /**
+     * Generate invoice
+     * GET /seller/orders/{id}/invoice
+     */
+    public function generateInvoice(Request $request, $id)
+    {
         $mainLang = App::getLocale();
 
+        $order = Order::where('id', $id)
+            ->where('seller_id', $request->user()->id)
+            ->with('user:id,name,phone,email', 'orderDetails.product', 'seller:id,email,name', 'address', 'address.region')
+            ->firstOrFail();
 
-
-        $order=Order::whereId($id)->with('user:id,name,phone,email,email',"orderDetails.product",'seller:id,email,name','address','address.region')->first();
-
-
-        if($order->user->lang =='ar'){
+        if ($order->user && $order->user->lang == 'ar') {
             App::setLocale('ae');
-            // Log::info('ae');
-        }elseif($order->user->lang == 'en'){
-            // Log::info('sssssssssssssssssssssssssssssss5555');
+        } else {
             App::setLocale('en');
-            // Log::info('en');
         }
-
-        // Log::info($order);
 
         $invoice = view('admin.order.invoice', compact('order'))->render();
 
         $pdf = new Mpdf([
-            'default_font' => 'dejavusans', // Supports Arabic characters
+            'default_font' => 'dejavusans',
             'mode' => 'utf-8',
             'format' => 'A4',
             'margin_left' => 10,
@@ -95,33 +176,17 @@ class OrderController extends Controller
 
         $pdf->WriteHTML($invoice);
 
-        $path='invoices/invoice_' . $id. '_'. time() . '.pdf';
+        $path = 'invoices/invoice_' . $id . '_' . time() . '.pdf';
         $filePath = public_path($path);
-
-        // Log::info('filePath');
-        // Log::info($filePath);
-
         $pdf->Output($filePath, 'F');
 
         $order->bill_url = $path;
         $order->save();
-        // return 'sss';
+
         App::setLocale($mainLang);
 
-        return to_route('seller.order.details',$id)->with('success',trans('lang.created'));
-
-        // return response()->json(['message' => 'Invoice saved successfully!', 'path' => $filePath]);
-
+        return $this->success([
+            'invoice_url' => $path,
+        ], 'Invoice generated successfully');
     }
-
-      public function changeOrderStatus($id,$action=null,OrderService $service){
-        $request =(object) [
-            "id" => $id,
-            "action" => $action
-        ];
-        $service->changeOrderStatus($request);
-        // dd(Route::currentRouteName());
-        return redirect()->back()->with('success',trans('lang.updated'));
-    }
-
 }

@@ -7,23 +7,25 @@ use App\Traits\FileUploadTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Laravel\Passport\HasApiTokens;
 
 class Seller extends Authenticatable
 {
-    use HasFactory;
+    use HasFactory, HasApiTokens;
     use FileUploadTrait;
 
     protected $guard = 'seller';
     protected $fillable = [
-        'name' , 'email',
-        'password' , 'active',
-        'latitude','longitude',
-        'details','img_path','about'
+        'name', 'email', 'phone',
+        'password', 'active',
+        'latitude', 'longitude',
+        'details', 'img_path', 'about',
+        'shop_name_en', 'shop_name_ar', 'banner'
     ];
 
     protected $hidden = 
     [
-        'password' , 'updated_at'
+        'password', 'updated_at'
     ];
 
 
