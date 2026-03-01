@@ -489,6 +489,7 @@ return  [
 	'city_level' => 'مستوى المدينة',
 	'entire_city' => 'المدينة بأكملها (جميع المناطق)',
 	'save_delivery_options' => 'حفظ خيارات التوصيل',
+	'total_income' => 'إجمالي الدخل',
 
 ];
 ?>

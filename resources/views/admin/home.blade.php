@@ -113,6 +113,63 @@
           </div>
         </div>
 
+        {{-- E-commerce Statistics --}}
+        <div class="col-xl-6 box-col-6 col-lg-6 col-md-6 ">
+          <div class="card o-hidden">
+            <div class="card-body text-center">
+              <div class="ecommerce-widgets media">
+                <div class="media-body">
+                  <h4 class="f-w-500 font-roboto">@lang('lang.Sellers')</h4>
+                  <h4 class="f-w-500 mb-0 f-26"><span class="counter">{{ $totalSellers }}</span></h4>
+                </div>
+                <div class="ecommerce-box light-bg-primary"><i style="font-size: 30px" class="fas fa-users"></i></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-xl-6 box-col-6 col-lg-6 col-md-6 ">
+          <div class="card o-hidden">
+            <div class="card-body text-center">
+              <div class="ecommerce-widgets media">
+                <div class="media-body">
+                  <h4 class="f-w-500 font-roboto">@lang('lang.total_income')</h4>
+                  <h4 class="f-w-500 mb-0 f-26"><span class="counter">{{ number_format($totalIncome, 2) }}</span> <span class="f-14">@lang('lang.sar')</span></h4>
+                </div>
+                <div class="ecommerce-box light-bg-primary"><i style="font-size: 30px" class="fas fa-money-bill-wave"></i></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-xl-6 box-col-6 col-lg-6 col-md-6 ">
+          <div class="card o-hidden">
+            <div class="card-body text-center">
+              <div class="ecommerce-widgets media">
+                <div class="media-body">
+                  <h4 class="f-w-500 font-roboto">@lang('lang.Products')</h4>
+                  <h4 class="f-w-500 mb-0 f-26"><span class="counter">{{ $totalProducts }}</span></h4>
+                </div>
+                <div class="ecommerce-box light-bg-primary"><i style="font-size: 30px" class="fas fa-box-open"></i></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-xl-6 box-col-6 col-lg-6 col-md-6 ">
+          <div class="card o-hidden">
+            <div class="card-body text-center">
+              <div class="ecommerce-widgets media">
+                <div class="media-body">
+                  <h4 class="f-w-500 font-roboto">@lang('lang.Orders')</h4>
+                  <h4 class="f-w-500 mb-0 f-26"><span class="counter">{{ $totalOrders }}</span></h4>
+                </div>
+                <div class="ecommerce-box light-bg-primary"><i style="font-size: 30px" class="fas fa-shopping-cart"></i></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {{-- @foreach ($sections as $section) --}}
             {{-- <div class="col-xl-6 box-col-6 col-lg-12 col-md-6">
                 <div class="card o-hidden">

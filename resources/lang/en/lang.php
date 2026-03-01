@@ -480,6 +480,7 @@ return  [
 	'city_level' => 'City Level',
 	'entire_city' => 'Entire City (All Regions)',
 	'save_delivery_options' => 'Save Delivery Options',
+	'total_income' => 'Total Income',
 
 ];
 ?>

@@ -41,11 +41,21 @@ class   StatisticsController extends Controller
 
         $outdatedAds = Ad::where('end_date', '<=', now())->count();
 
+        // Calculate App wide statistics
+        $totalSellers = \App\Models\Seller::count();
+        $totalProducts = \App\Models\Product::count();
+        $totalOrders = \App\Models\Order::count();
+        $totalIncome = \App\Models\Order::where('status', 'completed')->sum('total_price');
+
         $cities = City::whereNull('parent_id')->get(['id',$this->name]);
 
         $regions = City::whereNotNull('parent_id')->get(['id',$this->name]);
 
-        return view('admin.home',compact('allAds','activeAds','underReviewAds','rejectedAds','outdatedAds','cities','regions'));
+        return view('admin.home',compact(
+            'allAds','activeAds','underReviewAds','rejectedAds','outdatedAds',
+            'cities','regions',
+            'totalSellers', 'totalProducts', 'totalOrders', 'totalIncome'
+        ));
     }
 
 
