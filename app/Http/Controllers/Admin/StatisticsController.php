@@ -24,23 +24,6 @@ class   StatisticsController extends Controller
     public function index(){
         $this->lang();
 
-        $allAds =Ad::get()->count();
-
-        $activeAds = Ad::where('status', 'accepted')
-                ->where('start_date', '<=', now())
-                ->where('end_date', '>=', now())
-                ->count();
-
-        $underReviewAds = Ad::where('status', 'under_review')
-                // ->where('start_date', '<=', now())
-                ->where('end_date', '>=', now())
-                ->count();
-
-        $rejectedAds = Ad::where('status', 'rejected')
-                ->count();
-
-        $outdatedAds = Ad::where('end_date', '<=', now())->count();
-
         // Calculate App wide statistics
         $totalSellers = \App\Models\Seller::count();
         $totalProducts = \App\Models\Product::count();
@@ -52,7 +35,6 @@ class   StatisticsController extends Controller
         $regions = City::whereNotNull('parent_id')->get(['id',$this->name]);
 
         return view('admin.home',compact(
-            'allAds','activeAds','underReviewAds','rejectedAds','outdatedAds',
             'cities','regions',
             'totalSellers', 'totalProducts', 'totalOrders', 'totalIncome'
         ));

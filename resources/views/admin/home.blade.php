@@ -38,81 +38,6 @@
       <div class="row dash-chart">
 
   
-        <div class="col-xl-6 box-col-6 col-lg-6 col-md-6 ">
-          <div class="card o-hidden">
-            <div class="card-body text-center">
-              <div class="ecommerce-widgets media">
-                <div class="media-body">
-                  <h4 class="f-w-500 font-roboto">@lang('lang.all_ads')</h4>
-                  <h4 class="f-w-500 mb-0 f-26"><span id="SpanOrders" class="counter">{{ $allAds }}</span></h4>
-                </div>
-                <div class="ecommerce-box light-bg-primary">
-                  {{-- <i style="font-size: 30px" class="icofont icofont-ebook"></i> --}}
-                  <i style="font-size: 30px" class="fas fa-ad"></i></div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-xl-6 box-col-6 col-lg-6 col-md-6 ">
-          <div class="card o-hidden">
-            <div class="card-body text-center">
-              <div class="ecommerce-widgets media">
-                <div class="media-body">
-                  <h4 class="f-w-500 font-roboto">@lang('lang.active_ads')</h4>
-                  <h4 class="f-w-500 mb-0 f-26"><span id="SpanOrderDelivered" class="counter">{{ $activeAds }}</span></h4>
-                </div>
-                <div class="ecommerce-box light-bg-primary"><i style="font-size: 30px" class="fas fa-bullhorn"></i></div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-xl-6 box-col-6 col-lg-6 col-md-6 ">
-          <div class="card o-hidden">
-            <div class="card-body text-center">
-              <div class="ecommerce-widgets media">
-                <div class="media-body">
-                  <h4 class="f-w-500 font-roboto">@lang('lang.under_review_ads')</h4>
-                  {{-- <h4 class="f-w-500 mb-0 f-26"><span id="SpanOrderNotDelivered" class="counter">{{ $underReviewAds }}</span></h4> --}}
-                  <h4 class="f-w-500 mb-0 f-26"><span id="SpanUnderReview" class="counter">{{ $underReviewAds }}</span></h4>
-
-                </div>
-                <div class="ecommerce-box light-bg-primary"><i style="font-size: 30px" class="fas fa-search"></i></div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-xl-6 box-col-6 col-lg-6 col-md-6 ">
-          <div class="card o-hidden">
-            <div class="card-body text-center">
-              <div class="ecommerce-widgets media">
-                <div class="media-body">
-                  <h4 class="f-w-500 font-roboto">@lang('lang.rejected_ads')</h4>
-                  {{-- <h4 class="f-w-500 mb-0 f-26"><span id="SpanOrderNotDelivered" class="counter">{{ $rejectedAds }}</span></h4> --}}
-                  <h4 class="f-w-500 mb-0 f-26"><span id="SpanRejected" class="counter">{{ $rejectedAds }}</span></h4>
-
-                </div>
-                <div class="ecommerce-box light-bg-primary"><i style="font-size: 30px" class="icofont icofont-not-allowed"></i></div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-xl-6 box-col-6 col-lg-6 col-md-6 ">
-          <div class="card o-hidden">
-            <div class="card-body text-center">
-              <div class="ecommerce-widgets media">
-                <div class="media-body">
-                  <h4 class="f-w-500 font-roboto">@lang('lang.outdated_ads')</h4>
-                  {{-- <h4 class="f-w-500 mb-0 f-26"><span id="SpanOrderNotDelivered" class="counter">{{ $outdatedAds }}</span></h4> --}}
-                  <h4 class="f-w-500 mb-0 f-26"><span id="SpanOutdated" class="counter">{{ $outdatedAds }}</span></h4>
-
-                </div>
-                <div class="ecommerce-box light-bg-primary"><i style="font-size: 30px" class="fas fa-clock"></i></div>
-              </div>
-            </div>
-          </div>
-        </div>
-
         {{-- E-commerce Statistics --}}
         <div class="col-xl-6 box-col-6 col-lg-6 col-md-6 ">
           <div class="card o-hidden">
@@ -191,56 +116,7 @@
      
 
 
-        <div class="row">
 
-
-
-          <div class="col-sm-6">
-            <div class="card">
-            
-              <div class="card-body">
-              
-
-                <h4 class="f-w-500 font-roboto">@lang('lang.city')</h4>
-                <div class="d-flex justify-content-start col-sm-12 mt-3">
-                  <select class="js-example-placeholder-multiple col-sm-12" id="citySelect" name="city_id">
-                    <option value="All">@lang('lang.All')</option>
-                    @foreach ($cities as $city)
-                        <option value="{{ $city->id }}">{{ $city->name }}</option>
-                    @endforeach
-                </select>
-              </div>
-              
-
-              
-              </div>
-            </div>
-            
-            
-          </div>
-          <div class="col-sm-6">
-            <div class="card">
-            
-              <div class="card-body">
-              
-
-                <h4 class="f-w-500 font-roboto">@lang('lang.region')</h4>
-              <div class="d-flex justify-content-start col-sm-12 mt-3">
-                <select class="js-example-placeholder-multiple col-sm-12" id="regionSelect" name="region_id">
-                  <option value="All">@lang('lang.All')</option>
-                  
-              </select>
-              </div>
-              
-
-
-              </div>
-            </div>
-            
-          
-          </div>
-          
-        </div>
 
 
       </div>
@@ -278,64 +154,7 @@
 
 <script>
   $(document).ready(function () {
-      
-      function updateStats(cityId, regionId) {
-          $('#SpanOrders').text('...');
-          $('#SpanOrderDelivered').text('...');
-          $('#SpanUnderReview').text('...');
-          $('#SpanRejected').text('...');
-          $('#SpanOutdated').text('...');
-
-          $.ajax({
-              url: "{{ route('ads.filteredStats') }}",
-              type: 'GET',
-              data: {
-                  city_id: cityId,
-                  region_id: regionId
-              },
-              success: function (response) {
-                  if (response) {
-                      $('#SpanOrders').text(response.allAds || 0);
-                      $('#SpanOrderDelivered').text(response.activeAds || 0);
-                      $('#SpanUnderReview').text(response.underReviewAds || 0);
-                      $('#SpanRejected').text(response.rejectedAds || 0);
-                      $('#SpanOutdated').text(response.outdatedAds || 0);
-                  }
-              },
-              error: function (xhr) {
-                  console.error(xhr.responseText);
-              }
-          });
-      }
-
-      $('#citySelect').on('change', function () {
-          let cityId = $(this).val();
-
-          $('#regionSelect').html('<option value="All">@lang("lang.Loading")...</option>');
-
-          $.ajax({
-              url: "{{ route('regions.byCity') }}",
-              type: 'GET',
-              data: { city_id: cityId },
-              success: function (response) {
-                  let options = `<option value="All">@lang('lang.All')</option>`;
-                  if (response && response.length > 0) {
-                      response.forEach(function (region) {
-                          options += `<option value="${region.id}">${region.name}</option>`;
-                      });
-                  }
-                  $('#regionSelect').html(options);
-              }
-          });
-
-          updateStats(cityId, 'All');
-      });
-
-      $('#regionSelect').on('change', function () {
-          let cityId = $('#citySelect').val();
-          let regionId = $(this).val();
-          updateStats(cityId, regionId);
-      });
+      // Setup logic for E-commerce stats if needed
   });
 </script>
 
