@@ -19,6 +19,10 @@ class City extends Model
         return $this->belongsTo(City::class,'parent_id','id');
     }
 
+    public function regions(){
+        return $this->hasMany(City::class, 'parent_id', 'id');
+    }
+
     public function sellers()
     {
         return $this->belongsToMany(Seller::class);

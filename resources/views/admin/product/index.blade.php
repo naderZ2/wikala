@@ -51,168 +51,217 @@
 
 @section('content')
 <div class="container-fluid">
-	<div class="row">
-		<div class="col-sm-12 mt-3">
-			@can('add discount')
-				<a href="{{route('product.create')}}"  class="btn btn-primary mb-3">@lang('lang.add_Product')</a>
-			@endcan	
-			<div class="card">
-				<div class="card-body">
-					<div class="table-responsive">
-						<table class="display" id="advance-1">
-							<thead>
-								<tr>
-									<th>@lang('lang.Name')</th>
-									<th>@lang('lang.quantity')</th>
-									<th>@lang('lang.price')</th>
-									<th>Old Price</th>
-									<th>@lang('lang.Seller')</th>
-									<th>@lang('lang.Main_Image')</th>
-									<th>@lang('lang.Category')</th>
-									<th>Variations</th>
-									<th>@lang('lang.Status')</th>
-									<th></th>								
-								</tr>
-							</thead>
-							<tbody>
-								@forelse ($products as $product)
-									<tr>
-										<td>{{ $product->name }}</td>
-										<td>{{ $product->quantity }}</td>
-										<td>{{ $product->price }}</td>
-										<td>{{ $product->old_price }}</td>
-										<td>{{ $product->seller->name ?? '-' }}</td>
-										<td >
-											<img src="{{ asset($product->main_image) }}"  alt=""  class="image-fluid"  height="60" width="60" style="border-radius:8px;">
-										</td>
-										<td>{{ $product->category->name ?? '-' }}</td>
-										<td>
-											@if($product->variations && $product->variations->count() > 0)
-												<span class="badge bg-info">{{ $product->variations->count() }} var(s)</span>
-											@else
-												<span class="text-muted">-</span>
-											@endif
-										</td>
-										<td>
-											@if($product->is_available == 1)
-												<span class="product-status-badge approved">Approved</span>
-											@elseif($product->is_available == 0)
-												<span class="product-status-badge pending">Under Review</span>
-											@else
-												<span class="product-status-badge rejected">Rejected</span>
-											@endif
-										</td>
-										<td>
-											<button class="btn btn-primary btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#productModal{{ $product->id }}">@lang('lang.details')</button>
-											@can('change product status')
-											<a class="btn btn-success btn-sm" href="{{ route('product.edit',$product->id) }}" >@lang('lang.edit')</a>
+    <div class="row">
+        <div class="col-sm-12 mt-3">
+            @can('add discount')
+                <a href="{{route('product.create')}}" class="btn btn-primary mb-3">@lang('lang.add_Product')</a>
+            @endcan
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="display" id="advance-1">
+                            <thead>
+                                <tr>
+                                    <th>@lang('lang.Name')</th>
+                                    <th>@lang('lang.quantity')</th>
+                                    <th>@lang('lang.price')</th>
+                                    <th>Old Price</th>
+                                    <th>@lang('lang.Seller')</th>
+                                    <th>@lang('lang.Main_Image')</th>
+                                    <th>@lang('lang.Category')</th>
+                                    <th>Variations</th>
+                                    <th>@lang('lang.Status')</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse ($products as $product)
+                                    <tr>
+                                        <td>{{ $product->name }}</td>
+                                        <td>{{ $product->quantity }}</td>
+                                        <td>{{ $product->price }}</td>
+                                        <td>{{ $product->old_price }}</td>
+                                        <td>{{ $product->seller->name ?? '-' }}</td>
+                                        <td>
+                                            <img src="{{ asset($product->main_image) }}" alt="" class="image-fluid" height="60" width="60" style="border-radius:8px;">
+                                        </td>
+                                        <td>{{ $product->category->name ?? '-' }}</td>
+                                        <td>
+                                            @if($product->variations && $product->variations->count() > 0)
+                                                <span class="badge bg-info">{{ $product->variations->count() }} var(s)</span>
+                                            @else
+                                                <span class="text-muted">-</span>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            @if($product->is_available == 1)
+                                                <span class="product-status-badge approved">Approved</span>
+                                            @elseif($product->is_available == 0)
+                                                <span class="product-status-badge pending">Under Review</span>
+                                            @else
+                                                <span class="product-status-badge rejected" title="{{ $product->rejection_reason }}">Rejected</span>
+                                                @if($product->rejection_reason)
+                                                    <br><small class="text-danger mt-1" style="display:inline-block;">{{ Str::limit($product->rejection_reason, 30) }}</small>
+                                                @endif
+                                            @endif
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#productModal{{ $product->id }}">@lang('lang.details')</button>
+                                            @can('change product status')
+                                            <a class="btn btn-info btn-sm" href="{{ route('product.edit',$product->id) }}">@lang('lang.edit')</a>
 
-											@if ($product->is_available == 1)
-											<a href="{{ route('product.update',$product->id) }}" class="btn btn-danger btn-sm mt-1" >
-												@lang('lang.Disable')
-											</a>
-											@else
-												<a href="{{ route('product.update',$product->id) }}" class="btn btn-success btn-sm mt-1" >
-													@lang('lang.Enable')
-												</a>
-											@endif
-											@endcan
-										</td>								
-									</tr>
-								@empty
-									
-								@endforelse
-								
-							</tbody>
-							<tfoot>
-								<tr>
-									<th>@lang('lang.Name')</th>
-									<th>@lang('lang.quantity')</th>
-									<th>@lang('lang.price')</th>
-									<th>Old Price</th>
-									<th>@lang('lang.Seller')</th>
-									<th>@lang('lang.Main_Image')</th>
-									<th>@lang('lang.Category')</th>
-									<th>Variations</th>
-									<th>@lang('lang.Status')</th>
-									<th></th>								
-								</tr>							
-							</tfoot>
-						</table>
-					</div>
-				</div>
-			</div>
-		</div>
-	
-	</div>
+                                            {{-- Approve button (show when not approved) --}}
+                                            @if ($product->is_available != 1)
+                                            <a href="{{ route('product.approve', $product->id) }}" class="btn btn-success btn-sm mt-1">
+                                                Approve
+                                            </a>
+                                            @endif
+
+                                            {{-- Reject button (show when not already rejected) --}}
+                                            @if ($product->is_available != -1)
+                                            <button type="button" class="btn btn-danger btn-sm mt-1" data-bs-toggle="modal" data-bs-target="#rejectModal{{ $product->id }}">
+                                                Reject
+                                            </button>
+                                            @endif
+
+                                            {{-- Disable button (show when approved) --}}
+                                            @if ($product->is_available == 1)
+                                            <a href="{{ route('product.update',$product->id) }}" class="btn btn-warning btn-sm mt-1">
+                                                @lang('lang.Disable')
+                                            </a>
+                                            @endif
+                                            @endcan
+                                        </td>
+                                    </tr>
+                                @empty
+
+                                @endforelse
+
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th>@lang('lang.Name')</th>
+                                    <th>@lang('lang.quantity')</th>
+                                    <th>@lang('lang.price')</th>
+                                    <th>Old Price</th>
+                                    <th>@lang('lang.Seller')</th>
+                                    <th>@lang('lang.Main_Image')</th>
+                                    <th>@lang('lang.Category')</th>
+                                    <th>Variations</th>
+                                    <th>@lang('lang.Status')</th>
+                                    <th></th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
 </div>
 
-{{-- Individual Modals for each product --}}
+{{-- Individual Detail Modals for each product --}}
 @foreach ($products as $product)
 <div class="modal fade" id="productModal{{ $product->id }}" tabindex="-1" role="dialog" aria-hidden="true">
-	<div class="modal-dialog modal-lg" role="document">
-	   <div class="modal-content">
-		  <div class="modal-header">
-			 <h5 class="modal-title">{{ $product->name }} - @lang('lang.details')</h5>
-			 <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
-		  </div>
-			<div class="modal-body">
-				<div class="row">
-					{{-- Description --}}
-					<div class="col-md-12 mb-3">
-						<label><strong>Description</strong></label>
-						<p class="text-muted">{{ $product->description ?? 'No description' }}</p>
-					</div>
+    <div class="modal-dialog modal-lg" role="document">
+       <div class="modal-content">
+          <div class="modal-header">
+             <h5 class="modal-title">{{ $product->name }} - @lang('lang.details')</h5>
+             <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+            <div class="modal-body">
+                <div class="row">
+                    {{-- Description --}}
+                    <div class="col-md-12 mb-3">
+                        <label><strong>Description</strong></label>
+                        <p class="text-muted">{{ $product->description ?? 'No description' }}</p>
+                    </div>
 
-					{{-- Product Images --}}
-					@if($product->images && $product->images->count() > 0)
-					<div class="col-md-12 mb-3">
-						<label><strong>Images</strong></label>
-						<div class="d-flex flex-wrap gap-2">
-							@foreach($product->images as $img)
-								<img src="{{ asset($img->name) }}" alt="" class="img-thumbnail" style="height:80px; width:80px; object-fit:cover; border-radius:8px;">
-							@endforeach
-						</div>
-					</div>
-					@endif
+                    {{-- Rejection Reason (if rejected) --}}
+                    @if($product->is_available == -1 && $product->rejection_reason)
+                    <div class="col-md-12 mb-3">
+                        <div class="alert alert-danger">
+                            <strong><i class="fa fa-ban"></i> Rejection Reason:</strong><br>
+                            {{ $product->rejection_reason }}
+                        </div>
+                    </div>
+                    @endif
 
-					{{-- Variations Section --}}
-					<div class="col-md-12 mb-3">
-						<label><strong>Variations</strong></label>
-						@if($product->variations && $product->variations->count() > 0)
-							@foreach($product->variations as $variation)
-								<div class="variation-card">
-									<div class="d-flex justify-content-between align-items-center mb-2">
-										<div>
-											@if($variation->sku)
-												<span class="badge bg-secondary">SKU: {{ $variation->sku }}</span>
-											@endif
-											<span class="badge bg-primary">Price: {{ $variation->price ?? $product->price }}</span>
-											<span class="badge bg-info">Qty: {{ $variation->quantity ?? 0 }}</span>
-										</div>
-									</div>
-									@if($variation->attributes && $variation->attributes->count() > 0)
-										<div>
-											@foreach($variation->attributes as $attr)
-												<span class="variation-attr">{{ $attr->value }}</span>
-											@endforeach
-										</div>
-									@endif
-								</div>
-							@endforeach
-						@else
-							<p class="text-muted">No variations for this product.</p>
-						@endif
-					</div>
-				</div>
-				
-				<div class="modal-footer">
-					<button class="btn btn-primary" type="button" data-bs-dismiss="modal">Close</button>
-				</div>			
-			</div>
-		  
-	   </div>
-	</div>
+                    {{-- Product Images --}}
+                    @if($product->images && $product->images->count() > 0)
+                    <div class="col-md-12 mb-3">
+                        <label><strong>Images</strong></label>
+                        <div class="d-flex flex-wrap gap-2">
+                            @foreach($product->images as $img)
+                                <img src="{{ asset($img->name) }}" alt="" class="img-thumbnail" style="height:80px; width:80px; object-fit:cover; border-radius:8px;">
+                            @endforeach
+                        </div>
+                    </div>
+                    @endif
+
+                    {{-- Variations Section --}}
+                    <div class="col-md-12 mb-3">
+                        <label><strong>Variations</strong></label>
+                        @if($product->variations && $product->variations->count() > 0)
+                            @foreach($product->variations as $variation)
+                                <div class="variation-card">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <div>
+                                            @if($variation->sku)
+                                                <span class="badge bg-secondary">SKU: {{ $variation->sku }}</span>
+                                            @endif
+                                            <span class="badge bg-primary">Price: {{ $variation->price ?? $product->price }}</span>
+                                            <span class="badge bg-info">Qty: {{ $variation->quantity ?? 0 }}</span>
+                                        </div>
+                                    </div>
+                                    @if($variation->attributes && $variation->attributes->count() > 0)
+                                        <div>
+                                            @foreach($variation->attributes as $attr)
+                                                <span class="variation-attr">{{ $attr->value }}</span>
+                                            @endforeach
+                                        </div>
+                                    @endif
+                                </div>
+                            @endforeach
+                        @else
+                            <p class="text-muted">No variations for this product.</p>
+                        @endif
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-primary" type="button" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+
+       </div>
+    </div>
+</div>
+
+{{-- Reject Modal for each product --}}
+<div class="modal fade" id="rejectModal{{ $product->id }}" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title"><i class="fa fa-ban"></i> Reject Product: {{ $product->name }}</h5>
+                <button class="btn-close btn-close-white" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{{ route('product.reject', $product->id) }}" method="POST">
+                @csrf
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="rejection_reason_{{ $product->id }}" class="form-label"><strong>Rejection Reason <span class="text-danger">*</span></strong></label>
+                        <textarea class="form-control" id="rejection_reason_{{ $product->id }}" name="rejection_reason" rows="4" placeholder="Enter the reason for rejecting this product..." required></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Cancel</button>
+                    <button class="btn btn-danger" type="submit"><i class="fa fa-ban"></i> Reject Product</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 @endforeach
 

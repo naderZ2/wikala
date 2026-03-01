@@ -21,7 +21,7 @@ class ProductController extends Controller
     public function index(){
         $this->lang();
         $products=Product::with('images:id,product_id,name','seller:id,name',"category:id,$this->name",'variations.attributes')
-        ->select('id',$this->name,$this->description,"price","quantity",'main_image','seller_id','category_id','is_available','old_price')
+        ->select('id',$this->name,$this->description,"price","quantity",'main_image','seller_id','category_id','is_available','old_price','rejection_reason')
         ->withTrashed()
         ->get();
         return view('admin.product.index',compact('products'));
@@ -207,6 +207,38 @@ class ProductController extends Controller
 
         return to_route('product.index')->with('success',trans('lang.updated'));
 
+    }
+
+    /**
+     * Reject a product with a reason
+     */
+    public function rejectProduct(Request $request, $id)
+    {
+        $request->validate([
+            'rejection_reason' => 'required|string|max:1000',
+        ]);
+
+        $product = Product::withTrashed()->find($id);
+        $product->update([
+            'is_available' => -1,
+            'rejection_reason' => $request->rejection_reason,
+        ]);
+
+        return to_route('product.index')->with('success', trans('lang.updated'));
+    }
+
+    /**
+     * Approve a product (set is_available = 1, clear rejection reason)
+     */
+    public function approveProduct($id)
+    {
+        $product = Product::withTrashed()->find($id);
+        $product->update([
+            'is_available' => 1,
+            'rejection_reason' => null,
+        ]);
+
+        return to_route('product.index')->with('success', trans('lang.updated'));
     }
 
 }

@@ -283,6 +283,8 @@ Route::group(['middleware' => ['auth:admin', 'CheckUserActiviation']], function 
         Route::get('hide_product/{id}', [Admin\ProductController::class, 'hide_product'])->name('product.hide_product');
         Route::put('updateProduct/{id}', [Admin\ProductController::class, 'updateProduct'])->name('product.updateProduct');
         Route::get('get-category-attributes', [Admin\ProductController::class, 'getCategoryAttributes'])->name('product.getCategoryAttributes');
+        Route::post('products/{id}/reject', [Admin\ProductController::class, 'rejectProduct'])->name('product.reject');
+        Route::get('products/{id}/approve', [Admin\ProductController::class, 'approveProduct'])->name('product.approve');
 
         // Attribute Routes
         Route::get('attributes', [Admin\AttributeController::class, 'index'])->name('attributes.index');

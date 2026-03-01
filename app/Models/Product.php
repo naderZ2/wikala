@@ -16,7 +16,8 @@ class Product extends Model
         'quantity' , 'price','old_price',
         'seller_id' , 'category_id',
         'main_image' ,'is_available',
-        'picture','serving','deleted_at'
+        'picture','serving','deleted_at',
+        'rejection_reason'
     ]; 
 
     public function images(){
