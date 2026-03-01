@@ -20,8 +20,8 @@ class ProductController extends Controller
 
     public function index(){
         $this->lang();
-        $products=Product::with('images:id,product_id,name','seller:id,name',"category:id,$this->name")
-        ->select('id',$this->name,$this->description,"price","quantity",'main_image','seller_id','category_id','is_available')
+        $products=Product::with('images:id,product_id,name','seller:id,name',"category:id,$this->name",'variations.attributes')
+        ->select('id',$this->name,$this->description,"price","quantity",'main_image','seller_id','category_id','is_available','old_price')
         ->withTrashed()
         ->get();
         return view('admin.product.index',compact('products'));
@@ -40,7 +40,7 @@ class ProductController extends Controller
     }
     public function edit(string $id ){
         $this->lang();
-        $product=Product::withTrashed()->with('attributes')->find($id );
+        $product=Product::withTrashed()->with('attributes', 'variations.attributes')->find($id );
         // dd($product->category_id);
         $categories=Category::get(['id' , 'parent_id' , $this->name , 'end_point']);
         $sellers=Seller::where('active','1')->get(['id','name']);

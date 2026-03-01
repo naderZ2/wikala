@@ -76,6 +76,7 @@ class SellerServicesController extends Controller
      */
     public function getProductsByCategory(Request $request)
     {
+        $this->lang();
         $categoryId = $request->category_id;
 
         if (!$categoryId) {
@@ -84,7 +85,7 @@ class SellerServicesController extends Controller
 
         $products = Product::where('category_id', $categoryId)
             ->where('seller_id', $request->user()->id)
-            ->get(['id', 'name_en', 'name_ar']);
+            ->get(['id', $this->name, 'main_image', 'price']);
 
         return $this->success($products, 'Products by category');
     }

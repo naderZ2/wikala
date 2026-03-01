@@ -158,9 +158,13 @@ class ProductController extends Controller
      */
     public function show(Request $request, $id)
     {
+        $this->lang();
         $product = Product::where('id', $id)
             ->where('seller_id', $request->user()->id)
-            ->with('images:id,product_id,name', 'category', 'variations.attributes')
+            ->select('id', $this->name, $this->description, $this->title,
+                'category_id', 'price', 'old_price', 'quantity', 'main_image', 'is_available',
+                'name_en', 'name_ar', 'description_en', 'description_ar', 'seller_id')
+            ->with('images:id,product_id,name', "category:id,$this->name", 'variations.attributes')
             ->firstOrFail();
 
         return $this->success($product, 'Product details');

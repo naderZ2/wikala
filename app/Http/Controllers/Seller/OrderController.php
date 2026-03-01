@@ -20,6 +20,7 @@ class OrderController extends Controller
      */
     public function index(Request $request)
     {
+        $this->lang();
         $seller = $request->user();
 
         $query = Order::where('seller_id', $seller->id)
@@ -46,6 +47,7 @@ class OrderController extends Controller
                 'date' => $order->created_at ? $order->created_at->format('d-m-Y') : null,
                 'payment_type' => $order->payment_type,
                 'status' => $order->status,
+                'total_price' => $order->total_price,
                 'user' => $order->user ? [
                     'name' => $order->user->name,
                     'phone' => $order->user->phone,
@@ -62,29 +64,47 @@ class OrderController extends Controller
      */
     public function details(Request $request, $id)
     {
+        $this->lang();
+        $lang = request()->header('Lang', app()->getLocale());
+
         $order = Order::where('id', $id)
             ->where('seller_id', $request->user()->id)
             ->with([
                 'user:id,name,phone,email',
-                'orderDetails.product:id,name_en,name_ar,price',
+                'orderDetails.product:id,name_en,name_ar,price,main_image',
                 'orderDetails.variation.attributes',
                 'address.region',
             ])
             ->firstOrFail();
 
-        $items = $order->orderDetails->map(function ($detail) {
+        $items = $order->orderDetails->map(function ($detail) use ($lang) {
             $options = '';
             if ($detail->variation && $detail->variation->attributes) {
                 $options = $detail->variation->attributes->pluck('value')->implode('/');
             }
 
+            $productName = 'Unknown';
+            if ($detail->product) {
+                $productName = $lang == 'en'
+                    ? ($detail->product->name_en ?? $detail->product->name_ar)
+                    : ($detail->product->name_ar ?? $detail->product->name_en);
+            }
+
             return [
-                'name' => $detail->product ? ($detail->product->name_en ?? $detail->product->name_ar) : 'Unknown',
+                'name' => $productName,
                 'qty' => $detail->quantity,
                 'options' => $options,
                 'price' => $detail->price,
+                'image' => $detail->product ? $detail->product->main_image : null,
             ];
         });
+
+        $regionName = null;
+        if ($order->address && $order->address->region) {
+            $regionName = $lang == 'en'
+                ? ($order->address->region->name_en ?? $order->address->region->name)
+                : ($order->address->region->name_ar ?? $order->address->region->name);
+        }
 
         return $this->success([
             'order_number' => $order->order_number,
@@ -98,7 +118,7 @@ class OrderController extends Controller
                 'block' => $order->address->block_no,
                 'building' => $order->address->building_no,
                 'floor' => $order->address->floor_no,
-                'region' => $order->address->region ? $order->address->region->name_en : null,
+                'region' => $regionName,
             ] : null,
             'items' => $items,
             'status' => $order->status,

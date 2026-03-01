@@ -245,9 +245,6 @@
 	                    <ul class="sidebar-submenu" style="display: {{ request()->route()->uri() == 'dashboard/rejected-reasons' ? 'block;' : 'none;' }}">
 							<li><a href="{{ route('rejected-reasons.index') }}" class="{{ Route::currentRouteName() == 'rejected-reasons' ? 'active' : '' }}">{{ trans('lang.rejected_reasons') }}</a></li>
                       </ul>
-	                    <ul class="sidebar-submenu" style="display: {{ request()->route()->uri() == 'dashboard/ads_type' ? 'block;' : 'none;' }}">
-							<li><a href="{{ route('ads_type.index') }}" class="{{ Route::currentRouteName() == 'ads_type' ? 'active' : '' }}">{{ trans('lang.ads_type') }}</a></li>
-                      </ul>
 					  
                  </li>
 

@@ -18,11 +18,13 @@ class Controller extends BaseController
             $this->description="description_en as description";
             $this->title="title_en as title";
             $this->terms="terms_en as terms";
+            $this->shop_name="shop_name_en as shop_name";
         }else{
             $this->name="name_ar as name";
             $this->description="description_ar as description";
             $this->title="title_ar as title";
             $this->terms="terms_ar as terms";
+            $this->shop_name="shop_name_ar as shop_name";
         }
     }
 }

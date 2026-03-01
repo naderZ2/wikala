@@ -18,7 +18,9 @@ class DeliveryController extends Controller
      */
     public function index(Request $request)
     {
+        $this->lang();
         $seller = $request->user();
+        $lang = request()->header('Lang', app()->getLocale());
 
         // Get all cities with regions
         $cities = City::with('regions')->get();
@@ -31,17 +33,19 @@ class DeliveryController extends Controller
                 return $item->city_id . '_' . ($item->region_id ?? 0);
             });
 
-        $data = $cities->map(function ($city) use ($sellerAreas) {
+        $data = $cities->map(function ($city) use ($sellerAreas, $lang) {
             return [
                 'id' => $city->id,
+                'name' => $lang == 'en' ? ($city->name_en ?? $city->name) : ($city->name_ar ?? $city->name),
                 'name_en' => $city->name_en ?? $city->name,
                 'name_ar' => $city->name_ar ?? $city->name,
-                'regions' => $city->regions->map(function ($region) use ($city, $sellerAreas) {
+                'regions' => $city->regions->map(function ($region) use ($city, $sellerAreas, $lang) {
                     $key = $city->id . '_' . $region->id;
                     $sellerArea = $sellerAreas->get($key);
 
                     return [
                         'id' => $region->id,
+                        'name' => $lang == 'en' ? ($region->name_en ?? $region->name) : ($region->name_ar ?? $region->name),
                         'name_en' => $region->name_en ?? $region->name,
                         'name_ar' => $region->name_ar ?? $region->name,
                         'delivery_price' => $sellerArea ? $sellerArea->delivery_price : 0,

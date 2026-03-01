@@ -14,6 +14,7 @@ class StatisticsController extends Controller
 
     public function index(Request $request)
     {
+        $this->lang();
         $seller = $request->user();
 
         $productsCount = Product::where('seller_id', $seller->id)->count();
@@ -21,6 +22,9 @@ class StatisticsController extends Controller
         $pendingOrdersCount = Order::where('seller_id', $seller->id)
             ->whereIn('status', ['order_placed', 'confirmed'])
             ->count();
+
+        $lang = request()->header('Lang', app()->getLocale());
+        $shopName = $lang == 'en' ? $seller->shop_name_en : $seller->shop_name_ar;
 
         return $this->success([
             'products_count' => $productsCount,
@@ -30,6 +34,7 @@ class StatisticsController extends Controller
                 'id' => $seller->id,
                 'name' => $seller->name,
                 'img_path' => $seller->img_path,
+                'shop_name' => $shopName,
                 'shop_name_en' => $seller->shop_name_en,
                 'shop_name_ar' => $seller->shop_name_ar,
             ]

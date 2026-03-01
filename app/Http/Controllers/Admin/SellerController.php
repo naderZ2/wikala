@@ -9,10 +9,26 @@ use App\Http\Requests\Admin\Seller\{StoreRequest,EditRequest};
 
 class SellerController extends Controller
 {
-    public function index(){
+    public function index(Request $request){
         $this->lang();
-        $sellers=Seller::with("categories:id,$this->name")->get();
-        return view('admin.seller.index',compact('sellers'));
+        $status = $request->get('status', 'all');
+
+        $query = Seller::with("categories:id,$this->name");
+
+        if ($status === 'pending') {
+            $query->where('active', 0);
+        } elseif ($status === 'active') {
+            $query->where('active', 1);
+        }
+
+        $sellers = $query->orderBy('created_at', 'desc')->get();
+
+        // Counts for tabs
+        $allCount = Seller::count();
+        $pendingCount = Seller::where('active', 0)->count();
+        $activeCount = Seller::where('active', 1)->count();
+
+        return view('admin.seller.index', compact('sellers', 'status', 'allCount', 'pendingCount', 'activeCount'));
     }
 
     public function create(){

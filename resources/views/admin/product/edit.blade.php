@@ -205,6 +205,48 @@
                                     </div>
                                   </div> --}}
 						</div>
+
+						{{-- Existing Variations Display --}}
+						<div class="col-md-12 mb-3">
+							<label><strong>Variations</strong></label>
+							@if($product->variations && $product->variations->count() > 0)
+								<div class="table-responsive">
+									<table class="table table-bordered table-sm">
+										<thead class="table-light">
+											<tr>
+												<th>#</th>
+												<th>SKU</th>
+												<th>Price</th>
+												<th>Quantity</th>
+												<th>Attributes</th>
+											</tr>
+										</thead>
+										<tbody>
+											@foreach($product->variations as $index => $variation)
+											<tr>
+												<td>{{ $index + 1 }}</td>
+												<td>{{ $variation->sku ?? '-' }}</td>
+												<td>{{ $variation->price ?? $product->price }}</td>
+												<td>{{ $variation->quantity ?? 0 }}</td>
+												<td>
+													@if($variation->attributes && $variation->attributes->count() > 0)
+														@foreach($variation->attributes as $attr)
+															<span class="badge bg-info me-1">{{ $attr->value }}</span>
+														@endforeach
+													@else
+														<span class="text-muted">-</span>
+													@endif
+												</td>
+											</tr>
+											@endforeach
+										</tbody>
+									</table>
+								</div>
+							@else
+								<p class="text-muted">No variations for this product.</p>
+							@endif
+						</div>
+
 						<button class="btn btn-primary" type="submit">@lang('lang.save')</button>
 					</form>
 				</div>

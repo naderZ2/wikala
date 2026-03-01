@@ -17,14 +17,18 @@ class ProfileController extends Controller
      */
     public function index(Request $request)
     {
+        $this->lang();
         $seller = $request->user();
         $seller->load('categories', 'cities');
+
+        $lang = request()->header('Lang', app()->getLocale());
 
         return $this->success([
             'id' => $seller->id,
             'name' => $seller->name,
             'phone' => $seller->phone,
             'email' => $seller->email,
+            'shop_name' => $lang == 'en' ? $seller->shop_name_en : $seller->shop_name_ar,
             'shop_name_en' => $seller->shop_name_en,
             'shop_name_ar' => $seller->shop_name_ar,
             'img_path' => $seller->img_path,
@@ -32,9 +36,10 @@ class ProfileController extends Controller
             'details' => $seller->details,
             'about' => $seller->about,
             'active' => $seller->active,
-            'categories' => $seller->categories->map(function ($cat) {
+            'categories' => $seller->categories->map(function ($cat) use ($lang) {
                 return [
                     'id' => $cat->id,
+                    'name' => $lang == 'en' ? $cat->name_en : $cat->name_ar,
                     'name_en' => $cat->name_en,
                     'name_ar' => $cat->name_ar,
                 ];
