@@ -121,6 +121,10 @@
 											<a class="btn btn-success btn-sm"  href="{{ route('seller.edit',$seller->id) }}">
 												@lang('lang.edit')										
 											</a>
+											
+											<a class="btn btn-warning btn-sm mt-1" href="{{ route('seller.delivery-options', $seller->id) }}">
+												Delivery
+											</a>
 											@endcan	
 										
 										

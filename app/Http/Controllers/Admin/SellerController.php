@@ -77,4 +77,48 @@ class SellerController extends Controller
         Product::whereSellerId($id)->update(['is_available' => $status]);
         return  to_route('seller.index')->with('success',trans('lang.updated')); 
     }
+    public function deliveryOptions($id) {
+        $this->lang();
+        $seller = Seller::findOrFail($id);
+        $cities = City::whereNull('parent_id')->with('regions')->get();
+        // $sellerAreas = \DB::table('city_seller')
+        $sellerAreas = \Illuminate\Support\Facades\DB::table('city_seller')
+            ->where('seller_id', $seller->id)
+            ->get()
+            ->keyBy(function ($item) {
+                return $item->city_id . '_' . ($item->region_id ?? 0);
+            });
+            
+        return view('admin.seller.delivery', compact('seller', 'cities', 'sellerAreas'));
+    }
+
+    public function updateDeliveryOptions(Request $request, $id) {
+        $seller = Seller::findOrFail($id);
+        
+        $deliveryData = $request->input('delivery', []);
+        
+        // Remove old delivery options
+        \Illuminate\Support\Facades\DB::table('city_seller')->where('seller_id', $seller->id)->delete();
+        
+        $insertData = [];
+        foreach ($deliveryData as $cityId => $regions) {
+            foreach ($regions as $regionId => $options) {
+                if (isset($options['active']) && $options['active'] == 1) {
+                    $insertData[] = [
+                        'seller_id' => $seller->id,
+                        'city_id' => $cityId,
+                        'region_id' => $regionId == '0' ? null : $regionId,
+                        'delivery_price' => $options['price'] ?? 0,
+                        'active' => 1,
+                    ];
+                }
+            }
+        }
+        
+        if (!empty($insertData)) {
+            \Illuminate\Support\Facades\DB::table('city_seller')->insert($insertData);
+        }
+        
+        return to_route('seller.index')->with('success', trans('lang.updated')); 
+    }
 }

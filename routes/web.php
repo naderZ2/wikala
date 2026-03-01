@@ -234,6 +234,10 @@ Route::group(['middleware' => ['auth:admin', 'CheckUserActiviation']], function 
         Route::resource('seller', 'Admin\SellerController');
         Route::put('update_seller\{id}', [Admin\SellerController::class, 'update'])->name('seller.update');
         Route::post('change_activity_status', [Admin\SellerController::class, 'changeActivityStatus'])->name('seller.change_activity_status');
+        
+        // Seller Delivery Options
+        Route::get('sellers/{id}/delivery-options', [Admin\SellerController::class, 'deliveryOptions'])->name('seller.delivery-options');
+        Route::post('sellers/{id}/delivery-options', [Admin\SellerController::class, 'updateDeliveryOptions'])->name('seller.update-delivery-options');
 
         Route::resource('driver', 'Admin\DriverController');
         Route::put('update_driver\{id}', [Admin\DriverController::class, 'update'])->name('driver.update');
