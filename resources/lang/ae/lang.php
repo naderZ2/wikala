@@ -146,6 +146,7 @@ return  [
 	'add_Driver' => "اضافة سائق",
 	'change_status' => "تغيير الحالة",
 	'cancel' => 'الغاء',
+	'Cancel' => 'الغاء',
 	'active' => "نشط",
 	'inactive' => "غير نشط",
 	'activation' => "تفعيل",

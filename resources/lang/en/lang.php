@@ -4,6 +4,7 @@ return  [
 	'Back' => 'Back',
 	"downloadFile" => "download File",
 	'cancel' => 'cancel',
+	'Cancel' => 'cancel',
 	'General' => 'General',
 	'Dashboards,widgets & layout.' => 'Dashboards,widgets & layout.',
 	'Dashboards & layout.' => 'Dashboards & layout.',
