@@ -473,6 +473,13 @@ return  [
 	'edit_limit' => 'Edit Limit',
 	'not_free' => 'Not Free',
 	'free' => 'Free',
+	
+	// Delivery Options
+	'delivery_options' => 'Delivery Options',
+	'delivery_options_desc' => 'Select the cities and regions where this seller provides delivery and set the delivery price.',
+	'city_level' => 'City Level',
+	'entire_city' => 'Entire City (All Regions)',
+	'save_delivery_options' => 'Save Delivery Options',
 
 ];
 ?>

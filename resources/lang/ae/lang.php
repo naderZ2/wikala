@@ -482,6 +482,13 @@ return  [
 	'edit_limit' => 'تعديل الحد',
 	'not_free' => 'غير مجاني',
 	'free' => 'مجاني',
+	
+	// Delivery Options
+	'delivery_options' => 'خيارات التوصيل',
+	'delivery_options_desc' => 'حدد المدن والمناطق التي يوفر فيها هذا البائع التوصيل وحدد سعر التوصيل.',
+	'city_level' => 'مستوى المدينة',
+	'entire_city' => 'المدينة بأكملها (جميع المناطق)',
+	'save_delivery_options' => 'حفظ خيارات التوصيل',
 
 ];
 ?>

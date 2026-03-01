@@ -50,12 +50,12 @@
 @endsection
 
 @section('breadcrumb-title')
-<h3>Delivery Options: {{ $seller->name }}</h3>
+<h3>@lang('lang.delivery_options'): {{ $seller->name }}</h3>
 @endsection
 
 @section('breadcrumb-items')
 <li class="breadcrumb-item"><a href="{{ route('seller.index') }}">@lang('lang.Sellers')</a></li>
-<li class="breadcrumb-item active">Delivery Options</li>
+<li class="breadcrumb-item active">@lang('lang.delivery_options')</li>
 @endsection
 
 @section('content')
@@ -69,7 +69,7 @@
                         
                         <div class="alert alert-primary outline-2x mb-4" role="alert">
                             <i data-feather="info"></i>
-                            <strong>Select the cities and regions where this seller provides delivery and set the delivery price.</strong>
+                            <strong>@lang('lang.delivery_options_desc')</strong>
                         </div>
 
                         <div class="row">
@@ -81,10 +81,10 @@
                                         <div class="form-check form-switch mb-0 d-flex align-items-center">
                                             <input class="form-check-input flexSwitchCheckDefault city-toggle" type="checkbox" id="city_{{ $city->id }}" onchange="toggleCityRegions({{ $city->id }})">
                                             <label class="form-check-label fw-bold mb-0 ms-2" for="city_{{ $city->id }}">
-                                                {{ $city->name_ar ?? $city->name }} - {{ $city->name_en ?? $city->name }}
+                                                {{ app()->getLocale() == 'ae' ? ($city->name_ar ?? $city->name) : ($city->name_en ?? $city->name) }}
                                             </label>
                                         </div>
-                                        <span class="badge rounded-pill bg-primary px-3 py-2 text-white">City Level</span>
+                                        <span class="badge rounded-pill bg-primary px-3 py-2 text-white">@lang('lang.city_level')</span>
                                     </div>
                                     
                                     {{-- Regions List --}}
@@ -99,11 +99,11 @@
                                                 <div class="form-check mb-0 d-flex align-items-center">
                                                     <input class="form-check-input region-checkbox c-{{ $city->id }}" type="checkbox" name="delivery[{{ $city->id }}][0][active]" value="1" id="reg_{{ $cityKey }}" {{ $hasCityLevel ? 'checked' : '' }}>
                                                     <label class="form-check-label fw-bold text-primary region-label ms-2" for="reg_{{ $cityKey }}">
-                                                        Entire City (All Regions) / المدينة بأكملها
+                                                        @lang('lang.entire_city')
                                                     </label>
                                                 </div>
                                                 <div class="input-group input-group-sm region-price-input">
-                                                    <span class="input-group-text bg-white">Price</span>
+                                                    <span class="input-group-text bg-white">@lang('lang.price')</span>
                                                     <input type="number" step="0.01" class="form-control text-center" name="delivery[{{ $city->id }}][0][price]" value="{{ $hasCityLevel ? $sellerAreas[$cityKey]->delivery_price : '0' }}" min="0">
                                                 </div>
                                             </div>
@@ -121,11 +121,11 @@
                                                     <div class="form-check mb-0 d-flex align-items-center">
                                                         <input class="form-check-input region-checkbox c-{{ $city->id }}" type="checkbox" name="delivery[{{ $city->id }}][{{ $region->id }}][active]" value="1" id="reg_{{ $regKey }}" {{ $hasRegLevel ? 'checked' : '' }}>
                                                         <label class="form-check-label region-label ms-2" for="reg_{{ $regKey }}">
-                                                            {{ $region->name_ar ?? $region->name }} - {{ $region->name_en ?? $region->name }}
+                                                            {{ app()->getLocale() == 'ae' ? ($region->name_ar ?? $region->name) : ($region->name_en ?? $region->name) }}
                                                         </label>
                                                     </div>
                                                     <div class="input-group input-group-sm region-price-input">
-                                                        <span class="input-group-text bg-white">Price</span>
+                                                        <span class="input-group-text bg-white">@lang('lang.price')</span>
                                                         <input type="number" step="0.01" class="form-control text-center" name="delivery[{{ $city->id }}][{{ $region->id }}][price]" value="{{ $hasRegLevel ? $sellerAreas[$regKey]->delivery_price : '0' }}" min="0">
                                                     </div>
                                                 </div>
@@ -139,8 +139,8 @@
                         </div>
 
                         <div class="text-center mt-4 border-top pt-4">
-                            <a href="{{ route('seller.index') }}" class="btn btn-secondary me-3 px-4">Cancel</a>
-                            <button type="submit" class="btn btn-primary px-5">Save Delivery Options</button>
+                            <a href="{{ route('seller.index') }}" class="btn btn-secondary me-3 px-4">@lang('lang.cancel')</a>
+                            <button type="submit" class="btn btn-primary px-5">@lang('lang.save_delivery_options')</button>
                         </div>
                     </form>
                 </div>
