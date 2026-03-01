@@ -1,55 +1,68 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-<head>
-  <meta charset="UTF-8">
-  <title>Test Chat API</title>
-</head>
-<body>
+    <head>
+        <meta charset="UTF-8" />
+        <title>Test Chat API</title>
+    </head>
+    <body>
+        <h2>Test Chat API</h2>
 
-<h2>Test Chat API</h2>
+        <label>Receiver ID:</label><br />
+        <input type="text" id="receiver_id" value="1" /><br /><br />
 
-<label>Receiver ID:</label><br>
-<input type="text" id="receiver_id" value="1"><br><br>
+        <label>Message:</label><br />
+        <input type="text" id="message" value="Hello" /><br /><br />
 
-<label>Message:</label><br>
-<input type="text" id="message" value="Hello"><br><br>
+        <label>Message Type:</label><br />
+        <select id="message_type">
+            <option value="text">text</option>
+            <option value="file">file</option>
+            <option value="audio">audio</option></select
+        ><br /><br />
 
-<label>Message Type:</label><br>
-<select id="message_type">
-  <option value="text">text</option>
-  <option value="file">file</option>
-  <option value="audio">audio</option>
-</select><br><br>
+        <button onclick="sendChat()">Send Message</button>
 
-<button onclick="sendChat()">Send Message</button>
+        <pre id="result"></pre>
 
-<pre id="result"></pre>
+        <script>
+            async function sendChat() {
+                const token =
+                    "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIzIiwianRpIjoiMTVjYWM0YTc1ZDMxOTNkNDhjMDJmMzBkNGY0YWU5MTk4YmIzOTFhNjVhNzQ4MjYyZjE2ZWQwZTcxZWMyOGY4ZmRhMmQyYjMzNTMwMWU4NTciLCJpYXQiOjE3NTI3NjA5MTguNDYzMzU5MTE3NTA3OTM0NTcwMzEyNSwibmJmIjoxNzUyNzYwOTE4LjQ2MzM2MTk3ODUzMDg4Mzc4OTA2MjUsImV4cCI6MTc4NDI5NjkxOC40NTQ1NDc4ODIwODAwNzgxMjUsInN1YiI6Ijc1Iiwic2NvcGVzIjpbXX0.cEoxusLgdajkxbZNNh-lUsExRyPtnL9AE7VyiKUJTSPL--GIkUG3JyY2rw-wICioH5zwAfvk-8UxWrkGYrLAwwwKz4Az_d6MnBUkQpCZ9aOZhd85UGo23zzYUDVsi3GAHziEXcAiDico8SI2_BYl8nrDcuXFFzfkp0M76uiOuXKYZ200Myr-SbiVPm2iyFX2_-7xCpT0pm3aN3HVikVFg0ibmr7CY6MsV3hQ1DwzgrAvyPNu7sz4Cd7mKa3CdJFjYpK5m5evdWWrWS_pK9bCImPilg0jNhiK2HQ19lRhC9tthEkgBVZLxPyAWraL5FylC1ULiGeZrMhNBqVp_1xXY0Hs41tXQxXgyYZF3hVio-lguJPTCn2CbnB3KYmN3qVHpL6NaernJF3z7m2zbSUzaLZykldJpKFh_xWglfgkEh5_MgoVdtgfOV064zFGN3OSb58BblOPjBpL05fsV5ZiNZymRP8_owkVcaO6JTaV7D7yCT-wgj0C2o1sWO0m2Az2exAZ9aID6e10l8ov8WVJTH0fn4d5zpazocrnBCetRwMuzsgIhpMHhbNpR2T0UKMm1_Ng8o8pdL0wloen5H_nkuTeOAmv717NJ_3ql1suwg0A91oqY6Sm8w2qJGZeXTkxgtYMyphmLGQSPpKQVfCg9Dovbw1jD6veAec1193evrY"; // Replace with actual token
+                const formData = new FormData();
+                formData.append(
+                    "receiver_id",
+                    document.getElementById("receiver_id").value,
+                );
+                formData.append(
+                    "message",
+                    document.getElementById("message").value,
+                );
+                formData.append(
+                    "message_type",
+                    document.getElementById("message_type").value,
+                );
 
-<script>
-  async function sendChat() {
-    const token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIzIiwianRpIjoiMTVjYWM0YTc1ZDMxOTNkNDhjMDJmMzBkNGY0YWU5MTk4YmIzOTFhNjVhNzQ4MjYyZjE2ZWQwZTcxZWMyOGY4ZmRhMmQyYjMzNTMwMWU4NTciLCJpYXQiOjE3NTI3NjA5MTguNDYzMzU5MTE3NTA3OTM0NTcwMzEyNSwibmJmIjoxNzUyNzYwOTE4LjQ2MzM2MTk3ODUzMDg4Mzc4OTA2MjUsImV4cCI6MTc4NDI5NjkxOC40NTQ1NDc4ODIwODAwNzgxMjUsInN1YiI6Ijc1Iiwic2NvcGVzIjpbXX0.cEoxusLgdajkxbZNNh-lUsExRyPtnL9AE7VyiKUJTSPL--GIkUG3JyY2rw-wICioH5zwAfvk-8UxWrkGYrLAwwwKz4Az_d6MnBUkQpCZ9aOZhd85UGo23zzYUDVsi3GAHziEXcAiDico8SI2_BYl8nrDcuXFFzfkp0M76uiOuXKYZ200Myr-SbiVPm2iyFX2_-7xCpT0pm3aN3HVikVFg0ibmr7CY6MsV3hQ1DwzgrAvyPNu7sz4Cd7mKa3CdJFjYpK5m5evdWWrWS_pK9bCImPilg0jNhiK2HQ19lRhC9tthEkgBVZLxPyAWraL5FylC1ULiGeZrMhNBqVp_1xXY0Hs41tXQxXgyYZF3hVio-lguJPTCn2CbnB3KYmN3qVHpL6NaernJF3z7m2zbSUzaLZykldJpKFh_xWglfgkEh5_MgoVdtgfOV064zFGN3OSb58BblOPjBpL05fsV5ZiNZymRP8_owkVcaO6JTaV7D7yCT-wgj0C2o1sWO0m2Az2exAZ9aID6e10l8ov8WVJTH0fn4d5zpazocrnBCetRwMuzsgIhpMHhbNpR2T0UKMm1_Ng8o8pdL0wloen5H_nkuTeOAmv717NJ_3ql1suwg0A91oqY6Sm8w2qJGZeXTkxgtYMyphmLGQSPpKQVfCg9Dovbw1jD6veAec1193evrY'; // Replace with actual token
-    const formData = new FormData();
-    formData.append('receiver_id', document.getElementById('receiver_id').value);
-    formData.append('message', document.getElementById('message').value);
-    formData.append('message_type', document.getElementById('message_type').value);
+                try {
+                    const response = await fetch(
+                        "https://e-expo.org/e-expo/api/chats",
+                        {
+                            method: "POST",
+                            headers: {
+                                Authorization: "Bearer " + token,
+                                Accept: "application/json",
+                            },
+                            body: formData,
+                        },
+                    );
 
-    try {
-      const response = await fetch('https://wikala.org/wikala/api/chats', {
-        method: 'POST',
-        headers: {
-          'Authorization': 'Bearer ' + token,
-          'Accept': 'application/json'
-        },
-        body: formData
-      });
-
-      const result = await response.json();
-      document.getElementById('result').textContent = JSON.stringify(result, null, 2);
-    } catch (err) {
-      document.getElementById('result').textContent = 'Error: ' + err;
-    }
-  }
-</script>
-
-</body>
+                    const result = await response.json();
+                    document.getElementById("result").textContent =
+                        JSON.stringify(result, null, 2);
+                } catch (err) {
+                    document.getElementById("result").textContent =
+                        "Error: " + err;
+                }
+            }
+        </script>
+    </body>
 </html>

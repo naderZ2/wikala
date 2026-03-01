@@ -50,7 +50,7 @@ class LoginController extends Controller
         ]);
 
         // Use phone as email placeholder if no email provided
-        $data['email'] = $request->email ?? $request->phone . '@seller.wikala.com';
+        $data['email'] = $request->email ?? $request->phone . '@seller.e-expo.com';
         $data['active'] = false; // Admin must approve
 
         $seller = Seller::create($data);
