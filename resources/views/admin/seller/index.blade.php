@@ -128,16 +128,16 @@
 											@endcan	
 										
 										
-											<form action="{{ route('seller.change_activity_status') }}" onclick="getId({{ $seller->id }})" method="post" id="form_id" style="display:inline;">
+											<form action="{{ route('seller.change_activity_status') }}" method="post" id="form_id_{{ $seller->id }}" style="display:inline;">
 												@csrf
 												<input type="hidden" name="id" id="seller_id_{{ $seller->id }}">
 												@can('edit seller status')
 
 												
 												@if ($seller->active == 1)
-												<button id="{{ $loop->iteration }}" class="btn btn-danger btn-sm mt-1 sweet-5" onclick="setId({{ $seller->id }})" type="button" >@lang('lang.deactivation')</button>
+												<button id="{{ $loop->iteration }}" class="btn btn-danger btn-sm mt-1" onclick="confirmAction({{ $seller->id }})" type="button" >@lang('lang.deactivation')</button>
 												@else
-												<button id="{{ $loop->iteration }}" class="btn btn-primary btn-sm mt-1 sweet-5" onclick="setId({{ $seller->id }})" type="button" >@lang('lang.activation')</button>
+												<button id="{{ $loop->iteration }}" class="btn btn-primary btn-sm mt-1" onclick="confirmAction({{ $seller->id }})" type="button" >@lang('lang.activation')</button>
 												@endif
 
 												
@@ -178,15 +178,20 @@
 <script src="{{asset('assets/js/datatable/datatables/jquery.dataTables.min.js')}}"></script>
 <script src="{{asset('assets/js/datatable/datatables/datatable.custom.js')}}"></script>
 <script src="{{asset('assets/js/sweet-alert/sweetalert.min.js')}}"></script>
-<script src="{{asset('assets/js/sweet-alert/app.js')}}"></script>
 <script>
-
-function getId(id){
-	    document.getElementById("seller_id").value=id;
-   }
-
-function setId(id){
+function confirmAction(id){
 	document.getElementById("seller_id_" + id).value = id;
+	swal({
+		title: "هل انت متأكد؟",
+		icon: "warning",
+		buttons: true,
+		dangerMode: true,
+	})
+	.then((willProceed) => {
+		if (willProceed) {
+			document.getElementById("form_id_" + id).submit();
+		}
+	});
 }
 </script>
 @endsection

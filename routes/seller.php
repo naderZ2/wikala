@@ -17,6 +17,9 @@ use App\Http\Controllers\Seller;
 Route::post('login', [Seller\Auth\LoginController::class, 'login']);
 Route::post('register', [Seller\Auth\LoginController::class, 'register']);
 Route::post('verify-otp', [Seller\Auth\LoginController::class, 'verifyOtp']);
+Route::post('forgot-password', [Seller\Auth\LoginController::class, 'forgotPassword']);
+Route::post('reset-password', [Seller\Auth\LoginController::class, 'resetPassword']);
+Route::post('resend-otp', [Seller\Auth\LoginController::class, 'resendOtp']);
 
 // ==========================================
 // Protected routes (auth:seller-api required)

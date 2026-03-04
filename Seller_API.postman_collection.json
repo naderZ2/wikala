@@ -114,6 +114,63 @@
 							"path": ["seller", "logout"]
 						}
 					}
+				},
+				{
+					"name": "Forgot Password (Send OTP)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{"key": "Accept", "value": "application/json"},
+							{"key": "Content-Type", "value": "application/json"}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"phone\": \"96551110001\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/seller/forgot-password",
+							"host": ["{{base_url}}"],
+							"path": ["seller", "forgot-password"]
+						}
+					}
+				},
+				{
+					"name": "Reset Password",
+					"request": {
+						"method": "POST",
+						"header": [
+							{"key": "Accept", "value": "application/json"},
+							{"key": "Content-Type", "value": "application/json"}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"phone\": \"96551110001\",\n    \"code\": \"1234\",\n    \"password\": \"newpassword\",\n    \"password_confirmation\": \"newpassword\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/seller/reset-password",
+							"host": ["{{base_url}}"],
+							"path": ["seller", "reset-password"]
+						}
+					}
+				},
+				{
+					"name": "Resend OTP",
+					"request": {
+						"method": "POST",
+						"header": [
+							{"key": "Accept", "value": "application/json"},
+							{"key": "Content-Type", "value": "application/json"}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"phone\": \"96551110001\",\n    \"type\": \"register\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/seller/resend-otp",
+							"host": ["{{base_url}}"],
+							"path": ["seller", "resend-otp"]
+						}
+					}
 				}
 			]
 		},

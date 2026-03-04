@@ -5,16 +5,18 @@ namespace App\Http\Controllers\Seller\Auth;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Seller;
-use App\Models\ConfirmationCode;
+use App\Models\ConfirmationCodes;
 use App\Traits\ResponsesTrait;
+use App\Traits\SendSmsTrait;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Carbon\Carbon;
 use App\Http\Requests\Seller\Auth\LoginRequest;
 use App\Http\Requests\Seller\Auth\RegisterRequest;
 
 class LoginController extends Controller
 {
-    use ResponsesTrait;
+    use ResponsesTrait, SendSmsTrait;
 
     /**
      * Login with phone + password → return Passport token
@@ -75,17 +77,18 @@ class LoginController extends Controller
 
         // Generate OTP
         $code = rand(1000, 9999);
-        \DB::table('confirmation_codes')->insert([
+        ConfirmationCodes::create([
             'phone' => $request->phone,
             'code' => $code,
-            'active' => 1,
-            'created_at' => now(),
-            'updated_at' => now(),
         ]);
+
+        // Send OTP via WhatsApp
+        $phone = '2' . $request->phone;
+        $this->sendSmsWhatsApp($phone, $code);
 
         return $this->success([
             'seller_id' => $seller->id,
-            'otp_code' => $code, // Remove in production, send via WhatsApp instead
+            'otp_code' => $code, // Remove in production
         ], 'Registration successful. Please verify your phone number.');
     }
 
@@ -99,23 +102,141 @@ class LoginController extends Controller
             'code' => 'required|string',
         ]);
 
-        $verification = \DB::table('confirmation_codes')
-            ->where('phone', $request->phone)
+        $verification = ConfirmationCodes::where('phone', $request->phone)
             ->where('code', $request->code)
             ->where('active', 1)
-            ->latest('created_at')
+            ->orderByDesc('id')
             ->first();
 
         if (!$verification) {
             return $this->failed(null, 'Invalid or expired OTP code');
         }
 
+        // Check if OTP is expired (5 minutes)
+        if ($verification->created_at->addMinutes(5) < Carbon::now()) {
+            return $this->failed(null, 'OTP code has expired');
+        }
+
         // Mark code as used
-        \DB::table('confirmation_codes')
-            ->where('id', $verification->id)
-            ->update(['active' => 0, 'updated_at' => now()]);
+        $verification->update(['active' => 0]);
 
         return $this->success(null, 'Phone number verified successfully');
+    }
+
+    /**
+     * Forgot Password - Send OTP to seller phone
+     */
+    public function forgotPassword(Request $request)
+    {
+        $request->validate([
+            'phone' => 'required|string',
+        ]);
+
+        $seller = Seller::where('phone', $request->phone)->first();
+
+        if (!$seller) {
+            return $this->failed(null, 'No seller account found with this phone number');
+        }
+
+        // Generate OTP
+        $code = rand(1111, 9999);
+        ConfirmationCodes::create([
+            'phone' => $request->phone,
+            'code' => $code,
+        ]);
+
+        // Send OTP via WhatsApp
+        $phone = '2' . $request->phone;
+        $res = $this->sendSmsWhatsApp($phone, $code);
+
+        if (isset($res['data']) && $res['data']['status'] == 'error') {
+            return $this->failed(null, $res['data']['message']);
+        }
+
+        return $this->success([
+            'otp_code' => $code, // Remove in production
+        ], 'OTP sent successfully to your phone');
+    }
+
+    /**
+     * Reset Password - Verify OTP and set new password
+     */
+    public function resetPassword(Request $request)
+    {
+        $request->validate([
+            'phone' => 'required|string',
+            'code' => 'required|string',
+            'password' => 'required|string|min:6|confirmed',
+        ]);
+
+        $confirmationCode = ConfirmationCodes::where('phone', $request->phone)
+            ->orderByDesc('id')
+            ->first();
+
+        if (!$confirmationCode || $confirmationCode->code != $request->code || $confirmationCode->active == 0) {
+            return $this->failed(null, 'Invalid or expired OTP code');
+        }
+
+        // Check if OTP is expired (5 minutes)
+        if ($confirmationCode->created_at->addMinutes(5) < Carbon::now()) {
+            return $this->failed(null, 'OTP code has expired');
+        }
+
+        $seller = Seller::where('phone', $request->phone)->first();
+
+        if (!$seller) {
+            return $this->failed(null, 'No seller account found with this phone number');
+        }
+
+        $seller->update(['password' => $request->password]);
+
+        // Mark code as used
+        $confirmationCode->update(['active' => 0]);
+
+        return $this->success(null, 'Password reset successfully');
+    }
+
+    /**
+     * Resend OTP - for both registration and forgot password
+     */
+    public function resendOtp(Request $request)
+    {
+        $request->validate([
+            'phone' => 'required|string',
+            'type' => 'required|string|in:register,forgot_password',
+        ]);
+
+        // For forgot_password, check seller exists
+        if ($request->type === 'forgot_password') {
+            $seller = Seller::where('phone', $request->phone)->first();
+            if (!$seller) {
+                return $this->failed(null, 'No seller account found with this phone number');
+            }
+        }
+
+        // Deactivate old OTP codes for this phone
+        ConfirmationCodes::where('phone', $request->phone)
+            ->where('active', 1)
+            ->update(['active' => 0]);
+
+        // Generate new OTP
+        $code = rand(1111, 9999);
+        ConfirmationCodes::create([
+            'phone' => $request->phone,
+            'code' => $code,
+        ]);
+
+        // Send OTP via WhatsApp
+        $phone = '2' . $request->phone;
+        $res = $this->sendSmsWhatsApp($phone, $code);
+
+        if (isset($res['data']) && $res['data']['status'] == 'error') {
+            return $this->failed(null, $res['data']['message']);
+        }
+
+        return $this->success([
+            'otp_code' => $code, // Remove in production
+        ], 'OTP resent successfully');
     }
 
     /**
