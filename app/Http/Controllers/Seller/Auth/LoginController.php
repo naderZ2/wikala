@@ -35,6 +35,7 @@ class LoginController extends Controller
 
         $token = $seller->createToken('seller-token')->accessToken;
 
+        
         return $this->success([
             'token' => $token,
             'seller' => $seller
