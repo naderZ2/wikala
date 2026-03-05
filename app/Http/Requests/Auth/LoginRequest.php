@@ -43,13 +43,6 @@ class LoginRequest extends FormRequest
      */
     public function messages()
     {
-        if (app()->getLocale() == 'en') {
-            return [
-                'phone.required' => 'Phone number is required',
-                'password.required' => 'Password is required',
-            ];
-        }
-
         return [
             'phone.required' => 'رقم الهاتف مطلوب',
             'password.required' => 'كلمة المرور مطلوبة',
