@@ -37,11 +37,11 @@ class RegisterRequest extends FormRequest
             'phone' => 'required',
             'password' => [
                 'required',
-                Password::min(8) 
-                    ->mixedCase()        
-                    ->letters()   
-                    ->numbers()
-                    ->symbols(),     
+                Password::min(8),
+                    // ->mixedCase()        
+                    // ->letters()   
+                    // ->numbers()
+                    // ->symbols(),     
             ],
             'otpCode' => 'required',
             'type' => 'sometimes|in:user,business',

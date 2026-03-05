@@ -75,17 +75,17 @@ class UserAuthController extends Controller
             }
 
             
-            if ($data['type'] == 'business') {
-                $limit = AboutUs::whereId(1)->select('free_ads_business')->first();
-                $data['limit_ad'] = $limit->value('free_ads_business');
-                Log::info("business  limit:-" . $limit );
-                Log::info("  limit in business:-" . $data['limit_ad'] );
-            } else {
-                $limit = AboutUs::whereId(1)->select('free_ads_user')->first();
-                $data['limit_ad'] = $limit->value('free_ads_user');
-                Log::info("user limit:-" . $limit );
-                Log::info("  limit in user:-" . $data['limit_ad'] );
-            }
+            // if ($data['type'] == 'business') {
+            //     $limit = AboutUs::whereId(1)->select('free_ads_business')->first();
+            //     $data['limit_ad'] = $limit->value('free_ads_business');
+            //     Log::info("business  limit:-" . $limit );
+            //     Log::info("  limit in business:-" . $data['limit_ad'] );
+            // } else {
+            //     $limit = AboutUs::whereId(1)->select('free_ads_user')->first();
+            //     $data['limit_ad'] = $limit->value('free_ads_user');
+            //     Log::info("user limit:-" . $limit );
+            //     Log::info("  limit in user:-" . $data['limit_ad'] );
+            // }
             Log::info("befor create data:-" . json_encode($data));
             $user = User::create($data);
             $confirmationCode->update(['active'=>0]);
