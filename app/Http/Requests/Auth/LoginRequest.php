@@ -36,6 +36,26 @@ class LoginRequest extends FormRequest
         ];
     }
 
+    /**
+     * Get custom validation messages.
+     *
+     * @return array
+     */
+    public function messages()
+    {
+        if (app()->getLocale() == 'en') {
+            return [
+                'phone.required' => 'Phone number is required',
+                'password.required' => 'Password is required',
+            ];
+        }
+
+        return [
+            'phone.required' => 'رقم الهاتف مطلوب',
+            'password.required' => 'كلمة المرور مطلوبة',
+        ];
+    }
+
     public function failedValidation(Validator $validator)
     {
         throw new HttpResponseException(null,$this->failed($validator->errors()->first()));

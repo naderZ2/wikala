@@ -96,17 +96,9 @@ class UserAuthController extends Controller
         return $this->success($user);
     }
 
-    public function login(LoginRequest $request,LoginController $driver){
+    public function login(LoginRequest $request){
         $data['password']=$request->password;
-        if(!filter_var($request->phone, FILTER_VALIDATE_EMAIL))
-            $data['phone']=$request->phone;
-        else{
-            if (str_contains($request->phone, 'driver')) {
-              return  $driver->login($request);
-            }
-            $data['email']=$request->phone;
-        }
-
+        
         if (!auth()->attempt($data))
             return $this->failed(null,trans('lang.wrong_username_or_password'));
 
