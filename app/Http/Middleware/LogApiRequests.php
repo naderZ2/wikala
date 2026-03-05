@@ -14,6 +14,7 @@ class LogApiRequests
             'method' => $request->method(),
             'url'    => $request->fullUrl(),
             'ip'     => $request->ip(),
+            'data'     => $request->all(),
         ]);
 
         $response = $next($request);
