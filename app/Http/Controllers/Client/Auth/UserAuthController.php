@@ -99,8 +99,8 @@ class UserAuthController extends Controller
     public function login(LoginRequest $request){
         $data['password']=$request->password;
         
-        if (!auth()->attempt($data))
-            return $this->failed(null,trans('lang.wrong_username_or_password'));
+        // if (!auth()->attempt($data))
+        //     return $this->failed(null,trans('lang.wrong_username_or_password'));
 
         $user=auth()->user();
         auth()->user()->update(['device_id'=>$request->device_id]);
