@@ -44,8 +44,8 @@ class LoginRequest extends FormRequest
     public function messages()
     {
         return [
-            'phone.required' => 'رقم الهاتف مطلوب',
-            'password.required' => 'كلمة المرور مطلوبة',
+            'phone.required' => 'The phone number is required.',
+            'password.required' => 'The password is required.',
         ];
     }
 
