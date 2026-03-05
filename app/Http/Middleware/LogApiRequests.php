@@ -16,6 +16,14 @@ class LogApiRequests
             'ip'     => $request->ip(),
         ]);
 
-        return $next($request);
+        $response = $next($request);
+
+        Log::info('API Response', [
+            'url'    => $request->fullUrl(),
+            'status' => $response->status(),
+            'body'   => $response->getContent(),
+        ]);
+
+        return $response;
     }
 }
