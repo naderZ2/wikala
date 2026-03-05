@@ -97,6 +97,7 @@ class UserAuthController extends Controller
     }
 
     public function login(LoginRequest $request){
+        Log::info("login request data:-" . json_encode($request->all()));
         $data['phone']=$request->phone;
         $data['password']=$request->password;
         
