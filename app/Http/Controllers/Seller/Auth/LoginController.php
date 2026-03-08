@@ -84,7 +84,7 @@ class LoginController extends Controller
         ]);
 
         // Send OTP via WhatsApp
-        // $phone = '2' . $request->phone;
+        $phone =  $request->phone;
         $this->sendSmsWhatsApp($phone, $code);
 
         return $this->success([
@@ -147,7 +147,7 @@ class LoginController extends Controller
         ]);
 
         // Send OTP via WhatsApp
-        // $phone = '2' . $request->phone;
+        $phone =  $request->phone;
         $res = $this->sendSmsWhatsApp($phone, $code);
 
         if (isset($res['data']) && $res['data']['status'] == 'error') {
@@ -228,7 +228,7 @@ class LoginController extends Controller
         ]);
 
         // Send OTP via WhatsApp
-        // $phone = '2' . $request->phone;
+        $phone =  $request->phone;
         $res = $this->sendSmsWhatsApp($phone, $code);
 
         if (isset($res['data']) && $res['data']['status'] == 'error') {
