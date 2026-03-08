@@ -42,12 +42,12 @@ class CategoryController extends Controller
 
 
     public function categorySellers(Request $request){
-        $sellers = \App\Models\Seller::whereHas('categories', function($q) use($request){
+        $sellers = \App\Models\Seller::whereHas('products', function($q) use($request){
             $q->where('category_id', $request->category_id);
         })
         ->where('active', 1)
         ->withAvg('reviews', 'rating')
-        ->select('id','name', 'about','img_path as image')
+        ->select('id','name','about','img_path as image')
         ->get()
         ->map(function($seller){
              $seller->rate = round($seller->reviews_avg_rating ?? 0, 1);
