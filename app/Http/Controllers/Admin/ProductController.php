@@ -135,7 +135,7 @@ class ProductController extends Controller
             'quantity'=>$request->quantity,
             'price'=>$request->price,
             'old_price'=>$request->old_price,
-            'is_available'=>$request->old_price,
+            'is_available'=>$request->is_available,
         ]);
 
         if($request->has('attributes')){
