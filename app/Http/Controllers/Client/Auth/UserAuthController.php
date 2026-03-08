@@ -124,7 +124,7 @@ class UserAuthController extends Controller
     public function sendOtpPassword(Request $request){
         $code   = rand(1111,9999);
         // $phone = '+965'.$request->phone;
-        $phone = '2'.$request->phone;
+        $phone = $request->phone;
         // $this->sendSMS($phone, "OTP code is: $code" );
         // $this->sendOtpAsync($phone, "OTP code is: $code" );
         ConfirmationCodes::create(['phone'=>$request->phone,'code'=>$code]);
@@ -138,7 +138,7 @@ class UserAuthController extends Controller
 
     public function sendOtpRegister(CheckPhoneRequest $request){
         $code   = rand(1111,9999);
-        $phone = '2'.$request->phone;
+        $phone = $request->phone;
         // return $phone;
         ConfirmationCodes::create(["phone" => $phone,"code"=>$code]);
         $res= $this->sendSmsWhatsApp($phone, $code);
