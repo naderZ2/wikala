@@ -100,5 +100,180 @@ INSERT INTO `products` (`id`, `title_ar`, `title_en`, `is_available`, `serving`,
 (29, 'كورس إنجليزي متقدم',     'Advanced English Course', 1, NULL, 0, 1, 10, 'كورس لغة انجليزية متقدم',              'Advanced English Language Course',    'Advanced English language course including books, video clips, and interactive exercises.',                                  'كورس تعليم اللغة الإنجليزية مستوى متقدم، يشمل كتب ومقاطع فيديو وتمارين تفاعلية.',                                          NULL, 15,  '200',   '250',   NOW(), NOW(), NULL, NULL),
 (30, 'كتب برمجة وحاسب',        'Programming Books',       1, NULL, 0, 1, 10, 'مجموعة كتب برمجة',                     'Programming Books Set',               'Specialized books in programming and computer science, includes Python, JavaScript, and databases.',                        'مجموعة كتب متخصصة في البرمجة وعلوم الحاسب، تشمل Python، JavaScript، وقواعد البيانات.',                                      NULL, 10,  '350',   '400',   NOW(), NOW(), NULL, NULL);
 
+-- =============================================
+-- 7. Ensure attributes exist (Color, Size, Material)
+-- =============================================
+DELETE FROM `product_variation_attributes`;
+DELETE FROM `product_variations`;
+DELETE FROM `attributes`;
+ALTER TABLE `attributes` AUTO_INCREMENT = 1;
+ALTER TABLE `product_variations` AUTO_INCREMENT = 1;
+ALTER TABLE `product_variation_attributes` AUTO_INCREMENT = 1;
+
+INSERT INTO `attributes` (`id`, `name_ar`, `name_en`, `type`, `image`, `enable`, `deleted_at`, `created_at`, `updated_at`) VALUES
+(1, 'اللون',    'Color',    'select', NULL, 1, NULL, NOW(), NOW()),
+(2, 'المقاس',   'Size',     'select', NULL, 1, NULL, NOW(), NOW()),
+(3, 'الخامة',   'Material', 'select', NULL, 1, NULL, NOW(), NOW());
+
+-- =============================================
+-- 8. Insert 2 Variations per Product (60 total)
+-- =============================================
+INSERT INTO `product_variations` (`id`, `product_id`, `price`, `quantity`, `sku`, `created_at`, `updated_at`) VALUES
+-- Product 1
+(1, 1, 7500.00, 5, 'TV55-BLK', NOW(), NOW()),
+(2, 1, 7800.00, 5, 'TV55-SLV', NOW(), NOW()),
+-- Product 2
+(3, 2, 3200.00, 12, 'HP-BLK', NOW(), NOW()),
+(4, 2, 3200.00, 13, 'HP-WHT', NOW(), NOW()),
+-- Product 3
+(5, 3, 12000.00, 3, 'LPT-GRY', NOW(), NOW()),
+(6, 3, 13000.00, 2, 'LPT-BLK', NOW(), NOW()),
+-- Product 4
+(7, 4, 250.00, 50, 'TS-M-BLK', NOW(), NOW()),
+(8, 4, 250.00, 50, 'TS-L-WHT', NOW(), NOW()),
+-- Product 5
+(9, 5, 450.00, 25, 'DR-S-RED', NOW(), NOW()),
+(10, 5, 480.00, 25, 'DR-M-BLU', NOW(), NOW()),
+-- Product 6
+(11, 6, 350.00, 15, 'JK-L-BLK', NOW(), NOW()),
+(12, 6, 350.00, 15, 'JK-XL-NVY', NOW(), NOW()),
+-- Product 7
+(13, 7, 1500.00, 20, 'BRK-FRN', NOW(), NOW()),
+(14, 7, 1600.00, 20, 'BRK-RER', NOW(), NOW()),
+-- Product 8
+(15, 8, 350.00, 30, 'FLT-OIL', NOW(), NOW()),
+(16, 8, 320.00, 30, 'FLT-AIR', NOW(), NOW()),
+-- Product 9
+(17, 9, 2500.00, 40, 'TIR-16', NOW(), NOW()),
+(18, 9, 2800.00, 40, 'TIR-17', NOW(), NOW()),
+-- Product 10
+(19, 10, 1500000.00, 1, 'APT-3R', NOW(), NOW()),
+(20, 10, 1600000.00, 1, 'APT-3RF', NOW(), NOW()),
+-- Product 11
+(21, 11, 3500000.00, 1, 'VIL-4R', NOW(), NOW()),
+(22, 11, 3800000.00, 1, 'VIL-5R', NOW(), NOW()),
+-- Product 12
+(23, 12, 800000.00, 1, 'SHP-50', NOW(), NOW()),
+(24, 12, 900000.00, 1, 'SHP-60', NOW(), NOW()),
+-- Product 13
+(25, 13, 8500.00, 3, 'BED-OAK', NOW(), NOW()),
+(26, 13, 9500.00, 2, 'BED-WAL', NOW(), NOW()),
+-- Product 14
+(27, 14, 4500.00, 4, 'SFA-GRY', NOW(), NOW()),
+(28, 14, 4800.00, 4, 'SFA-BEG', NOW(), NOW()),
+-- Product 15
+(29, 15, 2800.00, 6, 'DSK-BRN', NOW(), NOW()),
+(30, 15, 3000.00, 6, 'DSK-BLK', NOW(), NOW()),
+-- Product 16
+(31, 16, 28000.00, 2, 'IP15-BLU', NOW(), NOW()),
+(32, 16, 28000.00, 1, 'IP15-BLK', NOW(), NOW()),
+-- Product 17
+(33, 17, 18000.00, 2, 'S24-BLK', NOW(), NOW()),
+(34, 17, 18500.00, 2, 'S24-GRN', NOW(), NOW()),
+-- Product 18
+(35, 18, 3500.00, 4, 'AW9-BLK', NOW(), NOW()),
+(36, 18, 3500.00, 3, 'AW9-WHT', NOW(), NOW()),
+-- Product 19
+(37, 19, 5500.00, 3, 'TRD-BLK', NOW(), NOW()),
+(38, 19, 5800.00, 3, 'TRD-GRY', NOW(), NOW()),
+-- Product 20
+(39, 20, 850.00, 5, 'BIK-RED', NOW(), NOW()),
+(40, 20, 900.00, 5, 'BIK-BLU', NOW(), NOW()),
+-- Product 21
+(41, 21, 1200.00, 8, 'WGT-50', NOW(), NOW()),
+(42, 21, 1500.00, 7, 'WGT-70', NOW(), NOW()),
+-- Product 22
+(43, 22, 3000.00, 1, 'GLD-M', NOW(), NOW()),
+(44, 22, 3500.00, 1, 'GLD-F', NOW(), NOW()),
+-- Product 23
+(45, 23, 1500.00, 2, 'CAT-WHT', NOW(), NOW()),
+(46, 23, 1800.00, 1, 'CAT-GRY', NOW(), NOW()),
+-- Product 24
+(47, 24, 500.00, 3, 'BDG-GRN', NOW(), NOW()),
+(48, 24, 550.00, 2, 'BDG-BLU', NOW(), NOW()),
+-- Product 25
+(49, 25, 500.00, 999, 'AC-WSH', NOW(), NOW()),
+(50, 25, 700.00, 999, 'AC-FUL', NOW(), NOW()),
+-- Product 26
+(51, 26, 300.00, 999, 'PLB-BSC', NOW(), NOW()),
+(52, 26, 500.00, 999, 'PLB-PRO', NOW(), NOW()),
+-- Product 27
+(53, 27, 400.00, 999, 'ELC-BSC', NOW(), NOW()),
+(54, 27, 650.00, 999, 'ELC-PRO', NOW(), NOW()),
+-- Product 28
+(55, 28, 150.00, 10, 'BK-AR', NOW(), NOW()),
+(56, 28, 180.00, 10, 'BK-EN', NOW(), NOW()),
+-- Product 29
+(57, 29, 200.00, 8, 'CRS-ONL', NOW(), NOW()),
+(58, 29, 350.00, 7, 'CRS-DVD', NOW(), NOW()),
+-- Product 30
+(59, 30, 350.00, 5, 'PRG-AR', NOW(), NOW()),
+(60, 30, 400.00, 5, 'PRG-EN', NOW(), NOW());
+
+-- =============================================
+-- 9. Insert Variation Attributes (1 attribute per variation)
+-- =============================================
+INSERT INTO `product_variation_attributes` (`id`, `product_variation_id`, `attribute_id`, `value`, `created_at`, `updated_at`) VALUES
+(1, 1, 1, 'أسود', NOW(), NOW()),
+(2, 2, 1, 'فضي', NOW(), NOW()),
+(3, 3, 1, 'أسود', NOW(), NOW()),
+(4, 4, 1, 'أبيض', NOW(), NOW()),
+(5, 5, 1, 'رمادي', NOW(), NOW()),
+(6, 6, 1, 'أسود', NOW(), NOW()),
+(7, 7, 2, 'M', NOW(), NOW()),
+(8, 8, 2, 'L', NOW(), NOW()),
+(9, 9, 2, 'S', NOW(), NOW()),
+(10, 10, 2, 'M', NOW(), NOW()),
+(11, 11, 2, 'L', NOW(), NOW()),
+(12, 12, 2, 'XL', NOW(), NOW()),
+(13, 13, 3, 'أمامي', NOW(), NOW()),
+(14, 14, 3, 'خلفي', NOW(), NOW()),
+(15, 15, 3, 'زيت', NOW(), NOW()),
+(16, 16, 3, 'هواء', NOW(), NOW()),
+(17, 17, 2, '16 بوصة', NOW(), NOW()),
+(18, 18, 2, '17 بوصة', NOW(), NOW()),
+(19, 19, 2, '120 متر', NOW(), NOW()),
+(20, 20, 2, '120 متر مع تشطيب', NOW(), NOW()),
+(21, 21, 2, '4 غرف', NOW(), NOW()),
+(22, 22, 2, '5 غرف', NOW(), NOW()),
+(23, 23, 2, '50 متر', NOW(), NOW()),
+(24, 24, 2, '60 متر', NOW(), NOW()),
+(25, 25, 3, 'خشب زان', NOW(), NOW()),
+(26, 26, 3, 'خشب جوز', NOW(), NOW()),
+(27, 27, 1, 'رمادي', NOW(), NOW()),
+(28, 28, 1, 'بيج', NOW(), NOW()),
+(29, 29, 1, 'بني', NOW(), NOW()),
+(30, 30, 1, 'أسود', NOW(), NOW()),
+(31, 31, 1, 'أزرق تيتانيوم', NOW(), NOW()),
+(32, 32, 1, 'أسود تيتانيوم', NOW(), NOW()),
+(33, 33, 1, 'أسود', NOW(), NOW()),
+(34, 34, 1, 'أخضر', NOW(), NOW()),
+(35, 35, 1, 'أسود', NOW(), NOW()),
+(36, 36, 1, 'أبيض', NOW(), NOW()),
+(37, 37, 1, 'أسود', NOW(), NOW()),
+(38, 38, 1, 'رمادي', NOW(), NOW()),
+(39, 39, 1, 'أحمر', NOW(), NOW()),
+(40, 40, 1, 'أزرق', NOW(), NOW()),
+(41, 41, 2, '50 كجم', NOW(), NOW()),
+(42, 42, 2, '70 كجم', NOW(), NOW()),
+(43, 43, 2, 'ذكر', NOW(), NOW()),
+(44, 44, 2, 'أنثى', NOW(), NOW()),
+(45, 45, 1, 'أبيض', NOW(), NOW()),
+(46, 46, 1, 'رمادي', NOW(), NOW()),
+(47, 47, 1, 'أخضر', NOW(), NOW()),
+(48, 48, 1, 'أزرق', NOW(), NOW()),
+(49, 49, 2, 'غسيل فقط', NOW(), NOW()),
+(50, 50, 2, 'غسيل + فريون', NOW(), NOW()),
+(51, 51, 2, 'أساسي', NOW(), NOW()),
+(52, 52, 2, 'شامل', NOW(), NOW()),
+(53, 53, 2, 'أساسي', NOW(), NOW()),
+(54, 54, 2, 'شامل', NOW(), NOW()),
+(55, 55, 3, 'عربي', NOW(), NOW()),
+(56, 56, 3, 'إنجليزي', NOW(), NOW()),
+(57, 57, 3, 'أونلاين', NOW(), NOW()),
+(58, 58, 3, 'DVD', NOW(), NOW()),
+(59, 59, 3, 'عربي', NOW(), NOW()),
+(60, 60, 3, 'إنجليزي', NOW(), NOW());
+
 SET FOREIGN_KEY_CHECKS = 1;
 COMMIT;

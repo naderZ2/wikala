@@ -47,7 +47,7 @@ class UserAuthController extends Controller
         $user = User::withTrashed()
         // ->where("email" , $request->email)
         ->where("phone" , $request->phone)->first();
-        $phone='2'.$request->phone;
+        $phone= $request->phone;
         $confirmationCode=ConfirmationCodes::where('phone',$phone)
         ->orderByDESC('id')
         ->first();
