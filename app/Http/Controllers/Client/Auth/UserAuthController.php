@@ -220,7 +220,7 @@ class UserAuthController extends Controller
 
     public static function sendOtpAsync($phoneNumber, $message)
     {
-        // $countryCode = '20';
+        $countryCode = '965';
         // $formattedNumber = $countryCode . ltrim($phoneNumber, '');
         $formattedNumber = ltrim($phoneNumber, '+');
         // $formattedNumber = $phoneNumber;
