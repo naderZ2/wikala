@@ -124,8 +124,8 @@ class UserAuthController extends Controller
     public function sendOtpPassword(Request $request){
         $code   = rand(1111,9999);
         // $phone = '+965'.$request->phone;
-        // $phone = $request->phone;
-        $phone = "201142645054";
+        $phone = $request->phone;
+        // $phone = "201142645054";
 
         // $this->sendSMS($phone, "OTP code is: $code" );
         // $this->sendOtpAsync($phone, "OTP code is: $code" );
@@ -142,7 +142,7 @@ class UserAuthController extends Controller
         $code   = rand(1111,9999);
         $phone = $request->phone;
         // return $phone;
-        $phone = "201142645054";
+        // $phone = "201142645054";
 
         ConfirmationCodes::create(["phone" => $phone,"code"=>$code]);
         $res= $this->sendOtpAsync($phone, $code);
@@ -220,9 +220,9 @@ class UserAuthController extends Controller
 
     public static function sendOtpAsync($phoneNumber, $message)
     {
-        $countryCode = '965';
+        // $countryCode = '965';
         // $formattedNumber = $countryCode . ltrim($phoneNumber, '');
-        $formattedNumber = ltrim($phoneNumber, '+');
+        $formattedNumber = '965'.ltrim($phoneNumber, '+');
         // $formattedNumber = $phoneNumber;
                 //   // Log::info("sendOtpAsync:-" .$formattedNumber );
 
