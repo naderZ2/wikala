@@ -130,7 +130,7 @@ class UserAuthController extends Controller
         // $this->sendSMS($phone, "OTP code is: $code" );
         // $this->sendOtpAsync($phone, "OTP code is: $code" );
         ConfirmationCodes::create(['phone'=>$request->phone,'code'=>$code]);
-        $res= $this->sendSmsWhatsApp($phone, $code);
+        $res= $this->sendOtpAsync($phone, $code);
         if (isset($res['data']) && $res['data']['status'] == 'error') {
             return $this->failed(null,$res['data']['message']);
         }
@@ -145,7 +145,8 @@ class UserAuthController extends Controller
         $phone = "201142645054";
 
         ConfirmationCodes::create(["phone" => $phone,"code"=>$code]);
-        $res= $this->sendSmsWhatsApp($phone, $code);
+        $res= $this->sendOtpAsync($phone, $code);
+        // $res= $this->sendSmsWhatsApp($phone, $code);
 
         $data['otpCode'] = $code;
         return $this->success($data);
@@ -219,7 +220,7 @@ class UserAuthController extends Controller
 
     public static function sendOtpAsync($phoneNumber, $message)
     {
-        $countryCode = '20';
+        // $countryCode = '20';
         // $formattedNumber = $countryCode . ltrim($phoneNumber, '');
         $formattedNumber = ltrim($phoneNumber, '+');
         // $formattedNumber = $phoneNumber;
@@ -240,6 +241,8 @@ class UserAuthController extends Controller
             ],
         ];
 
+        Log::info('sendOtpAsync request', ['url' => $url, 'params' => $params['query']]);
+
         $client = new Client();
         $promise = $client->getAsync($url, $params);
 
@@ -247,7 +250,7 @@ class UserAuthController extends Controller
             $response = $promise->wait(); // Block until the request is complete
             $responseData = json_decode($response->getBody(), true);
 
-            // Log::info('WhatsApp OTP sent successfully.', ['response' => $responseData]);
+            Log::info('sendOtpAsync response', ['status' => $response->getStatusCode(), 'response' => $responseData]);
 
             return [
                 'success' => true,
