@@ -74,20 +74,34 @@ class DeliveryController extends Controller
             'areas.*.active' => 'required|boolean',
         ]);
 
-        // Delete old delivery areas
-        DB::table('city_seller')->where('seller_id', $seller->id)->delete();
-
-        // Insert new delivery areas
         foreach ($request->areas as $area) {
-            DB::table('city_seller')->insert([
-                'seller_id' => $seller->id,
-                'city_id' => $area['city_id'],
-                'region_id' => $area['region_id'] ?? null,
-                'delivery_price' => $area['delivery_price'],
-                'active' => $area['active'],
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
+            $regionId = $area['region_id'] ?? null;
+
+            $existing = DB::table('city_seller')
+                ->where('seller_id', $seller->id)
+                ->where('city_id', $area['city_id'])
+                ->where('region_id', $regionId)
+                ->first();
+
+            if ($existing) {
+                DB::table('city_seller')
+                    ->where('id', $existing->id)
+                    ->update([
+                        'delivery_price' => $area['delivery_price'],
+                        'active' => $area['active'],
+                        'updated_at' => now(),
+                    ]);
+            } else {
+                DB::table('city_seller')->insert([
+                    'seller_id' => $seller->id,
+                    'city_id' => $area['city_id'],
+                    'region_id' => $regionId,
+                    'delivery_price' => $area['delivery_price'],
+                    'active' => $area['active'],
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
         }
 
         return $this->success(null, 'Delivery options updated');
