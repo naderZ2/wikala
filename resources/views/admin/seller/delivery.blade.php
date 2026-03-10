@@ -155,15 +155,22 @@
     function toggleCityRegions(cityId) {
         let isChecked = document.getElementById('city_' + cityId).checked;
         let checkboxes = document.querySelectorAll('.c-' + cityId);
+        // Skip the city-level "entire city" checkbox (id ends with _0)
         checkboxes.forEach(function(cb) {
-            cb.checked = isChecked;
+            if (cb.id !== 'reg_' + cityId + '_0') {
+                cb.checked = isChecked;
+            }
         });
     }
 
-    // On load, set city toggles to checked if any sub-region is checked
+    // On load, set city toggles to checked if any individual region is checked (skip city-level)
     document.addEventListener("DOMContentLoaded", function() {
         @foreach ($cities as $city)
-            let anyChecked{{ $city->id }} = document.querySelectorAll('.c-{{ $city->id }}:checked').length > 0;
+            let regionCheckboxes{{ $city->id }} = document.querySelectorAll('.c-{{ $city->id }}:not(#reg_{{ $city->id }}_0)');
+            let anyChecked{{ $city->id }} = false;
+            regionCheckboxes{{ $city->id }}.forEach(function(cb) {
+                if (cb.checked) anyChecked{{ $city->id }} = true;
+            });
             if (anyChecked{{ $city->id }}) {
                 document.getElementById('city_{{ $city->id }}').checked = true;
             }
