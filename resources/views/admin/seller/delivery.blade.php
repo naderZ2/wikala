@@ -154,11 +154,12 @@
 <script>
     function toggleCityRegions(cityId) {
         let isChecked = document.getElementById('city_' + cityId).checked;
+        if (!isChecked) return; // If toggled off, don't uncheck regions
         let checkboxes = document.querySelectorAll('.c-' + cityId);
         // Skip the city-level "entire city" checkbox (id ends with _0)
         checkboxes.forEach(function(cb) {
             if (cb.id !== 'reg_' + cityId + '_0') {
-                cb.checked = isChecked;
+                cb.checked = true;
             }
         });
     }
