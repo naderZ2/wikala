@@ -76,6 +76,7 @@ class DeliveryController extends Controller
 
         foreach ($request->areas as $area) {
             $regionId = $area['region_id'] ?? null;
+            $isActive = $area['active'] ? true : false;
 
             $existing = DB::table('city_seller')
                 ->where('seller_id', $seller->id)
@@ -83,24 +84,31 @@ class DeliveryController extends Controller
                 ->where('region_id', $regionId)
                 ->first();
 
-            if ($existing) {
-                DB::table('city_seller')
-                    ->where('id', $existing->id)
-                    ->update([
+            if ($isActive) {
+                if ($existing) {
+                    DB::table('city_seller')
+                        ->where('id', $existing->id)
+                        ->update([
+                            'delivery_price' => $area['delivery_price'],
+                            'active' => 1,
+                            'updated_at' => now(),
+                        ]);
+                } else {
+                    DB::table('city_seller')->insert([
+                        'seller_id' => $seller->id,
+                        'city_id' => $area['city_id'],
+                        'region_id' => $regionId,
                         'delivery_price' => $area['delivery_price'],
-                        'active' => $area['active'],
+                        'active' => 1,
+                        'created_at' => now(),
                         'updated_at' => now(),
                     ]);
+                }
             } else {
-                DB::table('city_seller')->insert([
-                    'seller_id' => $seller->id,
-                    'city_id' => $area['city_id'],
-                    'region_id' => $regionId,
-                    'delivery_price' => $area['delivery_price'],
-                    'active' => $area['active'],
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ]);
+                // If active is 0, remove the row if it exists
+                if ($existing) {
+                    DB::table('city_seller')->where('id', $existing->id)->delete();
+                }
             }
         }
 
