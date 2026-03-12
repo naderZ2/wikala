@@ -153,6 +153,53 @@ class ProductController extends Controller
     }
 
     /**
+     * Update a single variation
+     * PUT /seller/products/{productId}/variations/{variationId}
+     */
+    public function updateVariation(Request $request, $productId, $variationId)
+    {
+        $product = Product::where('id', $productId)
+            ->where('seller_id', $request->user()->id)
+            ->firstOrFail();
+
+        $variation = ProductVariation::where('id', $variationId)
+            ->where('product_id', $product->id)
+            ->firstOrFail();
+
+        $request->validate([
+            'price'                 => 'nullable|numeric|min:0',
+            'quantity'              => 'nullable|integer|min:0',
+            'sku'                   => 'nullable|string',
+            'options'               => 'sometimes|array',
+            'options.*.attribute_id'=> 'nullable|integer',
+            'options.*.value'       => 'required|string',
+        ]);
+
+        $variation->update([
+            'price'    => $request->price    ?? $variation->price,
+            'quantity' => $request->quantity  ?? $variation->quantity,
+            'sku'      => $request->sku      ?? $variation->sku,
+        ]);
+
+        // Replace attributes only if options are provided
+        if ($request->has('options')) {
+            $variation->attributes()->delete();
+
+            foreach ($request->options as $option) {
+                $variation->attributes()->create([
+                    'attribute_id' => $option['attribute_id'] ?? 0,
+                    'value'        => $option['value'],
+                ]);
+            }
+        }
+
+        return $this->success(
+            $variation->load('attributes'),
+            'Variation updated successfully'
+        );
+    }
+
+    /**
      * Show single product
      * GET /seller/products/{id}
      */
