@@ -30,7 +30,7 @@ class OrderService{
         }
 
         $order->update($arr);
-    //     "address_id" =>$request->address_id]););
+        $order->update(["address_id" =>$request->address_id]);
         return $this->success(null,"تم التأكيد");
     }
     
