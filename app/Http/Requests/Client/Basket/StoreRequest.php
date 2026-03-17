@@ -29,6 +29,7 @@ class StoreRequest extends FormRequest
     {
         return [
             'product_id' => "required",
+            'quantity' => "required|integer|min:1",
             'extraService' => "sometimes|nullable",
         ];
     }

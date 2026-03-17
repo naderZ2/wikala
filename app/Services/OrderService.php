@@ -83,14 +83,15 @@ class OrderService{
            }
        }
        
-        // $orderDetails['quantity'] = $product['quantity'];
-        $orderDetails['product_id'] =$request->product_id;
-        $orderDetails['price'] =$actualProduct->price;
+        $quantity = $request->quantity;
+        $orderDetails['product_id'] = $request->product_id;
+        $orderDetails['quantity'] = $quantity;
+        $orderDetails['price'] = $actualProduct->price * $quantity;
         if($request->has('product_variation_id')){
             $orderDetails['product_variation_id'] = $request->product_variation_id;
         }
         $orderDetails=$order->orderDetails()->create($orderDetails);
-        $totalPrice =$order->total_price + $orderDetails['price'];
+        $totalPrice = $order->total_price + $orderDetails['price'];
        
        $order->update(['total_price' =>$totalPrice,"order_number" => $order->id +10000]);
        
