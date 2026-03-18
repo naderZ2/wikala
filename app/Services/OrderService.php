@@ -86,10 +86,35 @@ class OrderService{
         $quantity = $request->quantity;
         $orderDetails['product_id'] = $request->product_id;
         $orderDetails['quantity'] = $quantity;
-        $orderDetails['price'] = $actualProduct->price * $quantity;
-        if($request->has('product_variation_id')){
-            $orderDetails['product_variation_id'] = $request->product_variation_id;
+
+        // Use variation price if a variation is selected, otherwise use product price
+        $price = $actualProduct->price;
+        $variationId = null;
+
+        // Option 1: Client sends product_variation_id directly
+        if($request->has('product_variation_id') && $request->product_variation_id){
+            $variationId = $request->product_variation_id;
         }
+
+        // Option 2: Client sends variation_attribute_ids → find the matching variation
+        if(!$variationId && $request->has('variation_attribute_ids') && !empty($request->variation_attribute_ids)){
+            $variationId = \App\Models\ProductVariationAttribute::whereIn('id', $request->variation_attribute_ids)
+                ->pluck('product_variation_id')
+                ->unique()
+                ->first();
+        }
+
+        if($variationId){
+            $variation = \App\Models\ProductVariation::where('id', $variationId)
+                ->where('product_id', $request->product_id)
+                ->first();
+            if($variation && $variation->price > 0){
+                $price = $variation->price;
+            }
+            $orderDetails['product_variation_id'] = $variationId;
+        }
+
+        $orderDetails['price'] = $price * $quantity;
         $orderDetails=$order->orderDetails()->create($orderDetails);
         $totalPrice = $order->total_price + $orderDetails['price'];
        

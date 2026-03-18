@@ -72,15 +72,25 @@ class OrderController extends Controller
             ->with([
                 'user:id,name,phone,email',
                 'orderDetails.product:id,name_en,name_ar,price,main_image',
-                'orderDetails.variation.attributes',
+                'orderDetails.variation.attributes.attribute',
                 'address.region',
             ])
             ->firstOrFail();
 
         $items = $order->orderDetails->map(function ($detail) use ($lang) {
             $options = '';
+            $attributes = [];
             if ($detail->variation && $detail->variation->attributes) {
                 $options = $detail->variation->attributes->pluck('value')->implode('/');
+                $attributes = $detail->variation->attributes->map(function ($attr) use ($lang) {
+                    return [
+                        'attribute_id' => $attr->attribute_id,
+                        'attribute_name' => $attr->attribute ? ($lang == 'en'
+                            ? ($attr->attribute->name_en ?? $attr->attribute->name_ar ?? '')
+                            : ($attr->attribute->name_ar ?? $attr->attribute->name_en ?? '')) : '',
+                        'value' => $attr->value,
+                    ];
+                });
             }
 
             $productName = 'Unknown';
@@ -94,6 +104,8 @@ class OrderController extends Controller
                 'name' => $productName,
                 'qty' => $detail->quantity,
                 'options' => $options,
+                'attributes' => $attributes,
+                'variation_id' => $detail->product_variation_id,
                 'price' => $detail->price,
                 'image' => $detail->product ? $detail->product->main_image : null,
             ];
@@ -172,7 +184,7 @@ class OrderController extends Controller
 
         $order = Order::where('id', $id)
             ->where('seller_id', $request->user()->id)
-            ->with('user:id,name,phone,email', 'orderDetails.product', 'seller:id,email,name', 'address', 'address.region')
+            ->with('user:id,name,phone,email', 'orderDetails.product', 'orderDetails.variation.attributes.attribute', 'seller:id,email,name', 'address', 'address.region')
             ->firstOrFail();
 
         if ($order->user && $order->user->lang == 'ar') {

@@ -30,6 +30,9 @@ class StoreRequest extends FormRequest
         return [
             'product_id' => "required",
             'quantity' => "required|integer|min:1",
+            'product_variation_id' => "sometimes|nullable|exists:product_variations,id",
+            'variation_attribute_ids' => "sometimes|nullable|array",
+            'variation_attribute_ids.*' => "integer|exists:product_variation_attributes,id",
             'extraService' => "sometimes|nullable",
         ];
     }
