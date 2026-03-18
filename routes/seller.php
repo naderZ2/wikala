@@ -47,6 +47,7 @@ Route::middleware('auth:seller-api')->group(function () {
     Route::delete('products/{id}', [Seller\ProductController::class, 'destroy']);
     Route::post('products/{id}/variations', [Seller\ProductController::class, 'storeVariations']);
     Route::put('products/{productId}/variations/{variationId}', [Seller\ProductController::class, 'updateVariation']);
+    Route::delete('products/{productId}/variations/{variationId}', [Seller\ProductController::class, 'deleteVariation']);
 
     // Categories (for product form)
     Route::get('categories', [Seller\ProductController::class, 'categories']);

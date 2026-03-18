@@ -153,17 +153,13 @@ class ProductController extends Controller
     }
 
     /**
-     * Update a single variation
+     * Update a single variation (create if it doesn't exist)
      * PUT /seller/products/{productId}/variations/{variationId}
      */
     public function updateVariation(Request $request, $productId, $variationId)
     {
         $product = Product::where('id', $productId)
             ->where('seller_id', $request->user()->id)
-            ->firstOrFail();
-
-        $variation = ProductVariation::where('id', $variationId)
-            ->where('product_id', $product->id)
             ->firstOrFail();
 
         $request->validate([
@@ -175,11 +171,20 @@ class ProductController extends Controller
             'options.*.value'       => 'required|string',
         ]);
 
-        $variation->update([
-            'price'    => $request->price    ?? $variation->price,
-            'quantity' => $request->quantity  ?? $variation->quantity,
-            'sku'      => $request->sku      ?? $variation->sku,
+        // Find existing or create new variation
+        $variation = ProductVariation::firstOrNew(
+            ['id' => $variationId, 'product_id' => $product->id]
+        );
+
+        $isNew = !$variation->exists;
+
+        $variation->fill([
+            'product_id' => $product->id,
+            'price'      => $request->price    ?? $variation->price ?? 0,
+            'quantity'   => $request->quantity  ?? $variation->quantity ?? 0,
+            'sku'        => $request->sku       ?? $variation->sku,
         ]);
+        $variation->save();
 
         // Replace attributes only if options are provided
         if ($request->has('options')) {
@@ -195,8 +200,28 @@ class ProductController extends Controller
 
         return $this->success(
             $variation->load('attributes'),
-            'Variation updated successfully'
+            $isNew ? 'Variation created successfully' : 'Variation updated successfully'
         );
+    }
+
+    /**
+     * Delete a single variation
+     * DELETE /seller/products/{productId}/variations/{variationId}
+     */
+    public function deleteVariation(Request $request, $productId, $variationId)
+    {
+        $product = Product::where('id', $productId)
+            ->where('seller_id', $request->user()->id)
+            ->firstOrFail();
+
+        $variation = ProductVariation::where('id', $variationId)
+            ->where('product_id', $product->id)
+            ->firstOrFail();
+
+        $variation->attributes()->delete();
+        $variation->delete();
+
+        return $this->success(null, 'Variation deleted successfully');
     }
 
     /**
