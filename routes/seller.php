@@ -32,51 +32,55 @@ Route::middleware('auth:seller-api')->group(function () {
     // Dashboard / Home
     Route::get('home', [Seller\StatisticsController::class, 'index']);
 
-    // Profile
+    // Profile (View works without permission for the logged in user)
     Route::get('profile', [Seller\ProfileController::class, 'index']);
-    Route::put('profile', [Seller\ProfileController::class, 'update']);
-    Route::post('profile', [Seller\ProfileController::class, 'update']); // POST for file uploads
-    Route::delete('profile', [Seller\ProfileController::class, 'destroy']);
-
-    // Products
+    
+    // Products (Viewing products open to all employees)
     Route::get('products', [Seller\ProductController::class, 'index']);
-    Route::post('products', [Seller\ProductController::class, 'store']);
     Route::get('products/{id}', [Seller\ProductController::class, 'show']);
-    Route::put('products/{id}', [Seller\ProductController::class, 'update']);
-    Route::post('products/{id}', [Seller\ProductController::class, 'update']); // POST for file uploads
-    Route::delete('products/{id}', [Seller\ProductController::class, 'destroy']);
-    Route::post('products/{id}/variations', [Seller\ProductController::class, 'storeVariations']);
-    Route::put('products/{productId}/variations/{variationId}', [Seller\ProductController::class, 'updateVariation']);
-    Route::delete('products/{productId}/variations/{variationId}', [Seller\ProductController::class, 'deleteVariation']);
-
-    // Categories (for product form)
     Route::get('categories', [Seller\ProductController::class, 'categories']);
 
-    // Orders
+    Route::group(['middleware' => ['permission:manage-products,seller-api']], function () {
+        Route::post('products', [Seller\ProductController::class, 'store']);
+        Route::put('products/{id}', [Seller\ProductController::class, 'update']);
+        Route::post('products/{id}', [Seller\ProductController::class, 'update']); // POST for file uploads
+        Route::delete('products/{id}', [Seller\ProductController::class, 'destroy']);
+        Route::post('products/{id}/variations', [Seller\ProductController::class, 'storeVariations']);
+        Route::put('products/{productId}/variations/{variationId}', [Seller\ProductController::class, 'updateVariation']);
+        Route::delete('products/{productId}/variations/{variationId}', [Seller\ProductController::class, 'deleteVariation']);
+    });
+
+    // Orders (Viewing orders open to all employees)
     Route::get('orders', [Seller\OrderController::class, 'index']);
     Route::get('orders/{id}', [Seller\OrderController::class, 'details']);
-    Route::put('orders/{id}/status', [Seller\OrderController::class, 'changeOrderStatus']);
     Route::get('orders/{id}/invoice', [Seller\OrderController::class, 'generateInvoice']);
 
-    // Delivery Options
-    Route::get('delivery-options', [Seller\DeliveryController::class, 'index']);
-    Route::put('delivery-options', [Seller\DeliveryController::class, 'update']);
-    Route::post('delivery-options', [Seller\DeliveryController::class, 'update']); // POST alternative
+    Route::group(['middleware' => ['permission:manage-orders,seller-api']], function () {
+        Route::put('orders/{id}/status', [Seller\OrderController::class, 'changeOrderStatus']);
+    });
 
-    // Settings
+    // Settings / Settings Management
     Route::get('settings', [Seller\SettingsController::class, 'index']);
-    Route::post('settings/language', [Seller\SettingsController::class, 'updateLanguage']);
-
-    // Seller Services
+    Route::get('delivery-options', [Seller\DeliveryController::class, 'index']);
     Route::get('services', [Seller\SellerServicesController::class, 'index']);
-    Route::post('services', [Seller\SellerServicesController::class, 'store']);
-    Route::put('services/{id}/toggle', [Seller\SellerServicesController::class, 'updateAvailability']);
     Route::get('services/products-by-category', [Seller\SellerServicesController::class, 'getProductsByCategory']);
 
-    // Roles & Permissions (Employee Permissions)
-    Route::get('permissions', [Seller\RoleController::class, 'permissions']);
-    Route::apiResource('roles', Seller\RoleController::class);
+    Route::group(['middleware' => ['permission:manage-settings,seller-api']], function () {
+        Route::put('profile', [Seller\ProfileController::class, 'update']);
+        Route::post('profile', [Seller\ProfileController::class, 'update']); // POST for file uploads
+        Route::delete('profile', [Seller\ProfileController::class, 'destroy']);
+        Route::put('delivery-options', [Seller\DeliveryController::class, 'update']);
+        Route::post('delivery-options', [Seller\DeliveryController::class, 'update']); // POST alternative
+        Route::post('settings/language', [Seller\SettingsController::class, 'updateLanguage']);
+        Route::post('services', [Seller\SellerServicesController::class, 'store']);
+        Route::put('services/{id}/toggle', [Seller\SellerServicesController::class, 'updateAvailability']);
+    });
 
     // Employees Management
-    Route::apiResource('employees', Seller\EmployeeController::class);
+    Route::get('permissions', [Seller\RoleController::class, 'permissions']);
+    
+    Route::group(['middleware' => ['permission:manage-employees,seller-api']], function () {
+        Route::apiResource('roles', Seller\RoleController::class);
+        Route::apiResource('employees', Seller\EmployeeController::class);
+    });
 });

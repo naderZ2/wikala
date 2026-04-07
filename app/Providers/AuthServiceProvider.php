@@ -22,12 +22,16 @@ class AuthServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    // public function boot()
-    // {
-    //     $this->registerPolicies();
+    public function boot()
+    {
+        $this->registerPolicies();
 
-    //     Passport::routes();  
-
-    //     //
-    // }
+        // Implicitly grant all permissions to the Main Shop Owner
+        Gate::before(function ($user, $ability) {
+            // Check if the user is a Seller and is the main owner (no parent)
+            if ($user instanceof \App\Models\Seller && is_null($user->parent_id)) {
+                return true;
+            }
+        });
+    }
 }
