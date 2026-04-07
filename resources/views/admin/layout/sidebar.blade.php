@@ -145,7 +145,7 @@
                   	</li> --}}
 
 
-					{{-- <li class="sidebar-list">
+					<li class="sidebar-list">
 						<a class="sidebar-link sidebar-title {{ (request()->route()->uri() == 'users/admins')||(request()->route()->uri() =='users/roles') ? 'active' : '' }}" href="#">
 							<i data-feather="user-check"></i>
 							
@@ -154,12 +154,12 @@
 							<div class="according-menu"><i class="fa fa-angle-{{ (request()->route()->uri() == 'users/admins')||(request()->route()->uri() =='users/roles') ? 'down' : 'right' }}"></i></div>
 						</a>
 	                	<ul class="sidebar-submenu" style="display: {{ (request()->route()->uri() == 'users/admins')||(request()->route()->uri() =='users/roles') ? 'block;' : 'none;' }}">
-                        	<li><a href="{{ route('admins.index') }}" class="{{ Route::currentRouteName() == 'admins.index' ? 'active' : '' }}">{{ trans('lang.admins') }}</a></li>
+                        	<li style="display:none;"><a href="{{ route('admins.index') }}" class="{{ Route::currentRouteName() == 'admins.index' ? 'active' : '' }}">{{ trans('lang.admins') }}</a></li>
 							@can('roles')
 									<li><a href="{{ route('roles.index') }}" class="{{ Route::currentRouteName() == 'roles.index' ? 'active' : '' }}">{{ trans('lang.Roles') }}</a></li>
 							@endcan	
                     	</ul>
-                	</li> --}}
+                	</li>
 
 
 					<li class="sidebar-list">
