@@ -122,7 +122,7 @@
                   	</li> --}}
 
 
-					{{-- <li class="sidebar-list">
+					<li class="sidebar-list">
 						<a class="sidebar-link sidebar-title {{ request()->route()->getPrefix() == '/events' ? 'active' : '' }}" href="#"><i data-feather="calendar"></i>
 							<span class="lan-7">@lang('lang.events') </span>
 							<div class="according-menu"><i class="fa fa-angle-{{ request()->route()->getPrefix() == '/events' ? 'down' : 'right' }}"></i></div>
