@@ -72,4 +72,11 @@ Route::middleware('auth:seller-api')->group(function () {
     Route::post('services', [Seller\SellerServicesController::class, 'store']);
     Route::put('services/{id}/toggle', [Seller\SellerServicesController::class, 'updateAvailability']);
     Route::get('services/products-by-category', [Seller\SellerServicesController::class, 'getProductsByCategory']);
+
+    // Roles & Permissions (Employee Permissions)
+    Route::get('permissions', [Seller\RoleController::class, 'permissions']);
+    Route::apiResource('roles', Seller\RoleController::class);
+
+    // Employees Management
+    Route::apiResource('employees', Seller\EmployeeController::class);
 });

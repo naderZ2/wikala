@@ -22,8 +22,9 @@ class OrderController extends Controller
     {
         $this->lang();
         $seller = $request->user();
+        $mainSellerId = $seller->getMainSellerId();
 
-        $query = Order::where('seller_id', $seller->id)
+        $query = Order::where('seller_id', $mainSellerId)
             ->with('user:id,name,phone');
 
         // Filter by status
@@ -68,7 +69,7 @@ class OrderController extends Controller
         $lang = request()->header('Lang', app()->getLocale());
 
         $order = Order::where('id', $id)
-            ->where('seller_id', $request->user()->id)
+            ->where('seller_id', $request->user()->getMainSellerId())
             ->with([
                 'user:id,name,phone,email',
                 'orderDetails.product:id,name_en,name_ar,price,main_image',
@@ -150,7 +151,7 @@ class OrderController extends Controller
         ]);
 
         $order = Order::where('id', $id)
-            ->where('seller_id', $request->user()->id)
+            ->where('seller_id', $request->user()->getMainSellerId())
             ->firstOrFail();
 
         $statusTimeMap = [
@@ -183,7 +184,7 @@ class OrderController extends Controller
         $mainLang = App::getLocale();
 
         $order = Order::where('id', $id)
-            ->where('seller_id', $request->user()->id)
+            ->where('seller_id', $request->user()->getMainSellerId())
             ->with('user:id,name,phone,email', 'orderDetails.product', 'orderDetails.variation.attributes.attribute', 'seller:id,email,name', 'address', 'address.region')
             ->firstOrFail();
 

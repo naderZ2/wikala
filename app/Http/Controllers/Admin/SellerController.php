@@ -13,7 +13,7 @@ class SellerController extends Controller
         $this->lang();
         $status = $request->get('status', 'all');
 
-        $query = Seller::with("categories:id,$this->name");
+        $query = Seller::with("categories:id,$this->name")->whereNull('parent_id');
 
         if ($status === 'pending') {
             $query->where('active', 0);

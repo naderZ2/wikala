@@ -22,8 +22,9 @@ class ProductController extends Controller
     {
         $this->lang();
         $seller = $request->user();
+        $mainSellerId = $seller->getMainSellerId();
 
-        $query = Product::where('seller_id', $seller->id)
+        $query = Product::where('seller_id', $mainSellerId)
             ->with('images:id,product_id,name', "category:id,$this->name", 'variations.attributes');
 
         // Filter by status (approved, under_review, rejected)
@@ -68,8 +69,9 @@ class ProductController extends Controller
     {
         $this->lang();
         $seller = $request->user();
+        $mainSeller = $seller->parent_id ? $seller->parent : $seller;
 
-        $sellerCategories = $seller->categories;
+        $sellerCategories = $mainSeller->categories;
         $sellerCategoriesIds = $sellerCategories->pluck('pivot.category_id');
 
         $categories = Category::whereIn('id', $sellerCategoriesIds)
@@ -85,7 +87,7 @@ class ProductController extends Controller
     public function store(StoreRequest $request)
     {
         $data = $request->validated();
-        $data['seller_id'] = $request->user()->id;
+        $data['seller_id'] = $request->user()->getMainSellerId();
         $data['main_image'] = $this->uploadFile($request->main_image, 'products');
         $data['is_available'] = 0; // under review
 
@@ -112,7 +114,7 @@ class ProductController extends Controller
     public function storeVariations(Request $request, $id)
     {
         $product = Product::where('id', $id)
-            ->where('seller_id', $request->user()->id)
+            ->where('seller_id', $request->user()->getMainSellerId())
             ->firstOrFail();
 
         $request->validate([
@@ -159,7 +161,7 @@ class ProductController extends Controller
     public function updateVariation(Request $request, $productId, $variationId)
     {
         $product = Product::where('id', $productId)
-            ->where('seller_id', $request->user()->id)
+            ->where('seller_id', $request->user()->getMainSellerId())
             ->firstOrFail();
 
         $request->validate([
@@ -211,7 +213,7 @@ class ProductController extends Controller
     public function deleteVariation(Request $request, $productId, $variationId)
     {
         $product = Product::where('id', $productId)
-            ->where('seller_id', $request->user()->id)
+            ->where('seller_id', $request->user()->getMainSellerId())
             ->firstOrFail();
 
         $variation = ProductVariation::where('id', $variationId)
@@ -232,7 +234,7 @@ class ProductController extends Controller
     {
         $this->lang();
         $product = Product::where('id', $id)
-            ->where('seller_id', $request->user()->id)
+            ->where('seller_id', $request->user()->getMainSellerId())
             ->select('id', $this->name, $this->description, $this->title,
                 'category_id', 'price', 'old_price', 'quantity', 'main_image', 'is_available',
                 'name_en', 'name_ar', 'description_en', 'description_ar', 'seller_id')
@@ -249,7 +251,7 @@ class ProductController extends Controller
     public function update(EditRequest $request, $id)
     {
         $product = Product::where('id', $id)
-            ->where('seller_id', $request->user()->id)
+            ->where('seller_id', $request->user()->getMainSellerId())
             ->firstOrFail();
 
         $data = $request->validated();
@@ -297,7 +299,7 @@ class ProductController extends Controller
     public function destroy(Request $request, $id)
     {
         $product = Product::where('id', $id)
-            ->where('seller_id', $request->user()->id)
+            ->where('seller_id', $request->user()->getMainSellerId())
             ->firstOrFail();
 
         // Delete images

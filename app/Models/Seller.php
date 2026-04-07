@@ -8,11 +8,13 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Passport\HasApiTokens;
+use Spatie\Permission\Traits\HasRoles;
 
 class Seller extends Authenticatable
 {
     use HasFactory, HasApiTokens;
     use FileUploadTrait;
+    use HasRoles;
 
     protected $guard = 'seller';
     protected $fillable = [
@@ -20,7 +22,7 @@ class Seller extends Authenticatable
         'password', 'active',
         'latitude', 'longitude',
         'details', 'img_path', 'about',
-        'shop_name_en', 'shop_name_ar', 'banner'
+        'shop_name_en', 'shop_name_ar', 'banner', 'parent_id'
     ];
 
     protected $hidden = 
@@ -66,5 +68,20 @@ class Seller extends Authenticatable
     public function reviews()
     {
         return $this->hasMany(Review::class);
+    }
+
+    public function employees()
+    {
+        return $this->hasMany(Seller::class, 'parent_id');
+    }
+
+    public function parent()
+    {
+        return $this->belongsTo(Seller::class, 'parent_id');
+    }
+
+    public function getMainSellerId()
+    {
+        return $this->parent_id ?? $this->id;
     }
 }
