@@ -148,7 +148,7 @@
 					{{-- <li class="sidebar-list">
 						<a class="sidebar-link sidebar-title {{ (request()->route()->uri() == 'users/admins')||(request()->route()->uri() =='users/roles') ? 'active' : '' }}" href="#">
 							<i data-feather="user-check"></i>
-							{{-- <i class="fas fa-user-shield"></i> --}}
+							
 
 							<span class="lan-7">{{ trans('lang.admins') }}</span>
 							<div class="according-menu"><i class="fa fa-angle-{{ (request()->route()->uri() == 'users/admins')||(request()->route()->uri() =='users/roles') ? 'down' : 'right' }}"></i></div>
