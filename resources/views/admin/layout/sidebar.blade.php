@@ -145,7 +145,7 @@
                   	</li> --}}
 
 
-					<li class="sidebar-list">
+					{{-- <li class="sidebar-list">
 						<a class="sidebar-link sidebar-title {{ (request()->route()->uri() == 'users/admins')||(request()->route()->uri() =='users/roles') ? 'active' : '' }}" href="#">
 							<i data-feather="user-check"></i>
 							{{-- <i class="fas fa-user-shield"></i> --}}
@@ -159,7 +159,7 @@
 									<li><a href="{{ route('roles.index') }}" class="{{ Route::currentRouteName() == 'roles.index' ? 'active' : '' }}">{{ trans('lang.Roles') }}</a></li>
 							@endcan	
                     	</ul>
-                	</li>
+                	</li> --}}
 
 
 					<li class="sidebar-list">

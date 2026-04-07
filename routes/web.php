@@ -232,6 +232,15 @@ Route::group(['middleware' => ['auth:admin', 'CheckUserActiviation']], function 
         // Route::post('update_consultant\{id}', [Admin\ConsultantsController::class, 'update'])->name('consultant.update');
 
         Route::resource('seller', 'Admin\SellerController');
+        
+        // Seller Employees
+        Route::get('seller/{seller}/employees', [Admin\SellerEmployeeController::class, 'index'])->name('admin.seller.employees.index');
+        Route::get('seller/{seller}/employees/create', [Admin\SellerEmployeeController::class, 'create'])->name('admin.seller.employees.create');
+        Route::post('seller/{seller}/employees', [Admin\SellerEmployeeController::class, 'store'])->name('admin.seller.employees.store');
+        Route::get('seller/employees/{employee}/edit', [Admin\SellerEmployeeController::class, 'edit'])->name('admin.seller.employees.edit');
+        Route::put('seller/employees/{employee}', [Admin\SellerEmployeeController::class, 'update'])->name('admin.seller.employees.update');
+        Route::delete('seller/employees/{employee}', [Admin\SellerEmployeeController::class, 'destroy'])->name('admin.seller.employees.destroy');
+
         Route::put('update_seller\{id}', [Admin\SellerController::class, 'update'])->name('seller.update');
         Route::post('change_activity_status', [Admin\SellerController::class, 'changeActivityStatus'])->name('seller.change_activity_status');
         
