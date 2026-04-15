@@ -142,6 +142,7 @@ Route::middleware(['checkLanguage'])->group(function () {
         Route::get('order_tracking', [Client\OrderController::class, 'tracking']);
         Route::post('add_order', [Client\OrderController::class, 'store']);
         Route::post('cancel_order', [Client\OrderController::class, 'cancelOrder']);
+        Route::post('rate_order', [Client\OrderController::class, 'rateOrder']);
 
         //Auth
         Route::get('logout', [Client\Auth\UserAuthController::class, 'logout']);

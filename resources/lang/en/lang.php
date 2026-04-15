@@ -491,5 +491,11 @@ return  [
 	'rejection_reason' => 'Rejection Reason',
 	'rejection_reason_placeholder' => 'Enter the reason for rejecting this product...',
 
+	// Order Rating
+	'order_not_found' => 'Order not found',
+	'order_not_delivered' => 'You can only rate delivered orders',
+	'order_already_rated' => 'You have already rated this order',
+	'order_rated' => 'Thank you for your rating',
+
 ];
 ?>

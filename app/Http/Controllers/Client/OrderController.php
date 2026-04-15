@@ -3,12 +3,14 @@
 namespace App\Http\Controllers\Client;
 
 use App\Models\Order;
+use App\Models\Review;
 use App\Services\OrderService;
 use App\Traits\ResponsesTrait;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Client\City\CheckRequest;
 use App\Http\Requests\Client\Order\StoreRequest;
 use App\Http\Requests\Client\Order\CancelRequest;
+use App\Http\Requests\Client\Order\RateOrderRequest;
 use App\Http\Resources\OrderResource;
 
 class OrderController extends Controller
@@ -19,7 +21,7 @@ class OrderController extends Controller
         $this->lang();
          $orders=Order::where(['user_id'=>auth()->id()])->where("type","!=","basket")
         ->with(["orderDetails.extraService.extraDetails:id,$this->description","seller:id,name,img_path",
-        "orderDetails.product:id,$this->name,$this->description,$this->title,price,old_price,main_image,serving"])
+        "orderDetails.product:id,$this->name,$this->description,$this->title,price,old_price,main_image,serving","review"])
         ->select('id','status','order_number','updated_at','seller_id')
         ->orderByDESC('id')
         ->get();
@@ -50,4 +52,34 @@ class OrderController extends Controller
             return $this->success(null,trans('lang.order_not_cancel'));
         }
     }
+
+    public function rateOrder(RateOrderRequest $request){
+        $order = Order::where('id', $request->order_id)
+            ->where('user_id', auth()->id())
+            ->first();
+
+        if(!$order){
+            return $this->failed(null, trans('lang.order_not_found'));
+        }
+
+        if($order->status != 'delivered'){
+            return $this->failed(null, trans('lang.order_not_delivered'));
+        }
+
+        // Check if order already rated
+        if($order->review){
+            return $this->failed(null, trans('lang.order_already_rated'));
+        }
+
+        $review = Review::create([
+            'user_id'   => auth()->id(),
+            'seller_id' => $order->seller_id,
+            'order_id'  => $order->id,
+            'rating'    => $request->rating,
+            'comment'   => $request->comment,
+        ]);
+
+        return $this->success($review, trans('lang.order_rated'));
+    }
 }
+

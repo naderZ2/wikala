@@ -500,5 +500,11 @@ return  [
 	'rejection_reason' => 'سبب الرفض',
 	'rejection_reason_placeholder' => 'أدخل سبب رفض هذا المنتج...',
 
+	// تقييم الطلب
+	'order_not_found' => 'الطلب غير موجود',
+	'order_not_delivered' => 'يمكنك تقييم الطلبات المسلمة فقط',
+	'order_already_rated' => 'لقد قمت بتقييم هذا الطلب مسبقاً',
+	'order_rated' => 'شكراً لتقييمك',
+
 ];
 ?>

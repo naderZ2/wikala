@@ -61,4 +61,8 @@ class Order extends Model
     public function address(){
         return $this->hasOne(UserAdress::class,'id','address_id');
     }
+
+    public function review(){
+        return $this->hasOne(Review::class);
+    }
 }

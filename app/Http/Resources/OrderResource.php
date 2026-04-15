@@ -21,7 +21,15 @@ class OrderResource extends JsonResource
             'order_number' =>$this->order_number ,
             'updated_at' => $this->updated_at->format('d-M-Y'),
             'order_details' =>$this->orderDetails ,
-            'seller' =>$this->seller 
+            'seller' =>$this->seller,
+            'is_rated' => $this->review ? true : false,
+            'review' => $this->whenLoaded('review', function(){
+                return [
+                    'id' => $this->review->id,
+                    'rating' => $this->review->rating,
+                    'comment' => $this->review->comment,
+                ];
+            }),
 
         ];
     }
