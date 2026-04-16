@@ -216,6 +216,26 @@ class OrderController extends Controller
         $order->bill_url = $path;
         $order->save();
 
+        if ($order->user && $order->user->phone) {
+            $formattedNumber = ltrim($order->user->phone, '+');
+            $url = 'https://app.arrivewhats.com/api/send';
+            $params = [
+                'query' => [
+                    'number' => $formattedNumber,
+                    'type' => 'text',
+                    'message' => "https://wikala.org/ex/$path",
+                    'instance_id' => '673DDC44F3250',
+                    'access_token' => '673dda5a88081',
+                ],
+            ];
+            try {
+                $client = new \GuzzleHttp\Client();
+                $client->getAsync($url, $params)->wait();
+            } catch (\Exception $e) {
+                // Ignore exception to not break invoice generation
+            }
+        }
+
         App::setLocale($mainLang);
 
         return $this->success([

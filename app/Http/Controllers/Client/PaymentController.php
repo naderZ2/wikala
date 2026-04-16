@@ -104,9 +104,14 @@ class PaymentController extends Controller
         $merchantTxnId = $_GET['requested_order_id'];
         $paymentId= $_GET['payment_id'];
         $payment=Payment::where('payment_order_id',$merchantTxnId)->first();
-        Order::where('id',$payment->order_id)->update(['payment_status'=>"success"]);
-        $path= $this->generateInvoice($payment->order_id);
-        $this->sendOtpAsync("201142611070","https://ezhalhakw.com/ezhalha/$path");
+        $order = Order::with('user')->find($payment->order_id);
+        if ($order) {
+            $order->update(['payment_status'=>"success"]);
+            $path = $this->generateInvoice($order->id);
+            if ($order->user && $order->user->phone) {
+                $this->sendOtpAsync($order->user->phone, "https://wikala.org/ex/$path");
+            }
+        }
         // $user = User::whereId($payment->user_id)->increment('units', $units);
         $payment->update(['status' => "success",'payment_id'=>$paymentId]);
         return $this->success(null,"عملية ناجحة");
