@@ -27,7 +27,7 @@ class StoreRequest extends FormRequest
             'name' => 'required|max:255',
             'email' => 'required|unique:sellers,email',
             'password' => 'required',
-            'categories' => 'required',
+            'categories' => 'required|array|max:3',
             'cities' => 'required',
             'img_path' => 'required|max:1024',
         ];

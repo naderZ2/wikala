@@ -188,13 +188,20 @@
                     </div>
                     @endif
 
-                    {{-- Product Images --}}
+                    {{-- Product Images / Videos --}}
                     @if($product->images && $product->images->count() > 0)
                     <div class="col-md-12 mb-3">
-                        <label><strong>Images</strong></label>
+                        <label><strong>Gallery (Images & Videos)</strong></label>
                         <div class="d-flex flex-wrap gap-2">
                             @foreach($product->images as $img)
-                                <img src="{{ asset($img->name) }}" alt="" class="img-thumbnail" style="height:80px; width:80px; object-fit:cover; border-radius:8px;">
+                                @if($img->type == 'video')
+                                    <video controls class="img-thumbnail" style="height:80px; width:auto; object-fit:cover; border-radius:8px;">
+                                        <source src="{{ asset($img->video) }}" type="video/mp4">
+                                        Your browser does not support the video tag.
+                                    </video>
+                                @else
+                                    <img src="{{ asset($img->name) }}" alt="" class="img-thumbnail" style="height:80px; width:80px; object-fit:cover; border-radius:8px;">
+                                @endif
                             @endforeach
                         </div>
                     </div>

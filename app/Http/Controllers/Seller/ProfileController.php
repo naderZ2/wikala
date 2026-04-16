@@ -64,6 +64,8 @@ class ProfileController extends Controller
             'details' => 'nullable|string',
             'about' => 'nullable|string',
             'category_id' => 'nullable|exists:categories,id',
+            'categories' => 'nullable|array|max:3',
+            'categories.*' => 'exists:categories,id',
             'logo' => 'nullable|image|max:2048',
             'banner' => 'nullable|image|max:2048',
         ]);
@@ -95,8 +97,10 @@ class ProfileController extends Controller
 
         $seller->update(array_filter($data));
 
-        // Update category
-        if ($request->category_id) {
+        // Update categories (max 3)
+        if ($request->categories) {
+            $seller->categories()->sync(array_slice($request->categories, 0, 3));
+        } elseif ($request->category_id) {
             $seller->categories()->sync([$request->category_id]);
         }
 

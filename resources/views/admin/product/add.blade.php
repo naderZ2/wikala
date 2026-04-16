@@ -185,7 +185,7 @@
 
                                         <div id="inputFormRow">
                                             <div class="input-group mb-3">
-                                                <input class="form-control" type="file" name="images[]" value="{{ old('images') }}" required accept="image/*" >
+                                                <input class="form-control" type="file" name="images[]" value="{{ old('images') }}" required accept="image/*,video/*" >
                                                 {{-- <div class="input-group-append">
                                                     <button id="removeRow" type="button" class="btn btn-danger">Remove</button>
                                                 </div> --}}
@@ -232,7 +232,7 @@
         var html = '';
         html += '<div id="inputFormRow">';
         html += '<div class="input-group mb-3">';
-        html += '<input class="form-control" type="file" name="images[]" value="{{ old('images') }}" required accept="image/*">';
+        html += '<input class="form-control" type="file" name="images[]" value="{{ old(\'images\') }}" required accept="image/*,video/*">';
         html += '<div class="input-group-append">';
         html += '<button id="removeRow" type="button" class="btn btn-danger">@lang('lang.remove')</button>';
         html += '</div>';

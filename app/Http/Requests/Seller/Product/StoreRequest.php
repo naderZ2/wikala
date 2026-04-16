@@ -28,7 +28,7 @@ class StoreRequest extends FormRequest
             'quantity' => "sometimes|nullable|numeric",
             'category_id' => "required|exists:categories,id",
             'images' => "nullable|array",
-            'images.*' => "image|max:2048",
+            'images.*' => "mimes:jpeg,png,jpg,gif,mp4,mov,ogg,qt|max:20000",
             'main_image' => "required|image|max:2048",
         ];
     }
@@ -40,7 +40,8 @@ class StoreRequest extends FormRequest
             'name_en.required' => 'The English name is required',
             'description_ar.required' => 'The Arabic description is required',
             'description_en.required' => 'The English description is required',
-            'images.*.max' => 'Each image must not exceed 2MB.',
+            'images.*.max' => 'Each image/video must not exceed 20MB.',
+            'images.*.mimes' => 'Must be a valid image or video format.',
             'main_image.max' => 'The main image must not exceed 2MB.',
         ];
     }

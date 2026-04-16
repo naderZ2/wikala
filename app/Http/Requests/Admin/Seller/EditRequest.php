@@ -27,7 +27,7 @@ class EditRequest extends FormRequest
             'name' => 'required|max:255',
             'email' => 'required|unique:sellers,email, '.$this->id,
             'password' => 'sometimes|nullable',
-            'categories' => 'required',
+            'categories' => 'required|array|max:3',
             'cities' => 'required',
             'img_path' => 'sometimes|nullable|max:1024',
         ];

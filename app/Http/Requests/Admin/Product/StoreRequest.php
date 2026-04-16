@@ -34,10 +34,10 @@ class StoreRequest extends FormRequest
             'price' => "required|numeric",
             'old_price' => "required|numeric",
             'category_id' => "required",
-            'images' => "required|max:1024",
+            'images' => "required|array",
+            'images.*' => "mimes:jpeg,png,jpg,gif,mp4,mov,ogg,qt|max:20000",
             'main_image' => "required|max:1024",
             'seller_id' => "required",
-            // 'picture' => "required",
         ];
     }
     
@@ -50,7 +50,8 @@ class StoreRequest extends FormRequest
             'products.required'  => 'The Products are required',
             'description_en.required'  => 'The description_en are required',
             'main_image.max'  => 'The image size must not exceed 1MB.',
-            'images.max'  => 'The image size must not exceed 1MB.',
+            'images.*.max'  => 'Each image/video size must not exceed 20MB.',
+            'images.*.mimes' => 'Must be a valid image or video format.',
         ];
     }
 }

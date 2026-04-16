@@ -21,7 +21,9 @@ class RegisterRequest extends FormRequest
             'password' => 'required|string|min:6',
             'shop_name_en' => 'required|string|max:255',
             'shop_name_ar' => 'required|string|max:255',
-            'category_id' => 'nullable|exists:categories,id',
+            'category_id' => 'nullable|exists:categories,id',  // single category (backward compatible)
+            'categories' => 'nullable|array|max:3',
+            'categories.*' => 'exists:categories,id',
             'logo' => 'nullable|image|max:2048',
             'banner' => 'nullable|image|max:2048',
         ];

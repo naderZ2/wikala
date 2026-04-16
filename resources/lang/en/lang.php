@@ -497,5 +497,8 @@ return  [
 	'order_already_rated' => 'You have already rated this order',
 	'order_rated' => 'Thank you for your rating',
 
+	// Seller Categories Limit
+	'max_categories_limit' => 'You can select a maximum of 3 categories',
+
 ];
 ?>

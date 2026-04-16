@@ -28,7 +28,7 @@ class EditRequest extends FormRequest
             'quantity' => "sometimes|nullable|numeric",
             'category_id' => "sometimes|nullable|exists:categories,id",
             'images' => "sometimes|nullable|array",
-            'images.*' => "image|max:2048",
+            'images.*' => "mimes:jpeg,png,jpg,gif,mp4,mov,ogg,qt|max:20000",
             'main_image' => "sometimes|nullable|image|max:2048",
             'deleted_images' => "sometimes|nullable|array",
         ];
@@ -42,7 +42,8 @@ class EditRequest extends FormRequest
             'description_ar.required' => 'The Arabic description is required',
             'description_en.required' => 'The English description is required',
             'main_image.max' => 'The main image must not exceed 2MB.',
-            'images.*.max' => 'Each image must not exceed 2MB.',
+            'images.*.max' => 'Each image/video must not exceed 20MB.',
+            'images.*.mimes' => 'Must be a valid image or video format.',
         ];
     }
 

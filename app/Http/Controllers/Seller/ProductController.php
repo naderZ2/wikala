@@ -87,17 +87,24 @@ class ProductController extends Controller
     public function store(StoreRequest $request)
     {
         $data = $request->validated();
-        $data['seller_id'] = $request->user()->getMainSellerId();
-        $data['main_image'] = $this->uploadFile($request->main_image, 'products');
         $data['is_available'] = 0; // under review
 
         $product = Product::create($data);
 
         if ($request->images) {
-            foreach ($request->images as $img) {
-                $product->images()->create([
-                    'name' => $this->uploadFile($img, 'products'),
-                ]);
+            foreach ($request->images as $file) {
+                $mime = $file->getMimeType();
+                if (str_starts_with($mime, 'video/')) {
+                    $product->images()->create([
+                        'type' => 'video',
+                        'video' => $this->uploadFile($file, 'products'),
+                    ]);
+                } else {
+                    $product->images()->create([
+                        'type' => 'image',
+                        'name' => $this->uploadFile($file, 'products'),
+                    ]);
+                }
             }
         }
 
@@ -238,7 +245,7 @@ class ProductController extends Controller
             ->select('id', $this->name, $this->description, $this->title,
                 'category_id', 'price', 'old_price', 'quantity', 'main_image', 'is_available',
                 'name_en', 'name_ar', 'description_en', 'description_ar', 'seller_id')
-            ->with('images:id,product_id,name', "category:id,$this->name", 'variations.attributes')
+            ->with('images:id,product_id,name,type,video', "category:id,$this->name", 'variations.attributes')
             ->firstOrFail();
 
         return $this->success($product, 'Product details');
@@ -256,12 +263,21 @@ class ProductController extends Controller
 
         $data = $request->validated();
 
-        // Handle new images
+        // Handle new images/videos
         if ($request->images) {
-            foreach ($request->images as $img) {
-                $product->images()->create([
-                    'name' => $this->uploadFile($img, 'products'),
-                ]);
+            foreach ($request->images as $file) {
+                $mime = $file->getMimeType();
+                if (str_starts_with($mime, 'video/')) {
+                    $product->images()->create([
+                        'type' => 'video',
+                        'video' => $this->uploadFile($file, 'products'),
+                    ]);
+                } else {
+                    $product->images()->create([
+                        'type' => 'image',
+                        'name' => $this->uploadFile($file, 'products'),
+                    ]);
+                }
             }
         }
 
@@ -273,14 +289,17 @@ class ProductController extends Controller
             $data['main_image'] = $this->uploadFile($request->file('main_image'), 'products');
         }
 
-        // Handle deleted images
+        // Handle deleted images/videos
         if ($request->deleted_images) {
             $images = ProductImage::find($request->deleted_images);
             foreach ($images as $image) {
-                if (File::exists(public_path($image->name))) {
+                if ($image->name && File::exists(public_path($image->name))) {
                     File::delete(public_path($image->name));
-                    $image->delete();
                 }
+                if ($image->video && File::exists(public_path($image->video))) {
+                    File::delete(public_path($image->video));
+                }
+                $image->delete();
             }
         }
 
@@ -304,8 +323,11 @@ class ProductController extends Controller
 
         // Delete images
         foreach ($product->images as $image) {
-            if (File::exists(public_path($image->name))) {
+            if ($image->name && File::exists(public_path($image->name))) {
                 File::delete(public_path($image->name));
+            }
+            if ($image->video && File::exists(public_path($image->video))) {
+                File::delete(public_path($image->video));
             }
             $image->delete();
         }

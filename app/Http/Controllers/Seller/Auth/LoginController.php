@@ -71,8 +71,10 @@ class LoginController extends Controller
             $seller->save();
         }
 
-        // Attach category
-        if ($request->category_id) {
+        // Attach categories (max 3)
+        if ($request->categories) {
+            $seller->categories()->sync(array_slice($request->categories, 0, 3));
+        } elseif ($request->category_id) {
             $seller->categories()->sync([$request->category_id]);
         }
 

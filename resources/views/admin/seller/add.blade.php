@@ -121,4 +121,15 @@
 <script src="{{asset('assets/js/select2/select2.full.min.js')}}"></script>
 <script src="{{asset('assets/js/select2/select2-custom.js')}}"></script>
 <script src="{{asset('assets/js/form-validation-custom.js')}}"></script>
+<script>
+$(document).ready(function(){
+    $('select[name="categories[]"]').on('change', function(){
+        if($(this).val() && $(this).val().length > 3){
+            $(this).val($(this).val().slice(0, 3));
+            $(this).trigger('change.select2');
+            alert('@lang("lang.max_categories_limit")');
+        }
+    });
+});
+</script>
 @endsection

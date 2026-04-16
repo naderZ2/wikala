@@ -63,6 +63,7 @@ class ProductController extends Controller
         $data=$request->validated();
         $data['seller_id'] =$request->seller_id ;
         $data['main_image'] = $this->uploadFile($request->main_image,'products');
+
         $product = Product::create($data);
         
         if($request->has('attributes')){
@@ -97,10 +98,21 @@ class ProductController extends Controller
              }
         }
 
-        foreach($request->images as $img){
-            $product->images()->create([
-                'name' =>  $this->uploadFile($img,'products'),
-            ]);
+        if ($request->images) {
+            foreach ($request->images as $file) {
+                $mime = $file->getMimeType();
+                if (str_starts_with($mime, 'video/')) {
+                    $product->images()->create([
+                        'type' => 'video',
+                        'video' => $this->uploadFile($file, 'products'),
+                    ]);
+                } else {
+                    $product->images()->create([
+                        'type' => 'image',
+                        'name' => $this->uploadFile($file, 'products'),
+                    ]);
+                }
+            }
         }
         // Log::info($data);
         return  to_route('product.index')->with('success',trans('lang.created'));
@@ -155,10 +167,19 @@ class ProductController extends Controller
         }
 
         if($request->images){
-            foreach($request->images as $img){
-                $product->images()->create([
-                    'name' =>  $this->uploadFile($img,'products'),
-                ]);
+            foreach($request->images as $file){
+                $mime = $file->getMimeType();
+                if (str_starts_with($mime, 'video/')) {
+                    $product->images()->create([
+                        'type' => 'video',
+                        'video' => $this->uploadFile($file, 'products'),
+                    ]);
+                } else {
+                    $product->images()->create([
+                        'type' => 'image',
+                        'name' => $this->uploadFile($file, 'products'),
+                    ]);
+                }
             }
         }
         if($request->file('main_image')){
@@ -172,11 +193,13 @@ class ProductController extends Controller
         if($request->deleted_images){
             $images = ProductImage::find($request->deleted_images);
             foreach($images as $image){
-                if(File::exists(public_path($image->name))){
-                    $img =public_path($image->name);
-                    File::delete($img);
-                    $image->delete();
+                if($image->name && File::exists(public_path($image->name))){
+                    File::delete(public_path($image->name));
                 }
+                if($image->video && File::exists(public_path($image->video))){
+                    File::delete(public_path($image->video));
+                }
+                $image->delete();
             }
         }
 
@@ -193,7 +216,6 @@ class ProductController extends Controller
 
         if(is_null($product->deleted_at)){
             // Log::info('delete');
-
             $product->delete();
 
         }else{
