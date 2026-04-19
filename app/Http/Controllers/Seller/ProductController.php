@@ -90,6 +90,10 @@ class ProductController extends Controller
         $data['is_available'] = 0; // under review
         $data['seller_id'] = $request->user()->getMainSellerId();
 
+        if ($request->hasFile('main_image')) {
+            $data['main_image'] = $this->uploadFile($request->file('main_image'), 'products');
+        }
+
         $product = Product::create($data);
 
         if ($request->images) {
