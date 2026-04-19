@@ -500,5 +500,20 @@ return  [
 	// Seller Categories Limit
 	'max_categories_limit' => 'You can select a maximum of 3 categories',
 
+	// Seller Commission & Finance
+	'commission' => 'Commission',
+	'commission_type' => 'Commission Type',
+	'commission_value' => 'Commission Value',
+	'commission_settings' => 'Commission Settings',
+	'commission_rate' => 'Commission Rate',
+	'commission_amount' => 'Commission Amount',
+	'fixed_amount' => 'Fixed Amount',
+	'net_earnings' => 'Net Earnings',
+	'seller_earnings' => 'Seller Earnings',
+	'admin_commission' => 'Admin Commission',
+	'seller_finance' => 'Seller Finance',
+	'total_revenue' => 'Total Revenue',
+	'total_orders' => 'Total Orders',
+
 ];
 ?>

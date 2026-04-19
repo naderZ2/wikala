@@ -509,5 +509,20 @@ return  [
 	// حد اقسام البائع
 	'max_categories_limit' => 'يمكنك اختيار 3 أقسام كحد أقصى',
 
+	// عمولة البائع والتقارير المالية
+	'commission' => 'العمولة',
+	'commission_type' => 'نوع العمولة',
+	'commission_value' => 'قيمة العمولة',
+	'commission_settings' => 'إعدادات العمولة',
+	'commission_rate' => 'نسبة العمولة',
+	'commission_amount' => 'مبلغ العمولة',
+	'fixed_amount' => 'مبلغ ثابت',
+	'net_earnings' => 'صافي الأرباح',
+	'seller_earnings' => 'أرباح البائعين',
+	'admin_commission' => 'عمولة الإدارة',
+	'seller_finance' => 'مالية البائعين',
+	'total_revenue' => 'إجمالي الإيرادات',
+	'total_orders' => 'إجمالي الطلبات',
+
 ];
 ?>

@@ -21,11 +21,29 @@ class PaymentController extends Controller
 
   public function payment(PaymentRequest $request){
             $req=$request->validated();
-            // $coupon_code=$req['coupon_code']?:null;
             $payment_option=$req['payment_option'];
-            $order=Order::where('id',$req['order_id'])->first();
-            $order_total_price=$order->total_price + $order->delivery_fee; //testQ
-            $client=$order->user;
+
+            if(!empty($req['group_id'])){
+                $orders = Order::where('group_id',$req['group_id'])->get();
+            } else {
+                $anchor = Order::where('id',$req['order_id'])->first();
+                if($anchor && $anchor->group_id){
+                    $orders = Order::where('group_id',$anchor->group_id)->get();
+                } else {
+                    $orders = $anchor ? collect([$anchor]) : collect();
+                }
+            }
+
+            if($orders->isEmpty()){
+                return $this->failed(null,"order not found");
+            }
+
+            $groupId = $orders->first()->group_id ?: ('single_'.$orders->first()->id);
+            $order_total_price = $orders->sum('total_price') + $orders->sum('delivery_fee');
+            $client = $orders->first()->user;
+
+            $merchantTxnId = "Ezhalha_group_$groupId";
+
            if($request->payment_method == 'knet'){
             $payment_method = 'knet';
 
@@ -36,8 +54,8 @@ class PaymentController extends Controller
         }
         $data = array(
             "order" => array(
-                "id" => "202210101202210$order->id",
-                "reference" => "202210$order->id",
+                "id" => $merchantTxnId,
+                "reference" => "Ezhalha_$groupId",
                 "description" => "Ezhalha product",
                 "currency" => "KWD",
                 "amount" => $order_total_price
@@ -47,7 +65,7 @@ class PaymentController extends Controller
                 "src" => $payment_method
             ),
             "reference" => array(
-                "id" => "Ezhalha_order_id_$order->id"
+                "id" => "Ezhalha_group_$groupId"
             ),
             "customer" => array(
                 "uniqueId" => "Ezhalha_client_id_$client->id",
@@ -85,14 +103,19 @@ class PaymentController extends Controller
         $result = curl_exec($curl);
         curl_close($curl);
         $resp=json_decode($result, true);
-        $pay['user_id']=auth()->id();
-        $pay['order_id']=$order->id;
-        $pay['status']="PENDING";
-        $pay['amount']=$order_total_price;
-        $pay['payment_method']=$request->payment_method ;
-        $pay['payment_option']=$payment_option;
-        $pay['payment_order_id']="202210101202210$order->id";
-        Payment::create($pay);
+
+        foreach($orders as $order){
+            Payment::create([
+                'user_id'          => auth()->id(),
+                'order_id'         => $order->id,
+                'status'           => "PENDING",
+                'amount'           => $order->total_price + $order->delivery_fee,
+                'payment_method'   => $request->payment_method,
+                'payment_option'   => $payment_option,
+                'payment_order_id' => $merchantTxnId,
+            ]);
+        }
+
         return $this->success(["payment_url" =>$resp['data']['link']]);
 
     }
@@ -100,32 +123,35 @@ class PaymentController extends Controller
 
 
     public function successUrl(Request $request){
-        // return $request->all;
         $merchantTxnId = $_GET['requested_order_id'];
         $paymentId= $_GET['payment_id'];
-        $payment=Payment::where('payment_order_id',$merchantTxnId)->first();
-        $order = Order::with('user')->find($payment->order_id);
-        if ($order) {
-            $order->update(['payment_status'=>"success"]);
-            $path = $this->generateInvoice($order->id);
-            if ($order->user && $order->user->phone) {
-                $this->sendOtpAsync($order->user->phone, "https://wikala.org/ex/$path");
+        $payments = Payment::where('payment_order_id',$merchantTxnId)->get();
+
+        foreach($payments as $payment){
+            $order = Order::with('user')->find($payment->order_id);
+            if ($order) {
+                $order->update(['payment_status'=>"success"]);
+                $path = $this->generateInvoice($order->id);
+                if ($order->user && $order->user->phone) {
+                    $this->sendOtpAsync($order->user->phone, "https://wikala.org/ex/$path");
+                }
             }
+            $payment->update(['status' => "success",'payment_id'=>$paymentId]);
         }
-        // $user = User::whereId($payment->user_id)->increment('units', $units);
-        $payment->update(['status' => "success",'payment_id'=>$paymentId]);
+
         return $this->success(null,"عملية ناجحة");
     }
 
     public function failUrl(Request $request){
         $merchantTxnId = $_GET['requested_order_id'];
         $paymentId= $_GET['payment_id'];
-        $payment=Payment::where('payment_order_id',$merchantTxnId)->first();
-        Order::where('id',$payment->order_id)->update(['payment_status'=>"failed"]);
-        $payment->update(['status' => "failed",'payment_id'=>$paymentId]);
+        $payments = Payment::where('payment_order_id',$merchantTxnId)->get();
 
-        // $merchantTxnId = $_GET['merchantTxnId'];
-        // Payment::whereOrderId($merchantTxnId)->update(['status' => "failed"]);
+        foreach($payments as $payment){
+            Order::where('id',$payment->order_id)->update(['payment_status'=>"failed"]);
+            $payment->update(['status' => "failed",'payment_id'=>$paymentId]);
+        }
+
         return $this->failed(null,"عملية غير ناجحة");
     }
 

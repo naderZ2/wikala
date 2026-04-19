@@ -28,7 +28,20 @@ class   StatisticsController extends Controller
         $totalSellers = \App\Models\Seller::count();
         $totalProducts = \App\Models\Product::count();
         $totalOrders = \App\Models\Order::count();
-        $totalIncome = \App\Models\Order::where('status', 'completed')->sum('total_price');
+        $totalIncome = \App\Models\Order::where('status', 'delivered')->sum('total_price');
+
+        // Commission statistics
+        $totalAdminCommission = 0;
+        $totalSellerEarnings = 0;
+        $sellers = \App\Models\Seller::whereNull('parent_id')->get();
+        foreach ($sellers as $seller) {
+            $sellerRevenue = \App\Models\Order::where('seller_id', $seller->id)
+                ->where('status', 'delivered')
+                ->sum('total_price');
+            $commission = $seller->calculateCommission($sellerRevenue);
+            $totalAdminCommission += $commission;
+            $totalSellerEarnings += ($sellerRevenue - $commission);
+        }
 
         $cities = City::whereNull('parent_id')->get(['id',$this->name]);
 
@@ -36,7 +49,8 @@ class   StatisticsController extends Controller
 
         return view('admin.home',compact(
             'cities','regions',
-            'totalSellers', 'totalProducts', 'totalOrders', 'totalIncome'
+            'totalSellers', 'totalProducts', 'totalOrders', 'totalIncome',
+            'totalAdminCommission', 'totalSellerEarnings'
         ));
     }
 

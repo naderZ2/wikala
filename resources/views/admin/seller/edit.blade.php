@@ -115,6 +115,32 @@
                             </div>
 						</div>
 
+                        {{-- Commission Settings --}}
+                        <div class="row mt-3">
+                            <div class="col-12">
+                                <h6 class="mb-3" style="border-bottom: 1px solid #eee; padding-bottom: 10px;">
+                                    <i class="fas fa-percentage"></i> @lang('lang.commission_settings')
+                                </h6>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label>@lang('lang.commission_type')</label>
+                                <div class="mt-2">
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="commission_type" id="commission_percentage" value="percentage" {{ ($seller->commission_type ?? 'percentage') == 'percentage' ? 'checked' : '' }}>
+                                        <label class="form-check-label" for="commission_percentage">@lang('lang.percentage')</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="commission_type" id="commission_fixed" value="fixed" {{ ($seller->commission_type ?? '') == 'fixed' ? 'checked' : '' }}>
+                                        <label class="form-check-label" for="commission_fixed">@lang('lang.fixed_amount')</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="commission_value">@lang('lang.commission_value') <span id="commission_unit">({{ ($seller->commission_type ?? 'percentage') == 'percentage' ? '%' : trans('lang.sar') }})</span></label>
+                                <input class="form-control" id="commission_value" type="number" step="0.01" min="0" name="commission_value" value="{{ $seller->commission_value ?? 0 }}" placeholder="0">
+                            </div>
+                        </div>
+
                         <div class="text-center">
                             <button class="btn btn-primary" type="submit">@lang('lang.edit')</button>
                         </div>
@@ -139,6 +165,12 @@ $(document).ready(function(){
             $(this).trigger('change.select2');
             alert('@lang("lang.max_categories_limit")');
         }
+    });
+
+    // Commission type toggle
+    $('input[name="commission_type"]').on('change', function(){
+        var unit = $(this).val() === 'percentage' ? '%' : '@lang("lang.sar")';
+        $('#commission_unit').text('(' + unit + ')');
     });
 });
 </script>

@@ -17,6 +17,7 @@ class OrderResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'group_id' => $this->group_id,
             'status' => $this->mapStatus($this->status),
             'order_number' =>$this->order_number ,
             'updated_at' => $this->updated_at->format('d-M-Y'),

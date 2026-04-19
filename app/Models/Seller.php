@@ -22,7 +22,8 @@ class Seller extends Authenticatable
         'password', 'active',
         'latitude', 'longitude',
         'details', 'img_path', 'about',
-        'shop_name_en', 'shop_name_ar', 'banner', 'parent_id'
+        'shop_name_en', 'shop_name_ar', 'banner', 'parent_id',
+        'commission_type', 'commission_value'
     ];
 
     protected $hidden = 
@@ -83,5 +84,17 @@ class Seller extends Authenticatable
     public function getMainSellerId()
     {
         return $this->parent_id ?? $this->id;
+    }
+
+    /**
+     * Calculate the commission amount from a given total
+     */
+    public function calculateCommission($amount)
+    {
+        if ($this->commission_type === 'fixed') {
+            return min($this->commission_value, $amount);
+        }
+        // percentage
+        return round($amount * ($this->commission_value / 100), 2);
     }
 }

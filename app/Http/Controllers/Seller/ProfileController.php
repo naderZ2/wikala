@@ -36,6 +36,11 @@ class ProfileController extends Controller
             'details' => $seller->details,
             'about' => $seller->about,
             'active' => $seller->active,
+            'commission_type' => $seller->commission_type,
+            'commission_value' => $seller->commission_value,
+            'commission_label' => $seller->commission_type === 'percentage'
+                ? $seller->commission_value . '%'
+                : number_format($seller->commission_value, 2) . ' KWD (fixed)',
             'categories' => $seller->categories->map(function ($cat) use ($lang) {
                 return [
                     'id' => $cat->id,

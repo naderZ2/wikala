@@ -296,6 +296,7 @@
 
 	                    <ul class="sidebar-submenu" style="display: {{ request()->route()->uri() == 'users/seller' ? 'block;' : 'none;' }}">
                           <li><a href="{{ route('seller.index') }}" class="{{ Route::currentRouteName() == 'seller.index' ? 'active' : '' }}">{{ trans('lang.Sellers') }}</a></li>
+                          <li><a href="{{ route('admin.seller.finance') }}" class="{{ Route::currentRouteName() == 'admin.seller.finance' ? 'active' : '' }}">@lang('lang.seller_finance')</a></li>
 
                       </ul>
                   	</li>

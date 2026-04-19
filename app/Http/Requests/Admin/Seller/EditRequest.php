@@ -30,6 +30,8 @@ class EditRequest extends FormRequest
             'categories' => 'required|array|max:3',
             'cities' => 'required',
             'img_path' => 'sometimes|nullable|max:1024',
+            'commission_type' => 'sometimes|nullable|in:percentage,fixed',
+            'commission_value' => 'sometimes|nullable|numeric|min:0',
         ];
     }
 

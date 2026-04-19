@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Client;
 
 use App\Models\Order;
+use App\Models\AboutUs;
 use App\Models\OrderDetails;
 use App\Services\OrderService;
 use App\Traits\ResponsesTrait;
@@ -18,16 +19,27 @@ class BasketController extends Controller
     public function index(){
         $this->lang();
         $orders=Order::where(['user_id'=>auth()->id(),"type"=>'basket'])
-        // ->with("orderDetails.extraService.extraDetails:id,$this->description")
         ->with([
+            "seller:id,name,img_path",
             "orderDetails.product:id,$this->description,$this->title,$this->name,main_image,seller_id",
             "orderDetails.product.seller:id,name,img_path,details,about",
             "orderDetails.variation.attributes.attribute",
             "orderDetails.extraService.extraDetails:id,$this->description"
         ])
-        ->select('id','total_price','status','order_number','updated_at','delivery_fee')
+        ->select('id','seller_id','total_price','status','order_number','updated_at','delivery_fee')
         ->get();
-        return $this->success($orders);
+
+        $deliveryFee = (float) (AboutUs::find(1)->delivery_fee ?? 0);
+        $subTotal = $orders->sum('total_price');
+        $deliveryTotal = $orders->count() * $deliveryFee;
+
+        return $this->success([
+            'baskets'            => $orders,
+            'sub_total'          => $subTotal,
+            'delivery_fee'       => $deliveryFee,
+            'delivery_fee_total' => $deliveryTotal,
+            'grand_total'        => $subTotal + $deliveryTotal,
+        ]);
     }
 
     public function addToBasket(StoreRequest $request ,OrderService $service){
@@ -46,6 +58,11 @@ class BasketController extends Controller
 
               $order->update(['total_price' => $totalPrice]);
               $orderItem->delete();
+
+              if($order->type == 'basket' && $order->orderDetails()->count() === 0){
+                  $order->delete();
+              }
+
             return $this->success(null,trans('lang.item_deleted'));
         }
         else{

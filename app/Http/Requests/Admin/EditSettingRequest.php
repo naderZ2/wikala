@@ -34,7 +34,7 @@ class EditSettingRequest extends FormRequest
             
             'instance_id' => 'required',
             'access_token' => 'required',
-            // 'delivery_fee' => 'required|numeric|min:1',
+            'delivery_fee' => 'required|numeric|min:0',
 
             'ads_time_user' => 'required',
             'ads_time_business' => 'required',

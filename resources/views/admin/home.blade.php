@@ -95,6 +95,34 @@
           </div>
         </div>
 
+        <div class="col-xl-6 box-col-6 col-lg-6 col-md-6 ">
+          <div class="card o-hidden" style="border-left: 4px solid #2ecc71;">
+            <div class="card-body text-center">
+              <div class="ecommerce-widgets media">
+                <div class="media-body">
+                  <h4 class="f-w-500 font-roboto">@lang('lang.admin_commission')</h4>
+                  <h4 class="f-w-500 mb-0 f-26"><span class="counter">{{ number_format($totalAdminCommission, 2) }}</span> <span class="f-14">@lang('lang.sar')</span></h4>
+                </div>
+                <div class="ecommerce-box light-bg-primary"><i style="font-size: 30px" class="fas fa-hand-holding-usd"></i></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-xl-6 box-col-6 col-lg-6 col-md-6 ">
+          <div class="card o-hidden" style="border-left: 4px solid #3498db;">
+            <div class="card-body text-center">
+              <div class="ecommerce-widgets media">
+                <div class="media-body">
+                  <h4 class="f-w-500 font-roboto">@lang('lang.seller_earnings')</h4>
+                  <h4 class="f-w-500 mb-0 f-26"><span class="counter">{{ number_format($totalSellerEarnings, 2) }}</span> <span class="f-14">@lang('lang.sar')</span></h4>
+                </div>
+                <div class="ecommerce-box light-bg-primary"><i style="font-size: 30px" class="fas fa-wallet"></i></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {{-- @foreach ($sections as $section) --}}
             {{-- <div class="col-xl-6 box-col-6 col-lg-12 col-md-6">
                 <div class="card o-hidden">

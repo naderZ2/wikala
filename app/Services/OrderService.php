@@ -16,73 +16,74 @@ class OrderService{
     use FileUploadTrait;
 
     public function addOrder($request){
-         $order = Order::where(['user_id' => auth()->id(),'type'=>'basket'])->first();
-
-        $AboutUsData=AboutUs::find(1);
-        if(!$order){
-              return $this->failed(null," السلة فارغة الرجاء اختيار بعض الخدمات اولا");
+        $baskets = Order::where(['user_id' => auth()->id(),'type'=>'basket'])->get();
+        if($baskets->isEmpty()){
+            return $this->failed(null," السلة فارغة الرجاء اختيار بعض الخدمات اولا");
         }
-        $arr=["payment_type" => $request->payment_type,'delivery_time' => $request->delivery_time ,'type'=>"order",'delivery_fee'=>$AboutUsData->delivery_fee];
+
+        $deliveryFee = (float) (AboutUs::find(1)->delivery_fee ?? 0);
+
+        $discountRatio = 0;
         if($request->code){
-              $discount=Discount::whereCode($request->code)->first();
-               $price=$order->total_price-($order->total_price * ($discount->value/100));
-            $arr['total_price']=$price;
+            $discount = Discount::whereCode($request->code)->first();
+            if($discount){
+                $discountRatio = $discount->value / 100;
+            }
         }
 
-        $order->update($arr);
-        $order->update(["address_id" =>$request->address_id]);
-        return $this->success(null,"تم التأكيد");
+        $groupId = (string) \Illuminate\Support\Str::uuid();
+
+        DB::beginTransaction();
+        try {
+            foreach($baskets as $basket){
+                $sellerShare = $basket->total_price;
+                $discountedTotal = $sellerShare - ($sellerShare * $discountRatio);
+
+                $basket->update([
+                    'type'          => 'order',
+                    'group_id'      => $groupId,
+                    'payment_type'  => $request->payment_type,
+                    'delivery_time' => $request->delivery_time,
+                    'delivery_fee'  => $deliveryFee,
+                    'total_price'   => $discountedTotal,
+                    'address_id'    => $request->address_id,
+                ]);
+            }
+            DB::commit();
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            return $this->failed(null,"تعذر إنشاء الطلب");
+        }
+
+        $orders = Order::where('group_id',$groupId)->get();
+        $subTotal = $orders->sum('total_price');
+        $deliveryTotal = $orders->sum('delivery_fee');
+
+        return $this->success([
+            'group_id'           => $groupId,
+            'orders'             => $orders->pluck('id'),
+            'sub_total'          => $subTotal,
+            'delivery_fee_total' => $deliveryTotal,
+            'grand_total'        => $subTotal + $deliveryTotal,
+        ],"تم التأكيد");
     }
-    
-    // public function addOrder($request){
-    //     DB::beginTransaction();
-    //     $order = Order::create(['user_id' => auth()->id(),
-    //     "payment_type" => $request->payment_type,'delivery_time' => $request->delivery_time ,
-    //     "address_id" =>$request->address_id]);
-    //     $totalPrice=0;
-    //     $seller_id=0;
-    //     foreach( $request->products as $product){
-    //     // foreach( json_encode(json_decode($request->products, true)) as $product){
-    //         $actualProduct=Product::whereId($product['id'])->first();
-    //         $price =$actualProduct->price;
-    //         $seller_id = $actualProduct->seller_id;
-    //         if($actualProduct->quantity < $product['quantity']){
-    //             DB::rollback();
-    //             return $this->failed(null,"maximum quantity to order  $actualProduct->name_en:  $actualProduct->quantity");
-    //         }
-    //         $orderDetails['quantity'] = $product['quantity'];
-    //         $orderDetails['product_id'] = $product['id'];
-    //         $orderDetails['price'] = $product['quantity'] * $price;
-    //         $totalPrice += $orderDetails['price'];
-    //         $order->orderDetails()->create($orderDetails);
-    //         $actualProduct->decrement('quantity',$product['quantity']);
-    //     }
-    //     $data =['seller_id' =>$seller_id ,'total_price' => $totalPrice ,"order_number" => $order->id +10000];
 
-    //     if($request->hasFile('file')) {
-    //         // Log::error('file');
-    //         $data['file']=$this->uploadFile($request->file, 'sections');     
-    //     }
-    //     $order->update($data);
-    //     DB::commit();
-    //     return $this->success(null,"تم الطلب");
-    // }
-    
     public function addToBasket($request){
-       $order = Order::where(['user_id' => auth()->id(),'type'=>'basket'])->first();
         $actualProduct=Product::whereId($request->product_id)->first();
-       if(!$order){
-        $order = Order::create(['user_id' => auth()->id(),'type'=>'basket',
-        'seller_id'=>$actualProduct->seller_id
-        ]);
-       }else{
-           if($actualProduct->seller_id!=$order->seller_id){
-               
-            return $this->failed(null," يجب ان تكون كل المنتجات من نفس موزع الخدمة");
+        $order = Order::where([
+            'user_id'   => auth()->id(),
+            'type'      => 'basket',
+            'seller_id' => $actualProduct->seller_id,
+        ])->first();
+        if(!$order){
+            $order = Order::create([
+                'user_id'   => auth()->id(),
+                'type'      => 'basket',
+                'seller_id' => $actualProduct->seller_id,
+            ]);
+        }
 
-           }
-       }
-       
+
         $quantity = $request->quantity;
         $orderDetails['product_id'] = $request->product_id;
         $orderDetails['quantity'] = $quantity;

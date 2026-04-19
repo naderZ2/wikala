@@ -248,6 +248,10 @@ Route::group(['middleware' => ['auth:admin', 'CheckUserActiviation']], function 
         Route::get('sellers/{id}/delivery-options', [Admin\SellerController::class, 'deliveryOptions'])->name('seller.delivery-options');
         Route::post('sellers/{id}/delivery-options', [Admin\SellerController::class, 'updateDeliveryOptions'])->name('seller.update-delivery-options');
 
+        // Seller Finance & Commission
+        Route::get('sellers/finance', [Admin\SellerFinanceController::class, 'index'])->name('admin.seller.finance');
+        Route::post('sellers/{id}/update-commission', [Admin\SellerFinanceController::class, 'updateCommission'])->name('admin.seller.updateCommission');
+
         Route::resource('driver', 'Admin\DriverController');
         Route::put('update_driver\{id}', [Admin\DriverController::class, 'update'])->name('driver.update');
         Route::post('change_driver_status', [Admin\DriverController::class, 'changeActivityStatus'])->name('driver.change_activity_status');

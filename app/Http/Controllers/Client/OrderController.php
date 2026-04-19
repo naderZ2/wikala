@@ -22,7 +22,7 @@ class OrderController extends Controller
          $orders=Order::where(['user_id'=>auth()->id()])->where("type","!=","basket")
         ->with(["orderDetails.extraService.extraDetails:id,$this->description","seller:id,name,img_path",
         "orderDetails.product:id,$this->name,$this->description,$this->title,price,old_price,main_image,serving","review"])
-        ->select('id','status','order_number','updated_at','seller_id')
+        ->select('id','status','order_number','updated_at','seller_id','group_id')
         ->orderByDESC('id')
         ->get();
         

@@ -30,7 +30,8 @@ class PaymentRequest extends FormRequest
     {
         return [
             'payment_method' => 'required',
-            'order_id' => 'required',
+            'order_id' => 'required_without:group_id',
+            'group_id' => 'required_without:order_id',
             'payment_option' => 'required',
             'coupon_code' => 'sometimes|nullable',
         ];
@@ -46,7 +47,8 @@ class PaymentRequest extends FormRequest
         return [
             'payment_method.required'  =>  'payment method required',
             'payment_option.required'  =>  'payment option required',
-            'order_id.required'  =>  'order id required',
+            'order_id.required_without'  =>  'order id or group id required',
+            'group_id.required_without'  =>  'order id or group id required',
         ];
     }
 }

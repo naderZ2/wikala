@@ -23,6 +23,13 @@ class StatisticsController extends Controller
             ->whereIn('status', ['order_placed', 'confirmed'])
             ->count();
 
+        // Revenue & Commission
+        $totalRevenue = Order::where('seller_id', $seller->id)
+            ->where('status', 'delivered')
+            ->sum('total_price');
+        $totalCommission = $seller->calculateCommission($totalRevenue);
+        $netEarnings = $totalRevenue - $totalCommission;
+
         $lang = request()->header('Lang', app()->getLocale());
         $shopName = $lang == 'en' ? $seller->shop_name_en : $seller->shop_name_ar;
 
@@ -30,6 +37,14 @@ class StatisticsController extends Controller
             'products_count' => $productsCount,
             'orders_count' => $ordersCount,
             'pending_orders_count' => $pendingOrdersCount,
+            'total_revenue' => round($totalRevenue, 2),
+            'commission_type' => $seller->commission_type,
+            'commission_value' => $seller->commission_value,
+            'commission_label' => $seller->commission_type === 'percentage'
+                ? $seller->commission_value . '%'
+                : number_format($seller->commission_value, 2) . ' KWD (fixed)',
+            'total_commission' => round($totalCommission, 2),
+            'net_earnings' => round($netEarnings, 2),
             'seller' => [
                 'id' => $seller->id,
                 'name' => $seller->name,
