@@ -17,5 +17,6 @@ use Illuminate\Support\Facades\Route;
 //     Route::get('orders', [Driver\OrderController::class, 'index']);
 //     Route::get('order_details', [Driver\OrderController::class, 'details']);
 //     Route::post('order_delivery', [Driver\OrderController::class, 'orderDelivery']);
+
     
 // });
