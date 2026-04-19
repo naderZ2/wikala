@@ -88,6 +88,7 @@ class ProductController extends Controller
     {
         $data = $request->validated();
         $data['is_available'] = 0; // under review
+        $data['seller_id'] = $request->user()->getMainSellerId();
 
         $product = Product::create($data);
 
