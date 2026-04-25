@@ -58,7 +58,7 @@
 			<ul class="nav nav-pills seller-tabs mb-3">
 				<li class="nav-item">
 					<a class="nav-link {{ $status == 'all' ? 'active' : '' }}" href="{{ route('seller.index') }}">
-						@lang('lang.all') ({{ $allCount }})
+						@lang('lang.All') ({{ $allCount }})
 					</a>
 				</li>
 				<li class="nav-item">
