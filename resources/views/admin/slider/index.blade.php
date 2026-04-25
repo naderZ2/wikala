@@ -47,6 +47,27 @@
         margin-top: 8px;
         font-size: 14px;
     }
+    .upload-bar-container {
+        width: 280px;
+        height: 8px;
+        background: rgba(255,255,255,0.2);
+        border-radius: 4px;
+        margin-top: 16px;
+        overflow: hidden;
+    }
+    .upload-bar {
+        height: 100%;
+        width: 0%;
+        background: #fff;
+        border-radius: 4px;
+        transition: width 0.2s ease;
+    }
+    .upload-percent {
+        color: #fff;
+        margin-top: 10px;
+        font-size: 24px;
+        font-weight: 700;
+    }
 </style>
 @endsection
 
@@ -63,6 +84,10 @@
 <!-- Upload Loading Overlay -->
 <div id="uploadOverlay">
     <div class="upload-spinner"></div>
+    <div class="upload-percent" id="uploadPercent">0%</div>
+    <div class="upload-bar-container">
+        <div class="upload-bar" id="uploadBar"></div>
+    </div>
     <div class="upload-text">Uploading... Please wait</div>
     <div class="upload-progress" id="uploadProgress"></div>
 </div>
@@ -266,19 +291,54 @@
 	    document.getElementById("notification_id").value=id;
    }
 
-   // Show upload loading overlay on form submit
+   // Upload with real progress tracking
    document.addEventListener('DOMContentLoaded', function() {
        document.querySelectorAll('.upload-form').forEach(function(form) {
            form.addEventListener('submit', function(e) {
                var fileInput = form.querySelector('input[type="file"]');
                if (fileInput && fileInput.files.length > 0) {
+                   e.preventDefault();
+
                    var overlay = document.getElementById('uploadOverlay');
+                   var bar = document.getElementById('uploadBar');
+                   var percent = document.getElementById('uploadPercent');
+                   var progressInfo = document.getElementById('uploadProgress');
+
                    overlay.classList.add('active');
 
-                   // Show file size info
                    var file = fileInput.files[0];
                    var sizeMB = (file.size / (1024 * 1024)).toFixed(2);
-                   document.getElementById('uploadProgress').textContent = file.name + ' (' + sizeMB + ' MB)';
+                   progressInfo.textContent = file.name + ' (' + sizeMB + ' MB)';
+
+                   var formData = new FormData(form);
+                   var xhr = new XMLHttpRequest();
+
+                   xhr.upload.addEventListener('progress', function(e) {
+                       if (e.lengthComputable) {
+                           var pct = Math.round((e.loaded / e.total) * 100);
+                           bar.style.width = pct + '%';
+                           percent.textContent = pct + '%';
+                       }
+                   });
+
+                   xhr.addEventListener('load', function() {
+                       percent.textContent = '100%';
+                       bar.style.width = '100%';
+                       progressInfo.textContent = 'Done! Redirecting...';
+                       // Redirect to slider index after a short delay
+                       setTimeout(function() {
+                           window.location.href = '{{ route("slider.index") }}';
+                       }, 500);
+                   });
+
+                   xhr.addEventListener('error', function() {
+                       overlay.classList.remove('active');
+                       alert('Upload failed. Please try again.');
+                   });
+
+                   xhr.open(form.method, form.action, true);
+                   xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+                   xhr.send(formData);
                }
            });
        });
