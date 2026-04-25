@@ -74,7 +74,8 @@
 							</div>
 							
 
-							<div class="col-md-6 mb-3">
+							{{-- Disabled: These settings are no longer used (per-category limits are used instead) --}}
+							{{-- <div class="col-md-6 mb-3">
 								<label for="validationCustom01">@lang('lang.ads_time_user')</label>
 								<input class="form-control" id="validationCustom01" type="number" name="ads_time_user" value="{{ $settings->ads_time_user}}" placeholder="ads_time_user" required="">
 								<div class="valid-feedback">Looks good!</div>
@@ -98,7 +99,7 @@
 								<input class="form-control" id="validationCustom01" type="number" name="free_ads_business" value="{{ $settings->free_ads_business}}" placeholder="free_ads_business" required="">
 								<div class="valid-feedback">Looks good!</div>
                                 <div class="invalid-feedback">Please choose a free ads business.</div>
-							</div>
+							</div> --}}
 
 
 							

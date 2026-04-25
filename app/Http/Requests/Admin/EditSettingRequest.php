@@ -36,11 +36,11 @@ class EditSettingRequest extends FormRequest
             'access_token' => 'required',
             'delivery_fee' => 'required|numeric|min:0',
 
-            'ads_time_user' => 'required',
-            'ads_time_business' => 'required',
+            'ads_time_user' => 'sometimes|nullable',
+            'ads_time_business' => 'sometimes|nullable',
             
-            'free_ads_user' => 'required',
-            'free_ads_business' => 'required',
+            'free_ads_user' => 'sometimes|nullable',
+            'free_ads_business' => 'sometimes|nullable',
         ];
     }
 }

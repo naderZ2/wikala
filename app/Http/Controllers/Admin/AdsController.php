@@ -127,12 +127,6 @@ class AdsController extends Controller
 
 
         $ad = $this->adService->storeAdWithImages($data);
-        // $user= auth()->user();
-        $userId = $data['user_id'];
-        $user   = User::findOrFail($userId);
-        $user->update(
-            ['limit_ad' => $user->limit_ad - 1]
-        );
         // Ad::create($data);
         return to_route('ads.index')->with('success', trans('lang.created'));
     }

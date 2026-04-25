@@ -93,10 +93,6 @@ class AdController extends Controller
         $user = auth()->user();
         $categoryId = $request->category_id;
 
-        // Check global limit
-        if ($user->limit_ad <= 0) {
-            return $this->failed(null, trans('lang.limit_reached'));
-        }
 
         // Check category-specific limit
         if (!$user->canCreateFreeAdInCategory($categoryId)) {
@@ -106,8 +102,7 @@ class AdController extends Controller
         $data = $request->validated();
         $ad = $this->adService->storeAdWithImages($data);
 
-        // Decrement global limit
-        $user->update(['limit_ad' => $user->limit_ad - 1]);
+
 
         // Increment category-specific used count
         $userLimit = $user->getCategoryLimit($categoryId);
