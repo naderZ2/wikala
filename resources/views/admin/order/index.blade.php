@@ -87,7 +87,7 @@
 									<tr>
 										<td id="orderNumber">{{ $order->order_number }}</td>
 										<td class="text-center">{{ $order->total_price}}</td>
-										<td class="text-center">{{ $order->status}}</td>
+										<td class="text-center">{{ trans('lang.' . $order->status) }}</td>
 
 										{{-- <td class="text-center">{{ $order->user?->phone}}</td> --}}
 
@@ -163,12 +163,12 @@
 					<div class="mb-3">
 						<label for="setStatusSelect">@lang('lang.Status')</label>
 						<select class="form-control" id="setStatusSelect" name="status" required>
-							<option value="order_placed">order_placed</option>
-							<option value="confirmed">confirmed</option>
-							<option value="shipped">shipped</option>
-							<option value="out_for_delivery">out_for_delivery</option>
-							<option value="delivered">delivered</option>
-							<option value="cancel">cancel</option>
+							<option value="order_placed">@lang('lang.order_placed')</option>
+							<option value="confirmed">@lang('lang.confirmed')</option>
+							<option value="shipped">@lang('lang.shipped')</option>
+							<option value="out_for_delivery">@lang('lang.out_for_delivery')</option>
+							<option value="delivered">@lang('lang.delivered')</option>
+							<option value="cancel">@lang('lang.cancel')</option>
 						</select>
 					</div>
 				</div>

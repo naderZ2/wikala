@@ -63,17 +63,17 @@
 				</li>
 				<li class="nav-item">
 					<a class="nav-link {{ $status == 'pending' ? 'active' : '' }}" href="{{ route('seller.index', ['status' => 'pending']) }}">
-						<i class="fa fa-clock-o"></i> Pending Requests ({{ $pendingCount }})
+						<i class="fa fa-clock-o"></i> @lang('lang.pending_requests') ({{ $pendingCount }})
 					</a>
 				</li>
 				<li class="nav-item">
 					<a class="nav-link {{ $status == 'active' ? 'active' : '' }}" href="{{ route('seller.index', ['status' => 'active']) }}">
-						<i class="fa fa-check-circle"></i> Active ({{ $activeCount }})
+						<i class="fa fa-check-circle"></i> @lang('lang.active') ({{ $activeCount }})
 					</a>
 				</li>
 				<li class="nav-item">
 					<a class="nav-link {{ $status == 'rejected' ? 'active' : '' }}" href="{{ route('seller.index', ['status' => 'rejected']) }}">
-						<i class="fa fa-times-circle"></i> Rejected ({{ $rejectedCount }})
+						<i class="fa fa-times-circle"></i> @lang('lang.rejected') ({{ $rejectedCount }})
 					</a>
 				</li>
 			</ul>
@@ -120,9 +120,9 @@
 											@if ($seller->active == 1)
 												<span class="badge-active">@lang('lang.active')</span>
 											@elseif ($seller->active == 0)
-												<span class="badge-pending">Pending</span>
+												<span class="badge-pending">@lang('lang.pending')</span>
 											@else
-												<span class="badge-rejected">Rejected</span>
+												<span class="badge-rejected">@lang('lang.rejected')</span>
 											@endif
 										</td>
 										<td >
@@ -162,7 +162,7 @@
 											<form action="{{ route('seller.reject', $seller->id) }}" method="post" id="reject_form_{{ $seller->id }}" style="display:inline;">
 												@csrf
 												@can('edit seller status')
-												<button class="btn btn-dark btn-sm mt-1" onclick="confirmReject({{ $seller->id }})" type="button" >Reject</button>
+												<button class="btn btn-dark btn-sm mt-1" onclick="confirmReject({{ $seller->id }})" type="button" >@lang('lang.reject')</button>
 												@endcan	
 											</form>
 											@endif
@@ -219,7 +219,7 @@ function confirmAction(id){
 
 function confirmReject(id){
 	swal({
-		title: "هل انت متأكد من رفض هذا البائع؟",
+		title: "@lang('lang.reject_seller_confirm')",
 		icon: "warning",
 		buttons: true,
 		dangerMode: true,

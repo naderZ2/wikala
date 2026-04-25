@@ -150,6 +150,11 @@ return  [
 	"admins" => "Admins",
 	"add_admin" => "add Admin",
 	"add_client" => "add Client",
+	"order_placed" => "Order placed",
+	"confirmed" => "Confirmed",
+	"shipped" => "Shipped",
+	"out_for_delivery" => "Out for delivery",
+	"delivered" => "Delivered",
 	"edit_admin" => "edit Admin",
 	"order_cancel" => "Your order has been canceled",
 	'discounts' => "Discounts",
@@ -515,6 +520,11 @@ return  [
 	'seller_finance' => 'Seller Finance',
 	'total_revenue' => 'Total Revenue',
 	'total_orders' => 'Total Orders',
+	'rejected' => 'Rejected',
+	'pending_requests' => 'Pending Requests',
+	'reject' => 'Reject',
+	'reject_seller_confirm' => 'Are you sure you want to reject this seller?',
+	'pending' => 'Pending',
 
 ];
 ?>

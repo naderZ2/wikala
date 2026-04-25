@@ -165,6 +165,11 @@ return  [
 	"admins" => "المشرفين",
 	"add_admin" => "اضافة مشرف",
 	"add_client" => "اضافة عميل",
+	"order_placed" => "تم استلام الطلب",
+	"confirmed" => "تم التأكيد",
+	"shipped" => "تم الشحن",
+	"out_for_delivery" => "خرج للتوصيل",
+	"delivered" => "تم التوصيل",
 	"edit_admin" => "تعديل مشرف",
 	"order_cancel" => "تم الغاء طلبك بنجاح",
 	'discounts' => "الخصومات",
@@ -524,6 +529,11 @@ return  [
 	'seller_finance' => 'مالية البائعين',
 	'total_revenue' => 'إجمالي الإيرادات',
 	'total_orders' => 'إجمالي الطلبات',
+	'rejected' => 'مرفوض',
+	'pending_requests' => 'طلبات قيد الانتظار',
+	'reject' => 'رفض',
+	'reject_seller_confirm' => 'هل انت متأكد من رفض هذا البائع؟',
+	'pending' => 'قيد الانتظار',
 
 ];
 ?>
