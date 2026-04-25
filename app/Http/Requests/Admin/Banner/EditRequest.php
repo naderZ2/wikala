@@ -25,8 +25,8 @@ class EditRequest extends FormRequest
     {
         return [
             "id" => "required",
-            'name' =>"sometimes|nullable" ,
-            'link' =>"sometimes|nullable" ,
+            'name' => "sometimes|nullable|file|mimes:jpg,jpeg,png,gif,webp,mp4,mov,avi,webm|max:51200",
+            'link' => "sometimes|nullable",
             "category_id" => "sometimes|nullable"
         ];
     }
