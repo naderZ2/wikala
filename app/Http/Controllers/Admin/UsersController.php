@@ -36,13 +36,12 @@ class UsersController extends Controller
 
         User::create([
             'name'          => $request->name,
-            'phone'         => $request->phone,
+            'phone'         => '965' . ltrim($request->phone, '+'),
             'email'         => $request->email,
             'password'      => $request->password,
             'date_of_birth' => $request->date_of_birth,
             'bio'           => $request->bio,
             'type'          => 1,
-            'active'        => 1,
         ]);
 
         return redirect()->route('admin.clients')->with('success', trans('lang.added'));

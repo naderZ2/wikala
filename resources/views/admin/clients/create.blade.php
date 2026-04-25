@@ -46,7 +46,10 @@
 
 							<div class="col-md-6 mb-3">
 								<label for="clientPhone">@lang('lang.phone')</label>
-								<input class="form-control" id="clientPhone" type="text" name="phone" value="{{ old('phone') }}" placeholder="phone" required="">
+								<div class="input-group">
+									<span class="input-group-text">+965</span>
+									<input class="form-control" id="clientPhone" type="text" name="phone" value="{{ old('phone') }}" placeholder="phone" required="">
+								</div>
 								<div class="invalid-feedback">Please provide a valid phone.</div>
 							</div>
 						</div>
