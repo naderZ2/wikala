@@ -37,6 +37,7 @@
 								<tr>
 									<th>#</th>
 									<th>@lang('lang.Image')</th>
+									<th>Type</th>
 									<th></th>									
 								</tr>
 							</thead>
@@ -47,8 +48,15 @@
 											{{ $loop->iteration }}
 										</td>
 					
-										<td >
-											<img src="{{ asset($category->name) }}"  alt=""  class="image-fluid"  height="90">
+										<td>
+											@if($category->type == 'video')
+												<video src="{{ asset($category->video) }}" height="90" muted autoplay loop style="max-width:160px;"></video>
+											@else
+												<img src="{{ asset($category->name) }}" alt="" class="image-fluid" height="90">
+											@endif
+										</td>
+										<td>
+											<span class="badge {{ $category->type == 'video' ? 'bg-primary' : ($category->type == 'gif' ? 'bg-warning' : 'bg-success') }}">{{ $category->type ?? 'image' }}</span>
 										</td>							
 										
 										<td>
@@ -77,6 +85,7 @@
 								<tr>
 									<th>#</th>
 									<th>@lang('lang.Image')</th>
+									<th>Type</th>
 									<th></th>									
 								</tr>							
 							</tfoot>
@@ -107,9 +116,9 @@
 					<div class="col-md-12 mb-3">
 						<div class="col">
 							<div class="mb-3 row">
-								<label class="col-sm-3 col-form-label">@lang('lang.Image')</label>
+								<label class="col-sm-3 col-form-label">@lang('lang.Image') / Video / GIF</label>
 								<div class="col-sm-9">
-									<input class="form-control" type="file" name="name"  accept="image/*">
+									<input class="form-control" type="file" name="name" accept="image/*,video/*,.gif">
 								</div>
 							</div>
 						</div>
@@ -156,9 +165,9 @@
 					<div class="col-md-12 mb-3">
 						<div class="col">
 							<div class="mb-3 row">
-								<label class="col-sm-3 col-form-label">@lang('lang.Image')</label>
+								<label class="col-sm-3 col-form-label">@lang('lang.Image') / Video / GIF</label>
 								<div class="col-sm-9">
-									<input class="form-control" type="file" name="name"  accept="image/*">
+									<input class="form-control" type="file" name="name" accept="image/*,video/*,.gif">
 								</div>
 							</div>
 						</div>

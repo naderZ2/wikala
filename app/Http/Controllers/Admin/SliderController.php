@@ -28,8 +28,16 @@ class SliderController extends Controller
 
     public function destroy(Request $request){
         $slider=Slider::find($request->id);
-        $img =public_path($slider->name);
-        File::delete($img);
+        // Delete image file
+        if ($slider->name) {
+            $img = public_path($slider->name);
+            File::delete($img);
+        }
+        // Delete video file
+        if ($slider->video) {
+            $vid = public_path($slider->video);
+            File::delete($vid);
+        }
         $slider->delete();
         return  to_route('slider.index')->with('success',trans('lang.deleted')); 
     }
