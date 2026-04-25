@@ -8,6 +8,46 @@
 @endsection
 
 @section('style')
+<style>
+    #uploadOverlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.6);
+        z-index: 99999;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+    }
+    #uploadOverlay.active {
+        display: flex;
+    }
+    .upload-spinner {
+        width: 60px;
+        height: 60px;
+        border: 5px solid rgba(255,255,255,0.3);
+        border-top: 5px solid #fff;
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+    .upload-text {
+        color: #fff;
+        margin-top: 18px;
+        font-size: 18px;
+        font-weight: 500;
+    }
+    .upload-progress {
+        color: rgba(255,255,255,0.8);
+        margin-top: 8px;
+        font-size: 14px;
+    }
+</style>
 @endsection
 
 @section('breadcrumb-title')
@@ -20,6 +60,12 @@
 @endsection
 
 @section('content')
+<!-- Upload Loading Overlay -->
+<div id="uploadOverlay">
+    <div class="upload-spinner"></div>
+    <div class="upload-text">Uploading... Please wait</div>
+    <div class="upload-progress" id="uploadProgress"></div>
+</div>
 <div class="container-fluid">
 
 	<div class="row">
@@ -110,7 +156,7 @@
 		  </div>
 		  <div class="modal-body">
 
-			<form class="needs-validation" novalidate="" method="POST" enctype="multipart/form-data" action="{{ route('slider.store') }}">
+			<form class="needs-validation upload-form" novalidate="" method="POST" enctype="multipart/form-data" action="{{ route('slider.store') }}">
 				@csrf
 				<div class="mb-3">
 					<div class="col-md-12 mb-3">
@@ -156,7 +202,7 @@
 		  </div>
 		  <div class="modal-body">
 
-			<form class="needs-validation" novalidate="" method="POST" enctype="multipart/form-data" action="{{ route('dashboard.slider.update') }}">
+			<form class="needs-validation upload-form" novalidate="" method="POST" enctype="multipart/form-data" action="{{ route('dashboard.slider.update') }}">
 				@csrf
 				<input type="hidden" id="section_id" name="id">
 				
@@ -219,4 +265,22 @@
    function getId(id){
 	    document.getElementById("notification_id").value=id;
    }
+
+   // Show upload loading overlay on form submit
+   document.addEventListener('DOMContentLoaded', function() {
+       document.querySelectorAll('.upload-form').forEach(function(form) {
+           form.addEventListener('submit', function(e) {
+               var fileInput = form.querySelector('input[type="file"]');
+               if (fileInput && fileInput.files.length > 0) {
+                   var overlay = document.getElementById('uploadOverlay');
+                   overlay.classList.add('active');
+
+                   // Show file size info
+                   var file = fileInput.files[0];
+                   var sizeMB = (file.size / (1024 * 1024)).toFixed(2);
+                   document.getElementById('uploadProgress').textContent = file.name + ' (' + sizeMB + ' MB)';
+               }
+           });
+       });
+   });
 </script>
