@@ -39,13 +39,27 @@
     background-color: #e3f2fd;
     color: #1565c0;
 }
-.edit-commission-btn {
-    cursor: pointer;
-    color: #7366ff;
-    font-size: 14px;
+.btn-no-hover-primary {
+    background-color: transparent !important;
+    color: #7366ff !important;
+    border-color: #7366ff !important;
 }
-.edit-commission-btn:hover {
-    color: #5a50e0;
+.btn-no-hover-primary:hover, .btn-no-hover-primary:focus {
+    background-color: transparent !important;
+    color: #7366ff !important;
+    border-color: #7366ff !important;
+    box-shadow: none !important;
+}
+.btn-no-hover-secondary {
+    background-color: transparent !important;
+    color: #6c757d !important;
+    border-color: #6c757d !important;
+}
+.btn-no-hover-secondary:hover, .btn-no-hover-secondary:focus {
+    background-color: transparent !important;
+    color: #6c757d !important;
+    border-color: #6c757d !important;
+    box-shadow: none !important;
 }
 </style>
 @endsection
@@ -158,10 +172,10 @@
                                     <td><strong>{{ number_format($seller->commission_amount, 2) }}</strong> @lang('lang.sar')</td>
                                     <td>{{ number_format($seller->net_earnings, 2) }} @lang('lang.sar')</td>
                                     <td>
-                                        <button class="btn btn-outline-primary btn-sm" onclick="openCommissionModal({{ $seller->id }}, '{{ $seller->commission_type }}', {{ $seller->commission_value }}, '{{ addslashes($seller->name) }}')">
+                                        <button class="btn btn-no-hover-primary btn-sm" onclick="openCommissionModal({{ $seller->id }}, '{{ $seller->commission_type ?? 'percentage' }}', {{ $seller->commission_value ?? 0 }}, '{{ addslashes($seller->name) }}')">
                                             <i class="fas fa-edit"></i> @lang('lang.edit')
                                         </button>
-                                        <a href="{{ route('seller.edit', $seller->id) }}" class="btn btn-outline-secondary btn-sm">
+                                        <a href="{{ route('seller.edit', $seller->id) }}" class="btn btn-no-hover-secondary btn-sm">
                                             <i class="fas fa-eye"></i>
                                         </a>
                                     </td>
@@ -225,11 +239,12 @@
 <script src="{{asset('assets/js/datatable/datatables/datatable.custom.js')}}"></script>
 <script>
 function openCommissionModal(id, type, value, name) {
-    document.getElementById('commissionForm').action = '/users/sellers/' + id + '/update-commission';
+    var actionUrl = "{{ route('admin.seller.updateCommission', ':id') }}";
+    document.getElementById('commissionForm').action = actionUrl.replace(':id', id);
     document.getElementById('modalSellerName').textContent = name;
     document.getElementById('modal_commission_value').value = value;
 
-    if (type === 'percentage') {
+    if (type === 'percentage' || type === '') {
         document.getElementById('modal_percentage').checked = true;
         document.getElementById('modal_commission_unit').textContent = '(%)';
     } else {
@@ -237,8 +252,12 @@ function openCommissionModal(id, type, value, name) {
         document.getElementById('modal_commission_unit').textContent = '(@lang("lang.sar"))';
     }
 
-    var modal = new bootstrap.Modal(document.getElementById('commissionModal'));
-    modal.show();
+    if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+        var modal = new bootstrap.Modal(document.getElementById('commissionModal'));
+        modal.show();
+    } else {
+        $('#commissionModal').modal('show');
+    }
 }
 
 document.querySelectorAll('#commissionModal input[name="commission_type"]').forEach(function(radio) {
