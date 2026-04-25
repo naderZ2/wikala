@@ -31,6 +31,13 @@
     border-radius: 12px;
     font-size: 12px;
 }
+.badge-rejected {
+    background-color: #e74c3c;
+    color: #fff;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+}
 </style>
 @endsection
 
@@ -62,6 +69,11 @@
 				<li class="nav-item">
 					<a class="nav-link {{ $status == 'active' ? 'active' : '' }}" href="{{ route('seller.index', ['status' => 'active']) }}">
 						<i class="fa fa-check-circle"></i> Active ({{ $activeCount }})
+					</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link {{ $status == 'rejected' ? 'active' : '' }}" href="{{ route('seller.index', ['status' => 'rejected']) }}">
+						<i class="fa fa-times-circle"></i> Rejected ({{ $rejectedCount }})
 					</a>
 				</li>
 			</ul>
@@ -107,8 +119,10 @@
 										<td>
 											@if ($seller->active == 1)
 												<span class="badge-active">@lang('lang.active')</span>
-											@else
+											@elseif ($seller->active == 0)
 												<span class="badge-pending">Pending</span>
+											@else
+												<span class="badge-rejected">Rejected</span>
 											@endif
 										</td>
 										<td >
@@ -136,13 +150,22 @@
 												
 												@if ($seller->active == 1)
 												<button id="{{ $loop->iteration }}" class="btn btn-danger btn-sm mt-1" onclick="confirmAction({{ $seller->id }})" type="button" >@lang('lang.deactivation')</button>
-												@else
+												@elseif ($seller->active == 0 || $seller->active == -1)
 												<button id="{{ $loop->iteration }}" class="btn btn-primary btn-sm mt-1" onclick="confirmAction({{ $seller->id }})" type="button" >@lang('lang.activation')</button>
 												@endif
 
 												
 												@endcan	
 											</form>
+
+											@if ($seller->active != -1)
+											<form action="{{ route('seller.reject', $seller->id) }}" method="post" id="reject_form_{{ $seller->id }}" style="display:inline;">
+												@csrf
+												@can('edit seller status')
+												<button class="btn btn-dark btn-sm mt-1" onclick="confirmReject({{ $seller->id }})" type="button" >Reject</button>
+												@endcan	
+											</form>
+											@endif
 										
 										</td>
 									</tr>
@@ -190,6 +213,20 @@ function confirmAction(id){
 	.then((willProceed) => {
 		if (willProceed) {
 			document.getElementById("form_id_" + id).submit();
+		}
+	});
+}
+
+function confirmReject(id){
+	swal({
+		title: "هل انت متأكد من رفض هذا البائع؟",
+		icon: "warning",
+		buttons: true,
+		dangerMode: true,
+	})
+	.then((willProceed) => {
+		if (willProceed) {
+			document.getElementById("reject_form_" + id).submit();
 		}
 	});
 }

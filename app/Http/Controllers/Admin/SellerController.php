@@ -19,6 +19,8 @@ class SellerController extends Controller
             $query->where('active', 0);
         } elseif ($status === 'active') {
             $query->where('active', 1);
+        } elseif ($status === 'rejected') {
+            $query->where('active', -1);
         }
 
         $sellers = $query->orderBy('created_at', 'desc')->get();
@@ -27,8 +29,9 @@ class SellerController extends Controller
         $allCount = Seller::count();
         $pendingCount = Seller::where('active', 0)->count();
         $activeCount = Seller::where('active', 1)->count();
+        $rejectedCount = Seller::where('active', -1)->count();
 
-        return view('admin.seller.index', compact('sellers', 'status', 'allCount', 'pendingCount', 'activeCount'));
+        return view('admin.seller.index', compact('sellers', 'status', 'allCount', 'pendingCount', 'activeCount', 'rejectedCount'));
     }
 
     public function create(){
@@ -77,6 +80,15 @@ class SellerController extends Controller
         Product::whereSellerId($id)->update(['is_available' => $status]);
         return  to_route('seller.index')->with('success',trans('lang.updated')); 
     }
+
+    public function rejectSeller($id){
+        $seller=Seller::find($id);
+        $seller->active = -1;
+        $seller->save();
+        Product::whereSellerId($id)->update(['is_available' => -1]);
+        return  to_route('seller.index')->with('success',trans('lang.updated')); 
+    }
+
     public function deliveryOptions($id) {
         $this->lang();
         $seller = Seller::findOrFail($id);

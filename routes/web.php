@@ -245,6 +245,7 @@ Route::group(['middleware' => ['auth:admin', 'CheckUserActiviation']], function 
 
         Route::put('update_seller\{id}', [Admin\SellerController::class, 'update'])->name('seller.update');
         Route::post('change_activity_status', [Admin\SellerController::class, 'changeActivityStatus'])->name('seller.change_activity_status');
+        Route::post('reject_seller/{id}', [Admin\SellerController::class, 'rejectSeller'])->name('seller.reject');
         
         // Seller Delivery Options
         Route::get('sellers/{id}/delivery-options', [Admin\SellerController::class, 'deliveryOptions'])->name('seller.delivery-options');
@@ -332,6 +333,7 @@ Route::group(['middleware' => ['auth:admin', 'CheckUserActiviation']], function 
         Route::get('invoice/{id}', [Admin\OrderController::class, 'generateInvoice'])->name('order.generate_nvoice');
         Route::get('invoice/show/{id}', [Admin\OrderController::class, 'ShowInvoice'])->name('order.show_invoice');
         Route::get('change_status/{id}/{action}', [Admin\OrderController::class, 'changeOrderStatus'])->name('order.change_status');
+        Route::post('order/set_status', [Admin\OrderController::class, 'setOrderStatus'])->name('order.set_status');
         Route::post('assign_driver', [Admin\OrderController::class, 'assignDriver'])->name('order.assign_driver');
 
 

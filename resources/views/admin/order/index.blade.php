@@ -108,13 +108,14 @@
 											<a href="{{ route('order.details',$order->id) }}" class="btn btn-info m-1" >@lang('lang.details')</a>
 											{{-- @can('edit order status') --}}
 											@if ( $order->status !=='delivered' && $order->status !=='cancel')
-												
+
 											<a href="{{ route('order.change_status',[$order->id,'normal']) }}" class="btn btn-primary m-1" >@lang('lang.change_status')</a>
 											{{-- @endcan	 --}}
 											{{-- @can('cancel orders') --}}
 											<a href="{{ route('order.change_status',[$order->id,'cancel']) }}" class="btn btn-danger m-1" >@lang('lang.cancel')</a>
 											{{-- @endcan	 --}}
 											@endif
+											<button class="btn btn-warning m-1" type="button" data-bs-toggle="modal" data-bs-target="#setStatusModal" onclick="setStatusFor({{ $order->id }}, '{{ $order->status }}')">@lang('lang.Status')</button>
 											<!--@if($order->file)-->
     							<!--				<a href="{{asset($order->file)}}" download rel="noopener noreferrer" target="_blank" class="btn btn-success">-->
            <!--                                        @lang('lang.downloadFile')-->
@@ -148,8 +149,40 @@
 	</div>
 </div>
 
+<div class="modal fade" id="setStatusModal" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">@lang('lang.change_status')</h5>
+				<button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<form method="POST" action="{{ route('order.set_status') }}">
+				@csrf
+				<div class="modal-body">
+					<input type="hidden" name="id" id="setStatusOrderId">
+					<div class="mb-3">
+						<label for="setStatusSelect">@lang('lang.Status')</label>
+						<select class="form-control" id="setStatusSelect" name="status" required>
+							<option value="order_placed">order_placed</option>
+							<option value="confirmed">confirmed</option>
+							<option value="shipped">shipped</option>
+							<option value="out_for_delivery">out_for_delivery</option>
+							<option value="delivered">delivered</option>
+							<option value="cancel">cancel</option>
+						</select>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button class="btn btn-secondary" type="button" data-bs-dismiss="modal">@lang('lang.close')</button>
+					<button class="btn btn-primary" type="submit">@lang('lang.save')</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
 @endsection
-	
+
 @section('script')
 
 
@@ -180,6 +213,19 @@
             row.style.display = "none"; // Hide row if no phone data
         }
     });
+}
+
+function setStatusFor(id, currentStatus) {
+    document.getElementById('setStatusOrderId').value = id;
+    const select = document.getElementById('setStatusSelect');
+    if (currentStatus) {
+        for (let i = 0; i < select.options.length; i++) {
+            if (select.options[i].value === currentStatus) {
+                select.selectedIndex = i;
+                break;
+            }
+        }
+    }
 }
 
 function filterTableByOrderNumber() {

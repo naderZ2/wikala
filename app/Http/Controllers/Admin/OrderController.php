@@ -64,6 +64,34 @@ class OrderController extends Controller
         return to_route('order.index')->with('success',trans('lang.updated'));
     }
 
+    public function setOrderStatus(Request $request){
+        $request->validate([
+            'id'     => 'required|exists:orders,id',
+            'status' => 'required|in:order_placed,confirmed,shipped,out_for_delivery,delivered,cancel',
+        ]);
+
+        $order = Order::find($request->id);
+
+        $timeFields = [
+            'order_placed'      => null,
+            'confirmed'         => 'confirmed_time',
+            'shipped'           => 'shipped_time',
+            'out_for_delivery'  => 'out_for_delivery_time',
+            'delivered'         => 'actual_delivery_time',
+            'cancel'            => 'cancel_time',
+        ];
+
+        $update = ['status' => $request->status];
+        $timeField = $timeFields[$request->status] ?? null;
+        if ($timeField) {
+            $update[$timeField] = now();
+        }
+
+        $order->update($update);
+
+        return back()->with('success', trans('lang.updated'));
+    }
+
     public function assignDriver(AssignDriverRequest $request){
         $order = Order::find($request->id);
         $order->update(['driver_id' => $request->driver_id]);
