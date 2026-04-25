@@ -149,6 +149,7 @@ return  [
 	"products_orders" => "Products & Orders",
 	"admins" => "Admins",
 	"add_admin" => "add Admin",
+	"add_client" => "add Client",
 	"edit_admin" => "edit Admin",
 	"order_cancel" => "Your order has been canceled",
 	'discounts' => "Discounts",

@@ -221,6 +221,8 @@ Route::group(['middleware' => ['auth:admin', 'CheckUserActiviation']], function 
         Route::delete('category-limits/{userId}/{categoryId}', [Admin\UserCategoryLimitController::class, 'destroy'])->name('admin.userCategoryLimits.destroy');
 
         Route::get('clients', [Admin\UsersController::class, 'index'])->name('admin.clients');
+        Route::get('clients/create', [Admin\UsersController::class, 'create'])->name('admin.clients.create');
+        Route::post('clients/store', [Admin\UsersController::class, 'store'])->name('admin.clients.store');
 
         Route::post('clients', [Admin\UsersController::class, 'resetPassword'])->name('admin.clients.reset_password');
 

@@ -7,6 +7,7 @@ use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use Illuminate\Http\Request;
 use App\Traits\ResponsesTrait;
+use Illuminate\Validation\Rule;
 
 class RoleController extends Controller
 {
@@ -14,58 +15,110 @@ class RoleController extends Controller
 
     public function index()
     {
-        // Only roles relevant to the seller guard and specifically this seller's shop if we want to isolate them.
-        // For simplicity, we just list roles for 'seller' guard. If roles are shared among all sellers, we can just return them.
-        // Ideally, roles should be scoped to a seller. But Spatie doesn't directly support tenant scoped roles unless team_id is used.
-        // Let's assume roles are shared. If they need to be tailored, we could filter them out.
-        $roles = Role::where('guard_name', 'seller-api')->with('permissions')->get();
+        $mainSellerId = auth('seller-api')->user()->getMainSellerId();
+        
+        $roles = Role::where('guard_name', 'seller-api')
+                     ->where('seller_id', $mainSellerId)
+                     ->with('permissions')
+                     ->get();
+                     
         return $this->success($roles, 'Roles fetched successfully');
     }
 
     public function store(Request $request)
     {
+        $mainSellerId = auth('seller-api')->user()->getMainSellerId();
+
         $request->validate([
-            'name' => 'required|string|unique:roles,name',
+            'name' => [
+                'required',
+                'string',
+                Rule::unique('roles', 'name')->where(function ($query) use ($mainSellerId) {
+                    return $query->where('guard_name', 'seller-api')
+                                 ->where('seller_id', $mainSellerId);
+                })
+            ],
             'permissions' => 'nullable|array',
-            'permissions.*' => 'exists:permissions,name'
+            'permissions.*' => [
+                'exists:permissions,name',
+                function ($attribute, $value, $fail) {
+                    if (!Permission::where('name', $value)->where('guard_name', 'seller-api')->exists()) {
+                        $fail("The permission {$value} is invalid for sellers.");
+                    }
+                },
+            ]
         ]);
 
-        $role = Role::create(['name' => $request->name, 'guard_name' => 'seller-api']);
+        $role = Role::create([
+            'name' => $request->name, 
+            'guard_name' => 'seller-api',
+            'seller_id' => $mainSellerId
+        ]);
         
-        if ($request->has('permissions')) {
+        if ($request->has('permissions') && !empty($request->permissions)) {
             $role->syncPermissions($request->permissions);
         }
 
-        return $this->success($role, 'Role created successfully');
+        return $this->success($role->load('permissions'), 'Role created successfully');
     }
 
     public function show($id)
     {
-        $role = Role::where('guard_name', 'seller-api')->with('permissions')->findOrFail($id);
+        $mainSellerId = auth('seller-api')->user()->getMainSellerId();
+        
+        $role = Role::where('guard_name', 'seller-api')
+                    ->where('seller_id', $mainSellerId)
+                    ->with('permissions')
+                    ->findOrFail($id);
+                    
         return $this->success($role, 'Role fetched successfully');
     }
 
     public function update(Request $request, $id)
     {
+        $mainSellerId = auth('seller-api')->user()->getMainSellerId();
+        
+        $role = Role::where('guard_name', 'seller-api')
+                    ->where('seller_id', $mainSellerId)
+                    ->findOrFail($id);
+
         $request->validate([
-            'name' => 'required|string|unique:roles,name,' . $id,
+            'name' => [
+                'required',
+                'string',
+                Rule::unique('roles', 'name')->where(function ($query) use ($mainSellerId) {
+                    return $query->where('guard_name', 'seller-api')
+                                 ->where('seller_id', $mainSellerId);
+                })->ignore($role->id)
+            ],
             'permissions' => 'nullable|array',
-            'permissions.*' => 'exists:permissions,name'
+            'permissions.*' => [
+                'exists:permissions,name',
+                function ($attribute, $value, $fail) {
+                    if (!Permission::where('name', $value)->where('guard_name', 'seller-api')->exists()) {
+                        $fail("The permission {$value} is invalid for sellers.");
+                    }
+                },
+            ]
         ]);
 
-        $role = Role::where('guard_name', 'seller-api')->findOrFail($id);
         $role->update(['name' => $request->name]);
         
         if ($request->has('permissions')) {
             $role->syncPermissions($request->permissions);
         }
 
-        return $this->success($role, 'Role updated successfully');
+        return $this->success($role->load('permissions'), 'Role updated successfully');
     }
 
     public function destroy($id)
     {
-        $role = Role::where('guard_name', 'seller-api')->findOrFail($id);
+        $mainSellerId = auth('seller-api')->user()->getMainSellerId();
+        
+        $role = Role::where('guard_name', 'seller-api')
+                    ->where('seller_id', $mainSellerId)
+                    ->findOrFail($id);
+                    
         $role->delete();
 
         return $this->success(null, 'Role deleted successfully');
@@ -73,6 +126,7 @@ class RoleController extends Controller
 
     public function permissions()
     {
+        // Only fetch permissions specifically meant for sellers
         $permissions = Permission::where('guard_name', 'seller-api')->get();
         return $this->success($permissions, 'Permissions fetched successfully');
     }

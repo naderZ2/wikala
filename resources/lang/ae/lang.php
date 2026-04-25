@@ -164,6 +164,7 @@ return  [
 	"products_orders" => "المنتجات والطلبات",
 	"admins" => "المشرفين",
 	"add_admin" => "اضافة مشرف",
+	"add_client" => "اضافة عميل",
 	"edit_admin" => "تعديل مشرف",
 	"order_cancel" => "تم الغاء طلبك بنجاح",
 	'discounts' => "الخصومات",

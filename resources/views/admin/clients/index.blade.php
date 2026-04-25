@@ -21,6 +21,10 @@
 <div class="container-fluid">
 	<div class="row">
 
+		<div class="d-flex justify-content-end col-sm-12 mb-3">
+			<a href="{{ route('admin.clients.create') }}" class="btn btn-primary">@lang('lang.add_client')</a>
+		</div>
+
 		<div class="col-sm-12">
 			<div class="card">
 				<div class="card-body">
