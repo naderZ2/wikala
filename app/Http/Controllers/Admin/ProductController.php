@@ -21,7 +21,7 @@ class ProductController extends Controller
     public function index(){
         $this->lang();
         $products=Product::with('images:id,product_id,name','seller:id,name',"category:id,$this->name",'variations.attributes')
-        ->select('id',$this->name,$this->description,"price","quantity",'main_image','seller_id','category_id','is_available','old_price','rejection_reason')
+        ->select('id',$this->name,$this->description,"price","quantity",'main_image','seller_id','category_id','is_available','old_price','rejection_reason','created_at','updated_at')
         ->withTrashed()
         ->get();
         return view('admin.product.index',compact('products'));
