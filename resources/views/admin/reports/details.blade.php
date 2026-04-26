@@ -1,25 +1,35 @@
 @extends('admin.layout.master')
-@section('title', 'Ad Details')
+@section('title', 'Report Details')
 
 @section('css')
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/vendors/select2.css') }}">
 <link rel="stylesheet" type="text/css" href="{{asset('assets/css/vendors/photoswipe.css')}}">
-
 @endsection
 
 @section('style')
 @endsection
 
 @section('breadcrumb-title')
-<h3>@lang('lang.ad_details')</h3>
+<h3>@lang('lang.reports')</h3>
 @endsection
 
 @section('breadcrumb-items')
-<li class="breadcrumb-item">@lang('lang.ads')</li>
-<li class="breadcrumb-item active">@lang('lang.ad_details')</li>
+<li class="breadcrumb-item"><a href="{{ route('admin.reports.index') }}">@lang('lang.reports')</a></li>
+<li class="breadcrumb-item active">@lang('lang.details')</li>
 @endsection
 
 @section('content')
+
+@php
+    $isEn = app()->getLocale() === 'en';
+    $optionTitle = $report->reportOption
+        ? ($isEn
+            ? ($report->reportOption->title_en ?? $report->reportOption->title_ar)
+            : ($report->reportOption->title_ar ?? $report->reportOption->title_en))
+        : trans('lang.no_data');
+    $adRelation   = $report->adSpecificRelation;
+    $userRelation = $report->userSpecificRelation;
+@endphp
 
 <div class="container-fluid">
     <div class="row">
@@ -32,35 +42,34 @@
                     </div>
                     <div class="row mb-3">
                         <div class="col-md-3 fw-bold">@lang('lang.Reporter'):</div>
-                        <div class="col-md-9">{{ $report->reporter->name }}</div>
+                        <div class="col-md-9">{{ $report->reporter?->name ?? trans('lang.no_data') }}</div>
                     </div>
                     <div class="row mb-3">
                         <div class="col-md-3 fw-bold">@lang('lang.Report_Option'):</div>
-                        <div class="col-md-9">{{ $report->reportOption->title_en }}</div>
+                        <div class="col-md-9">{{ $optionTitle }}</div>
                     </div>
                     <div class="row mb-3">
                         <div class="col-md-3 fw-bold">@lang('lang.Additional_Notes'):</div>
                         <div class="col-md-9">{{ $report->additional_notes ?? trans('lang.no_data') }}</div>
                     </div>
-                    
-					{{-- @dd($report->adSpecificRelation) --}}
-					@if($report->adSpecificRelation)
-					<div class="row mb-3">
-						<div class="col-md-3 fw-bold">@lang('lang.Ad_Title'):</div>
-						<div class="col-md-9">{{ $report->adSpecificRelation->title ?? trans('lang.no_data') }}</div>
-					</div>
-					<div class="row mb-3">
-						<div class="col-md-3 fw-bold">@lang('lang.Ad_Number'):</div>
-						<div class="col-md-9">{{ $report->adSpecificRelation->ad_number ?? trans('lang.no_data') }}</div>
-					</div>
-					@endif
 
-					@if($report->UserSpecificRelation)
-					<div class="row mb-3">
-						<div class="col-md-3 fw-bold">@lang('lang.User_Specific_Relation'):</div>
-						<div class="col-md-9">{{ $report->user_specific_relation->name ?? trans('lang.no_data') }}</div>
-					</div>
-					@endif
+                    @if($adRelation)
+                    <div class="row mb-3">
+                        <div class="col-md-3 fw-bold">@lang('lang.Ad_Title'):</div>
+                        <div class="col-md-9">{{ $adRelation->title ?? trans('lang.no_data') }}</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-3 fw-bold">@lang('lang.Ad_Number'):</div>
+                        <div class="col-md-9">{{ $adRelation->ad_number ?? trans('lang.no_data') }}</div>
+                    </div>
+                    @endif
+
+                    @if($userRelation)
+                    <div class="row mb-3">
+                        <div class="col-md-3 fw-bold">@lang('lang.User_Specific_Relation'):</div>
+                        <div class="col-md-9">{{ $userRelation->name ?? trans('lang.no_data') }}</div>
+                    </div>
+                    @endif
                 </div>
             </div>
         </div>

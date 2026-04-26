@@ -60,16 +60,14 @@ class ReportRepository
     }
     public function findWithRelations($id)
     {
-         
-        $report =$this->model->with([
-            'reportOption', 
-            'reporter', 
-        ])->findOrFail($id);
-            if($report->reportable_type === 'ad'){
-                $report->load('adSpecificRelation');
-            }else if($report->reportable_type === 'user'){
-                $report->load('userSpecificRelation');
-            }
-    return $report;
+        $report = $this->model->with(['reportOption', 'reporter'])->findOrFail($id);
+
+        if ($report->reportable_type === \App\Models\Ad::class || $report->reportable_type === 'ad') {
+            $report->load('adSpecificRelation');
+        } elseif ($report->reportable_type === \App\Models\User::class || $report->reportable_type === 'user') {
+            $report->load('userSpecificRelation');
+        }
+
+        return $report;
     }
 }

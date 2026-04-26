@@ -48,12 +48,19 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                @php $isEn = app()->getLocale() === 'en'; @endphp
                                 @forelse ($reports as $report)
+                                    @php
+                                        $optionTitle = $report?->reportOption
+                                            ? ($isEn
+                                                ? ($report->reportOption->title_en ?? $report->reportOption->title_ar)
+                                                : ($report->reportOption->title_ar ?? $report->reportOption->title_en))
+                                            : trans('lang.no_data');
+                                    @endphp
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
-                                        <td class="text-center">{{ $report?->reporter->name }}</td>
-										{{-- @dd($report) --}}
-                                        <td class="text-center">{{ $report?->reportOption?->title_ar }}</td>
+                                        <td class="text-center">{{ $report?->reporter?->name ?? trans('lang.no_data') }}</td>
+                                        <td class="text-center">{{ $optionTitle }}</td>
                                         <td class="text-center">{{ $report?->additional_notes ?? trans('lang.no_data') }}</td>
                                         <td class="text-center">
                                             <a href="{{ route('admin.reports.details', $report->id) }}" class="btn btn-info m-1">@lang('lang.details')</a>
