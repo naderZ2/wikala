@@ -123,6 +123,15 @@ Route::group(['middleware' => ['auth:admin', 'CheckUserActiviation']], function 
 
         Route::resource('discounts', 'Admin\DiscountController');
         Route::get('change_active\{id}', [Admin\DiscountController::class, 'changeActive'])->name('change_active');
+
+        // Coupons
+        Route::get('coupons',                  [Admin\CouponController::class, 'index'])->name('admin.coupons.index');
+        Route::get('coupons/create',           [Admin\CouponController::class, 'create'])->name('admin.coupons.create');
+        Route::post('coupons',                 [Admin\CouponController::class, 'store'])->name('admin.coupons.store');
+        Route::get('coupons/{coupon}/edit',    [Admin\CouponController::class, 'edit'])->name('admin.coupons.edit');
+        Route::put('coupons/{coupon}',         [Admin\CouponController::class, 'update'])->name('admin.coupons.update');
+        Route::delete('coupons/{coupon}',      [Admin\CouponController::class, 'destroy'])->name('admin.coupons.destroy');
+        Route::get('coupons/{coupon}/toggle',  [Admin\CouponController::class, 'toggleActive'])->name('admin.coupons.toggle');
         // Route::view('home', 'dashboard.index')->name('index');
 
         Route::view('dashboard-02', 'dashboard.dashboard-02')->name('dashboard-02');

@@ -4,8 +4,10 @@ namespace App\Services;
 use DB;
 use App\Models\Order;
 use App\Models\AboutUs;
+use App\Models\Coupon;
 use App\Models\Product;
 use App\Models\Discount;
+use App\Models\CouponUsage;
 use App\Traits\ResponsesTrait;
 use App\Traits\FileUploadTrait;
 use App\Models\ProductExtraService;
@@ -22,12 +24,25 @@ class OrderService{
         }
 
         $deliveryFee = (float) (AboutUs::find(1)->delivery_fee ?? 0);
+        $basketSubtotal = (float) $baskets->sum('total_price');
 
-        $discountRatio = 0;
+        $coupon          = null;
+        $couponDiscount  = 0.0;
+        $discountRatio   = 0.0;
+
         if($request->code){
-            $discount = Discount::whereCode($request->code)->first();
-            if($discount){
-                $discountRatio = $discount->value / 100;
+            $coupon = Coupon::where('code', $request->code)->first();
+            if($coupon){
+                [$valid, $error] = $coupon->validateFor(auth()->id(), $basketSubtotal);
+                if(!$valid){
+                    return $this->failed(null, $error);
+                }
+                $couponDiscount = $coupon->calculateDiscount($basketSubtotal);
+            } else {
+                $legacy = Discount::whereCode($request->code)->first();
+                if($legacy){
+                    $discountRatio = $legacy->value / 100;
+                }
             }
         }
 
@@ -36,19 +51,43 @@ class OrderService{
         DB::beginTransaction();
         try {
             foreach($baskets as $basket){
-                $sellerShare = $basket->total_price;
-                $discountedTotal = $sellerShare - ($sellerShare * $discountRatio);
+                $sellerShare = (float) $basket->total_price;
+
+                if($coupon && $basketSubtotal > 0){
+                    $share = $sellerShare / $basketSubtotal;
+                    $perOrderDiscount = round($couponDiscount * $share, 2);
+                    $discountedTotal  = max(0, $sellerShare - $perOrderDiscount);
+                } else {
+                    $perOrderDiscount = $sellerShare * $discountRatio;
+                    $discountedTotal  = $sellerShare - $perOrderDiscount;
+                }
 
                 $basket->update([
-                    'type'          => 'order',
-                    'group_id'      => $groupId,
-                    'payment_type'  => $request->payment_type,
-                    'delivery_time' => $request->delivery_time,
-                    'delivery_fee'  => $deliveryFee,
-                    'total_price'   => $discountedTotal,
-                    'address_id'    => $request->address_id,
+                    'type'            => 'order',
+                    'group_id'        => $groupId,
+                    'payment_type'    => $request->payment_type,
+                    'delivery_time'   => $request->delivery_time,
+                    'delivery_fee'    => $deliveryFee,
+                    'total_price'     => $discountedTotal,
+                    'address_id'      => $request->address_id,
+                    'coupon_id'       => $coupon?->id,
+                    'coupon_code'     => $coupon?->code,
+                    'discount_amount' => round($perOrderDiscount, 2),
                 ]);
             }
+
+            if($coupon){
+                $coupon->increment('used_count');
+                foreach(Order::where('group_id',$groupId)->get() as $placedOrder){
+                    CouponUsage::create([
+                        'coupon_id'       => $coupon->id,
+                        'user_id'         => auth()->id(),
+                        'order_id'        => $placedOrder->id,
+                        'discount_amount' => $placedOrder->discount_amount,
+                    ]);
+                }
+            }
+
             DB::commit();
         } catch (\Throwable $e) {
             DB::rollBack();
@@ -64,6 +103,8 @@ class OrderService{
             'orders'             => $orders->pluck('id'),
             'sub_total'          => $subTotal,
             'delivery_fee_total' => $deliveryTotal,
+            'discount_amount'    => round($couponDiscount, 2),
+            'coupon_code'        => $coupon?->code,
             'grand_total'        => $subTotal + $deliveryTotal,
         ],"تم التأكيد");
     }

@@ -121,6 +121,18 @@
                       </ul>
                   	</li> --}}
 
+					@php $couponsActive = str_starts_with(Route::currentRouteName() ?? '', 'admin.coupons'); @endphp
+					<li class="sidebar-list">
+						<a class="sidebar-link sidebar-title {{ $couponsActive ? 'active' : '' }}" href="#"><i data-feather="tag"></i>
+							<span class="lan-7">@lang('lang.coupons')</span>
+							<div class="according-menu"><i class="fa fa-angle-{{ $couponsActive ? 'down' : 'right' }}"></i></div>
+						</a>
+						<ul class="sidebar-submenu" style="display: {{ $couponsActive ? 'block;' : 'none;' }}">
+							<li><a href="{{ route('admin.coupons.index') }}" class="{{ Route::currentRouteName()=='admin.coupons.index' ? 'active' : '' }}">@lang('lang.coupons')</a></li>
+							<li><a href="{{ route('admin.coupons.create') }}" class="{{ Route::currentRouteName()=='admin.coupons.create' ? 'active' : '' }}">@lang('lang.add_coupon')</a></li>
+						</ul>
+					</li>
+
 
 					{{-- <li class="sidebar-list">
 						<a class="sidebar-link sidebar-title {{ request()->route()->getPrefix() == '/events' ? 'active' : '' }}" href="#"><i data-feather="calendar"></i>

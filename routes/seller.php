@@ -59,6 +59,9 @@ Route::middleware('auth:seller-api')->group(function () {
         Route::put('orders/{id}/status', [Seller\OrderController::class, 'changeOrderStatus']);
     });
 
+    // Coupons (read-only list of active coupons)
+    Route::get('coupons', [Seller\CouponController::class, 'index']);
+
     // Settings / Settings Management
     Route::get('settings', [Seller\SettingsController::class, 'index']);
     Route::get('delivery-options', [Seller\DeliveryController::class, 'index']);

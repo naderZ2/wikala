@@ -131,6 +131,9 @@ Route::middleware(['checkLanguage'])->group(function () {
         //Discount
         Route::post('check_availabilty', [Client\DiscountController::class, 'checkAvailabilty']);
 
+        //Coupon
+        Route::post('coupons/check', [Client\CouponController::class, 'check']);
+
         //basket
         Route::get('myBasket', [Client\BasketController::class, 'index']);
         // Route::get('order_tracking', [Client\OrderController::class, 'tracking']);

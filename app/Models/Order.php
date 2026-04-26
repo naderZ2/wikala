@@ -16,7 +16,8 @@ class Order extends Model
         'actual_delivery_time' ,'cancel_time',
         'confirmed_time' , 'shipped_time',
         'out_for_delivery_time' , 'address_id',
-        'file','type','reason' ,'bill_url','payment_status','delivery_fee','group_id'
+        'file','type','reason' ,'bill_url','payment_status','delivery_fee','group_id',
+        'coupon_id','coupon_code','discount_amount'
     ];
     
     protected $dates = [
