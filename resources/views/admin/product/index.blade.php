@@ -71,6 +71,7 @@
                                     <th>@lang('lang.Category')</th>
                                     <th>Variations</th>
                                     <th>@lang('lang.Status')</th>
+                                    <th>@lang('lang.Created_Date')</th>
                                     <th></th>
                                 </tr>
                             </thead>
@@ -104,6 +105,9 @@
                                                     <br><small class="text-danger mt-1" style="display:inline-block;">{{ Str::limit($product->rejection_reason, 30) }}</small>
                                                 @endif
                                             @endif
+                                        </td>
+                                        <td>
+                                            {{ $product->created_at->format('Y-m-d H:i') }}
                                         </td>
                                         <td>
                                             <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#productModal{{ $product->id }}">@lang('lang.details')</button>
@@ -149,6 +153,7 @@
                                     <th>@lang('lang.Category')</th>
                                     <th>Variations</th>
                                     <th>@lang('lang.Status')</th>
+                                    <th>@lang('lang.Created_Date')</th>
                                     <th></th>
                                 </tr>
                             </tfoot>
