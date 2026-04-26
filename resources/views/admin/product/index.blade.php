@@ -71,7 +71,7 @@
                                     <th>@lang('lang.Category')</th>
                                     <th>Variations</th>
                                     <th>@lang('lang.Status')</th>
-                                    <th>@lang('lang.Created_Date')</th>
+                                    <th>@lang('lang.created_at')</th>
                                     <th></th>
                                 </tr>
                             </thead>
@@ -109,6 +109,7 @@
                                         <td>
                                             {{ optional($product->created_at)->format('Y-m-d H:i') ?? '-' }}
                                         </td>
+                                        @dd($product->created_at)
                                         <td>
                                             <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#productModal{{ $product->id }}">@lang('lang.details')</button>
                                             @can('change product status')
@@ -153,7 +154,7 @@
                                     <th>@lang('lang.Category')</th>
                                     <th>Variations</th>
                                     <th>@lang('lang.Status')</th>
-                                    <th>@lang('lang.Created_Date')</th>
+                                    <th>@lang('lang.created_at')</th>
                                     <th></th>
                                 </tr>
                             </tfoot>
