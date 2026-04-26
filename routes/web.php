@@ -271,6 +271,12 @@ Route::group(['middleware' => ['auth:admin', 'CheckUserActiviation']], function 
 
         Route::resource('roles', 'Admin\RoleController');
         Route::post('edit_role', [Admin\RoleController::class, 'update'])->name('roles.update');
+
+        // Permissions CRUD
+        Route::get('permissions',                  [Admin\PermissionController::class, 'index'])->name('admin.permissions.index');
+        Route::post('permissions/store',           [Admin\PermissionController::class, 'store'])->name('admin.permissions.store');
+        Route::post('permissions/update',          [Admin\PermissionController::class, 'update'])->name('admin.permissions.update');
+        Route::delete('permissions/{permission}',  [Admin\PermissionController::class, 'destroy'])->name('admin.permissions.destroy');
     });
 
 
