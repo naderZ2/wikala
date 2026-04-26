@@ -107,7 +107,7 @@
                                             @endif
                                         </td>
                                         <td>
-                                            {{ $product->created_at->format('Y-m-d H:i') }}
+                                            {{ optional($product->created_at)->format('Y-m-d H:i') ?? '-' }}
                                         </td>
                                         <td>
                                             <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#productModal{{ $product->id }}">@lang('lang.details')</button>

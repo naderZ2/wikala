@@ -87,6 +87,7 @@ Route::group(['middleware' => ['auth:admin', 'CheckUserActiviation']], function 
 
 
         Route::prefix('reports')->group(function () {
+            Route::get('/', [Admin\ReportController::class, 'index'])->name('admin.reports');
             Route::get('index', [Admin\ReportController::class, 'index'])->name('admin.reports.index');
             Route::get('details/{id}', [Admin\ReportController::class, 'details'])->name('admin.reports.details');
             // Route::get('create', [Admin\ReportController::class, 'create'])->name('admin.reports.create');

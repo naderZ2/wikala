@@ -19,21 +19,18 @@ class ReportController extends Controller
     }
     public function index()
     {
-        // $this->lang();
-        // $cities = City::whereNull('parent_id')->select('id',$this->name)->get();
-
-        // $reports = $this->reportService->all();
-        $reports = $this->reportService->allWithRelations();
-
+        $this->lang();
+        $reports = $this->reportService->allWithRelations() ?? collect();
         return view('admin.reports.index', compact('reports'));
     }
 
     public function details($id)
     {
+        $this->lang();
         $report = $this->reportService->findWithRelations($id);
-
-        // Log::info($report);
-
+        if (!$report) {
+            return redirect()->route('admin.reports.index')->with('error', trans('lang.no_data'));
+        }
         return view('admin.reports.details', compact('report'));
     }
 }

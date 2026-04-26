@@ -237,8 +237,8 @@
 							<div class="according-menu"><i class="fa fa-angle-{{ request()->route()->uri() == 'dashboard/report-options' ? 'down' : 'right' }}"></i></div>
 						</a>
 						
-	                    <ul class="sidebar-submenu" style="display: {{ request()->route()->uri() == 'dashboard/reports' ? 'block;' : 'none;' }}">
-							<li><a href="{{ route('admin.reports.index') }}" class="{{ Route::currentRouteName() == 'reports' ? 'active' : '' }}">{{ trans('lang.reports') }}</a></li>
+	                    <ul class="sidebar-submenu" style="display: {{ str_contains(request()->route()->uri() ?? '', 'dashboard/reports') ? 'block;' : 'none;' }}">
+							<li><a href="{{ route('admin.reports.index') }}" class="{{ in_array(Route::currentRouteName(), ['admin.reports.index','admin.reports','admin.reports.details']) ? 'active' : '' }}">{{ trans('lang.reports') }}</a></li>
 						</ul>
 
 						<ul class="sidebar-submenu" style="display: {{ request()->route()->uri() == 'dashboard/reports/report-options' ? 'block;' : 'none;' }}">
