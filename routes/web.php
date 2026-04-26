@@ -108,7 +108,7 @@ Route::group(['middleware' => ['auth:admin', 'CheckUserActiviation']], function 
         Route::get('home', [Admin\StatisticsController::class, 'index'])->name('index');
         Route::get('ads/stats', [Admin\StatisticsController::class, 'getFilteredStats'])->name('ads.filteredStats');
         Route::get('ads/regions/by-city', [Admin\StatisticsController::class, 'getRegionsByCity'])->name('regions.byCity');
-
+        
 
 
 

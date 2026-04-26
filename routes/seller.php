@@ -83,7 +83,7 @@ Route::middleware('auth:seller-api')->group(function () {
     Route::get('permissions', [Seller\RoleController::class, 'permissions']);
     
     Route::group(['middleware' => ['permission:manage-employees,seller-api']], function () {
-        Route::apiResource('roles', Seller\RoleController::class);
-        Route::apiResource('employees', Seller\EmployeeController::class);
+        Route::apiResource('roles', Seller\RoleController::class)->names('seller.roles');
+        Route::apiResource('employees', Seller\EmployeeController::class)->names('seller.employees');
     });
 });
