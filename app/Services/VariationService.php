@@ -203,6 +203,7 @@ class VariationService
                 'name_en' => $name,
                 'name_ar' => $name,
                 'enable'  => 1,
+                'type'    => 'text',
             ]);
         }
         return $cache[$key] = $attr->id;

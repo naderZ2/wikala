@@ -1,298 +1,187 @@
 {
 	"info": {
-		"_postman_id": "tree-variations-collection",
-		"name": "Product Variations (Seller + Admin)",
-		"description": "How to set variations on a product (Seller + Admin).\n\nTwo body shapes are supported on both roles:\n\n1. **Flat variations** — `POST .../products/{id}/variations` with a `variations[]` array (each with `options[]`, price, quantity, sku).\n2. **Tree variations** — `POST .../products/{id}/variation-tree` with a recursive `tree[]` (Size → Color → Material).\n\nAuth differs by role:\n- **Seller** (`{{base_url}}` = http://127.0.0.1:8000/seller) uses Sanctum **Bearer token** — get it from `Seller Login`.\n- **Admin** (`{{admin_base_url}}` = http://127.0.0.1:8000/dashboard/orders) uses **session/cookie** auth (`auth:admin`). Login via the web form at `/login`, then Postman's cookie jar will carry the session cookie automatically. For POST requests include `X-Requested-With: XMLHttpRequest` and the `XSRF-TOKEN` cookie value as the `X-XSRF-TOKEN` header.\n\nSending a new POST OVERWRITES previous variations for the product.",
+		"_postman_id": "tree-variations-collection-v2",
+		"name": "Seller - Flat Variations (New API)",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
-	"variable": [
-		{ "key": "base_url",        "value": "http://127.0.0.1:8000/seller", "type": "string" },
-		{ "key": "admin_base_url",  "value": "http://127.0.0.1:8000/dashboard/orders", "type": "string" },
-		{ "key": "admin_login_url", "value": "http://127.0.0.1:8000/login", "type": "string" },
-		{ "key": "seller_token",    "value": "YOUR_SELLER_TOKEN_HERE", "type": "string" },
-		{ "key": "product_id",      "value": "1", "type": "string" },
-		{ "key": "variation_id",    "value": "1", "type": "string" }
-	],
 	"item": [
 		{
-			"name": "Seller",
-			"description": "Seller flow — Sanctum Bearer token. Login first, copy the token into `seller_token`, then call any Store request.",
-			"item": [
-				{
-					"name": "1. Seller Login (get token)",
-					"request": {
-						"method": "POST",
-						"header": [
-							{ "key": "Accept", "value": "application/json" },
-							{ "key": "Content-Type", "value": "application/json" }
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"phone\": \"01000000000\",\n    \"password\": \"password\"\n}"
-						},
-						"url": {
-							"raw": "{{base_url}}/login",
-							"host": ["{{base_url}}"],
-							"path": ["login"]
-						},
-						"description": "Login as a seller. Copy the returned token into the `seller_token` collection variable."
+			"name": "1. Seller Login (get token)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
 					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"phone\": \"01000000000\",\n    \"password\": \"password\"\n}"
 				},
-				{
-					"name": "Flat Variations",
-					"description": "Each variation is a flat row with its own options (attribute_id + value).",
-					"item": [
-						{
-							"name": "A1. Store Flat Variations (replace all)",
-							"request": {
-								"method": "POST",
-								"header": [
-									{ "key": "Accept", "value": "application/json" },
-									{ "key": "Content-Type", "value": "application/json" },
-									{ "key": "Authorization", "value": "Bearer {{seller_token}}" }
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"variations\": [\n        { \"price\": 100, \"quantity\": 15, \"sku\": \"TSHIRT-M-RED\",   \"options\": [ { \"attribute_id\": 1, \"value\": \"M\" }, { \"attribute_id\": 2, \"value\": \"Red\"   } ] },\n        { \"price\": 100, \"quantity\": 10, \"sku\": \"TSHIRT-M-BLACK\", \"options\": [ { \"attribute_id\": 1, \"value\": \"M\" }, { \"attribute_id\": 2, \"value\": \"Black\" } ] },\n        { \"price\": 110, \"quantity\": 20, \"sku\": \"TSHIRT-L-RED\",   \"options\": [ { \"attribute_id\": 1, \"value\": \"L\" }, { \"attribute_id\": 2, \"value\": \"Red\"   } ] }\n    ]\n}"
-								},
-								"url": {
-									"raw": "{{base_url}}/products/{{product_id}}/variations",
-									"host": ["{{base_url}}"],
-									"path": ["products", "{{product_id}}", "variations"]
-								},
-								"description": "POST /seller/products/{id}/variations — replaces ALL existing variations."
-							}
-						},
-						{
-							"name": "A2. Update Single Variation",
-							"request": {
-								"method": "PUT",
-								"header": [
-									{ "key": "Accept", "value": "application/json" },
-									{ "key": "Content-Type", "value": "application/json" },
-									{ "key": "Authorization", "value": "Bearer {{seller_token}}" }
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"price\": 120,\n    \"quantity\": 25,\n    \"sku\": \"TSHIRT-M-RED-V2\",\n    \"options\": [\n        { \"attribute_id\": 1, \"value\": \"M\" },\n        { \"attribute_id\": 2, \"value\": \"Red\" }\n    ]\n}"
-								},
-								"url": {
-									"raw": "{{base_url}}/products/{{product_id}}/variations/{{variation_id}}",
-									"host": ["{{base_url}}"],
-									"path": ["products", "{{product_id}}", "variations", "{{variation_id}}"]
-								},
-								"description": "PUT /seller/products/{productId}/variations/{variationId} — updates a single variation (creates it if id doesn't exist)."
-							}
-						},
-						{
-							"name": "A3. Delete Single Variation",
-							"request": {
-								"method": "DELETE",
-								"header": [
-									{ "key": "Accept", "value": "application/json" },
-									{ "key": "Authorization", "value": "Bearer {{seller_token}}" }
-								],
-								"url": {
-									"raw": "{{base_url}}/products/{{product_id}}/variations/{{variation_id}}",
-									"host": ["{{base_url}}"],
-									"path": ["products", "{{product_id}}", "variations", "{{variation_id}}"]
-								},
-								"description": "DELETE /seller/products/{productId}/variations/{variationId}."
-							}
-						}
-					]
-				},
-				{
-					"name": "Tree Variations",
-					"description": "Recursive tree (Size → Color → Material …). Inner nodes have `children`; leaf nodes carry `quantity` and `price`.",
-					"item": [
-						{
-							"name": "B1. Store Simple Tree (1 level)",
-							"request": {
-								"method": "POST",
-								"header": [
-									{ "key": "Accept", "value": "application/json" },
-									{ "key": "Content-Type", "value": "application/json" },
-									{ "key": "Authorization", "value": "Bearer {{seller_token}}" }
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"tree\": [\n        { \"attribute_name\": \"Color\", \"value\": \"Red\",   \"quantity\": 50, \"price\": 80 },\n        { \"attribute_name\": \"Color\", \"value\": \"Blue\",  \"quantity\": 30, \"price\": 80 },\n        { \"attribute_name\": \"Color\", \"value\": \"Green\", \"quantity\": 20, \"price\": 85 }\n    ]\n}"
-								},
-								"url": {
-									"raw": "{{base_url}}/products/{{product_id}}/variation-tree",
-									"host": ["{{base_url}}"],
-									"path": ["products", "{{product_id}}", "variation-tree"]
-								}
-							}
-						},
-						{
-							"name": "B2. Store Tree (2 levels: Size → Color)",
-							"request": {
-								"method": "POST",
-								"header": [
-									{ "key": "Accept", "value": "application/json" },
-									{ "key": "Content-Type", "value": "application/json" },
-									{ "key": "Authorization", "value": "Bearer {{seller_token}}" }
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"tree\": [\n        { \"attribute_name\": \"Size\", \"value\": \"M\", \"children\": [\n            { \"attribute_name\": \"Color\", \"value\": \"Red\",   \"quantity\": 15, \"price\": 100 },\n            { \"attribute_name\": \"Color\", \"value\": \"Black\", \"quantity\": 10, \"price\": 100 }\n        ]},\n        { \"attribute_name\": \"Size\", \"value\": \"L\", \"children\": [\n            { \"attribute_name\": \"Color\", \"value\": \"Red\",  \"quantity\": 20, \"price\": 110 },\n            { \"attribute_name\": \"Color\", \"value\": \"Blue\", \"quantity\": 5,  \"price\": 110 }\n        ]}\n    ]\n}"
-								},
-								"url": {
-									"raw": "{{base_url}}/products/{{product_id}}/variation-tree",
-									"host": ["{{base_url}}"],
-									"path": ["products", "{{product_id}}", "variation-tree"]
-								}
-							}
-						},
-						{
-							"name": "B3. Store Tree (3 levels: Size → Color → Material)",
-							"request": {
-								"method": "POST",
-								"header": [
-									{ "key": "Accept", "value": "application/json" },
-									{ "key": "Content-Type", "value": "application/json" },
-									{ "key": "Authorization", "value": "Bearer {{seller_token}}" }
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"tree\": [\n        { \"attribute_name\": \"Size\", \"value\": \"M\", \"children\": [\n            { \"attribute_name\": \"Color\", \"value\": \"Red\",   \"children\": [\n                { \"attribute_name\": \"Material\", \"value\": \"Cotton\",    \"quantity\": 10, \"price\": 120 },\n                { \"attribute_name\": \"Material\", \"value\": \"Polyester\", \"quantity\": 8,  \"price\": 95 }\n            ]},\n            { \"attribute_name\": \"Color\", \"value\": \"Black\", \"children\": [\n                { \"attribute_name\": \"Material\", \"value\": \"Cotton\", \"quantity\": 12, \"price\": 120 }\n            ]}\n        ]},\n        { \"attribute_name\": \"Size\", \"value\": \"L\", \"children\": [\n            { \"attribute_name\": \"Color\", \"value\": \"Red\", \"quantity\": 25, \"price\": 130 }\n        ]}\n    ]\n}"
-								},
-								"url": {
-									"raw": "{{base_url}}/products/{{product_id}}/variation-tree",
-									"host": ["{{base_url}}"],
-									"path": ["products", "{{product_id}}", "variation-tree"]
-								}
-							}
-						},
-						{
-							"name": "B4. Get Variation Tree",
-							"request": {
-								"method": "GET",
-								"header": [
-									{ "key": "Accept", "value": "application/json" },
-									{ "key": "Authorization", "value": "Bearer {{seller_token}}" }
-								],
-								"url": {
-									"raw": "{{base_url}}/products/{{product_id}}/variation-tree",
-									"host": ["{{base_url}}"],
-									"path": ["products", "{{product_id}}", "variation-tree"]
-								}
-							}
-						}
+				"url": {
+					"raw": "{{base_url}}/login",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"login"
 					]
 				}
-			]
+			}
 		},
 		{
-			"name": "Admin",
-			"description": "Admin flow — session/cookie auth (`auth:admin` middleware).\n\nSetup once in Postman:\n1. Settings → Cookies → Add domain `127.0.0.1` → enable cookie jar.\n2. Run `Admin Login` once. The session + XSRF cookies will be stored automatically.\n3. For POST requests, copy the `XSRF-TOKEN` cookie value into the `X-XSRF-TOKEN` header (already added below — just paste the decoded value).\n\nRoutes are mounted under `dashboard/orders/products/{id}/...`.",
-			"item": [
-				{
-					"name": "0. Admin Login (creates session cookie)",
-					"request": {
-						"method": "POST",
-						"header": [
-							{ "key": "Accept", "value": "text/html" },
-							{ "key": "Content-Type", "value": "application/x-www-form-urlencoded" }
-						],
-						"body": {
-							"mode": "urlencoded",
-							"urlencoded": [
-								{ "key": "email",    "value": "admin@example.com", "type": "text" },
-								{ "key": "password", "value": "password",           "type": "text" }
-							]
-						},
-						"url": {
-							"raw": "{{admin_login_url}}",
-							"host": ["{{admin_login_url}}"]
-						},
-						"description": "POST /login — submits the admin login form. After this, Postman's cookie jar holds the session cookie used by the routes below."
+			"name": "2. Store Variations (2 levels: Size → Color)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{seller_token}}"
 					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"attributes\": [\"Size\", \"Color\"],\n    \"variations\": [\n        {\n            \"price\": 100,\n            \"quantity\": 15,\n            \"options\": {\n                \"Size\": \"M\",\n                \"Color\": \"Red\"\n            }\n        },\n        {\n            \"price\": 100,\n            \"quantity\": 10,\n            \"options\": {\n                \"Size\": \"M\",\n                \"Color\": \"Black\"\n            }\n        },\n        {\n            \"price\": 110,\n            \"quantity\": 20,\n            \"options\": {\n                \"Size\": \"L\",\n                \"Color\": \"Red\"\n            }\n        },\n        {\n            \"price\": 110,\n            \"quantity\": 5,\n            \"options\": {\n                \"Size\": \"L\",\n                \"Color\": \"Blue\"\n            }\n        }\n    ]\n}"
 				},
-				{
-					"name": "C1. Store Flat Variations (admin)",
-					"request": {
-						"method": "POST",
-						"header": [
-							{ "key": "Accept", "value": "application/json" },
-							{ "key": "Content-Type", "value": "application/json" },
-							{ "key": "X-Requested-With", "value": "XMLHttpRequest" },
-							{ "key": "X-XSRF-TOKEN", "value": "PASTE_DECODED_XSRF_TOKEN_COOKIE_HERE" }
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"variations\": [\n        { \"price\": 100, \"quantity\": 15, \"sku\": \"TSHIRT-M-RED\",   \"options\": [ { \"attribute_id\": 1, \"value\": \"M\" }, { \"attribute_id\": 2, \"value\": \"Red\"   } ] },\n        { \"price\": 100, \"quantity\": 10, \"sku\": \"TSHIRT-M-BLACK\", \"options\": [ { \"attribute_id\": 1, \"value\": \"M\" }, { \"attribute_id\": 2, \"value\": \"Black\" } ] }\n    ]\n}"
-						},
-						"url": {
-							"raw": "{{admin_base_url}}/products/{{product_id}}/variations",
-							"host": ["{{admin_base_url}}"],
-							"path": ["products", "{{product_id}}", "variations"]
-						},
-						"description": "POST /dashboard/orders/products/{id}/variations — admin can create variations for any product (no seller_id check). Replaces ALL existing variations."
-					}
-				},
-				{
-					"name": "C2. Store Tree (2 levels) (admin)",
-					"request": {
-						"method": "POST",
-						"header": [
-							{ "key": "Accept", "value": "application/json" },
-							{ "key": "Content-Type", "value": "application/json" },
-							{ "key": "X-Requested-With", "value": "XMLHttpRequest" },
-							{ "key": "X-XSRF-TOKEN", "value": "PASTE_DECODED_XSRF_TOKEN_COOKIE_HERE" }
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"tree\": [\n        { \"attribute_name\": \"Size\", \"value\": \"M\", \"children\": [\n            { \"attribute_name\": \"Color\", \"value\": \"Red\",   \"quantity\": 15, \"price\": 100 },\n            { \"attribute_name\": \"Color\", \"value\": \"Black\", \"quantity\": 10, \"price\": 100 }\n        ]},\n        { \"attribute_name\": \"Size\", \"value\": \"L\", \"children\": [\n            { \"attribute_name\": \"Color\", \"value\": \"Red\",  \"quantity\": 20, \"price\": 110 },\n            { \"attribute_name\": \"Color\", \"value\": \"Blue\", \"quantity\": 5,  \"price\": 110 }\n        ]}\n    ]\n}"
-						},
-						"url": {
-							"raw": "{{admin_base_url}}/products/{{product_id}}/variation-tree",
-							"host": ["{{admin_base_url}}"],
-							"path": ["products", "{{product_id}}", "variation-tree"]
-						},
-						"description": "POST /dashboard/orders/products/{id}/variation-tree — admin can save a tree for any product."
-					}
-				},
-				{
-					"name": "C3. Store Tree (3 levels) (admin)",
-					"request": {
-						"method": "POST",
-						"header": [
-							{ "key": "Accept", "value": "application/json" },
-							{ "key": "Content-Type", "value": "application/json" },
-							{ "key": "X-Requested-With", "value": "XMLHttpRequest" },
-							{ "key": "X-XSRF-TOKEN", "value": "PASTE_DECODED_XSRF_TOKEN_COOKIE_HERE" }
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"tree\": [\n        { \"attribute_name\": \"Size\", \"value\": \"M\", \"children\": [\n            { \"attribute_name\": \"Color\", \"value\": \"Red\", \"children\": [\n                { \"attribute_name\": \"Material\", \"value\": \"Cotton\",    \"quantity\": 10, \"price\": 120 },\n                { \"attribute_name\": \"Material\", \"value\": \"Polyester\", \"quantity\": 8,  \"price\": 95 }\n            ]}\n        ]}\n    ]\n}"
-						},
-						"url": {
-							"raw": "{{admin_base_url}}/products/{{product_id}}/variation-tree",
-							"host": ["{{admin_base_url}}"],
-							"path": ["products", "{{product_id}}", "variation-tree"]
-						}
-					}
-				},
-				{
-					"name": "C4. Get Variation Tree (admin)",
-					"request": {
-						"method": "GET",
-						"header": [
-							{ "key": "Accept", "value": "application/json" },
-							{ "key": "X-Requested-With", "value": "XMLHttpRequest" }
-						],
-						"url": {
-							"raw": "{{admin_base_url}}/products/{{product_id}}/variation-tree",
-							"host": ["{{admin_base_url}}"],
-							"path": ["products", "{{product_id}}", "variation-tree"]
-						},
-						"description": "GET /dashboard/orders/products/{id}/variation-tree."
-					}
+				"url": {
+					"raw": "{{base_url}}/products/{{product_id}}/variation-tree",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"products",
+						"{{product_id}}",
+						"variation-tree"
+					]
 				}
-			]
+			}
+		},
+		{
+			"name": "3. Get Variations (Tree Format)",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{seller_token}}"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/products/{{product_id}}/variation-tree",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"products",
+						"{{product_id}}",
+						"variation-tree"
+					]
+				}
+			}
+		},
+		{
+			"name": "4. Store Variations (3 levels: Size → Color → Material)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{seller_token}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"attributes\": [\"Size\", \"Color\", \"Material\"],\n    \"variations\": [\n        {\n            \"price\": 120,\n            \"quantity\": 10,\n            \"options\": {\n                \"Size\": \"M\",\n                \"Color\": \"Red\",\n                \"Material\": \"Cotton\"\n            }\n        },\n        {\n            \"price\": 95,\n            \"quantity\": 8,\n            \"options\": {\n                \"Size\": \"M\",\n                \"Color\": \"Red\",\n                \"Material\": \"Polyester\"\n            }\n        },\n        {\n            \"price\": 120,\n            \"quantity\": 12,\n            \"options\": {\n                \"Size\": \"M\",\n                \"Color\": \"Black\",\n                \"Material\": \"Cotton\"\n            }\n        },\n        {\n            \"price\": 130,\n            \"quantity\": 25,\n            \"options\": {\n                \"Size\": \"L\",\n                \"Color\": \"Red\",\n                \"Material\": \"Cotton\"\n            }\n        }\n    ]\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/products/{{product_id}}/variation-tree",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"products",
+						"{{product_id}}",
+						"variation-tree"
+					]
+				}
+			}
+		},
+		{
+			"name": "5. Store Simple Variations (1 level only)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{seller_token}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"attributes\": [\"Color\"],\n    \"variations\": [\n        {\n            \"price\": 80,\n            \"quantity\": 50,\n            \"options\": {\n                \"Color\": \"Red\"\n            }\n        },\n        {\n            \"price\": 80,\n            \"quantity\": 30,\n            \"options\": {\n                \"Color\": \"Blue\"\n            }\n        },\n        {\n            \"price\": 85,\n            \"quantity\": 20,\n            \"options\": {\n                \"Color\": \"Green\"\n            }\n        }\n    ]\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/products/{{product_id}}/variation-tree",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"products",
+						"{{product_id}}",
+						"variation-tree"
+					]
+				}
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://127.0.0.1:8000/seller",
+			"type": "string"
+		},
+		{
+			"key": "seller_token",
+			"value": "YOUR_SELLER_TOKEN_HERE",
+			"type": "string"
+		},
+		{
+			"key": "product_id",
+			"value": "1",
+			"type": "string"
 		}
 	]
 }
