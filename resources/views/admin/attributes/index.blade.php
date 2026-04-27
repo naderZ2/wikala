@@ -23,9 +23,9 @@
 <div class="container-fluid">
 	<div class="row">
 		<div class="d-flex justify-content-end col-sm-12">
-			@can('add category')
-				<a href="{{route('attributes.create')}}"  class="btn btn-primary">@lang('lang.add_slider')</a>
-			@endcan	
+			@can('create attribute')
+				<a href="{{route('attributes.create')}}"  class="btn btn-primary">@lang('lang.add_attribute')</a>
+			@endcan
 		</div>
 		<div class="col-sm-12 mt-3">
 			<div class="card">
@@ -57,26 +57,24 @@
 										{{-- <td>{{ $attribute?->price }}</td> --}}
 										
 										<td>
-											{{-- <button class="btn btn-primary" id="addRow" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#exampleModal"  onclick="getRow({{ $product }})">@lang('lang.details')</button> --}}
-											{{-- @can('change product status') --}}
+											@can('update attribute')
 											<a class="btn btn-primary mt-1" href="{{ route('attributes.edit',$attribute->id) }}" >@lang('lang.edit')</a>
-											@if ($attribute->enable == 1)
-											<a class="btn btn-danger mt-1"  href="{{ route('attributes.enable', $attribute->id) }}" >@lang('lang.Disable') </a>
-											@else
+											@endcan
+											@can('toggle attribute')
+												@if ($attribute->enable == 1)
+												<a class="btn btn-danger mt-1"  href="{{ route('attributes.enable', $attribute->id) }}" >@lang('lang.Disable') </a>
+												@else
 												<a class="btn btn-success mt-1"  href="{{ route('attributes.enable', $attribute->id) }}" >@lang('lang.Enable')</a>
-											@endif
-											{{-- <button class="btn btn-secondary mt-1" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#exampleModal">@lang('lang.Delete')</button> --}}
-											{{-- <button class="btn btn-danger" type="button" data-bs-toggle="modal" data-bs-target="#deleteModal" onclick="setDeleteAction('{{ route('attributes.destroy', $attribute->id) }}')">@lang('lang.Delete')</button> --}}
+												@endif
+											@endcan
+											@can('delete attribute')
 											<form action="{{ route('attributes.delete') }}" style="display:inline;" onclick="getId({{ $attribute->id }})" method="Post" id="form_id">
                                                 @method("delete")
                                                 @csrf
                                                 <input type="hidden" name="id" id="notification_id">
-                                                {{-- @can('delete notification') --}}
                                                 <button id="{{ $loop->iteration }}" class="btn btn-danger sweet-5" onclick="test()" type="button" >@lang('lang.remove')</button>
-                                                {{-- @endcan	 --}}
                                             </form>
-										
-										
+											@endcan
 										</td>							
 
 											

@@ -168,7 +168,7 @@
 						</a>
 	                	<ul class="sidebar-submenu" style="display: {{ $adminsGroupActive ? 'block;' : 'none;' }}">
                         	<li style="display:none;"><a href="{{ route('admins.index') }}" class="{{ Route::currentRouteName() == 'admins.index' ? 'active' : '' }}">{{ trans('lang.admins') }}</a></li>
-							@can('roles')
+							@can('view role')
 									<li><a href="{{ route('roles.index') }}" class="{{ Route::currentRouteName() == 'roles.index' ? 'active' : '' }}">{{ trans('lang.Roles') }}</a></li>
 							@endcan
 							<li><a href="{{ route('admin.permissions.index') }}" class="{{ Route::currentRouteName() == 'admin.permissions.index' ? 'active' : '' }}">{{ trans('lang.permissions') }}</a></li>

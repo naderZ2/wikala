@@ -23,7 +23,9 @@
 <div class="container-fluid">
     <div class="row">
         <div class="d-flex justify-content-end col-sm-12">
-            <a href="{{route('home_page_category.create')}}" class="btn btn-primary">@lang('lang.Add')</a>
+            @can('create home page category')
+                <a href="{{route('home_page_category.create')}}" class="btn btn-primary">@lang('lang.Add')</a>
+            @endcan
         </div>
         <div class="col-sm-12 mt-3">
             <div class="card">
@@ -47,12 +49,16 @@
                                         <td>{{ $item->category ? (app()->getLocale() == 'en' ? $item->category->name_en : $item->category->name_ar) : '' }}</td>
                                         <td>{{ $item->sort_order }}</td>
                                         <td>
-                                            <a href="{{ route('home_page_category.edit', $item->id) }}" class="btn btn-sm btn-info">@lang('lang.edit')</a>
-                                            <form action="{{ route('home_page_category.destroy', $item->id) }}" method="POST" style="display:inline-block;">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('@lang('lang.confirm_delete')')">@lang('lang.Delete')</button>
-                                            </form>
+                                            @can('update home page category')
+                                                <a href="{{ route('home_page_category.edit', $item->id) }}" class="btn btn-sm btn-info">@lang('lang.edit')</a>
+                                            @endcan
+                                            @can('delete home page category')
+                                                <form action="{{ route('home_page_category.destroy', $item->id) }}" method="POST" style="display:inline-block;">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('@lang('lang.confirm_delete')')">@lang('lang.Delete')</button>
+                                                </form>
+                                            @endcan
                                         </td>
                                     </tr>
                                 @endforeach

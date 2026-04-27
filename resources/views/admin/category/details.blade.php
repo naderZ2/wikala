@@ -24,8 +24,8 @@
 
 	<div class="row">
 		<div class="d-flex justify-content-end col-sm-12">
-			@can('add category')
-			<a href="{{route('category.create')}}" class="btn btn-primary">@lang('lang.add_slider')</a>
+			@can('create category')
+			<a href="{{route('category.create')}}" class="btn btn-primary">@lang('lang.add_Category')</a>
 			@endcan
 		</div>
 		<div class="col-sm-12 mt-3">
@@ -75,17 +75,17 @@
 									</td>
 
 									<td>
-										@can('edit category')
+										@can('update category')
 										<a class="btn btn-success" href="{{ route('category_updateStatus',$category->id) }}">
 											@lang('lang.change_status')</a>
 										<button class="btn btn-primary" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#exampleModal" onclick="getRecord({{ $category }})">@lang('lang.edit')</button>
-										{{-- <button class="btn btn-secondary" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#exampleModal">Delete</button> --}}
 										@endcan
 										@if($category->children && $category->children->count() > 0)
 										<a class="btn btn-info" href="{{ route('category_details', $category->id) }}">
 											@lang('lang.details')
 										</a>
 										@endif
+										@can('delete category')
 										<form action="{{ route('category.destroy') }}" method="POST" style="display:inline-block">
 											@csrf
 											@method('DELETE')
@@ -95,6 +95,7 @@
 												@lang('lang.delete')
 											</button>
 										</form>
+										@endcan
 									</td>
 
 								</tr>

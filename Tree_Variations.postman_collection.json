@@ -1,0 +1,159 @@
+{
+	"info": {
+		"_postman_id": "tree-variations-collection",
+		"name": "Seller - Tree Variations",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://127.0.0.1:8000/seller",
+			"type": "string"
+		},
+		{
+			"key": "seller_token",
+			"value": "YOUR_SELLER_TOKEN_HERE",
+			"type": "string"
+		},
+		{
+			"key": "product_id",
+			"value": "1",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "1. Seller Login (get token)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"phone\": \"01000000000\",\n    \"password\": \"password\"\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/login",
+					"host": ["{{base_url}}"],
+					"path": ["login"]
+				}
+			}
+		},
+		{
+			"name": "2. Store Variation Tree (2 levels: Size → Color)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{seller_token}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"tree\": [\n        {\n            \"attribute_name\": \"Size\",\n            \"value\": \"M\",\n            \"children\": [\n                {\n                    \"attribute_name\": \"Color\",\n                    \"value\": \"Red\",\n                    \"quantity\": 15,\n                    \"price\": 100\n                },\n                {\n                    \"attribute_name\": \"Color\",\n                    \"value\": \"Black\",\n                    \"quantity\": 10,\n                    \"price\": 100\n                }\n            ]\n        },\n        {\n            \"attribute_name\": \"Size\",\n            \"value\": \"L\",\n            \"children\": [\n                {\n                    \"attribute_name\": \"Color\",\n                    \"value\": \"Red\",\n                    \"quantity\": 20,\n                    \"price\": 110\n                },\n                {\n                    \"attribute_name\": \"Color\",\n                    \"value\": \"Blue\",\n                    \"quantity\": 5,\n                    \"price\": 110\n                }\n            ]\n        }\n    ]\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/products/{{product_id}}/variation-tree",
+					"host": ["{{base_url}}"],
+					"path": ["products", "{{product_id}}", "variation-tree"]
+				}
+			}
+		},
+		{
+			"name": "3. Get Variation Tree",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{seller_token}}"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/products/{{product_id}}/variation-tree",
+					"host": ["{{base_url}}"],
+					"path": ["products", "{{product_id}}", "variation-tree"]
+				}
+			}
+		},
+		{
+			"name": "4. Store Tree (3 levels: Size → Color → Material)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{seller_token}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"tree\": [\n        {\n            \"attribute_name\": \"Size\",\n            \"value\": \"M\",\n            \"children\": [\n                {\n                    \"attribute_name\": \"Color\",\n                    \"value\": \"Red\",\n                    \"children\": [\n                        {\n                            \"attribute_name\": \"Material\",\n                            \"value\": \"Cotton\",\n                            \"quantity\": 10,\n                            \"price\": 120\n                        },\n                        {\n                            \"attribute_name\": \"Material\",\n                            \"value\": \"Polyester\",\n                            \"quantity\": 8,\n                            \"price\": 95\n                        }\n                    ]\n                },\n                {\n                    \"attribute_name\": \"Color\",\n                    \"value\": \"Black\",\n                    \"children\": [\n                        {\n                            \"attribute_name\": \"Material\",\n                            \"value\": \"Cotton\",\n                            \"quantity\": 12,\n                            \"price\": 120\n                        }\n                    ]\n                }\n            ]\n        },\n        {\n            \"attribute_name\": \"Size\",\n            \"value\": \"L\",\n            \"children\": [\n                {\n                    \"attribute_name\": \"Color\",\n                    \"value\": \"Red\",\n                    \"quantity\": 25,\n                    \"price\": 130\n                }\n            ]\n        }\n    ]\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/products/{{product_id}}/variation-tree",
+					"host": ["{{base_url}}"],
+					"path": ["products", "{{product_id}}", "variation-tree"]
+				}
+			}
+		},
+		{
+			"name": "5. Store Simple Tree (1 level only)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{seller_token}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"tree\": [\n        {\n            \"attribute_name\": \"Color\",\n            \"value\": \"Red\",\n            \"quantity\": 50,\n            \"price\": 80\n        },\n        {\n            \"attribute_name\": \"Color\",\n            \"value\": \"Blue\",\n            \"quantity\": 30,\n            \"price\": 80\n        },\n        {\n            \"attribute_name\": \"Color\",\n            \"value\": \"Green\",\n            \"quantity\": 20,\n            \"price\": 85\n        }\n    ]\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/products/{{product_id}}/variation-tree",
+					"host": ["{{base_url}}"],
+					"path": ["products", "{{product_id}}", "variation-tree"]
+				}
+			}
+		}
+	]
+}

@@ -48,6 +48,10 @@ Route::middleware('auth:seller-api')->group(function () {
         Route::post('products/{id}/variations', [Seller\ProductController::class, 'storeVariations']);
         Route::put('products/{productId}/variations/{variationId}', [Seller\ProductController::class, 'updateVariation']);
         Route::delete('products/{productId}/variations/{variationId}', [Seller\ProductController::class, 'deleteVariation']);
+
+        // Tree-structured variations
+        Route::post('products/{id}/variation-tree', [Seller\ProductController::class, 'storeTreeVariations']);
+        Route::get('products/{id}/variation-tree', [Seller\ProductController::class, 'getVariationTree']);
     });
 
     // Orders (Viewing orders open to all employees)

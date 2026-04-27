@@ -24,9 +24,9 @@
 
 	<div class="row">
        <div class="d-flex justify-content-end col-sm-12">
-				@can('add role')
+				@can('create ad type')
                 <button class="btn btn-primary"  type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#exampleModalAdd" >@lang('lang.add_ads_type')</button>
-				@endcan	
+				@endcan
         	</div>
 		<div class="col-sm-12 mt-3">
 			<div class="card">
@@ -58,15 +58,16 @@
 															
 										
 										<td>
-											@if ($type->enable == 1)
-											<a class="btn btn-danger m-1"  href="{{ route('ads_type.enable', $type->id) }}" >@lang('lang.Disable') </a>
-										@else
+											@can('toggle ad type')
+												@if ($type->enable == 1)
+												<a class="btn btn-danger m-1"  href="{{ route('ads_type.enable', $type->id) }}" >@lang('lang.Disable') </a>
+												@else
 												<a class="btn btn-success m-1"  href="{{ route('ads_type.enable', $type->id) }}" >@lang('lang.Enable')</a>
-										@endif	
-											@can('edit category')
+												@endif
+											@endcan
+											@can('update ad type')
 											<button class="btn btn-primary" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#exampleModal"  onclick="getRecord({{ $type }})">@lang('lang.edit')</button>
-											{{-- <button class="btn btn-secondary" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#exampleModal">Delete</button> --}}
-											@endcan	
+											@endcan
 
                                             {{-- <form action="{{ route('rejected-reasons.destroy') }}" onclick="getId({{ $reason->id }})" method="Post" id="form_id">
                                                 @method("delete")

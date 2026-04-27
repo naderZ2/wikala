@@ -50,9 +50,12 @@
                                     <td>{{ $ad->sponsored_price }} @lang('lang.sar')</td>
                                     <td>{{ $ad->sponsored_at?->format('Y-m-d H:i') }}</td>
                                     <td>
+                                        @can('view ad')
                                         <a href="{{ route('ads.details', $ad->id) }}" class="btn btn-info btn-sm">
                                             <i class="fa fa-eye"></i>
                                         </a>
+                                        @endcan
+                                        @can('manage ad sponsor')
                                         <a href="{{ route('ads.editSponsor', $ad->id) }}" class="btn btn-primary btn-sm">
                                             <i class="fa fa-edit"></i>
                                         </a>
@@ -62,6 +65,7 @@
                                                 <i class="fa fa-times"></i>
                                             </button>
                                         </form>
+                                        @endcan
                                     </td>
                                 </tr>
                                 @endforeach

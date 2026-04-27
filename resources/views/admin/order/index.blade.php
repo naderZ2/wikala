@@ -106,16 +106,17 @@
 										<td>
 											
 											<a href="{{ route('order.details',$order->id) }}" class="btn btn-info m-1" >@lang('lang.details')</a>
-											{{-- @can('edit order status') --}}
 											@if ( $order->status !=='delivered' && $order->status !=='cancel')
-
-											<a href="{{ route('order.change_status',[$order->id,'normal']) }}" class="btn btn-primary m-1" >@lang('lang.change_status')</a>
-											{{-- @endcan	 --}}
-											{{-- @can('cancel orders') --}}
-											<a href="{{ route('order.change_status',[$order->id,'cancel']) }}" class="btn btn-danger m-1" >@lang('lang.cancel')</a>
-											{{-- @endcan	 --}}
+												@can('change order status')
+													<a href="{{ route('order.change_status',[$order->id,'normal']) }}" class="btn btn-primary m-1" >@lang('lang.change_status')</a>
+												@endcan
+												@can('cancel order')
+													<a href="{{ route('order.change_status',[$order->id,'cancel']) }}" class="btn btn-danger m-1" >@lang('lang.cancel')</a>
+												@endcan
 											@endif
-											<button class="btn btn-warning m-1" type="button" data-bs-toggle="modal" data-bs-target="#setStatusModal" onclick="setStatusFor({{ $order->id }}, '{{ $order->status }}')">@lang('lang.Status')</button>
+											@can('change order status')
+												<button class="btn btn-warning m-1" type="button" data-bs-toggle="modal" data-bs-target="#setStatusModal" onclick="setStatusFor({{ $order->id }}, '{{ $order->status }}')">@lang('lang.Status')</button>
+											@endcan
 											<!--@if($order->file)-->
     							<!--				<a href="{{asset($order->file)}}" download rel="noopener noreferrer" target="_blank" class="btn btn-success">-->
            <!--                                        @lang('lang.downloadFile')-->

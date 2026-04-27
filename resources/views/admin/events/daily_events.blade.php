@@ -22,9 +22,9 @@
 @section('content')
 <div class="container-fluid">
    <div class="d-flex justify-content-end col-sm-12">
-				@can('add discount')
-					<a href="{{route('daily_events.create')}}"  class="btn btn-primary">@lang('lang.add_slider')</a>
-				@endcan	
+				@can('create daily event')
+					<a href="{{route('daily_events.create')}}"  class="btn btn-primary">@lang('lang.add_daily_event')</a>
+				@endcan
         	</div>
 	<div class="row">
 		<div class="col-sm-12 mt-3">
@@ -77,7 +77,9 @@
 												<input type="hidden" name="id" id="teest">
 
 												@if (request()->get('eventiFlter') == 'under_review')
+											@can('change daily event status')
 											<button class="btn btn-danger" type="button" data-bs-toggle="modal" onclick="getId({{ $dailyEvent->id }})" data-original-title="test" data-bs-target="#exampleModal" >@lang('lang.rejected')</button>
+											@endcan
 
 										<!--@can('edit seller status')-->
 	
@@ -102,11 +104,12 @@
 												<input type="hidden" id="reason{{$dailyEvent->id}}" value="{{$dailyEvent?->rejection_reason}}" name="reason">
 												
 												@endif
+												@can('delete daily event')
 												<form method="POST" action="{{route('daily_events.destroy',$dailyEvent->id)}}" style="display: inline-block">
 													@csrf
 													<button  class="btn btn-danger"  >@lang('lang.Delete')</button>
-													{{-- <a href="{{route('daily_events.destroy')}}" class="btn btn-danger"   >@lang('lang.rejection_reason')</a> --}}
 												</form>
+												@endcan
 
 										</td>
 							

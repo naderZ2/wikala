@@ -53,7 +53,7 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-sm-12 mt-3">
-            @can('add discount')
+            @can('create product')
                 <a href="{{route('product.create')}}" class="btn btn-primary mb-3">@lang('lang.add_Product')</a>
             @endcan
             <div class="card">
@@ -111,29 +111,27 @@
                                         </td>
                                         <td>
                                             <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#productModal{{ $product->id }}">@lang('lang.details')</button>
-                                            @can('change product status')
+                                            @can('update product')
                                             <a class="btn btn-info btn-sm" href="{{ route('product.edit',$product->id) }}">@lang('lang.edit')</a>
+                                            @endcan
+                                            @can('change product status')
+                                                @if ($product->is_available != 1)
+                                                <a href="{{ route('product.approve', $product->id) }}" class="btn btn-success btn-sm mt-1">
+                                                    @lang('lang.approve')
+                                                </a>
+                                                @endif
 
-                                            {{-- Approve button (show when not approved) --}}
-                                            @if ($product->is_available != 1)
-                                            <a href="{{ route('product.approve', $product->id) }}" class="btn btn-success btn-sm mt-1">
-                                                @lang('lang.approve')
-                                            </a>
-                                            @endif
+                                                @if ($product->is_available != -1)
+                                                <button type="button" class="btn btn-danger btn-sm mt-1" data-bs-toggle="modal" data-bs-target="#rejectModal{{ $product->id }}">
+                                                    @lang('lang.reject')
+                                                </button>
+                                                @endif
 
-                                            {{-- Reject button (show when not already rejected) --}}
-                                            @if ($product->is_available != -1)
-                                            <button type="button" class="btn btn-danger btn-sm mt-1" data-bs-toggle="modal" data-bs-target="#rejectModal{{ $product->id }}">
-                                                @lang('lang.reject')
-                                            </button>
-                                            @endif
-
-                                            {{-- Disable button (show when approved) --}}
-                                            @if ($product->is_available == 1)
-                                            <a href="{{ route('product.update',$product->id) }}" class="btn btn-warning btn-sm mt-1">
-                                                @lang('lang.Disable')
-                                            </a>
-                                            @endif
+                                                @if ($product->is_available == 1)
+                                                <a href="{{ route('product.update',$product->id) }}" class="btn btn-warning btn-sm mt-1">
+                                                    @lang('lang.Disable')
+                                                </a>
+                                                @endif
                                             @endcan
                                         </td>
                                     </tr>

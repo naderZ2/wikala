@@ -21,9 +21,9 @@
 <div class="container-fluid">
 	<div class="row">
 	       <div class="d-flex justify-content-end col-sm-12">
-				@can('add admin')
-					<a href="{{route('admins.create')}}"  class="btn btn-primary">@lang('lang.add_slider')</a>
-				@endcan	
+				@can('create admin')
+					<a href="{{route('admins.create')}}"  class="btn btn-primary">@lang('lang.add_admin')</a>
+				@endcan
         	</div>
 		<div class="col-sm-12">
 			<div class="card">
@@ -53,10 +53,10 @@
 										</td>
 										<td>{{ $driver->created_at->format('Y-m-d') }}</td>
 										<td>
-											@can('edit admin')
+											@can('update admin')
 											<a class="btn btn-success"  href="{{ route('admins.edit',$driver->id) }}">
 												@lang('lang.edit')</a>
-											@endcan	
+											@endcan
 										
 											
 											{{-- <form action="{{ route('driver.change_activity_status') }}" onclick="getId({{ $driver->id }})" method="post" id="form_id">

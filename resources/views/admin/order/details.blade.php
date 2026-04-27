@@ -21,13 +21,14 @@
 @section('content')
 <div class="container-fluid">
 	@if ($order->bill_url == null)
-	<button class="btn btn-primary" type="button">
-		<a href="{{route('order.generate_nvoice',$order->id)}}" style="color:white"  >@lang('lang.save_invoice')</a>
-	</button>
+		@can('generate invoice')
+		<button class="btn btn-primary" type="button">
+			<a href="{{route('order.generate_nvoice',$order->id)}}" style="color:white"  >@lang('lang.save_invoice')</a>
+		</button>
+		@endcan
 	@else
 	<button class="btn btn-primary" type="button">
 		<a href="{{ asset($order->bill_url)}}"  target="_blank" style="color:white" >@lang('lang.Show_Invoice')</a>
-		{{-- <a href="{{route('order.show_invoice',$order->id)}}" style="color:white" >@lang('lang.Show_Invoice')</a> --}}
 	</button>
 	@endif
 	

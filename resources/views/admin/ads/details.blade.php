@@ -24,22 +24,26 @@
 	<div class="row">
 		<div class="col-sm-12">
 			<div class="mb-4">
+				@can('change ad status')
 				<a href="{{ route('ads.editStatus', $ad->id) }}" class="btn btn-primary">
 					@lang('lang.change_status')
 				</a>
-				@if($ad->is_sponsored)
-				<form action="{{ route('ads.removeSponsor', $ad->id) }}" method="POST" class="d-inline">
-					@csrf
-					<button type="submit" class="btn btn-warning">
-						@lang('lang.remove_sponsor')
-					</button>
-				</form>
-				<span class="badge bg-success ms-2">@lang('lang.sponsored') - {{ $ad->sponsored_price }} @lang('lang.egy')</span>
-				@else
-				<a href="{{ route('ads.editSponsor', $ad->id) }}" class="btn btn-success">
-					@lang('lang.set_sponsor')
-				</a>
-				@endif
+				@endcan
+				@can('manage ad sponsor')
+					@if($ad->is_sponsored)
+					<form action="{{ route('ads.removeSponsor', $ad->id) }}" method="POST" class="d-inline">
+						@csrf
+						<button type="submit" class="btn btn-warning">
+							@lang('lang.remove_sponsor')
+						</button>
+					</form>
+					<span class="badge bg-success ms-2">@lang('lang.sponsored') - {{ $ad->sponsored_price }} @lang('lang.egy')</span>
+					@else
+					<a href="{{ route('ads.editSponsor', $ad->id) }}" class="btn btn-success">
+						@lang('lang.set_sponsor')
+					</a>
+					@endif
+				@endcan
 			</div>
 			<div class="card">
 				<div class="card-body">

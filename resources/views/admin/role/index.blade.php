@@ -22,9 +22,9 @@
 	<div class="row">
         <div class="row ">
             <div class="d-flex justify-content-end col-sm-12">
-				@can('add role')
+				@can('create role')
                 <button class="btn btn-primary"  type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#exampleModal" >@lang('lang.add_Role')</button>
-				@endcan	
+				@endcan
             </div>
 		<div class="col-sm-12">
 			<div class="card">
@@ -42,13 +42,13 @@
 									<tr>
 										<td class="text-center">{{ $role->name }}</td>
 										<td class="text-end">
-											@can('edit permissions')
+											@can('update role')
 												<button class="btn btn-primary" type="button" data-bs-toggle="modal" onclick="getRecord({{ $role }})" data-original-title="test" data-bs-target="#editModal" >@lang('lang.edit')</button>
-											@endcan	
+											@endcan
 
-											@can('edit permissions')
+											@can('update role permissions')
 												<a class="btn btn-primary" href="{{route('admin.permission',$role->id)  }}">@lang('lang.edit_Permissions') </a>
-											@endcan	
+											@endcan
 										</td>
 									</tr>
 								    @empty

@@ -22,7 +22,9 @@
 	<div class="row">
 
 		<div class="d-flex justify-content-end col-sm-12 mb-3">
-			<a href="{{ route('admin.clients.create') }}" class="btn btn-primary">@lang('lang.add_client')</a>
+			@can('create client')
+				<a href="{{ route('admin.clients.create') }}" class="btn btn-primary">@lang('lang.add_client')</a>
+			@endcan
 		</div>
 
 		<div class="col-sm-12">
@@ -63,10 +65,14 @@
 										<td>{{ $client?->date_of_birth }}</td>
 										<td>{{ $client?->created_at?->format('Y-m-d') }}</td>
 										<td>
-											<button class="btn btn-primary" type="button" data-bs-toggle="modal" onclick="getRndInteger(),getId({{ $client->id }})" data-original-title="test" data-bs-target="#exampleModal" >@lang('lang.reset_password')</button>
-										<a href="{{ route('admin.userCategoryLimits.index', $client->id) }}" class="btn btn-success">
-										<i class="fa fa-edit"></i> @lang('lang.edit_limit')
-									</a>
+											@can('reset client password')
+												<button class="btn btn-primary" type="button" data-bs-toggle="modal" onclick="getRndInteger(),getId({{ $client->id }})" data-original-title="test" data-bs-target="#exampleModal" >@lang('lang.reset_password')</button>
+											@endcan
+											@can('update client')
+												<a href="{{ route('admin.userCategoryLimits.index', $client->id) }}" class="btn btn-success">
+													<i class="fa fa-edit"></i> @lang('lang.edit_limit')
+												</a>
+											@endcan
 										</td>
 									</tr>
 								@empty

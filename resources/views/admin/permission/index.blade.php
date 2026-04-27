@@ -18,7 +18,9 @@
 <div class="container-fluid">
 	<div class="row">
 		<div class="d-flex justify-content-end col-sm-12 mb-3">
-			<button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#addPermissionModal">@lang('lang.add_permission')</button>
+			@can('create permission')
+				<button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#addPermissionModal">@lang('lang.add_permission')</button>
+			@endcan
 		</div>
 
 		<div class="col-sm-12">
@@ -46,12 +48,16 @@
 										<td>{{ $permission->name }}</td>
 										<td>{{ $permission->guard_name }}</td>
 										<td class="text-end">
+											@can('update permission')
 											<button class="btn btn-success btn-sm m-1" type="button" data-bs-toggle="modal" data-bs-target="#editPermissionModal" onclick="fillPermission({{ $permission }})">@lang('lang.edit')</button>
+											@endcan
+											@can('delete permission')
 											<form action="{{ route('admin.permissions.destroy', $permission->id) }}" method="POST" style="display:inline-block" onsubmit="return confirm('Are you sure?');">
 												@csrf
 												@method('DELETE')
 												<button type="submit" class="btn btn-danger btn-sm m-1">@lang('lang.remove')</button>
 											</form>
+											@endcan
 										</td>
 									</tr>
 								@empty

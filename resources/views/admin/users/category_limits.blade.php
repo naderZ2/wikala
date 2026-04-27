@@ -67,6 +67,7 @@
                                         <span class="{{ $remaining > 0 ? 'text-success' : 'text-danger' }}">{{ $remaining }}</span>
                                     </td>
                                     <td>
+                                        @can('manage user category limits')
                                         <a href="{{ route('admin.userCategoryLimits.edit', [$user->id, $category['category_id']]) }}" class="btn btn-primary btn-sm">
                                             <i class="fa fa-edit"></i> @lang('lang.edit_limit')
                                         </a>
@@ -79,6 +80,7 @@
                                             </button>
                                         </form>
                                         @endif
+                                        @endcan
                                     </td>
                                 </tr>
                                 @endforeach

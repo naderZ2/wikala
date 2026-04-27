@@ -239,6 +239,117 @@ class ProductController extends Controller
     }
 
     /**
+     * Store tree-structured variations
+     * POST /seller/products/{id}/variation-tree
+     *
+     * Example body:
+     * {
+     *   "tree": [
+     *     {
+     *       "attribute_name": "Size",
+     *       "value": "M",
+     *       "children": [
+     *         { "attribute_name": "Color", "value": "Red",   "quantity": 15, "price": 100 },
+     *         { "attribute_name": "Color", "value": "Black", "quantity": 10, "price": 100 }
+     *       ]
+     *     },
+     *     {
+     *       "attribute_name": "Size",
+     *       "value": "L",
+     *       "children": [
+     *         { "attribute_name": "Color", "value": "Red",   "quantity": 20, "price": 110 },
+     *         { "attribute_name": "Color", "value": "Blue",  "quantity": 5,  "price": 110 }
+     *       ]
+     *     }
+     *   ]
+     * }
+     */
+    public function storeTreeVariations(Request $request, $id)
+    {
+        $product = Product::where('id', $id)
+            ->where('seller_id', $request->user()->getMainSellerId())
+            ->firstOrFail();
+
+        $request->validate([
+            'tree'                          => 'required|array|min:1',
+            'tree.*.attribute_name'         => 'required|string',
+            'tree.*.value'                  => 'required|string',
+            'tree.*.price'                  => 'nullable|numeric|min:0',
+            'tree.*.quantity'               => 'nullable|integer|min:0',
+            'tree.*.sku'                    => 'nullable|string',
+            'tree.*.children'               => 'nullable|array',
+            'tree.*.children.*.attribute_name' => 'required_with:tree.*.children|string',
+            'tree.*.children.*.value'          => 'required_with:tree.*.children|string',
+            'tree.*.children.*.price'          => 'nullable|numeric|min:0',
+            'tree.*.children.*.quantity'       => 'nullable|integer|min:0',
+            'tree.*.children.*.sku'            => 'nullable|string',
+            'tree.*.children.*.children'       => 'nullable|array',
+        ]);
+
+        // Delete existing variations for this product
+        $product->variations()->each(function ($variation) {
+            $variation->attributes()->delete();
+            $variation->delete();
+        });
+
+        // Recursively create tree
+        $this->createVariationNodes($product->id, $request->tree, null);
+
+        // Return the full tree
+        $tree = ProductVariation::where('product_id', $product->id)
+            ->whereNull('parent_id')
+            ->with('allChildren', 'attributes')
+            ->get();
+
+        return $this->success($tree, 'Variation tree saved successfully');
+    }
+
+    /**
+     * Recursively create variation nodes
+     */
+    private function createVariationNodes($productId, array $nodes, $parentId)
+    {
+        foreach ($nodes as $node) {
+            $variation = ProductVariation::create([
+                'product_id' => $productId,
+                'parent_id'  => $parentId,
+                'price'      => $node['price'] ?? null,
+                'quantity'   => $node['quantity'] ?? 0,
+                'sku'        => $node['sku'] ?? null,
+            ]);
+
+            // Store the attribute for this node
+            $variation->attributes()->create([
+                'attribute_id' => 0,
+                'value'        => ($node['attribute_name'] ?? '') . ':' . ($node['value'] ?? ''),
+            ]);
+
+            // Recurse into children
+            if (!empty($node['children'])) {
+                $this->createVariationNodes($productId, $node['children'], $variation->id);
+            }
+        }
+    }
+
+    /**
+     * Get the variation tree for a product
+     * GET /seller/products/{id}/variation-tree
+     */
+    public function getVariationTree(Request $request, $id)
+    {
+        $product = Product::where('id', $id)
+            ->where('seller_id', $request->user()->getMainSellerId())
+            ->firstOrFail();
+
+        $tree = ProductVariation::where('product_id', $product->id)
+            ->whereNull('parent_id')
+            ->with('allChildren', 'attributes')
+            ->get();
+
+        return $this->success($tree, 'Variation tree');
+    }
+
+    /**
      * Show single product
      * GET /seller/products/{id}
      */

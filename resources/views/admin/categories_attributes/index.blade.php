@@ -23,9 +23,9 @@
 <div class="container-fluid">
 	<div class="row">
 		<div class="d-flex justify-content-end col-sm-12">
-			@can('add category')
+			@can('create category attribute')
 				<a href="{{route('category-attributes.create')}}"  class="btn btn-primary">@lang('lang.add_category_attribute')</a>
-			@endcan	
+			@endcan
 		</div>
 		<div class="col-sm-12 mt-3">
 			<div class="card">
@@ -56,24 +56,25 @@
 										{{-- <td>{{ $attribute?->price }}</td> --}}
 										
 										<td>
-											{{-- <button class="btn btn-primary" id="addRow" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#exampleModal"  onclick="getRow({{ $product }})">@lang('lang.details')</button> --}}
-											{{-- @can('change product status') --}}
+											@can('update category attribute')
 											<a class="btn btn-primary mt-1" href="{{ route('category-attributes.edit',$value->id) }}" >@lang('lang.edit')</a>
-											@if ($value?->enable == 1)
-											<a class="btn btn-danger mt-1"  href="{{ route('category-attributes.enable', $value->id) }}" >@lang('lang.Disable') </a>
-											@else
+											@endcan
+											@can('toggle category attribute')
+												@if ($value?->enable == 1)
+												<a class="btn btn-danger mt-1"  href="{{ route('category-attributes.enable', $value->id) }}" >@lang('lang.Disable') </a>
+												@else
 												<a class="btn btn-success mt-1"  href="{{ route('category-attributes.enable', $value->id) }}" >@lang('lang.Enable')</a>
-											@endif
-											
+												@endif
+											@endcan
+
+											@can('delete category attribute')
 											<form action="{{ route('category-attributes.delete') }}" style="display:inline;" onclick="getId({{ $value->id }})" method="Post" id="form_id">
                                                 @method("delete")
                                                 @csrf
                                                 <input type="hidden" name="id" id="notification_id">
-                                                {{-- @can('delete notification') --}}
                                                 <button id="{{ $loop->iteration }}" class="btn btn-danger sweet-5" onclick="test()" type="button" >@lang('lang.remove')</button>
-                                                {{-- @endcan	 --}}
                                             </form>
-											{{-- <button class="btn btn-danger" type="button" data-bs-toggle="modal" data-bs-target="#deleteModal" onclick="setDeleteAction('{{ route('category-attributes.destroy', $value->id) }}')">@lang('lang.Delete')</button> --}}
+											@endcan
 										</td>							
 
 											

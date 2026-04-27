@@ -148,7 +148,9 @@
                                 </div>
                             </div>
 						</div> --}}
+						@can('update settings')
 						<button class="btn btn-primary" type="submit">@lang('lang.edit')</button>
+						@endcan
 					</form>
 				</div>
 			</div>

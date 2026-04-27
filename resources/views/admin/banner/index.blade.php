@@ -52,19 +52,18 @@
 										</td>							
 										
 										<td>
-											@can('edit category')
+											@can('update banner')
 											<button class="btn btn-primary" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#exampleModal"  onclick="getRecord({{ $banner }})">@lang('lang.edit')</button>
-											{{-- <button class="btn btn-secondary" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#exampleModal">Delete</button> --}}
-											@endcan	
+											@endcan
 
+											@can('delete banner')
                                             <form action="{{ route('dashboard.banner.destroy') }}" onclick="getId({{ $banner->id }})" method="Post" id="form_id">
                                                 @method("delete")
                                                 @csrf
                                                 <input type="hidden" name="id" id="notification_id">
-                                                @can('delete notification')
                                                 <button id="{{ $loop->iteration }}" class="btn btn-danger sweet-5" onclick="test()" type="button" >@lang('lang.remove')</button>
-                                                @endcan	
                                             </form>
+											@endcan
 										</td>
 							
 									</tr>

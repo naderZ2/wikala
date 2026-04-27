@@ -79,9 +79,9 @@
 			</ul>
 
 			<div class="d-flex justify-content-end mb-3">
-				@can('add seller')
+				@can('create seller')
 					<a href="{{route('seller.create')}}" class="btn btn-primary">@lang('lang.add_Seller')</a>
-				@endcan	
+				@endcan
         	</div>
 
 		<!-- Column rendering  Starts-->
@@ -131,21 +131,21 @@
 										<td>{{ $seller->created_at ? $seller->created_at->format('Y-m-d') : '-' }}</td>
 										
 										<td>
-											@can('edit seller')
+											@can('update seller')
 											<a class="btn btn-success btn-sm"  href="{{ route('seller.edit',$seller->id) }}">
-												@lang('lang.edit')										
+												@lang('lang.edit')
 											</a>
-											
+
 											<a class="btn btn-warning btn-sm mt-1" href="{{ route('seller.delivery-options', $seller->id) }}">
 												@lang('lang.delivery_options')
 											</a>
-											@endcan	
+											@endcan
 										
 										
 											<form action="{{ route('seller.change_activity_status') }}" method="post" id="form_id_{{ $seller->id }}" style="display:inline;">
 												@csrf
 												<input type="hidden" name="id" id="seller_id_{{ $seller->id }}">
-												@can('edit seller status')
+												@can('change seller status')
 
 												
 												@if ($seller->active == 1)
@@ -161,7 +161,7 @@
 											@if ($seller->active != -1)
 											<form action="{{ route('seller.reject', $seller->id) }}" method="post" id="reject_form_{{ $seller->id }}" style="display:inline;">
 												@csrf
-												@can('edit seller status')
+												@can('change seller status')
 												<button class="btn btn-dark btn-sm mt-1" onclick="confirmReject({{ $seller->id }})" type="button" >@lang('lang.reject')</button>
 												@endcan	
 											</form>

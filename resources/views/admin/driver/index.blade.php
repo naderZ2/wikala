@@ -50,17 +50,17 @@
 										</td>
 										<td>{{ $driver->created_at->format('Y-m-d') }}</td>
 										<td>
-											@can('edit driver')
+											@can('update driver')
 											<a class="btn btn-success"  href="{{ route('driver.edit',$driver->id) }}">
-												@lang('lang.edit')											</a>
-												@endcan	
-											
+												@lang('lang.edit')</a>
+											@endcan
+
 											<form action="{{ route('driver.change_activity_status') }}" onclick="getId({{ $driver->id }})" method="post" id="form_id">
 												@csrf
 												<input type="hidden" name="id" id="seller_id">
-												@can('edit driver status')
+												@can('change driver status')
 												<button id="{{ $loop->iteration }}" class="btn btn-primary sweet-5" onclick="test()" type="button" >@lang('lang.change_status')</button>
-												@endcan	
+												@endcan
 											</form>
 										
 										</td>

@@ -28,8 +28,8 @@
 
     <div class="row">
         <div class="d-flex justify-content-end col-sm-12">
-            @can('add role')
-            <a href="{{route('city.create')}}" class="btn btn-primary">@lang('lang.add_slider')</a>
+            @can('create city')
+            <a href="{{route('city.create')}}" class="btn btn-primary">@lang('lang.add_region')</a>
             @endcan
         </div>
 
@@ -62,20 +62,22 @@
                                     <td>{{ app()->getLocale() == "en" ? $city->name_en : $city->name_ar }}</td>
                                     {{-- <td>{{ $city->parent->name ?? __('lang.main_region') }}</td> --}}
                                     <td>
+                                        @can('update city')
                                         <button class="btn btn-primary" type="button"
                                             data-bs-toggle="modal"
                                             data-bs-target="#exampleModal"
                                             onclick="getRecord({{ json_encode($city) }})">
                                             @lang('lang.edit')
                                         </button>
+                                        @endcan
+                                        @can('delete city')
                                         <form action="{{ route('dashboard.city.destroy') }}" method="POST">
                                             @method('delete')
                                             @csrf
                                             <input type="hidden" name="id" value="{{ $city->id }}">
-                                            @can('delete notification')
                                             <button class="btn btn-danger" type="submit">@lang('lang.remove')</button>
-                                            @endcan
                                         </form>
+                                        @endcan
                                     </td>
                                 </tr>
                                 @empty

@@ -95,9 +95,9 @@
 
 	<div class="row">
        <div class="d-flex justify-content-end col-sm-12">
-				@can('add role')
+				@can('create slider')
                 <button class="btn btn-primary"  type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#exampleModalAdd" >@lang('lang.add_slider')</button>
-				@endcan	
+				@endcan
         	</div>
 		<div class="col-sm-12 mt-3">
 			<div class="card">
@@ -131,19 +131,18 @@
 										</td>							
 										
 										<td>
-											@can('edit category')
+											@can('update slider')
 											<button class="btn btn-primary" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#exampleModal"  onclick="getRecord({{ $category }})">@lang('lang.edit')</button>
-											{{-- <button class="btn btn-secondary" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#exampleModal">Delete</button> --}}
-											@endcan	
+											@endcan
 
+											@can('delete slider')
                                             <form action="{{ route('slider.destroy') }}" onclick="getId({{ $category->id }})" method="Post" id="form_id">
                                                 @method("delete")
                                                 @csrf
                                                 <input type="hidden" name="id" id="notification_id">
-                                                @can('delete notification')
                                                 <button id="{{ $loop->iteration }}" class="btn btn-danger sweet-5" onclick="test()" type="button" >@lang('lang.remove')</button>
-                                                @endcan	
                                             </form>
+											@endcan
 										</td>
 							
 									</tr>

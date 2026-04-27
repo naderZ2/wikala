@@ -18,7 +18,9 @@
 <div class="container-fluid">
 	<div class="row">
 		<div class="d-flex justify-content-end col-sm-12 mb-3">
-			<a href="{{ route('admin.coupons.create') }}" class="btn btn-primary">@lang('lang.add_coupon')</a>
+			@can('create coupon')
+				<a href="{{ route('admin.coupons.create') }}" class="btn btn-primary">@lang('lang.add_coupon')</a>
+			@endcan
 		</div>
 		<div class="col-sm-12">
 			<div class="card">
@@ -66,15 +68,21 @@
 											@endif
 										</td>
 										<td>
+											@can('update coupon')
 											<a href="{{ route('admin.coupons.edit', $coupon->id) }}" class="btn btn-success btn-sm m-1">@lang('lang.edit')</a>
+											@endcan
+											@can('toggle coupon')
 											<a href="{{ route('admin.coupons.toggle', $coupon->id) }}" class="btn btn-warning btn-sm m-1">
 												{{ $coupon->active ? trans('lang.Disable') : trans('lang.Enable') }}
 											</a>
+											@endcan
+											@can('delete coupon')
 											<form action="{{ route('admin.coupons.destroy', $coupon->id) }}" method="POST" style="display:inline-block" onsubmit="return confirm('Are you sure?');">
 												@csrf
 												@method('DELETE')
 												<button type="submit" class="btn btn-danger btn-sm m-1">@lang('lang.remove')</button>
 											</form>
+											@endcan
 										</td>
 									</tr>
 								@empty

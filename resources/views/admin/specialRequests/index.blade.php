@@ -56,8 +56,10 @@
 											{{ $specialRequest->date}}
 										</td>										
 										<td>
-										<a class="btn btn-success"  href="{{route('admin.specialRequest.details',$specialRequest->id)}}">
-												@lang('lang.details')</a>
+											@can('view special request')
+											<a class="btn btn-success"  href="{{route('admin.specialRequest.details',$specialRequest->id)}}">
+													@lang('lang.details')</a>
+											@endcan
 										</td>
 							
 									</tr>

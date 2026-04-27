@@ -24,9 +24,9 @@
 
 	<div class="row">
 		   <div class="d-flex justify-content-end col-sm-12">
-				@can('add discount')
-					<a href="{{route('discounts.create')}}"  class="btn btn-primary">@lang('lang.add_slider')</a>
-				@endcan	
+				@can('create discount')
+					<a href="{{route('discounts.create')}}"  class="btn btn-primary">@lang('lang.add_discount')</a>
+				@endcan
         	</div>
 		<div class="col-sm-12 mt-3">
 			<div class="card">
@@ -66,14 +66,13 @@
                                         <td>{{ $discount->type }}</td>
                                         <td>{{ $discount->value }}</td>
 										<td>
-											@can('disable discount')
-											@if ($discount->active == true)
-												<a class="btn btn-danger"  href="{{ route('change_active',$discount->id) }}" >@lang('lang.Disable') </a>
-
-											@else
-												<a class="btn btn-success"  href="{{ route('change_active',$discount->id) }}" >@lang('lang.Enable')</a>
-											@endif
-											@endcan	
+											@can('toggle discount')
+												@if ($discount->active == true)
+													<a class="btn btn-danger"  href="{{ route('change_active',$discount->id) }}" >@lang('lang.Disable') </a>
+												@else
+													<a class="btn btn-success"  href="{{ route('change_active',$discount->id) }}" >@lang('lang.Enable')</a>
+												@endif
+											@endcan
 										</td>
                                     </tr>
                                 @endforeach

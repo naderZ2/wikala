@@ -15,6 +15,21 @@ class ProductVariation extends Model
         return $this->belongsTo(Product::class);
     }
 
+    public function parent(){
+        return $this->belongsTo(ProductVariation::class, 'parent_id');
+    }
+
+    public function children(){
+        return $this->hasMany(ProductVariation::class, 'parent_id');
+    }
+
+    /**
+     * Recursive relationship: children with their children (infinite depth)
+     */
+    public function allChildren(){
+        return $this->children()->with('allChildren.attributes');
+    }
+
     public function attributes(){
         return $this->hasMany(ProductVariationAttribute::class);
     }

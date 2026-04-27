@@ -23,7 +23,9 @@
 <div class="container-fluid">
 	<div class="row">
 		<div class="d-flex justify-content-end col-sm-12">
-				<a href="{{route('admin.sellerServices.create')}}"  class="btn btn-primary">@lang('lang.add_slider')</a>
+			@can('create seller service')
+				<a href="{{route('admin.sellerServices.create')}}"  class="btn btn-primary">@lang('lang.add_service')</a>
+			@endcan
 		</div>
 		<div class="col-sm-12 mt-3">
 			<div class="card">
@@ -60,16 +62,17 @@
 										</td>
 									
 										<td>
-											@if ($service->availability == 1)
-											<a href="{{ route('admin.sellerServices.updateAvailability',$service->id) }}" class="btn btn-danger mt-1" >
-												@lang('lang.not_available')
-											</a>
-
-											@else
+											@can('toggle seller service')
+												@if ($service->availability == 1)
+												<a href="{{ route('admin.sellerServices.updateAvailability',$service->id) }}" class="btn btn-danger mt-1" >
+													@lang('lang.not_available')
+												</a>
+												@else
 												<a href="{{ route('admin.sellerServices.updateAvailability',$service->id) }}" class="btn btn-success mt-1" >
 													@lang('lang.available')
 												</a>
-											@endif
+												@endif
+											@endcan
 										</td>
 										
 										

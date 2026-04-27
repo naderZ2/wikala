@@ -27,9 +27,9 @@
 
         <div class="row">   
            <div class="d-flex justify-content-end col-sm-12">
-				@can('add notification')
-					<a href="{{route('admin.notifications.create')}}"  class="btn btn-primary">@lang('lang.add_slider')</a>
-				@endcan	
+				@can('create notification')
+					<a href="{{route('admin.notifications.create')}}"  class="btn btn-primary">@lang('lang.add_Notification')</a>
+				@endcan
         	</div>
             <div class="col-sm-12 mt-3">
                 <div class="card">

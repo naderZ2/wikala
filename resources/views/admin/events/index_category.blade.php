@@ -24,9 +24,9 @@
 
 	<div class="row">
 	       <div class="d-flex justify-content-end col-sm-12">
-				@can('add category')
-					<a href="{{route('event_category.create')}}"  class="btn btn-primary">@lang('lang.add_slider')</a>
-				@endcan	
+				@can('create event category')
+					<a href="{{route('event_category.create')}}"  class="btn btn-primary">@lang('lang.add_Category')</a>
+				@endcan
         	</div>
 		<div class="col-sm-12 mt-3">
 			<div class="card">
@@ -60,15 +60,16 @@
 																			
 										
 										<td>
-											@can('edit category')
+											@can('update event category')
 											<button class="btn btn-primary" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#exampleModal"  onclick="getRecord({{ $category }})">@lang('lang.edit')</button>
-											{{-- <button class="btn btn-secondary" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#exampleModal">Delete</button> --}}
-											@endcan	
+											@endcan
+											@can('delete event category')
 											<form method="POST" action="{{route('event_category.destroy',$category->id)}}" style="display: inline-block">
 												@csrf
 												<button  class="btn btn-danger"  >@lang('lang.Delete')</button>
-												{{-- <a href="{{route('daily_events.destroy')}}" class="btn btn-danger"   >@lang('lang.rejection_reason')</a> --}}
 											</form>
+											@endcan
+											@can('reorder event category')
 											<td class="actions">
 												<form action="{{ route('event-categories.moveUp', $category->id) }}" method="POST">
 													@csrf
@@ -79,6 +80,7 @@
 													<button class="btn btn-success" type="submit">@lang('lang.move-down')</button>
 												</form>
 											</td>
+											@endcan
 										</td>
 										
 										

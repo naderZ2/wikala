@@ -63,7 +63,9 @@
                                         <td class="text-center">{{ $optionTitle }}</td>
                                         <td class="text-center">{{ $report?->additional_notes ?? trans('lang.no_data') }}</td>
                                         <td class="text-center">
-                                            <a href="{{ route('admin.reports.details', $report->id) }}" class="btn btn-info m-1">@lang('lang.details')</a>
+                                            @can('view report')
+                                                <a href="{{ route('admin.reports.details', $report->id) }}" class="btn btn-info m-1">@lang('lang.details')</a>
+                                            @endcan
                                         </td>
                                     </tr>
                                 @empty
