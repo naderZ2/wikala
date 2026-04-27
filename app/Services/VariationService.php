@@ -202,8 +202,8 @@ class VariationService
             $attr = Attribute::create([
                 'name_en' => $name,
                 'name_ar' => $name,
-                'enable'  => 1,
                 'type'    => 'text',
+                'enable'  => 1,
             ]);
         }
         return $cache[$key] = $attr->id;
