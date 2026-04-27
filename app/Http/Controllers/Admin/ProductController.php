@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Models\Seller;
 use App\Models\Product;
 use App\Models\ProductImage;
+use App\Models\ProductVariation;
 use App\Models\Category;
+use App\Services\VariationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\File;
@@ -261,6 +263,145 @@ class ProductController extends Controller
         ]);
 
         return to_route('product.index')->with('success', trans('lang.updated'));
+    }
+
+    /**
+     * Store flat variations for a product (admin).
+     * POST /dashboard/orders/products/{id}/variations
+     *
+     * Body:
+     * {
+     *   "variations": [
+     *     { "price": 100, "quantity": 15, "sku": "X", "options": [{"attribute_id": 1, "value": "M"}] }
+     *   ]
+     * }
+     */
+    public function storeVariations(Request $request, $id)
+    {
+        $product = Product::withTrashed()->findOrFail($id);
+
+        $request->validate([
+            'variations'                       => 'required|array',
+            'variations.*.price'               => 'nullable|numeric|min:0',
+            'variations.*.quantity'            => 'nullable|integer|min:0',
+            'variations.*.sku'                 => 'nullable|string',
+            'variations.*.options'             => 'required|array',
+            'variations.*.options.*.attribute_id' => 'nullable|integer',
+            'variations.*.options.*.value'     => 'required|string',
+        ]);
+
+        $product->variations()->each(function ($variation) {
+            $variation->attributes()->delete();
+            $variation->delete();
+        });
+
+        foreach ($request->variations as $variationData) {
+            $variation = $product->variations()->create([
+                'price'    => $variationData['price'] ?? 0,
+                'quantity' => $variationData['quantity'] ?? 0,
+                'sku'      => $variationData['sku'] ?? null,
+            ]);
+
+            foreach ($variationData['options'] as $option) {
+                $variation->attributes()->create([
+                    'attribute_id' => $option['attribute_id'] ?? 0,
+                    'value'        => $option['value'],
+                ]);
+            }
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Variations saved successfully',
+            'data'    => $product->load('variations.attributes'),
+        ]);
+    }
+
+    /**
+     * Store tree-structured variations for a product (admin).
+     * POST /dashboard/orders/products/{id}/variation-tree
+     */
+    public function storeTreeVariations(Request $request, $id)
+    {
+        $product = Product::withTrashed()->findOrFail($id);
+
+        $request->validate([
+            'tree'                              => 'required|array|min:1',
+            'tree.*.attribute_name'             => 'required|string',
+            'tree.*.value'                      => 'required|string',
+            'tree.*.price'                      => 'nullable|numeric|min:0',
+            'tree.*.quantity'                   => 'nullable|integer|min:0',
+            'tree.*.sku'                        => 'nullable|string',
+            'tree.*.children'                   => 'nullable|array',
+            'tree.*.children.*.attribute_name'  => 'required_with:tree.*.children|string',
+            'tree.*.children.*.value'           => 'required_with:tree.*.children|string',
+            'tree.*.children.*.price'           => 'nullable|numeric|min:0',
+            'tree.*.children.*.quantity'        => 'nullable|integer|min:0',
+            'tree.*.children.*.sku'             => 'nullable|string',
+            'tree.*.children.*.children'        => 'nullable|array',
+        ]);
+
+        $product->variations()->each(function ($variation) {
+            $variation->attributes()->delete();
+            $variation->delete();
+        });
+
+        $this->createVariationNodes($product->id, $request->tree, null);
+
+        $tree = ProductVariation::where('product_id', $product->id)
+            ->whereNull('parent_id')
+            ->with('allChildren', 'attributes')
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Variation tree saved successfully',
+            'data'    => $tree,
+        ]);
+    }
+
+    /**
+     * Get the variation tree for a product (admin).
+     * GET /dashboard/orders/products/{id}/variation-tree
+     */
+    public function getVariationTree(Request $request, $id)
+    {
+        $product = Product::withTrashed()->findOrFail($id);
+
+        $tree = ProductVariation::where('product_id', $product->id)
+            ->whereNull('parent_id')
+            ->with('allChildren', 'attributes')
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'data'    => $tree,
+        ]);
+    }
+
+    /**
+     * Recursively create variation nodes.
+     */
+    private function createVariationNodes($productId, array $nodes, $parentId)
+    {
+        foreach ($nodes as $node) {
+            $variation = ProductVariation::create([
+                'product_id' => $productId,
+                'parent_id'  => $parentId,
+                'price'      => $node['price'] ?? null,
+                'quantity'   => $node['quantity'] ?? 0,
+                'sku'        => $node['sku'] ?? null,
+            ]);
+
+            $variation->attributes()->create([
+                'attribute_id' => 0,
+                'value'        => ($node['attribute_name'] ?? '') . ':' . ($node['value'] ?? ''),
+            ]);
+
+            if (!empty($node['children'])) {
+                $this->createVariationNodes($productId, $node['children'], $variation->id);
+            }
+        }
     }
 
 }

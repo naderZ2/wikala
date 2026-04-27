@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Seller;
 
 use App\Models\{Product, Category, ProductImage, ProductVariation, ProductVariationAttribute};
+use App\Services\VariationService;
 use App\Traits\{FileUploadTrait, ResponsesTrait};
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\File;
@@ -120,233 +121,109 @@ class ProductController extends Controller
     }
 
     /**
-     * Store product variations - Step 2
+     * Replace ALL variations for a product (unified flat + tree).
      * POST /seller/products/{id}/variations
-     */
-    public function storeVariations(Request $request, $id)
-    {
-        $product = Product::where('id', $id)
-            ->where('seller_id', $request->user()->getMainSellerId())
-            ->firstOrFail();
-
-        $request->validate([
-            'variations' => 'required|array',
-            'variations.*.price' => 'nullable|numeric|min:0',
-            'variations.*.quantity' => 'nullable|integer|min:0',
-            'variations.*.sku' => 'nullable|string',
-            'variations.*.options' => 'required|array',
-            'variations.*.options.*.attribute_id' => 'nullable|integer',
-            'variations.*.options.*.value' => 'required|string',
-        ]);
-
-        // Delete old variations if updating
-        $product->variations()->each(function ($variation) {
-            $variation->attributes()->delete();
-            $variation->delete();
-        });
-
-        foreach ($request->variations as $variationData) {
-            $variation = $product->variations()->create([
-                'price' => $variationData['price'] ?? 0,
-                'quantity' => $variationData['quantity'] ?? 0,
-                'sku' => $variationData['sku'] ?? null,
-            ]);
-
-            foreach ($variationData['options'] as $option) {
-                $variation->attributes()->create([
-                    'attribute_id' => $option['attribute_id'] ?? 0,
-                    'value' => $option['value'],
-                ]);
-            }
-        }
-
-        return $this->success(
-            $product->load('variations.attributes'),
-            'Variations saved successfully'
-        );
-    }
-
-    /**
-     * Update a single variation (create if it doesn't exist)
-     * PUT /seller/products/{productId}/variations/{variationId}
-     */
-    public function updateVariation(Request $request, $productId, $variationId)
-    {
-        $product = Product::where('id', $productId)
-            ->where('seller_id', $request->user()->getMainSellerId())
-            ->firstOrFail();
-
-        $request->validate([
-            'price'                 => 'nullable|numeric|min:0',
-            'quantity'              => 'nullable|integer|min:0',
-            'sku'                   => 'nullable|string',
-            'options'               => 'sometimes|array',
-            'options.*.attribute_id'=> 'nullable|integer',
-            'options.*.value'       => 'required|string',
-        ]);
-
-        // Find existing or create new variation
-        $variation = ProductVariation::firstOrNew(
-            ['id' => $variationId, 'product_id' => $product->id]
-        );
-
-        $isNew = !$variation->exists;
-
-        $variation->fill([
-            'product_id' => $product->id,
-            'price'      => $request->price    ?? $variation->price ?? 0,
-            'quantity'   => $request->quantity  ?? $variation->quantity ?? 0,
-            'sku'        => $request->sku       ?? $variation->sku,
-        ]);
-        $variation->save();
-
-        // Replace attributes only if options are provided
-        if ($request->has('options')) {
-            $variation->attributes()->delete();
-
-            foreach ($request->options as $option) {
-                $variation->attributes()->create([
-                    'attribute_id' => $option['attribute_id'] ?? 0,
-                    'value'        => $option['value'],
-                ]);
-            }
-        }
-
-        return $this->success(
-            $variation->load('attributes'),
-            $isNew ? 'Variation created successfully' : 'Variation updated successfully'
-        );
-    }
-
-    /**
-     * Delete a single variation
-     * DELETE /seller/products/{productId}/variations/{variationId}
-     */
-    public function deleteVariation(Request $request, $productId, $variationId)
-    {
-        $product = Product::where('id', $productId)
-            ->where('seller_id', $request->user()->getMainSellerId())
-            ->firstOrFail();
-
-        $variation = ProductVariation::where('id', $variationId)
-            ->where('product_id', $product->id)
-            ->firstOrFail();
-
-        $variation->attributes()->delete();
-        $variation->delete();
-
-        return $this->success(null, 'Variation deleted successfully');
-    }
-
-    /**
-     * Store tree-structured variations
-     * POST /seller/products/{id}/variation-tree
      *
-     * Example body:
+     * Body:
      * {
-     *   "tree": [
-     *     {
-     *       "attribute_name": "Size",
-     *       "value": "M",
-     *       "children": [
-     *         { "attribute_name": "Color", "value": "Red",   "quantity": 15, "price": 100 },
-     *         { "attribute_name": "Color", "value": "Black", "quantity": 10, "price": 100 }
-     *       ]
-     *     },
-     *     {
-     *       "attribute_name": "Size",
-     *       "value": "L",
-     *       "children": [
-     *         { "attribute_name": "Color", "value": "Red",   "quantity": 20, "price": 110 },
-     *         { "attribute_name": "Color", "value": "Blue",  "quantity": 5,  "price": 110 }
-     *       ]
-     *     }
+     *   "attributes": ["Size", "Color"],          // optional - controls tree nesting order on read
+     *   "variations": [
+     *     { "sku": "TS-M-RED",   "price": 100, "quantity": 15, "options": {"Size": "M", "Color": "Red"} },
+     *     { "sku": "TS-L-BLUE",  "price": 110, "quantity": 5,  "options": {"Size": "L", "Color": "Blue"} }
      *   ]
      * }
      */
-    public function storeTreeVariations(Request $request, $id)
+    public function storeVariations(Request $request, $id, VariationService $service)
     {
-        $product = Product::where('id', $id)
-            ->where('seller_id', $request->user()->getMainSellerId())
-            ->firstOrFail();
+        $product = $this->ownedProduct($request, $id);
 
-        $request->validate([
-            'tree'                          => 'required|array|min:1',
-            'tree.*.attribute_name'         => 'required|string',
-            'tree.*.value'                  => 'required|string',
-            'tree.*.price'                  => 'nullable|numeric|min:0',
-            'tree.*.quantity'               => 'nullable|integer|min:0',
-            'tree.*.sku'                    => 'nullable|string',
-            'tree.*.children'               => 'nullable|array',
-            'tree.*.children.*.attribute_name' => 'required_with:tree.*.children|string',
-            'tree.*.children.*.value'          => 'required_with:tree.*.children|string',
-            'tree.*.children.*.price'          => 'nullable|numeric|min:0',
-            'tree.*.children.*.quantity'       => 'nullable|integer|min:0',
-            'tree.*.children.*.sku'            => 'nullable|string',
-            'tree.*.children.*.children'       => 'nullable|array',
+        $data = $request->validate([
+            'attributes'                 => 'sometimes|array',
+            'attributes.*'               => 'string',
+            'variations'                 => 'required|array|min:1',
+            'variations.*.sku'           => 'nullable|string',
+            'variations.*.price'         => 'nullable|numeric|min:0',
+            'variations.*.quantity'      => 'nullable|integer|min:0',
+            'variations.*.is_active'     => 'sometimes|boolean',
+            'variations.*.options'       => 'required|array|min:1',
+            'variations.*.options.*'     => 'required|string',
         ]);
 
-        // Delete existing variations for this product
-        $product->variations()->each(function ($variation) {
-            $variation->attributes()->delete();
-            $variation->delete();
-        });
+        $result = $service->replace($product, $data);
 
-        // Recursively create tree
-        $this->createVariationNodes($product->id, $request->tree, null);
-
-        // Return the full tree
-        $tree = ProductVariation::where('product_id', $product->id)
-            ->whereNull('parent_id')
-            ->with('allChildren', 'attributes')
-            ->get();
-
-        return $this->success($tree, 'Variation tree saved successfully');
+        return $this->success($result, 'Variations saved successfully');
     }
 
     /**
-     * Recursively create variation nodes
+     * Upsert one variation.
+     * PUT /seller/products/{productId}/variations/{variationId}
      */
-    private function createVariationNodes($productId, array $nodes, $parentId)
+    public function updateVariation(Request $request, $productId, $variationId, VariationService $service)
     {
-        foreach ($nodes as $node) {
-            $variation = ProductVariation::create([
-                'product_id' => $productId,
-                'parent_id'  => $parentId,
-                'price'      => $node['price'] ?? null,
-                'quantity'   => $node['quantity'] ?? 0,
-                'sku'        => $node['sku'] ?? null,
-            ]);
+        $product = $this->ownedProduct($request, $productId);
 
-            // Store the attribute for this node
-            $variation->attributes()->create([
-                'attribute_id' => 0,
-                'value'        => ($node['attribute_name'] ?? '') . ':' . ($node['value'] ?? ''),
-            ]);
+        $data = $request->validate([
+            'sku'        => 'nullable|string',
+            'price'      => 'nullable|numeric|min:0',
+            'quantity'   => 'nullable|integer|min:0',
+            'is_active'  => 'sometimes|boolean',
+            'options'    => 'sometimes|array',
+            'options.*'  => 'string',
+        ]);
+        $data['id'] = (int) $variationId;
 
-            // Recurse into children
-            if (!empty($node['children'])) {
-                $this->createVariationNodes($productId, $node['children'], $variation->id);
-            }
+        $variation = $service->upsert($product, $data);
+
+        return $this->success($variation, 'Variation saved');
+    }
+
+    /**
+     * DELETE /seller/products/{productId}/variations/{variationId}
+     */
+    public function deleteVariation(Request $request, $productId, $variationId, VariationService $service)
+    {
+        $product = $this->ownedProduct($request, $productId);
+        $service->delete($product, (int) $variationId);
+        return $this->success(null, 'Variation deleted');
+    }
+
+    /**
+     * GET /seller/products/{id}/variations?as=tree|flat   (default: both)
+     */
+    public function getVariations(Request $request, $id, VariationService $service)
+    {
+        $product = $this->ownedProduct($request, $id);
+
+        $as = $request->query('as');
+        if ($as === 'tree') {
+            return $this->success(['tree' => $service->buildTree($product)], 'Variation tree');
         }
+        if ($as === 'flat') {
+            return $this->success(['flat' => $service->flatList($product)], 'Variations');
+        }
+
+        return $this->success([
+            'flat' => $service->flatList($product),
+            'tree' => $service->buildTree($product),
+        ], 'Variations');
     }
 
-    /**
-     * Get the variation tree for a product
-     * GET /seller/products/{id}/variation-tree
-     */
-    public function getVariationTree(Request $request, $id)
+    /** Back-compat aliases for the old endpoints. */
+    public function storeTreeVariations(Request $request, $id, VariationService $service)
     {
-        $product = Product::where('id', $id)
+        return $this->storeVariations($request, $id, $service);
+    }
+    public function getVariationTree(Request $request, $id, VariationService $service)
+    {
+        $request->merge(['as' => 'tree']);
+        return $this->getVariations($request, $id, $service);
+    }
+
+    private function ownedProduct(Request $request, $id): Product
+    {
+        return Product::where('id', $id)
             ->where('seller_id', $request->user()->getMainSellerId())
             ->firstOrFail();
-
-        $tree = ProductVariation::where('product_id', $product->id)
-            ->whereNull('parent_id')
-            ->with('allChildren', 'attributes')
-            ->get();
-
-        return $this->success($tree, 'Variation tree');
     }
 
     /**

@@ -11,30 +11,33 @@ class ProductVariation extends Model
 
     protected $guarded = [];
 
-    public function product(){
+    protected $casts = [
+        'is_active' => 'boolean',
+        'price'     => 'decimal:2',
+    ];
+
+    public function product()
+    {
         return $this->belongsTo(Product::class);
     }
 
-    public function parent(){
-        return $this->belongsTo(ProductVariation::class, 'parent_id');
-    }
-
-    public function children(){
-        return $this->hasMany(ProductVariation::class, 'parent_id');
-    }
-
-    /**
-     * Recursive relationship: children with their children (infinite depth)
-     */
-    public function allChildren(){
-        return $this->children()->with('allChildren.attributes');
-    }
-
-    public function attributes(){
+    public function attributes()
+    {
         return $this->hasMany(ProductVariationAttribute::class);
     }
 
-    public function orderDetails(){
+    public function orderDetails()
+    {
         return $this->hasMany(OrderDetails::class);
+    }
+
+    public function scopeActive($q)
+    {
+        return $q->where('is_active', true);
+    }
+
+    public function scopeInStock($q)
+    {
+        return $q->where('quantity', '>', 0);
     }
 }

@@ -322,6 +322,11 @@ Route::group(['middleware' => ['auth:admin', 'CheckUserActiviation']], function 
         Route::post('products/{id}/reject', [Admin\ProductController::class, 'rejectProduct'])->name('product.reject');
         Route::get('products/{id}/approve', [Admin\ProductController::class, 'approveProduct'])->name('product.approve');
 
+        // Admin - Product Variations (flat + tree)
+        Route::post('products/{id}/variations', [Admin\ProductController::class, 'storeVariations'])->name('admin.product.variations.store');
+        Route::post('products/{id}/variation-tree', [Admin\ProductController::class, 'storeTreeVariations'])->name('admin.product.variation_tree.store');
+        Route::get('products/{id}/variation-tree', [Admin\ProductController::class, 'getVariationTree'])->name('admin.product.variation_tree.show');
+
         // Attribute Routes
         Route::get('attributes', [Admin\AttributeController::class, 'index'])->name('attributes.index');
         Route::get('attributes/create', [Admin\AttributeController::class, 'create'])->name('attributes.create');
