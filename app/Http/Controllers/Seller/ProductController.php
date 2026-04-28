@@ -238,7 +238,14 @@ class ProductController extends Controller
             ->select('id', $this->name, $this->description, $this->title,
                 'category_id', 'price', 'old_price', 'quantity', 'main_image', 'is_available',
                 'name_en', 'name_ar', 'description_en', 'description_ar', 'seller_id')
-            ->with('images:id,product_id,name,type,video', "category:id,$this->name", 'variations.attributes')
+            ->with([
+                'images:id,product_id,name,type,video',
+                "category:id,$this->name",
+                'variations' => function ($q) {
+                    $q->select('id','product_id','price','quantity','sku','is_active')
+                      ->with(['attributes.attribute']);
+                },
+            ])
             ->firstOrFail();
 
         return $this->success($product, 'Product details');
