@@ -23,7 +23,10 @@ class BasketController extends Controller
             "seller:id,name,img_path",
             "orderDetails.product:id,$this->description,$this->title,$this->name,main_image,seller_id",
             "orderDetails.product.seller:id,name,img_path,details,about",
-            "orderDetails.variation.attributes.attribute",
+            "orderDetails.variation" => function ($q) {
+                $q->select('id','product_id','price','quantity','sku','is_active')
+                  ->with(['attributes.attribute']);
+            },
             "orderDetails.extraService.extraDetails:id,$this->description"
         ])
         ->select('id','seller_id','total_price','status','order_number','updated_at','delivery_fee')
