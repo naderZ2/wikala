@@ -10,6 +10,7 @@ use App\Traits\ResponsesTrait;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Client\City\CheckRequest;
 use App\Http\Requests\Client\Basket\StoreRequest;
+use App\Http\Requests\Client\Basket\UpdateRequest;
 use App\Http\Requests\Client\Basket\CancelRequest;
 use Illuminate\Support\Facades\Log;
 
@@ -50,6 +51,10 @@ class BasketController extends Controller
 
         $result = $service->addToBasket($request);
         return $result;
+    }
+
+    public function updateBasket(UpdateRequest $request, OrderService $service){
+        return $service->updateBasketItem($request);
     }
 
     public function cancelItem(CancelRequest $request){

@@ -138,6 +138,7 @@ Route::middleware(['checkLanguage'])->group(function () {
         Route::get('myBasket', [Client\BasketController::class, 'index']);
         // Route::get('order_tracking', [Client\OrderController::class, 'tracking']);
         Route::post('addToBasket', [Client\BasketController::class, 'addToBasket']);
+        Route::post('updateBasket', [Client\BasketController::class, 'updateBasket']);
         Route::post('cancelItem', [Client\BasketController::class, 'cancelItem']);
 
         //Order

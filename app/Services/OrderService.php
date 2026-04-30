@@ -178,6 +178,66 @@ class OrderService{
         return $this->success(null,"تم الطلب");
     }
 
+    public function updateBasketItem($request){
+        $orderItem = \App\Models\OrderDetails::where('id', $request->id)->first();
+        if(!$orderItem){
+            return $this->failed(null, "Item not found");
+        }
+
+        $order = $orderItem->order;
+        if(!$order || $order->user_id !== auth()->id() || $order->type !== 'basket'){
+            return $this->failed(null, "Item not found in your basket");
+        }
+
+        $product = Product::whereId($orderItem->product_id)->first();
+
+        $variationId = $orderItem->product_variation_id;
+
+        if($request->has('product_variation_id')){
+            $variationId = $request->product_variation_id ?: null;
+        }
+
+        if($request->has('variation_attribute_ids') && !empty($request->variation_attribute_ids)){
+            $resolved = \App\Models\ProductVariationAttribute::whereIn('id', $request->variation_attribute_ids)
+                ->pluck('product_variation_id')
+                ->unique()
+                ->first();
+            if($resolved){
+                $variationId = $resolved;
+            }
+        }
+
+        $unitPrice = (float) $product->price;
+        if($variationId){
+            $variation = \App\Models\ProductVariation::where('id', $variationId)
+                ->where('product_id', $orderItem->product_id)
+                ->first();
+            if(!$variation){
+                return $this->failed(null, "Variation does not belong to this product");
+            }
+            if($variation->price > 0){
+                $unitPrice = (float) $variation->price;
+            }
+        }
+
+        $quantity = $request->has('quantity') && $request->quantity
+            ? (int) $request->quantity
+            : (int) $orderItem->quantity;
+
+        $newLinePrice = $unitPrice * $quantity;
+        $delta = $newLinePrice - (float) $orderItem->price;
+
+        $orderItem->update([
+            'quantity' => $quantity,
+            'product_variation_id' => $variationId,
+            'price' => $newLinePrice,
+        ]);
+
+        $order->update(['total_price' => max(0, (float) $order->total_price + $delta)]);
+
+        return $this->success(null, "تم التحديث");
+    }
+
     public function changeOrderStatus($request){
         $order = Order::find($request->id);
         $status =[];
