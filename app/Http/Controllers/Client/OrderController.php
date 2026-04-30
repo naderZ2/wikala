@@ -24,7 +24,11 @@ class OrderController extends Controller
         "orderDetails.product:id,$this->name,$this->description,$this->title,price,old_price,main_image,serving",
         "orderDetails.variation" => function ($q) {
             $q->select('id','product_id','price','quantity','sku','is_active')
-              ->with(['attributes.attribute']);
+              ->with(['attributes' => function($qa){
+                  $qa->with(['attribute' => function($qatt){
+                      $qatt->select('id', \DB::raw($this->name), 'type','image','enable');
+                  }]);
+              }]);
         },
         "review"])
         ->select('id','status','order_number','updated_at','seller_id','group_id')
