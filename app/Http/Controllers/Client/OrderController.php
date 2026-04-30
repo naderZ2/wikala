@@ -21,7 +21,12 @@ class OrderController extends Controller
         $this->lang();
          $orders=Order::where(['user_id'=>auth()->id()])->where("type","!=","basket")
         ->with(["orderDetails.extraService.extraDetails:id,$this->description","seller:id,name,img_path",
-        "orderDetails.product:id,$this->name,$this->description,$this->title,price,old_price,main_image,serving","review"])
+        "orderDetails.product:id,$this->name,$this->description,$this->title,price,old_price,main_image,serving",
+        "orderDetails.variation" => function ($q) {
+            $q->select('id','product_id','price','quantity','sku','is_active')
+              ->with(['attributes.attribute']);
+        },
+        "review"])
         ->select('id','status','order_number','updated_at','seller_id','group_id')
         ->orderByDESC('id')
         ->get();
