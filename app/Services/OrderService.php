@@ -125,12 +125,12 @@ class OrderService{
         }
 
 
-        $quantity = $request->quantity;
+        $quantity = (int) $request->quantity;
         $orderDetails['product_id'] = $request->product_id;
         $orderDetails['quantity'] = $quantity;
 
         // Use variation price if a variation is selected, otherwise use product price
-        $price = $actualProduct->price;
+        $price = (float) $actualProduct->price;
         $variationId = null;
 
         // Option 1: Client sends product_variation_id directly
@@ -150,28 +150,31 @@ class OrderService{
             $variation = \App\Models\ProductVariation::where('id', $variationId)
                 ->where('product_id', $request->product_id)
                 ->first();
-            if($variation && $variation->price > 0){
-                $price = $variation->price;
+            if($variation && (float) $variation->price > 0){
+                $price = (float) $variation->price;
             }
             $orderDetails['product_variation_id'] = $variationId;
         }
 
-        $orderDetails['price'] = $price * $quantity;
-        $orderDetails=$order->orderDetails()->create($orderDetails);
-        $totalPrice = $order->total_price + $orderDetails['price'];
-       
-       $order->update(['total_price' =>$totalPrice,"order_number" => $order->id +10000]);
-       
-       if($request->extraService){
-           
-            foreach( $request->extraService as $extraService){
-            $extraPrice=ProductExtraService::whereId($extraService['id'])->value('price');
-            OrderDetailsExtraServices::create(['order_details_id'=>$orderDetails->id,
-            "extra_service_id"=>$extraService['id'],
-            "price"=>$extraPrice]);
-            
+        $linePrice = round($price * $quantity, 2);
+        $orderDetails['price'] = $linePrice;
+        $orderDetails = $order->orderDetails()->create($orderDetails);
+
+        $extraServiceTotal = 0;
+        if($request->extraService){
+            foreach($request->extraService as $extraService){
+                $extraPrice = (float) ProductExtraService::whereId($extraService['id'])->value('price');
+                OrderDetailsExtraServices::create([
+                    'order_details_id' => $orderDetails->id,
+                    'extra_service_id' => $extraService['id'],
+                    'price' => $extraPrice
+                ]);
+                $extraServiceTotal += $extraPrice;
+            }
         }
-       }
+
+        $newTotal = (float) $order->total_price + $linePrice + $extraServiceTotal;
+        $order->update(['total_price' => round($newTotal, 2), 'order_number' => $order->id + 10000]);
   
        
      
@@ -215,7 +218,7 @@ class OrderService{
             if(!$variation){
                 return $this->failed(null, "Variation does not belong to this product");
             }
-            if($variation->price > 0){
+            if((float) $variation->price > 0){
                 $unitPrice = (float) $variation->price;
             }
         }
@@ -224,8 +227,15 @@ class OrderService{
             ? (int) $request->quantity
             : (int) $orderItem->quantity;
 
-        $newLinePrice = $unitPrice * $quantity;
-        $delta = $newLinePrice - (float) $orderItem->price;
+        $newLinePrice = round($unitPrice * $quantity, 2);
+        $oldLinePrice = (float) $orderItem->price;
+
+        // Calculate current extra service total for this item
+        $extraServiceTotal = (float) $orderItem->extraService()
+            ->sum(\DB::raw('price'));
+
+        // Calculate line + extra service delta
+        $delta = ($newLinePrice + $extraServiceTotal) - ($oldLinePrice + $extraServiceTotal);
 
         $orderItem->update([
             'quantity' => $quantity,
@@ -233,7 +243,7 @@ class OrderService{
             'price' => $newLinePrice,
         ]);
 
-        $order->update(['total_price' => max(0, (float) $order->total_price + $delta)]);
+        $order->update(['total_price' => round(max(0, (float) $order->total_price + $delta), 2)]);
 
         return $this->success(null, "تم التحديث");
     }
