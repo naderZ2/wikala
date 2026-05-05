@@ -42,6 +42,7 @@
                                         <th>@lang('lang.Title')</th>
                                         <th>@lang('lang.Body')</th>
                                         <th>@lang('lang.Type')</th>
+                                        <th>Recipients</th>
                                         <th>@lang('lang.Seller')</th>
                                         <th>@lang('lang.Product')</th>
                                         <th>@lang('lang.region')</th>
@@ -59,12 +60,30 @@
                                                 <span class="badge badge-primary">
                                                     عام
                                                 </span>
-                                                
+
                                             @endif
                                         </td>
                                         <td>
+                                            @switch($notification->recipient_type ?? 'all')
+                                                @case('all')
+                                                    <span class="badge badge-info">All Users</span>
+                                                    @break
+                                                @case('clients')
+                                                    <span class="badge badge-success">Clients</span>
+                                                    @break
+                                                @case('sellers')
+                                                    <span class="badge badge-warning">Sellers</span>
+                                                    @break
+                                                @case('specific_seller')
+                                                    <span class="badge badge-secondary">Specific Seller</span>
+                                                    @break
+                                                @default
+                                                    <span class="badge badge-info">All Users</span>
+                                            @endswitch
+                                        </td>
+                                        <td>
                                             {{ $notification->seller->name ??""}}
-                                        
+
                                         </td>
                                         <td>
                                             {{ $notification->product->name??"" }}
@@ -93,6 +112,7 @@
                                         <th>@lang('lang.Title')</th>
                                         <th>@lang('lang.Body')</th>
                                         <th>@lang('lang.Type')</th>
+                                        <th>Recipients</th>
                                         <th>@lang('lang.Seller')</th>
                                         <th>@lang('lang.Product')</th>
                                         <th>@lang('lang.region')</th>

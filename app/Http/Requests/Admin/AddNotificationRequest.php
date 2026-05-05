@@ -29,9 +29,10 @@ class AddNotificationRequest extends FormRequest
           'description_ar'=>'required',
           'description_en'=>'required',
           'type' => 'required',
+          'recipient_type' => 'required|in:all,clients,sellers,specific_seller',
           'region_id' => 'sometimes|nullable',
           'product_id' => 'sometimes|nullable',
-          'seller_id' => 'sometimes|nullable',
+          'seller_id' => 'sometimes|nullable|required_if:recipient_type,specific_seller',
           'driver_id' => 'sometimes|nullable',
         ];
     }

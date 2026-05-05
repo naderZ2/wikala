@@ -8,14 +8,14 @@ use \Carbon\Carbon;
 class Notification extends Model
 {
     use HasFactory;
-    protected $fillable = 
+    protected $fillable =
     [
         'name_ar' , 'description_ar',
         'name_en' , 'description_en',
         'type' , 'product_id',
         'seller_id' ,'region_id',
-        'user_id','updated_at'
-      
+        'user_id','updated_at', 'recipient_type'
+
     ];
 
     protected $hidden = ['created_at' ];

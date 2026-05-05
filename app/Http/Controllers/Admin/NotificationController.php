@@ -71,26 +71,54 @@ class NotificationController extends Controller
     }
 
     public function store(AddNotificationRequest $request){
-        $data=$request->validated();
+        $data = $request->validated();
         Notification::create($data);
-        $notification=
-        [
+
+        $notification = [
             'type' => "1",
             'title' => $request->name_en,
             'title_ar' => $request->name_ar,
             'message' => $request->description_en,
             'message_ar' => $request->description_ar,
-            'region_id' =>$request->region_id ,
-            'product_id' =>$request->product_id ,
-            'seller_id' =>$request->seller_id ,
+            'region_id' => $request->region_id,
+            'product_id' => $request->product_id,
+            'seller_id' => $request->seller_id,
         ];
-        $subscribers=[];
-        if($request->region_id){
-            $subscribers = User::whereRegionId($request->region_id)->pluck('device_id');
+
+        $subscribers = [];
+        $recipientType = $request->recipient_type;
+
+        if ($recipientType === 'all') {
+            $subscribers = [];
+        } elseif ($recipientType === 'clients') {
+            $subscribers = User::whereNotNull('device_id')
+                ->whereDoesntHave('seller')
+                ->pluck('device_id')
+                ->toArray();
+        } elseif ($recipientType === 'sellers') {
+            $subscribers = User::whereNotNull('device_id')
+                ->whereHas('seller')
+                ->pluck('device_id')
+                ->toArray();
+        } elseif ($recipientType === 'specific_seller') {
+            if ($request->seller_id) {
+                $sellers = Seller::where('id', $request->seller_id)->pluck('user_id')->toArray();
+                $subscribers = User::whereIn('id', $sellers)
+                    ->whereNotNull('device_id')
+                    ->pluck('device_id')
+                    ->toArray();
+            }
         }
 
-        $this->sendNotification($data_send=$notification,$users=$subscribers);
-        return  to_route('admin.notifications.index')->with('success',trans('lang.created'));
+        if ($request->region_id && ($recipientType === 'all' || $recipientType === 'clients')) {
+            $subscribers = User::whereRegionId($request->region_id)
+                ->whereNotNull('device_id')
+                ->pluck('device_id')
+                ->toArray();
+        }
+
+        $this->sendNotification($data_send=$notification, $users=$subscribers);
+        return to_route('admin.notifications.index')->with('success', trans('lang.created'));
     }
 
     public function destroy(Request $request){

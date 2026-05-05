@@ -67,28 +67,40 @@
                                
                             </div>
     
-                            
+
                             <div class="col-md-12 mb-3">
                                 <label for="validationCustom03">@lang('lang.Type')</label>
-    
+
                                 <select class="form-control col-sm-12"  id="validationCustom03"  name="type" required >
                                     <option value="1">general</option>
                                 </select>
                                 <div class="invalid-feedback">Please provide a valid Type.</div>
-    
+
+                            </div>
+
+                            <div class="col-md-12 mb-3">
+                                <label for="recipient_type">Send to</label>
+                                <select class="form-control col-sm-12" id="recipient_type" name="recipient_type" required>
+                                    <option value="">-- Select Recipients --</option>
+                                    <option value="all">All Users</option>
+                                    <option value="clients">Clients Only</option>
+                                    <option value="sellers">Sellers Only</option>
+                                    <option value="specific_seller">Specific Seller</option>
+                                </select>
+                                <div class="invalid-feedback">Please select recipients.</div>
                             </div>
     
-                            <div class="col-md-6 mb-3">
+                            <div class="col-md-6 mb-3" id="seller_section" style="display: none;">
                                 <label for="validationCustom01">@lang('lang.Sellers')</label>
 
-                                <select class="js-example-placeholder-multiple col-sm-12"  id="validationCustom01"  name="seller_id"  >
+                                <select class="js-example-placeholder-multiple col-sm-12"  id="seller_select"  name="seller_id"  >
                                     <option value=""></option>
                                     @forelse ($sellers as $seller)
                                         <option value="{{ $seller->id }}">{{ $seller->name }}</option>
                                     @empty
-                                        
+
                                     @endforelse
-                              
+
                                 </select>
                                 <div class="invalid-feedback">Please provide a valid seller.</div>
 
@@ -145,4 +157,17 @@
 <script src="{{asset('assets/js/select2/select2.full.min.js')}}"></script>
 <script src="{{asset('assets/js/select2/select2-custom.js')}}"></script>
 <script src="{{asset('assets/js/form-validation-custom.js')}}"></script>
+<script>
+document.getElementById('recipient_type').addEventListener('change', function() {
+    const sellerSection = document.getElementById('seller_section');
+    if (this.value === 'specific_seller') {
+        sellerSection.style.display = 'block';
+        document.getElementById('seller_select').required = true;
+    } else {
+        sellerSection.style.display = 'none';
+        document.getElementById('seller_select').required = false;
+        document.getElementById('seller_select').value = '';
+    }
+});
+</script>
 @endsection
