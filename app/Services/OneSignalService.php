@@ -244,9 +244,8 @@ class OneSignalService
 
             $response = Http::withHeaders([
                 'accept'        => 'application/json',
-                'content-type'  => 'application/json',
                 'Authorization' => 'Bearer ' . $this->apiKey,
-            ])->post($this->apiUrl, $payload);
+            ])->asJson()->post($this->apiUrl, $payload);
 
             /**
              * LOG RESPONSE
