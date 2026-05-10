@@ -237,7 +237,9 @@ class OneSignalService
             'url' => $this->apiUrl,
             'payload' => $payload,
         ]);
-
+        Log::info('OneSignal API KEY', [
+            'key' => $this->apiKey
+        ]);
         try {
 
             $response = Http::withHeaders([
