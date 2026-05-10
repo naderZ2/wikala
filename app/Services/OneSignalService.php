@@ -17,48 +17,82 @@ class OneSignalService
     }
 
     /**
-     * Send notification to all users or by segment
-     *
-     * @param array $notification Contains: title, title_ar, message, message_ar, data
-     * @param array $filters OneSignal filter array for targeting specific users
-     * @param array $segments OneSignal segments to target (alternative to filters)
-     * @return array
+     * Base Send Method
      */
-    public function send(array $notification, array $filters = [], array $segments = [])
-    {
+    public function send(
+        array $notification,
+        array $filters = [],
+        array $segments = [],
+        array $externalIds = []
+    ) {
         $payload = [
             'app_id' => $this->appId,
-            'isAndroid' => true,
-            'isIos' => true,
-            'content_available' => true,
-            'small_icon' => 'ic_launcher-web',
+
+            // Required for new OneSignal
+            'target_channel' => 'push',
+
             'contents' => [
                 'en' => $notification['message'] ?? '',
-                'ar' => $notification['message_ar'] ?? ''
+                'ar' => $notification['message_ar'] ?? '',
             ],
+
             'headings' => [
                 'en' => $notification['title'] ?? '',
-                'ar' => $notification['title_ar'] ?? ''
+                'ar' => $notification['title_ar'] ?? '',
             ],
+
+            'content_available' => true,
+            'small_icon' => 'ic_launcher',
         ];
 
+        // Extra Data
         if (isset($notification['data'])) {
             $payload['data'] = $notification['data'];
         }
 
-        if (!empty($filters)) {
+        /**
+         * Priority:
+         * 1- External IDs
+         * 2- Filters
+         * 3- Segments
+         * 4- All Users
+         */
+
+        // Send to external IDs
+        if (!empty($externalIds)) {
+
+            $payload['include_aliases'] = [
+                'external_id' => $externalIds
+            ];
+
+        }
+
+        // Send using filters/tags
+        elseif (!empty($filters)) {
+
             $payload['filters'] = $filters;
-        } elseif (!empty($segments)) {
+
+        }
+
+        // Send using segments
+        elseif (!empty($segments)) {
+
             $payload['included_segments'] = $segments;
-        } else {
+
+        }
+
+        // Send to all
+        else {
+
             $payload['included_segments'] = ['Total Subscriptions'];
+
         }
 
         return $this->makeRequest($payload);
     }
 
     /**
-     * Send notification to clients only (Role = client)
+     * Send To Clients
      */
     public function sendToClients(array $notification)
     {
@@ -66,8 +100,8 @@ class OneSignalService
             [
                 'field' => 'tag',
                 'key' => 'Role',
-                'value' => 'client',
-                'relation' => '='
+                'relation' => '=',
+                'value' => 'client'
             ]
         ];
 
@@ -75,7 +109,7 @@ class OneSignalService
     }
 
     /**
-     * Send notification to sellers only (Role = Seller)
+     * Send To Sellers
      */
     public function sendToSellers(array $notification)
     {
@@ -83,8 +117,8 @@ class OneSignalService
             [
                 'field' => 'tag',
                 'key' => 'Role',
-                'value' => 'Seller',
-                'relation' => '='
+                'relation' => '=',
+                'value' => 'Seller'
             ]
         ];
 
@@ -92,7 +126,7 @@ class OneSignalService
     }
 
     /**
-     * Send notification to specific seller
+     * Send To Specific Seller
      */
     public function sendToSeller(array $notification, $sellerId)
     {
@@ -100,14 +134,19 @@ class OneSignalService
             [
                 'field' => 'tag',
                 'key' => 'Role',
-                'value' => 'Seller',
-                'relation' => '='
+                'relation' => '=',
+                'value' => 'Seller'
             ],
+
+            [
+                'operator' => 'AND'
+            ],
+
             [
                 'field' => 'tag',
                 'key' => 'seller_id',
-                'value' => (string)$sellerId,
-                'relation' => '='
+                'relation' => '=',
+                'value' => (string) $sellerId
             ]
         ];
 
@@ -115,7 +154,7 @@ class OneSignalService
     }
 
     /**
-     * Send notification to specific user by ID
+     * Send To Specific User By Tag
      */
     public function sendToUser(array $notification, $userId)
     {
@@ -123,8 +162,8 @@ class OneSignalService
             [
                 'field' => 'tag',
                 'key' => 'user_id',
-                'value' => (string)$userId,
-                'relation' => '='
+                'relation' => '=',
+                'value' => (string) $userId
             ]
         ];
 
@@ -132,25 +171,42 @@ class OneSignalService
     }
 
     /**
-     * Send notification using player IDs (legacy method)
+     * Send To User Using External ID (BEST METHOD)
+     */
+    public function sendToExternalUser(array $notification, $userId)
+    {
+        return $this->send(
+            $notification,
+            [],
+            [],
+            [(string) $userId]
+        );
+    }
+
+    /**
+     * Legacy Player IDs
      */
     public function sendToPlayerIds(array $notification, array $playerIds)
     {
         $payload = [
             'app_id' => $this->appId,
-            'isAndroid' => true,
-            'isIos' => true,
-            'content_available' => true,
-            'small_icon' => 'ic_launcher-web',
+
+            'target_channel' => 'push',
+
+            'include_player_ids' => $playerIds,
+
             'contents' => [
                 'en' => $notification['message'] ?? '',
                 'ar' => $notification['message_ar'] ?? ''
             ],
+
             'headings' => [
                 'en' => $notification['title'] ?? '',
                 'ar' => $notification['title_ar'] ?? ''
             ],
-            'include_player_ids' => $playerIds
+
+            'content_available' => true,
+            'small_icon' => 'ic_launcher',
         ];
 
         if (isset($notification['data'])) {
@@ -161,15 +217,19 @@ class OneSignalService
     }
 
     /**
-     * Make HTTP request to OneSignal API
+     * HTTP Request
      */
     private function makeRequest(array $payload)
     {
         $response = Http::withHeaders([
-            'Content-Type' => 'application/json; charset=utf-8',
             'Authorization' => 'Basic ' . $this->apiKey,
+            'Content-Type' => 'application/json',
         ])->post($this->apiUrl, $payload);
 
-        return $response->json();
+        return [
+            'success' => $response->successful(),
+            'status' => $response->status(),
+            'response' => $response->json(),
+        ];
     }
 }
