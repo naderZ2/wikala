@@ -82,11 +82,14 @@
                                 <label for="recipient_type">Send to</label>
                                 <select class="form-control col-sm-12" id="recipient_type" name="recipient_type" required>
                                     <option value="">-- Select Recipients --</option>
-                                    <option value="all">All Users</option>
+                                    <option value="all">All Users (Total Subscriptions)</option>
                                     <option value="clients">Clients Only</option>
                                     <option value="sellers">Sellers Only</option>
                                     <option value="specific_seller">Specific Seller</option>
                                 </select>
+                                <small class="form-text text-muted">
+                                    <strong>All Users</strong> sends to the "Total Subscriptions" segment (all subscribed users)
+                                </small>
                                 <div class="invalid-feedback">Please select recipients.</div>
                             </div>
     
