@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
 class OneSignalService
@@ -229,39 +228,59 @@ class OneSignalService
      */
     private function makeRequest(array $payload)
     {
-
         /**
          * LOG REQUEST
          */
         Log::info('OneSignal Request', [
-            'url' => $this->apiUrl,
+            'url'     => $this->apiUrl,
             'payload' => $payload,
         ]);
         Log::info('OneSignal API KEY', [
             'key' => $this->apiKey
         ]);
+
         try {
 
-            $response = Http::withHeaders([
-                'accept'        => 'application/json',
-                'Authorization' => 'Bearer ' . $this->apiKey,
-            ])->asJson()->post($this->apiUrl, $payload);
+            // Use native PHP curl — mirrors the working curl command exactly
+            $ch = curl_init();
+
+            curl_setopt_array($ch, [
+                CURLOPT_URL            => $this->apiUrl,
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_POST           => true,
+                CURLOPT_POSTFIELDS     => json_encode($payload),
+                CURLOPT_HTTPHEADER     => [
+                    'accept: application/json',
+                    'content-type: application/json',
+                    'Authorization: Bearer ' . $this->apiKey,
+                ],
+                CURLOPT_SSL_VERIFYPEER => true,
+                CURLOPT_TIMEOUT        => 30,
+            ]);
+
+            $body     = curl_exec($ch);
+            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            $curlError = curl_error($ch);
+            curl_close($ch);
+
+            if ($curlError) {
+                throw new \RuntimeException('cURL error: ' . $curlError);
+            }
+
+            $decoded = json_decode($body, true);
 
             /**
              * LOG RESPONSE
              */
             Log::info('OneSignal Response', [
-                'status' => $response->status(),
-                'body' => $response->json(),
+                'status' => $httpCode,
+                'body'   => $decoded,
             ]);
 
             return [
-
-                'success' => $response->successful(),
-
-                'status' => $response->status(),
-
-                'response' => $response->json(),
+                'success'  => $httpCode >= 200 && $httpCode < 300,
+                'status'   => $httpCode,
+                'response' => $decoded,
             ];
 
         } catch (\Throwable $e) {
@@ -271,13 +290,11 @@ class OneSignalService
              */
             Log::error('OneSignal Error', [
                 'message' => $e->getMessage(),
-                'trace' => $e->getTraceAsString(),
+                'trace'   => $e->getTraceAsString(),
             ]);
 
             return [
-
                 'success' => false,
-
                 'message' => $e->getMessage(),
             ];
         }
