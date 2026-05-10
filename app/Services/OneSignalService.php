@@ -7,9 +7,11 @@ use Illuminate\Support\Facades\Log;
 
 class OneSignalService
 {
-    private $appId;
-    private $apiKey;
-    private $apiUrl = 'https://onesignal.com/api/v1/notifications';
+    private string $appId;
+    private string $apiKey;
+
+    // NEW ONESIGNAL API URL
+    private string $apiUrl = 'https://api.onesignal.com/notifications';
 
     public function __construct()
     {
@@ -17,6 +19,9 @@ class OneSignalService
         $this->apiKey = config('services.onesignal.api_key');
     }
 
+    /**
+     * Main Send Method
+     */
     public function send(
         array $notification,
         array $filters = [],
@@ -27,42 +32,62 @@ class OneSignalService
         $payload = [
             'app_id' => $this->appId,
 
+            // REQUIRED
             'target_channel' => 'push',
 
-            'contents' => [
-                'en' => $notification['message'] ?? '',
-                'ar' => $notification['message_ar'] ?? '',
-            ],
-
+            // TITLE
             'headings' => [
                 'en' => $notification['title'] ?? '',
                 'ar' => $notification['title_ar'] ?? '',
             ],
 
+            // MESSAGE
+            'contents' => [
+                'en' => $notification['message'] ?? '',
+                'ar' => $notification['message_ar'] ?? '',
+            ],
+
+            // OPTIONAL
             'content_available' => true,
             'small_icon' => 'ic_launcher',
         ];
 
-        if (isset($notification['data'])) {
+        /**
+         * EXTRA DATA
+         */
+        if (!empty($notification['data'])) {
             $payload['data'] = $notification['data'];
         }
 
-        // Targeting
+        /**
+         * TARGETING
+         */
+
+        // EXTERNAL IDS (BEST METHOD)
         if (!empty($externalIds)) {
 
             $payload['include_aliases'] = [
                 'external_id' => $externalIds
             ];
 
-        } elseif (!empty($filters)) {
+        }
+
+        // FILTERS / TAGS
+        elseif (!empty($filters)) {
 
             $payload['filters'] = $filters;
 
-        } elseif (!empty($segments)) {
+        }
+
+        // SEGMENTS
+        elseif (!empty($segments)) {
 
             $payload['included_segments'] = $segments;
 
-        } else {
+        }
+
+        // SEND TO ALL
+        else {
 
             $payload['included_segments'] = ['Total Subscriptions'];
         }
@@ -71,7 +96,7 @@ class OneSignalService
     }
 
     /**
-     * Send To Clients
+     * SEND TO CLIENTS
      */
     public function sendToClients(array $notification)
     {
@@ -80,7 +105,7 @@ class OneSignalService
                 'field' => 'tag',
                 'key' => 'Role',
                 'relation' => '=',
-                'value' => 'client'
+                'value' => 'client',
             ]
         ];
 
@@ -88,7 +113,7 @@ class OneSignalService
     }
 
     /**
-     * Send To Sellers
+     * SEND TO SELLERS
      */
     public function sendToSellers(array $notification)
     {
@@ -97,7 +122,7 @@ class OneSignalService
                 'field' => 'tag',
                 'key' => 'Role',
                 'relation' => '=',
-                'value' => 'Seller'
+                'value' => 'Seller',
             ]
         ];
 
@@ -105,7 +130,7 @@ class OneSignalService
     }
 
     /**
-     * Send To Specific User
+     * SEND TO SPECIFIC USER USING TAG
      */
     public function sendToUser(array $notification, $userId)
     {
@@ -114,7 +139,7 @@ class OneSignalService
                 'field' => 'tag',
                 'key' => 'user_id',
                 'relation' => '=',
-                'value' => (string) $userId
+                'value' => (string) $userId,
             ]
         ];
 
@@ -122,45 +147,140 @@ class OneSignalService
     }
 
     /**
-     * HTTP Request
+     * SEND TO SPECIFIC USER USING EXTERNAL ID
+     * BEST & FASTEST METHOD
+     */
+    public function sendToExternalUser(array $notification, $userId)
+    {
+        return $this->send(
+            $notification,
+            [],
+            [],
+            [(string) $userId]
+        );
+    }
+
+    /**
+     * SEND TO SPECIFIC SELLER
+     */
+    public function sendToSeller(array $notification, $sellerId)
+    {
+        $filters = [
+
+            [
+                'field' => 'tag',
+                'key' => 'Role',
+                'relation' => '=',
+                'value' => 'Seller',
+            ],
+
+            [
+                'operator' => 'AND'
+            ],
+
+            [
+                'field' => 'tag',
+                'key' => 'seller_id',
+                'relation' => '=',
+                'value' => (string) $sellerId,
+            ],
+        ];
+
+        return $this->send($notification, $filters);
+    }
+
+    /**
+     * LEGACY PLAYER IDS
+     */
+    public function sendToPlayerIds(array $notification, array $playerIds)
+    {
+
+        $payload = [
+
+            'app_id' => $this->appId,
+
+            'target_channel' => 'push',
+
+            'include_player_ids' => $playerIds,
+
+            'headings' => [
+                'en' => $notification['title'] ?? '',
+                'ar' => $notification['title_ar'] ?? '',
+            ],
+
+            'contents' => [
+                'en' => $notification['message'] ?? '',
+                'ar' => $notification['message_ar'] ?? '',
+            ],
+
+            'content_available' => true,
+            'small_icon' => 'ic_launcher',
+        ];
+
+        if (!empty($notification['data'])) {
+            $payload['data'] = $notification['data'];
+        }
+
+        return $this->makeRequest($payload);
+    }
+
+    /**
+     * MAKE HTTP REQUEST
      */
     private function makeRequest(array $payload)
     {
-        // LOG REQUEST
+
+        /**
+         * LOG REQUEST
+         */
         Log::info('OneSignal Request', [
             'url' => $this->apiUrl,
-            'payload' => $payload
+            'payload' => $payload,
         ]);
 
         try {
 
             $response = Http::withHeaders([
-                'Authorization' => 'Basic ' . $this->apiKey,
+
+                // NEW AUTH FORMAT
+                'Authorization' => 'Key ' . $this->apiKey,
+
                 'Content-Type' => 'application/json',
+                'Accept' => 'application/json',
+
             ])->post($this->apiUrl, $payload);
 
-            // LOG RESPONSE
+            /**
+             * LOG RESPONSE
+             */
             Log::info('OneSignal Response', [
                 'status' => $response->status(),
                 'body' => $response->json(),
             ]);
 
             return [
+
                 'success' => $response->successful(),
+
                 'status' => $response->status(),
+
                 'response' => $response->json(),
             ];
 
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
 
-            // LOG ERROR
+            /**
+             * LOG ERROR
+             */
             Log::error('OneSignal Error', [
                 'message' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
             ]);
 
             return [
+
                 'success' => false,
+
                 'message' => $e->getMessage(),
             ];
         }
