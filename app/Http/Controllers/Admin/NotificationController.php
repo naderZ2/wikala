@@ -8,13 +8,17 @@ use App\Models\{Seller,Product,City,User,Notification,UserDailyEvent};
 use App\Http\Requests\Admin\AddNotificationRequest;
 use Carbon\Carbon;
 use App\Services\OneSignalService;
+use Illuminate\Support\Facades\Log;
 
 class NotificationController extends Controller
 {
-    public function __construct()
+    protected $oneSignalService;
+
+    public function __construct(OneSignalService $oneSignalService)
     {
         $this->model ="App\Models\Notification";
         $this->User ="App\Models\User";
+        $this->oneSignalService = $oneSignalService;
     }
     
     public function reminder(){
@@ -24,35 +28,40 @@ class NotificationController extends Controller
         ->whereDate("daliy_events.date", Carbon::today())
         ->with("user")
         ->get();
-        
+
         foreach($reminders as $reminder){
-            
-            if($reminder->user!=null && $reminder->user->device_id !=null){
-                $notification=
-                [
-                    'type' => "1",
+            if($reminder->user!=null){
+                $notification = [
                     'title' => $reminder->name_en,
                     'message' => $reminder->description_en,
                     'title_ar' => $reminder->name_ar,
-                    'message_ar' => $reminder->description_ar
+                    'message_ar' => $reminder->description_ar,
+                    'data' => [
+                        "user_id" => $reminder->user->id,
+                        "name_ar" => $reminder->name_ar,
+                        "name_en" => $reminder->name_en,
+                        "type" => 2,
+                        "description_ar" => $reminder->description_ar,
+                        "description_en" => $reminder->description_en
+                    ]
                 ];
-                $data=[
-                        "user_id"=>$reminder->user->id,
-                        "name_ar"=>$reminder->name_ar,
-                        "name_en"=>$reminder->name_en,
-                        "type"=>2,
-                        "description_ar"=>$reminder->description_ar,
-                        "description_en"=>$reminder->description_en
-                        
-                    ];
-                     Notification::create($data);
-                    $this->sendNotification($data_send=$notification,$users=[$reminder->user->id]);
-                            
 
-               
+                Notification::create([
+                    "user_id" => $reminder->user->id,
+                    "name_ar" => $reminder->name_ar,
+                    "name_en" => $reminder->name_en,
+                    "type" => 2,
+                    "description_ar" => $reminder->description_ar,
+                    "description_en" => $reminder->description_en
+                ]);
+
+                try {
+                    $this->oneSignalService->sendToUser($notification, $reminder->user->id);
+                } catch (\Exception $e) {
+                    Log::error('OneSignal reminder error: ' . $e->getMessage());
+                }
             }
         }
-
     }
 
     public function index(){
@@ -76,49 +85,34 @@ class NotificationController extends Controller
         Notification::create($data);
 
         $notification = [
-            'type' => "1",
             'title' => $request->name_en,
             'title_ar' => $request->name_ar,
             'message' => $request->description_en,
             'message_ar' => $request->description_ar,
-            'region_id' => $request->region_id,
-            'product_id' => $request->product_id,
-            'seller_id' => $request->seller_id,
+            'data' => [
+                'type' => "1",
+                'region_id' => $request->region_id,
+                'product_id' => $request->product_id,
+                'seller_id' => $request->seller_id,
+            ]
         ];
 
-        $subscribers = [];
         $recipientType = $request->recipient_type;
 
-        if ($recipientType === 'all') {
-            $subscribers = [];
-        } elseif ($recipientType === 'clients') {
-            $subscribers = User::whereNotNull('device_id')
-                ->whereDoesntHave('seller')
-                ->pluck('device_id')
-                ->toArray();
-        } elseif ($recipientType === 'sellers') {
-            $subscribers = User::whereNotNull('device_id')
-                ->whereHas('seller')
-                ->pluck('device_id')
-                ->toArray();
-        } elseif ($recipientType === 'specific_seller') {
-            if ($request->seller_id) {
-                $sellers = Seller::where('id', $request->seller_id)->pluck('user_id')->toArray();
-                $subscribers = User::whereIn('id', $sellers)
-                    ->whereNotNull('device_id')
-                    ->pluck('device_id')
-                    ->toArray();
+        try {
+            if ($recipientType === 'all') {
+                $this->oneSignalService->send($notification);
+            } elseif ($recipientType === 'clients') {
+                $this->oneSignalService->sendToClients($notification);
+            } elseif ($recipientType === 'sellers') {
+                $this->oneSignalService->sendToSellers($notification);
+            } elseif ($recipientType === 'specific_seller' && $request->seller_id) {
+                $this->oneSignalService->sendToSeller($notification, $request->seller_id);
             }
+        } catch (\Exception $e) {
+            Log::error('OneSignal notification error: ' . $e->getMessage());
         }
 
-        if ($request->region_id && ($recipientType === 'all' || $recipientType === 'clients')) {
-            $subscribers = User::whereRegionId($request->region_id)
-                ->whereNotNull('device_id')
-                ->pluck('device_id')
-                ->toArray();
-        }
-
-        $this->sendNotification($data_send=$notification, $users=$subscribers);
         return to_route('admin.notifications.index')->with('success', trans('lang.created'));
     }
 
@@ -126,49 +120,4 @@ class NotificationController extends Controller
         Notification::destroy($request->id);
         return  to_route('admin.notifications.index')->with('success',trans('lang.deleted'));
     }
-
-    function sendNotification($data_send=array(),$users=array()){
-
-        $appId  = config('services.onesignal.app_id');
-        $apiKey = config('services.onesignal.api_key');
-
-        $content  = ["en" => $data_send["message"], "ar" => $data_send["message_ar"]];
-        $headings = ["en" => $data_send["title"],   "ar" => $data_send["title_ar"]];
-
-        $fields = [
-            'app_id'            => $appId,
-            'data'              => $data_send,
-            'isAndroid'         => true,
-            'isIos'             => true,
-            'content_available' => true,
-            'small_icon'        => 'ic_launcher-web',
-            'contents'          => $content,
-            'headings'          => $headings,
-        ];
-
-        if (empty($users) || count($users) === 0) {
-            $fields['included_segments'] = ['All'];
-        } else {
-            $fields['include_player_ids'] = $users;
-        }
-
-        $fields = json_encode($fields);
-
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, 'https://onesignal.com/api/v1/notifications');
-        curl_setopt($ch, CURLOPT_HTTPHEADER, [
-            'Content-Type: application/json; charset=utf-8',
-            'Authorization: Basic ' . $apiKey,
-        ]);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-        curl_setopt($ch, CURLOPT_HEADER, FALSE);
-        curl_setopt($ch, CURLOPT_POST, TRUE);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $fields);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
-
-        $response = curl_exec($ch);
-        curl_close($ch);
-        return $response;
-    }
-
 }

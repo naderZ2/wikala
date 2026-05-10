@@ -14,7 +14,7 @@ class Notification extends Model
         'name_en' , 'description_en',
         'type' , 'product_id',
         'seller_id' ,'region_id',
-        'user_id','updated_at', 'recipient_type'
+        'user_id','updated_at', 'recipient_type', 'tags'
 
     ];
 
