@@ -245,7 +245,7 @@ class OneSignalService
             $response = Http::withHeaders([
 
                 // NEW AUTH FORMAT
-                'Authorization' => 'Key ' . $this->apiKey,
+                'Authorization' => 'Bearer ' . $this->apiKey,
 
                 'Content-Type' => 'application/json',
                 'Accept' => 'application/json',
