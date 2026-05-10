@@ -158,6 +158,9 @@ Route::middleware(['checkLanguage'])->group(function () {
         Route::post('edit_lang', [Client\ProfileController::class, 'updateLang']);
         Route::post('create-password', [Client\ProfileController::class, 'createPassword']);
 
+        // OneSignal device token sync
+        Route::post('update_device_id', [Client\Auth\UserAuthController::class, 'updateDeviceId']);
+
         Route::get('profile/show/{id}', [Client\ProfileController::class, 'showProfile']);
 
 

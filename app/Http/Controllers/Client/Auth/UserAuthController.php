@@ -121,6 +121,13 @@ class UserAuthController extends Controller
         return $this->success(null,trans('logout_success')) ;
     }
 
+    public function updateDeviceId(Request $request)
+    {
+        $request->validate(['device_id' => 'required|string']);
+        auth()->user()->update(['device_id' => $request->device_id]);
+        return $this->success(null, 'Device ID updated');
+    }
+
     public function sendOtpPassword(Request $request){
         $code   = rand(1111,9999);
         // $phone = '+965'.$request->phone;

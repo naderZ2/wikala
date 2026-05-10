@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\{Seller,Product,City,User,Notification,UserDailyEvent};
 use App\Http\Requests\Admin\AddNotificationRequest;
 use Carbon\Carbon;
+use App\Services\OneSignalService;
 
 class NotificationController extends Controller
 {
@@ -127,39 +128,38 @@ class NotificationController extends Controller
     }
 
     function sendNotification($data_send=array(),$users=array()){
-        
-        
-        $content = ["en" => $data_send["message"],"ar" => $data_send["message_ar"]];
-        $headings= ["en" => $data_send["title"],"ar" => $data_send["title_ar"]]; 
-        $fields = array(
-            'app_id' => 'dd3cdd8-0c51-4e25-98ca-5b131a25044a',
-            'data' => $data_send,
-            'isAndroid'=>true,
-            'isIos'=>true,
-            'content_available'=>true,
-            'small_icon'    => 'ic_launcher-web',
-            //'large_icon' =>"ic_launcher_round.png",
-            'contents' => $content,
-            'headings'=> $headings 
-        );
 
-        if(empty($users) || count($users)==0)
-        
-        {
-           
-            $fields['included_segments']=array('All');
-        }else
-        {
-            $fields['include_player_ids']=$users;
+        $appId  = config('services.onesignal.app_id');
+        $apiKey = config('services.onesignal.api_key');
+
+        $content  = ["en" => $data_send["message"], "ar" => $data_send["message_ar"]];
+        $headings = ["en" => $data_send["title"],   "ar" => $data_send["title_ar"]];
+
+        $fields = [
+            'app_id'            => $appId,
+            'data'              => $data_send,
+            'isAndroid'         => true,
+            'isIos'             => true,
+            'content_available' => true,
+            'small_icon'        => 'ic_launcher-web',
+            'contents'          => $content,
+            'headings'          => $headings,
+        ];
+
+        if (empty($users) || count($users) === 0) {
+            $fields['included_segments'] = ['All'];
+        } else {
+            $fields['include_player_ids'] = $users;
         }
 
         $fields = json_encode($fields);
+
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, "https://onesignal.com/api/v1/notifications");
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+        curl_setopt($ch, CURLOPT_URL, 'https://onesignal.com/api/v1/notifications');
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
             'Content-Type: application/json; charset=utf-8',
-            'Authorization: Basic NDg4Yjk3OTEtNzAYi00NWE3LWFlYzItZjI3NDYyODlmODBm'
-        ));
+            'Authorization: Basic ' . $apiKey,
+        ]);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
         curl_setopt($ch, CURLOPT_HEADER, FALSE);
         curl_setopt($ch, CURLOPT_POST, TRUE);
