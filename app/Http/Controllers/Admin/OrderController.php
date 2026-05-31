@@ -21,23 +21,23 @@ class OrderController extends Controller
 
         if($page=='new')
         {
-            $orders=Order::where('status','order_placed')->with('user:id,name,phone')->get();
+            $orders=Order::where('status','order_placed')->with(['user:id,name,phone', 'seller:id,name,phone'])->get();
         }elseif($page=='completed')
         {
 
             // Log::info('thecompleted');
-            $orders=Order::whereIn('status',['cancel','delivered'])->with('user:id,name,phone')->get();
+            $orders=Order::whereIn('status',['cancel','delivered'])->with(['user:id,name,phone', 'seller:id,name,phone'])->get();
 
         }elseif($page=='under_preparation')
         {
             // Log::info('theunder_preparation');
             // $orders=Order::where('status',['shipped','out_for_delivery','confirmed'])->with('user:id,name,phone')->get();
             $orders = Order::whereIn('status', ['shipped', 'out_for_delivery', 'confirmed'])
-            ->with('user:id,name,phone')
+            ->with(['user:id,name,phone', 'seller:id,name,phone'])
             ->get();
         }else
         {
-            $orders=Order::with('user:id,name,phone')->get();
+            $orders=Order::with(['user:id,name,phone', 'seller:id,name,phone'])->get();
         }
             // Log::info($orders);
 

@@ -109,21 +109,7 @@
 
                             </div>
 
-                            <div class="col-md-6 mb-3">
-                                <label for="validationCustom01">@lang('lang.Products')</label>
 
-                                <select class="js-example-placeholder-multiple col-sm-12"  id="validationCustom01"  name="product_id" >
-                                    <option value=""></option>
-                                    @forelse ($products as $product)
-                                        <option value="{{ $product->id }}">{{ $product->name }}</option>
-                                    @empty
-                                        
-                                    @endforelse
-                              
-                                </select>
-                                <div class="invalid-feedback">Please provide a valid product.</div>
-
-                            </div>
 
                             <div class="col-md-6 mb-3">
                                 <label for="validationCustom01">@lang('lang.regions')</label>

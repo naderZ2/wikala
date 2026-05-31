@@ -75,6 +75,7 @@
 									<th class="text-center">@lang('lang.Total_Price')</th>
 									<th class="text-center">@lang('lang.Status')</th>
 									<th>@lang('lang.Client')</th>
+									<th>@lang('lang.Seller')</th>
 									<th>@lang('lang.delivery_fee')</th>
 									<th class="text-center">@lang('lang.Time')</th>
 									<th class="text-center">@lang('lang.delivery_time')</th>
@@ -95,6 +96,12 @@
 											{{-- @dd() --}}
 											{{ $order?->user?->name	}}
 											
+										</td>
+										<td>
+											{{ $order?->seller?->name }}
+											@if($order?->seller?->phone)
+												<br><small class="text-muted">{{ $order?->seller?->phone }}</small>
+											@endif
 										</td>
 										<td>
 											{{-- @dd() --}}
@@ -135,6 +142,7 @@
 									<th class="text-center">@lang('lang.Total_Price')</th>
 									<th class="text-center">@lang('lang.Status')</th>
 									<th>@lang('lang.Client')</th>
+									<th>@lang('lang.Seller')</th>
 									<th>@lang('lang.delivery_fee')</th>
 									<th class="text-center">@lang('lang.Time')</th>
 									<th class="text-center">@lang('lang.delivery_time')</th>
