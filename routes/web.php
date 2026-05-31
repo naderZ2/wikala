@@ -332,7 +332,7 @@ Route::group(['middleware' => ['auth:admin', 'CheckUserActiviation']], function 
         Route::get('attributes/create', [Admin\AttributeController::class, 'create'])->name('attributes.create');
         Route::post('attributes/store', [Admin\AttributeController::class, 'Store'])->name('attributes.store');
         Route::get('attributes/{id}/edit', [Admin\AttributeController::class, 'edit'])->name('attributes.edit');
-        Route::post('attributes/update', [Admin\AttributeController::class, 'update'])->name('attributes.update');
+        Route::put('attributes/update', [Admin\AttributeController::class, 'update'])->name('attributes.update');
         Route::get('attributes/{id}/enable', [Admin\AttributeController::class, 'enable'])->name('attributes.enable');
         Route::delete('attributes/delete', [Admin\AttributeController::class, 'destroy'])->name('attributes.delete');
 
