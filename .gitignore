@@ -4,5 +4,6 @@
 /public/storage
 /storage
 /vendor
+
 .env
 # Laravel Mix
