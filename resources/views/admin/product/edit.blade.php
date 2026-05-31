@@ -45,19 +45,8 @@
 								<div class="valid-feedback">Looks good!</div>
                                 <div class="invalid-feedback">Please choose a name.</div>
 							</div>
-							<div class="col-md-6 mb-3">
-								<label for="validationCustom01">title Ar</label>
-								<input class="form-control" id="validationCustom01" type="text" name="title_ar" value="{{ $product->title_ar }}" placeholder="" required="">
-								<div class="valid-feedback">Looks good!</div>
-                                <div class="invalid-feedback">Please choose a title_ar.</div>
-             
-							</div>
-							<div class="col-md-6 mb-3">
-								<label for="validationCustom01">title En</label>
-								<input class="form-control" id="validationCustom01" type="text" name="title_en" value="{{ $product->title_en }}" placeholder="" required="">
-								<div class="valid-feedback">Looks good!</div>
-                                <div class="invalid-feedback">Please choose a title_en.</div>
-							</div>
+							<input type="hidden" name="title_ar" value="{{ $product->title_ar }}">
+							<input type="hidden" name="title_en" value="{{ $product->title_en }}">
 
 							<div class="col-md-6 mb-3">
                                 <label for="validationCustom03">@lang('lang.Category')</label>

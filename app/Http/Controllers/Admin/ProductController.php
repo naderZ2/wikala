@@ -136,8 +136,8 @@ class ProductController extends Controller
         // Log::info($product);
         // $data= $request->validated();
         $product->update([
-            'title_ar'=>$request->title_ar,
-            'title_en'=>$request->title_en,
+            'title_ar'=>$request->name_ar,
+            'title_en'=>$request->name_en,
             'is_available'=>$request->is_available,
             'serving'=>$request->serving,
             'seller_id'=>$request->seller_id,

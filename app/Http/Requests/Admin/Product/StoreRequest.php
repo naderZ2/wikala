@@ -40,8 +40,15 @@ class StoreRequest extends FormRequest
             'seller_id' => "required",
         ];
     }
-    
-        public function messages(): array {
+    protected function prepareForValidation()
+    {
+        $this->merge([
+            'title_ar' => $this->name_ar,
+            'title_en' => $this->name_en,
+        ]);
+    }
+
+    public function messages(): array {
         return [
             // 'code.exists'  => 'The code Is Not found.',
             'name_ar.required'  => 'The name_ar are required',
