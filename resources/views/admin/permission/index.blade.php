@@ -45,7 +45,7 @@
 								@forelse ($permissions as $permission)
 									<tr>
 										<td>{{ $loop->iteration }}</td>
-										<td>{{ $permission->name }}</td>
+										<td>{{ \App\Helpers\PermissionHelper::translate($permission->name) }}</td>
 										<td>{{ $permission->guard_name }}</td>
 										<td class="text-end">
 											@can('update permission')

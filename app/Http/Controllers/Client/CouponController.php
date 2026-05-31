@@ -23,12 +23,18 @@ class CouponController extends Controller
             return $this->failed(null, trans('lang.code_not_found'));
         }
 
-        [$valid, $error] = $coupon->validateFor(auth()->id(), $request->price);
+        $eligibleSubtotal = $coupon->getEligibleSubtotal(auth()->id(), $request->price);
+
+        if ($eligibleSubtotal <= 0) {
+            return $this->failed(null, trans('lang.coupon_not_valid_for_basket'));
+        }
+
+        [$valid, $error] = $coupon->validateFor(auth()->id(), $eligibleSubtotal);
         if (!$valid) {
             return $this->failed(null, $error);
         }
 
-        $discount = $coupon->calculateDiscount($request->price);
+        $discount = $coupon->calculateDiscount($eligibleSubtotal);
         $finalPrice = max(0, (float) $request->price - $discount);
 
         return $this->success([

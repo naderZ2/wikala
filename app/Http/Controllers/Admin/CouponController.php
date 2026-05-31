@@ -17,25 +17,37 @@ class CouponController extends Controller
 
     public function create()
     {
-        return view('admin.coupons.add');
+        $sellers = \App\Models\Seller::where('active', true)->orderBy('name')->get();
+        $products = \App\Models\Product::where('is_available', true)->orderBy('name_en')->get();
+        return view('admin.coupons.add', compact('sellers', 'products'));
     }
 
     public function store(StoreRequest $request)
     {
-        Coupon::create($request->validated());
+        $coupon = Coupon::create($request->validated());
+        
+        $coupon->sellers()->sync($request->seller_ids ?? []);
+        $coupon->products()->sync($request->product_ids ?? []);
+
         return to_route('admin.coupons.index')->with('success', trans('lang.created'));
     }
 
     public function edit($id)
     {
         $coupon = Coupon::findOrFail($id);
-        return view('admin.coupons.edit', compact('coupon'));
+        $sellers = \App\Models\Seller::where('active', true)->orderBy('name')->get();
+        $products = \App\Models\Product::where('is_available', true)->orderBy('name_en')->get();
+        return view('admin.coupons.edit', compact('coupon', 'sellers', 'products'));
     }
 
     public function update(UpdateRequest $request, $id)
     {
         $coupon = Coupon::findOrFail($id);
         $coupon->update($request->validated());
+
+        $coupon->sellers()->sync($request->seller_ids ?? []);
+        $coupon->products()->sync($request->product_ids ?? []);
+
         return to_route('admin.coupons.index')->with('success', trans('lang.updated'));
     }
 

@@ -37,7 +37,7 @@
                                                     <label class="d-block" for="chk-ani{{$loop->iteration}}">
                                                     <input class="checkbox_animated" id="chk-ani{{$loop->iteration}}" type="checkbox" name="permissions[]" value="{{ $permission->id }}" 
                                                     @checked(in_array($permission->id, $rolePermissions->toArray()))>           
-                                                    {{ $permission->name }}
+                                                    {{ \App\Helpers\PermissionHelper::translate($permission->name) }}
                                                     
                                                     </label>
                                                     

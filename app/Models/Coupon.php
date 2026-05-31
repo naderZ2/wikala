@@ -39,6 +39,53 @@ class Coupon extends Model
         return $this->hasMany(CouponUsage::class);
     }
 
+    public function sellers()
+    {
+        return $this->belongsToMany(Seller::class, 'coupon_seller');
+    }
+
+    public function products()
+    {
+        return $this->belongsToMany(Product::class, 'coupon_product');
+    }
+
+    public function getEligibleSubtotal($userId, $fallbackSubtotal = null)
+    {
+        $hasSellers = $this->sellers()->exists();
+        $hasProducts = $this->products()->exists();
+
+        if (!$hasSellers && !$hasProducts) {
+            return $fallbackSubtotal !== null ? (float) $fallbackSubtotal : 0.0;
+        }
+
+        $basketOrders = Order::where(['user_id' => $userId, 'type' => 'basket'])->get();
+        if ($basketOrders->isEmpty()) {
+            return 0.0;
+        }
+
+        $eligibleTotal = 0.0;
+        $allowedSellerIds = $hasSellers ? $this->sellers()->pluck('sellers.id')->toArray() : [];
+        $allowedProductIds = $hasProducts ? $this->products()->pluck('products.id')->toArray() : [];
+
+        foreach ($basketOrders as $order) {
+            if ($hasSellers && !in_array($order->seller_id, $allowedSellerIds)) {
+                continue;
+            }
+
+            foreach ($order->orderDetails as $detail) {
+                if ($hasProducts && !in_array($detail->product_id, $allowedProductIds)) {
+                    continue;
+                }
+
+                $itemPrice = (float) $detail->price;
+                $extraServicePrice = (float) OrderDetailsExtraServices::where('order_details_id', $detail->id)->sum('price');
+                $eligibleTotal += ($itemPrice + $extraServicePrice);
+            }
+        }
+
+        return $eligibleTotal;
+    }
+
     public function userUsageCount($userId)
     {
         return $this->usages()->where('user_id', $userId)->count();

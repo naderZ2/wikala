@@ -33,11 +33,15 @@ class OrderService{
         if($request->code){
             $coupon = Coupon::where('code', $request->code)->first();
             if($coupon){
-                [$valid, $error] = $coupon->validateFor(auth()->id(), $basketSubtotal);
+                $eligibleSubtotal = $coupon->getEligibleSubtotal(auth()->id(), $basketSubtotal);
+                if ($eligibleSubtotal <= 0) {
+                    return $this->failed(null, trans('lang.coupon_not_valid_for_basket'));
+                }
+                [$valid, $error] = $coupon->validateFor(auth()->id(), $eligibleSubtotal);
                 if(!$valid){
                     return $this->failed(null, $error);
                 }
-                $couponDiscount = $coupon->calculateDiscount($basketSubtotal);
+                $couponDiscount = $coupon->calculateDiscount($eligibleSubtotal);
             } else {
                 $legacy = Discount::whereCode($request->code)->first();
                 if($legacy){
@@ -50,11 +54,28 @@ class OrderService{
 
         DB::beginTransaction();
         try {
+            $allowedSellerIds = $coupon ? $coupon->sellers()->pluck('sellers.id')->toArray() : [];
+            $allowedProductIds = $coupon ? $coupon->products()->pluck('products.id')->toArray() : [];
+
             foreach($baskets as $basket){
                 $sellerShare = (float) $basket->total_price;
 
                 if($coupon && $basketSubtotal > 0){
-                    $share = $sellerShare / $basketSubtotal;
+                    $basketEligibleAmount = 0.0;
+                    if (empty($allowedSellerIds) || in_array($basket->seller_id, $allowedSellerIds)) {
+                        if (empty($allowedProductIds)) {
+                            $basketEligibleAmount = $sellerShare;
+                        } else {
+                            foreach ($basket->orderDetails as $detail) {
+                                if (in_array($detail->product_id, $allowedProductIds)) {
+                                    $itemPrice = (float) $detail->price;
+                                    $extraServicePrice = (float) \App\Models\OrderDetailsExtraServices::where('order_details_id', $detail->id)->sum('price');
+                                    $basketEligibleAmount += ($itemPrice + $extraServicePrice);
+                                }
+                            }
+                        }
+                    }
+                    $share = $eligibleSubtotal > 0 ? ($basketEligibleAmount / $eligibleSubtotal) : 0;
                     $perOrderDiscount = round($couponDiscount * $share, 2);
                     $discountedTotal  = max(0, $sellerShare - $perOrderDiscount);
                 } else {

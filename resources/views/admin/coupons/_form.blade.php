@@ -66,6 +66,31 @@
 
 <div class="row">
 	<div class="col-md-6 mb-3">
+		<label>@lang('lang.coupon_sellers')</label>
+		<select class="form-control select2" name="seller_ids[]" multiple="multiple">
+			@foreach ($sellers as $seller)
+				<option value="{{ $seller->id }}" {{ in_array($seller->id, old('seller_ids', $c ? $c->sellers->pluck('id')->toArray() : [])) ? 'selected' : '' }}>
+					{{ $seller->name }} {{ $seller->shop_name_en ? '('.$seller->shop_name_en.')' : '' }}
+				</option>
+			@endforeach
+		</select>
+		<small class="text-muted">@lang('lang.coupon_sellers_hint')</small>
+	</div>
+	<div class="col-md-6 mb-3">
+		<label>@lang('lang.coupon_products')</label>
+		<select class="form-control select2" name="product_ids[]" multiple="multiple">
+			@foreach ($products as $product)
+				<option value="{{ $product->id }}" {{ in_array($product->id, old('product_ids', $c ? $c->products->pluck('id')->toArray() : [])) ? 'selected' : '' }}>
+					{{ $product->name_en }} ({{ $product->seller->shop_name_en ?? '' }})
+				</option>
+			@endforeach
+		</select>
+		<small class="text-muted">@lang('lang.coupon_products_hint')</small>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-md-6 mb-3">
 		<label>@lang('lang.Status')</label>
 		<select class="form-control" name="active">
 			<option value="1" {{ old('active', $c?->active ?? 1) ? 'selected' : '' }}>@lang('lang.active')</option>

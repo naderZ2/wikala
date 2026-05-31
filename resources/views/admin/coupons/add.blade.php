@@ -1,6 +1,10 @@
 @extends('admin.layout.master')
 @section('title', 'Add Coupon')
 
+@section('css')
+<link rel="stylesheet" type="text/css" href="{{asset('assets/css/vendors/select2.css')}}">
+@endsection
+
 @section('breadcrumb-title')
 <h3>@lang('lang.add_coupon')</h3>
 @endsection
@@ -32,4 +36,15 @@
 		</div>
 	</div>
 </div>
+@endsection
+
+@section('script')
+<script src="{{asset('assets/js/select2/select2.full.min.js')}}"></script>
+<script>
+	$(document).ready(function() {
+		$('.select2').select2({
+			placeholder: "Select options"
+		});
+	});
+</script>
 @endsection

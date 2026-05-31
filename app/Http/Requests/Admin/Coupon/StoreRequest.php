@@ -25,6 +25,10 @@ class StoreRequest extends FormRequest
             'starts_at'            => 'nullable|date',
             'expires_at'           => 'nullable|date|after_or_equal:starts_at',
             'active'               => 'sometimes|boolean',
+            'seller_ids'           => 'nullable|array',
+            'seller_ids.*'         => 'exists:sellers,id',
+            'product_ids'          => 'nullable|array',
+            'product_ids.*'        => 'exists:products,id',
         ];
     }
 
