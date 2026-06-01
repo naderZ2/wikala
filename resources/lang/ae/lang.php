@@ -685,6 +685,8 @@ return  [
 	'attribute_value.required' => 'قيمة الخاصية مطلوبة.',
 	'rejected_id.required_if' => 'سبب الرفض مطلوب عندما تكون الحالة مرفوض.',
 	'rejected_id.exists' => 'سبب الرفض المحدد غير صالح.',
+	'Employees' => 'الموظفين',
+	'manage_employees' => 'إدارة الموظفين',
 
 ];
 ?>

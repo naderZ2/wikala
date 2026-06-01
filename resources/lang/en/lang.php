@@ -676,6 +676,8 @@ return  [
 	'attribute_value.required' => 'The attribute value field is required.',
 	'rejected_id.required_if' => 'The rejection reason is required when status is rejected.',
 	'rejected_id.exists' => 'The selected rejection reason is invalid.',
+	'Employees' => 'Employees',
+	'manage_employees' => 'Manage Employees',
 
 ];
 ?>

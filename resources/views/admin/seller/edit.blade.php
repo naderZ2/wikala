@@ -26,7 +26,7 @@
 			
 				<div class="card-header d-flex justify-content-between align-items-center">
                     <h5>@lang('lang.edit_Seller')</h5>
-                    <a href="{{ route('admin.seller.employees.index', $seller->id) }}" class="btn btn-secondary">Manage Employees</a>
+                    <a href="{{ route('admin.seller.employees.index', $seller->id) }}" class="btn btn-secondary">@lang('lang.manage_employees')</a>
                 </div>
 				<div class="card-body">
 					<form class="needs-validation" novalidate="" method="POST" enctype="multipart/form-data" action="{{ route('seller.update',$seller->id) }}">
