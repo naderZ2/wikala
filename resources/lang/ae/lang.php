@@ -687,6 +687,10 @@ return  [
 	'rejected_id.exists' => 'سبب الرفض المحدد غير صالح.',
 	'Employees' => 'الموظفين',
 	'manage_employees' => 'إدارة الموظفين',
+	'select_reason' => 'اختر سبباً',
+	'other' => 'أخرى...',
+	'rejection_reason' => 'سبب الرفض',
+	'rejection_reason_placeholder' => 'اكتب سبب رفض مخصص...',
 
 ];
 ?>

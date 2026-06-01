@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\File;
 use App\Traits\FileUploadTrait;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Product\StoreRequest;
+use App\Models\RejectedReason;
 
 class ProductController extends Controller
 {
@@ -26,7 +27,8 @@ class ProductController extends Controller
         ->select('id',$this->name,$this->description,"price","quantity",'main_image','seller_id','category_id','is_available','old_price','rejection_reason','created_at','updated_at')
         ->withTrashed()
         ->get();
-        return view('admin.product.index',compact('products'));
+        $rejectedReasons = RejectedReason::where('enable', 1)->get();
+        return view('admin.product.index', compact('products', 'rejectedReasons'));
     }
     public function create(){
         $this->lang();

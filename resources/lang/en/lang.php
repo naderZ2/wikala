@@ -678,6 +678,10 @@ return  [
 	'rejected_id.exists' => 'The selected rejection reason is invalid.',
 	'Employees' => 'Employees',
 	'manage_employees' => 'Manage Employees',
+	'select_reason' => 'Select a reason',
+	'other' => 'Other...',
+	'rejection_reason' => 'Rejection Reason',
+	'rejection_reason_placeholder' => 'Write a custom rejection reason...',
 
 ];
 ?>

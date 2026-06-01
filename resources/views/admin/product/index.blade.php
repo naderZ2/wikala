@@ -257,13 +257,37 @@
                 <h5 class="modal-title"><i class="fa fa-ban"></i> @lang('lang.reject_product'): {{ $product->name }}</h5>
                 <button class="btn-close btn-close-white" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form action="{{ route('product.reject', $product->id) }}" method="POST">
+            <form action="{{ route('product.reject', $product->id) }}" method="POST" id="rejectForm{{ $product->id }}">
                 @csrf
                 <div class="modal-body">
+                    {{-- Predefined reasons dropdown --}}
                     <div class="mb-3">
-                        <label for="rejection_reason_{{ $product->id }}" class="form-label"><strong>@lang('lang.rejection_reason') <span class="text-danger">*</span></strong></label>
-                        <textarea class="form-control" id="rejection_reason_{{ $product->id }}" name="rejection_reason" rows="4" placeholder="@lang('lang.rejection_reason_placeholder')" required></textarea>
+                        <label for="rejection_reason_select_{{ $product->id }}" class="form-label">
+                            <strong>@lang('lang.rejection_reason') <span class="text-danger">*</span></strong>
+                        </label>
+                        <select class="form-control rejection-reason-select"
+                                id="rejection_reason_select_{{ $product->id }}"
+                                data-product-id="{{ $product->id }}"
+                                required>
+                            <option value="">-- @lang('lang.select_reason') --</option>
+                            @foreach($rejectedReasons as $reason)
+                                <option value="{{ $reason->name }}">{{ $reason->name }}</option>
+                            @endforeach
+                            <option value="__other__">{{ __('lang.other') ?? 'Other...' }}</option>
+                        </select>
                     </div>
+
+                    {{-- Custom reason (shown only when "Other" is selected) --}}
+                    <div class="mb-3 d-none" id="custom_reason_wrapper_{{ $product->id }}">
+                        <label class="form-label"><strong>@lang('lang.rejection_reason_placeholder')</strong></label>
+                        <textarea class="form-control custom-reason-textarea"
+                                  id="custom_reason_{{ $product->id }}"
+                                  rows="3"
+                                  placeholder="@lang('lang.rejection_reason_placeholder')"></textarea>
+                    </div>
+
+                    {{-- Hidden field that carries the final value --}}
+                    <input type="hidden" name="rejection_reason" id="rejection_reason_hidden_{{ $product->id }}">
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">@lang('lang.Cancel')</button>
@@ -288,5 +312,54 @@
 <script src="{{asset('assets/js/select2/select2-custom.js')}}"></script>
 <script src="{{asset('assets/js/owlcarousel/owl.carousel.js')}}"></script>
 <script src="{{asset('assets/js/owlcarousel/owl-custom.js')}}"></script>
+
+<script>
+$(document).ready(function () {
+
+    // When a rejection reason select changes
+    $(document).on('change', '.rejection-reason-select', function () {
+        var productId  = $(this).data('product-id');
+        var selected   = $(this).val();
+        var wrapper    = $('#custom_reason_wrapper_' + productId);
+        var customArea = $('#custom_reason_' + productId);
+
+        if (selected === '__other__') {
+            wrapper.removeClass('d-none');
+            customArea.attr('required', 'required');
+        } else {
+            wrapper.addClass('d-none');
+            customArea.removeAttr('required');
+        }
+    });
+
+    // Before form submit: populate the hidden field with the final reason text
+    $(document).on('submit', '[id^="rejectForm"]', function (e) {
+        var formId    = $(this).attr('id');
+        var productId = formId.replace('rejectForm', '');
+        var select    = $('#rejection_reason_select_' + productId);
+        var selected  = select.val();
+        var hidden    = $('#rejection_reason_hidden_' + productId);
+
+        if (!selected) {
+            e.preventDefault();
+            alert('{{ __("lang.rejection_reason") ?? "Please select a rejection reason." }}');
+            return false;
+        }
+
+        if (selected === '__other__') {
+            var customVal = $('#custom_reason_' + productId).val().trim();
+            if (!customVal) {
+                e.preventDefault();
+                alert('{{ __("lang.rejection_reason_placeholder") ?? "Please enter a custom rejection reason." }}');
+                return false;
+            }
+            hidden.val(customVal);
+        } else {
+            hidden.val(selected);
+        }
+    });
+
+});
+</script>
 
 @endsection
