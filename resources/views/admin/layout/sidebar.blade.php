@@ -158,7 +158,7 @@
 
 
 					@php
-						$adminsGroupActive = in_array(request()->route()->uri(), ['users/admins','users/roles','users/permissions']);
+						$adminsGroupActive = in_array(request()->route()->uri(), ['users/admins','users/roles','users/permissions','admins','admins/create']);
 					@endphp
 					<li class="sidebar-list">
 						<a class="sidebar-link sidebar-title {{ $adminsGroupActive ? 'active' : '' }}" href="#">
@@ -167,7 +167,9 @@
 							<div class="according-menu"><i class="fa fa-angle-{{ $adminsGroupActive ? 'down' : 'right' }}"></i></div>
 						</a>
 	                	<ul class="sidebar-submenu" style="display: {{ $adminsGroupActive ? 'block;' : 'none;' }}">
-                        	<li style="display:none;"><a href="{{ route('admins.index') }}" class="{{ Route::currentRouteName() == 'admins.index' ? 'active' : '' }}">{{ trans('lang.admins') }}</a></li>
+							@can('view admin')
+								<li><a href="{{ route('admins.index') }}" class="{{ Route::currentRouteName() == 'admins.index' ? 'active' : '' }}">{{ trans('lang.admins') }}</a></li>
+							@endcan
 							@can('view role')
 									<li><a href="{{ route('roles.index') }}" class="{{ Route::currentRouteName() == 'roles.index' ? 'active' : '' }}">{{ trans('lang.Roles') }}</a></li>
 							@endcan
