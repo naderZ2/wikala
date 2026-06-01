@@ -167,9 +167,9 @@
 							<div class="according-menu"><i class="fa fa-angle-{{ $adminsGroupActive ? 'down' : 'right' }}"></i></div>
 						</a>
 	                	<ul class="sidebar-submenu" style="display: {{ $adminsGroupActive ? 'block;' : 'none;' }}">
-							@can('view admin')
+							<!-- @can('view admin') -->
 								<li><a href="{{ route('admins.index') }}" class="{{ Route::currentRouteName() == 'admins.index' ? 'active' : '' }}">{{ trans('lang.admins') }}</a></li>
-							@endcan
+							<!-- @endcan -->
 							@can('view role')
 									<li><a href="{{ route('roles.index') }}" class="{{ Route::currentRouteName() == 'roles.index' ? 'active' : '' }}">{{ trans('lang.Roles') }}</a></li>
 							@endcan
