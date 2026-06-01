@@ -44,8 +44,8 @@ class LoginRequest extends FormRequest
     public function messages()
     {
         return [
-            'phone.required' => 'The phone number is required.',
-            'password.required' => 'The password is required.',
+            'phone.required' => __('lang.phone_required'),
+            'password.required' => __('lang.password_required'),
         ];
     }
 

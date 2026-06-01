@@ -62,33 +62,33 @@ class EditEventRequest extends FormRequest
    public function messages(): array {
     return [
         // General field messages
-        'event_category_id.required' => 'The event category is required.',
-        'city_id.required' => 'The city is required.',
-        'type.required' => 'The event type is required.',
-        'type.in' => 'The type field must be either male, female, or both.',
-        'date.required' => 'The event date is required.',
-        'time.required' => 'The event time is required.',
-        'image.required' => 'The event image is required.',
-        'image.max' => 'The image size must not exceed 1MB.',
-        'family_name.required' => 'The event family_name is required.',
-        'description_ar.required' => 'The Arabic description is required.',
-        'description_en.required' => 'The English description is required.',
-        'name_ar.required' => 'The Arabic name is required.',
-        'name_en.required' => 'The English name is required.',
+        'event_category_id.required' => __('lang.event_category_required'),
+        'city_id.required' => __('lang.city_required'),
+        'type.required' => __('lang.event_type_required'),
+        'type.in' => __('lang.event_type_invalid'),
+        'date.required' => __('lang.event_date_required'),
+        'time.required' => __('lang.event_time_required'),
+        'image.required' => __('lang.event_image_required'),
+        'image.max' => __('lang.image_max_1mb'),
+        'family_name.required' => __('lang.event_family_name_required'),
+        'description_ar.required' => __('lang.description_ar_required'),
+        'description_en.required' => __('lang.description_en_required'),
+        'name_ar.required' => __('lang.name_ar_required'),
+        'name_en.required' => __('lang.name_en_required'),
 
         // Male or both type validations
-        'longitude.required_if' => 'The longitude is required when the type is male or both.',
-        'latitude.required_if' => 'The latitude is required when the type is male or both.',
-        'address.required_if' => 'The address is required when the type is male or both.',
-        'phone.required_if' => 'The phone number is required when the type is male or both.',
-        'whatsApp_number.required_if' => 'The WhatsApp number is required when the type is male or both.',
+        'longitude.required_if' => __('lang.longitude_required_male_both'),
+        'latitude.required_if' => __('lang.latitude_required_male_both'),
+        'address.required_if' => __('lang.address_required_male_both'),
+        'phone.required_if' => __('lang.phone_required_male_both'),
+        'whatsApp_number.required_if' => __('lang.whatsapp_required_male_both'),
 
         // Female or both type validations
-        'f_longitude.required_if' => 'The female longitude is required when the type is female or both.',
-        'f_latitude.required_if' => 'The female latitude is required when the type is female or both.',
-        'f_address.required_if' => 'The female address is required when the type is female or both.',
-        'f_phone.required_if' => 'The female phone number is required when the type is female or both.',
-        'f_whatsApp_number.required_if' => 'The female WhatsApp number is required when the type is female or both.',
+        'f_longitude.required_if' => __('lang.female_longitude_required'),
+        'f_latitude.required_if' => __('lang.female_latitude_required'),
+        'f_address.required_if' => __('lang.female_address_required'),
+        'f_phone.required_if' => __('lang.female_phone_required'),
+        'f_whatsApp_number.required_if' => __('lang.female_whatsapp_required'),
     ];
 }
 

@@ -34,8 +34,8 @@ class StoreRequest extends FormRequest
 
     public function messages(): array {
         return [
-            'email.unique'  => 'The email Is found.',
-            'phone.unique'  => 'The Phone Is found.',
+            'email.unique'  => __('lang.email_unique'),
+            'phone.unique'  => __('lang.phone_unique'),
         ];
     }
 }

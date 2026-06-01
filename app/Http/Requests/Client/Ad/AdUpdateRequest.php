@@ -56,7 +56,7 @@ class AdUpdateRequest extends FormRequest
         throw new \Illuminate\Http\Exceptions\HttpResponseException(
             response()->json([
                 'success' => false,
-                'message' => 'Validation errors',
+                'message' => __('lang.validation_errors'),
                 'errors' => $validator->errors()
             ], 422)
         );

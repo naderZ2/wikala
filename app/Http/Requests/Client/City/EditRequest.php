@@ -47,8 +47,8 @@ class EditRequest extends FormRequest
 
     public function messages(): array {
         return [
-            'id.required'  => 'The Id  is required',
-            'address_id.required'  => 'The address id  is required',
+            'id.required'  => __('lang.id_required'),
+            'address_id.required'  => __('lang.address_id_required'),
         ];
     }
 }

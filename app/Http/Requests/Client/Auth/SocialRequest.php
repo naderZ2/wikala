@@ -43,8 +43,8 @@ class SocialRequest extends FormRequest
 
     public function messages(): array {
         return [
-            'provider.required'  => 'The provider  is required',
-            'token.required'  => 'The token  is required',
+            'provider.required'  => __('lang.provider_required'),
+            'token.required'  => __('lang.token_required'),
         ];
     }
 }

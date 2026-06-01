@@ -47,7 +47,7 @@ class CheckPhoneRequest extends FormRequest
 
     public function messages(): array {
         return [
-            'phone.unique'  => 'هذا الهاتف  مسجل لدينا',
+            'phone.unique'  => __('lang.phone_already_registered'),
         ];
     }
 }

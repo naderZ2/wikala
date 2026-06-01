@@ -45,10 +45,10 @@ class PaymentRequest extends FormRequest
 
     public function messages(): array {
         return [
-            'payment_method.required'  =>  'payment method required',
-            'payment_option.required'  =>  'payment option required',
-            'order_id.required_without'  =>  'order id or group id required',
-            'group_id.required_without'  =>  'order id or group id required',
+            'payment_method.required'  =>  __('lang.payment_method_required'),
+            'payment_option.required'  =>  __('lang.payment_option_required'),
+            'order_id.required_without'  =>  __('lang.order_id_or_group_id_required'),
+            'group_id.required_without'  =>  __('lang.order_id_or_group_id_required'),
         ];
     }
 }

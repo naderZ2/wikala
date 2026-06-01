@@ -59,15 +59,15 @@ class RegisterRequest extends FormRequest
 
     public function messages(): array {
         return [
-            'email.unique'  => 'The email Is found.',
-            'phone.unique'  => 'The phone Is found.',
-            'password.required' => 'Please enter a password.',
-            'password.confirmed' => 'The passwords do not match.',
-            'password.min' => 'Password must be at least 8 characters.',
-            'password.mixedCase' => 'Password must include both uppercase and lowercase letters.',
-            'password.letters' => 'Password must contain at least one letter.',
-            'password.numbers' => 'Password must contain at least one number.',
-            'password.symbols' => 'Password must include at least one special character.',
+            'email.unique'  => __('lang.email_unique'),
+            'phone.unique'  => __('lang.phone_unique'),
+            'password.required' => __('lang.password_required'),
+            'password.confirmed' => __('lang.password_confirmed'),
+            'password.min' => __('lang.password_min_8'),
+            'password.mixedCase' => __('lang.password_mixed_case'),
+            'password.letters' => __('lang.password_letters'),
+            'password.numbers' => __('lang.password_numbers'),
+            'password.symbols' => __('lang.password_symbols'),
         ];
     }
 }

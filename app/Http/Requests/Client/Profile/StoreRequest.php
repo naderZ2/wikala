@@ -26,10 +26,10 @@ class StoreRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'password.required' => trans('validation.password_required'),
-            'password.string' => trans('validation.password_string'),
-            'password.min' => trans('validation.password_min'),
-            'password.confirmed' => trans('validation.password_confirmed'),
+            'password.required' => __('lang.password_required'),
+            'password.string' => __('lang.password_string'),
+            'password.min' => __('lang.password_min_6'),
+            'password.confirmed' => __('lang.password_confirmed'),
         ];
     }
 }

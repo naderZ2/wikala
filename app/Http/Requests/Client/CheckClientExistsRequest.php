@@ -41,8 +41,8 @@ class CheckClientExistsRequest extends FormRequest
 
     public function messages(): array {
         return [
-            'phone.unique'  => 'The phone Is found.',
-            'email.unique'  => 'The Email Is found.',
+            'phone.unique'  => __('lang.phone_unique'),
+            'email.unique'  => __('lang.email_unique'),
         ];
     }
 }

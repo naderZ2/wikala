@@ -34,7 +34,7 @@ class EditRequest extends FormRequest
 
     public function messages(): array {
         return [
-            'email.unique'  => 'The email Is found.',
+            'email.unique'  => __('lang.email_unique'),
         ];
     }
 }

@@ -39,7 +39,7 @@ class CancelRequest extends FormRequest
 
     public function messages(): array {
         return [
-            'id.required'  => 'The Order Id is required',
+            'id.required'  => __('lang.order_id_required'),
         ];
     }
 }

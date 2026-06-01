@@ -37,8 +37,8 @@ class EditRequest extends FormRequest
 
     public function messages(): array {
         return [
-            'email.unique'  => 'The email Is found.',
-            'img_path.max'  => 'The image size must not exceed 1MB.',
+            'email.unique'  => __('lang.email_unique'),
+            'img_path.max'  => __('lang.The_image_size_must_not_exceed_1024_kilobytes'),
         ];
     }
 }

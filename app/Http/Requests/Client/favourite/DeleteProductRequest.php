@@ -40,7 +40,7 @@ class DeleteProductRequest extends FormRequest
 
     public function messages(): array {
         return [
-            'favourite_id.required'  => 'The favourite_id  is required',
+            'favourite_id.required'  => __('lang.favourite_id_required'),
         ];
     }
 }

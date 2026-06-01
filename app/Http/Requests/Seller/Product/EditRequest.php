@@ -37,13 +37,13 @@ class EditRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'name_ar.required' => 'The Arabic name is required',
-            'name_en.required' => 'The English name is required',
-            'description_ar.required' => 'The Arabic description is required',
-            'description_en.required' => 'The English description is required',
-            'main_image.max' => 'The main image must not exceed 2MB.',
-            'images.*.max' => 'Each image/video must not exceed 20MB.',
-            'images.*.mimes' => 'Must be a valid image or video format.',
+            'name_ar.required' => __('lang.name_ar_required'),
+            'name_en.required' => __('lang.name_en_required'),
+            'description_ar.required' => __('lang.description_ar_required'),
+            'description_en.required' => __('lang.description_en_required'),
+            'main_image.max' => __('lang.main_image_max_2mb'),
+            'images.*.max' => __('lang.images_max_20mb'),
+            'images.*.mimes' => __('lang.images_mimes_format'),
         ];
     }
 
@@ -52,7 +52,7 @@ class EditRequest extends FormRequest
         throw new HttpResponseException(response()->json([
             'success' => false,
             'result' => $validator->errors(),
-            'msg' => 'Validation failed'
+            'msg' => __('lang.validation_failed')
         ], 422));
     }
 }

@@ -37,11 +37,10 @@ class StoreRequest extends FormRequest
     }
 
     public function messages(): array {
-        return 
-        [
-            'coupons_number.min'  => 'Total Coupons must be bigger than user coupons ',
-            'end_date.after'  => 'End Date must be after Start Date',
-            'code.unique' => "Code already exists"
+        return [
+            'coupons_number.min'  => __('lang.total_coupons_min'),
+            'end_date.after'  => __('lang.end_date_after_start'),
+            'code.unique' => __('lang.code_unique'),
         ];
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\Auction;
+namespace App\Http\Requests\Client\Auction;
 
 use Illuminate\Foundation\Http\FormRequest;
 

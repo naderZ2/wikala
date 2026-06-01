@@ -31,8 +31,7 @@ class AdminLoginRequest extends FormRequest
 
     public function messages(): array {
         return [
-            'email.exists'  => 'The email Is Not found.',
-
+            'email.exists'  => __('lang.email_not_found'),
         ];
     }
 }

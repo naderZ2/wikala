@@ -41,7 +41,7 @@ class CheckPhoneExists extends FormRequest
 
     public function messages(): array {
         return [
-            'phone.exists'  => 'هذا الرقم غير مسجل لدينا',
+            'phone.exists'  => __('lang.phone_not_registered'),
         ];
     }
 }

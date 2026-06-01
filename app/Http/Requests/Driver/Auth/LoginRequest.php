@@ -31,8 +31,8 @@ class LoginRequest extends FormRequest
 
     public function messages(): array {
         return [
-            'email.required'  => 'The email Is required.',
-            'password.required'  => 'The password Is required.',
+            'email.required'  => __('lang.email_required'),
+            'password.required'  => __('lang.password_required'),
         ];
     }
 }

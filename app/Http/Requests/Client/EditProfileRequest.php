@@ -49,7 +49,7 @@ class EditProfileRequest extends FormRequest
 
     public function messages(): array {
         return [
-            'phone.unique'  => 'The phone Is found.',
+            'phone.unique'  => __('lang.phone_unique'),
         ];
     }
 }

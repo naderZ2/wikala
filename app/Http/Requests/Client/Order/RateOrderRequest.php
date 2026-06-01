@@ -41,12 +41,12 @@ class RateOrderRequest extends FormRequest
 
     public function messages(): array {
         return [
-            'order_id.required' => 'The Order Id is required',
-            'order_id.exists'   => 'The Order does not exist',
-            'rating.required'   => 'The rating is required',
-            'rating.integer'    => 'The rating must be a number',
-            'rating.min'        => 'The rating must be at least 1',
-            'rating.max'        => 'The rating must not exceed 5',
+            'order_id.required' => __('lang.order_id_required'),
+            'order_id.exists'   => __('lang.order_not_exist'),
+            'rating.required'   => __('lang.rating_required'),
+            'rating.integer'    => __('lang.rating_must_be_number'),
+            'rating.min'        => __('lang.rating_min'),
+            'rating.max'        => __('lang.rating_max'),
         ];
     }
 }

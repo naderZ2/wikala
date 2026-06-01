@@ -49,19 +49,19 @@ class SpecialRequestsRequest extends FormRequest
     public function messages()
     {
         return [
-            'category_id.required' => 'The category field is required.',
-            'category_id.exists' => 'The selected category is invalid.',
-            'family_name.required' => 'The family name field is required.',
-            'family_name.string' => 'The family name must be a valid string.',
-            'family_name.max' => 'The family name may not be greater than 255 characters.',
-            'area_id.required' => 'The area field is required.',
-            'area_id.exists' => 'The selected area is invalid.',
-            'date.required' => 'The date field is required.',
-            'date.date' => 'The date field must be a valid date.',
-            'date.after_or_equal' => 'The date must be today or later.',
-            'time.required' => 'The time field is required.',
-            'time.date_format' => 'The time must be in the format HH:MM.',
-            'description.string' => 'The description must be a valid string.',
+            'category_id.required' => __('lang.category_required'),
+            'category_id.exists' => __('lang.category_not_found'),
+            'family_name.required' => __('lang.family_name_required'),
+            'family_name.string' => __('lang.family_name_string'),
+            'family_name.max' => __('lang.family_name_max'),
+            'area_id.required' => __('lang.city_required'),
+            'area_id.exists' => __('lang.city_not_found'),
+            'date.required' => __('lang.date_date'), // date field is required
+            'date.date' => __('lang.date_date'),
+            'date.after_or_equal' => __('lang.date_after_or_equal'),
+            'time.required' => __('lang.time_date_format'),
+            'time.date_format' => __('lang.time_date_format'),
+            'description.string' => __('lang.description_string'),
         ];
     }
 }

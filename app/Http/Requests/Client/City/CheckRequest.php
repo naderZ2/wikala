@@ -40,7 +40,7 @@ class CheckRequest extends FormRequest
 
     public function messages(): array {
         return [
-            'id.required'  => 'The Id  is required',
+            'id.required'  => __('lang.id_required'),
         ];
     }
 }

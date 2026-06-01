@@ -39,7 +39,7 @@ class CheckProductDetailsRequest extends FormRequest
 
     public function messages(): array {
         return [
-            'id.required'  => 'id is required',
+            'id.required'  => __('lang.id_required'),
         ];
     }
 }

@@ -24,7 +24,7 @@ class LoginRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'phone.exists' => 'The phone number is not registered.',
+            'phone.exists' => __('lang.phone_not_registered'),
         ];
     }
 
@@ -33,7 +33,7 @@ class LoginRequest extends FormRequest
         throw new HttpResponseException(response()->json([
             'success' => false,
             'result' => $validator->errors(),
-            'msg' => 'Validation failed'
+            'msg' => __('lang.validation_failed')
         ], 422));
     }
 }

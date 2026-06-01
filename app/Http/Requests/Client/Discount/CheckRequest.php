@@ -40,8 +40,8 @@ class CheckRequest extends FormRequest
 
     public function messages(): array {
         return [
-            'code.exists'  => 'The code Is Not found.',
-            'code.required'  => 'The code is required',
+            'code.exists'  => __('lang.code_not_found'),
+            'code.required'  => __('lang.code_required'),
         ];
     }
 }

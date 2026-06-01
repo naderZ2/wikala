@@ -45,8 +45,8 @@ class StoreRequest extends FormRequest
     public function messages(): array {
         return [
             // 'code.exists'  => 'The code Is Not found.',
-            'products.required'  => 'The Products are required',
-            'address_id.required'  => 'The address are required',
+            'products.required'  => __('lang.products_required'),
+            'address_id.required'  => __('lang.address_required'),
         ];
     }
 }

@@ -55,9 +55,9 @@ class CheckRequest extends FormRequest
 
     public function messages(): array {
         return [
-            'password.required'  => 'The password Is required.',
-            'password.regex' => 'Password must include an uppercase letter, a lowercase letter, a number, and a special character.',
-            'old_password.required'  => 'The old password Is required.',
+            'password.required'  => __('lang.password_required'),
+            'password.regex' => __('lang.password_regex'),
+            'old_password.required'  => __('lang.old_password_required'),
         ];
     }
 }

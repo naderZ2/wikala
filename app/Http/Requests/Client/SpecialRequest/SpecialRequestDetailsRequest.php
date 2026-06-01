@@ -38,14 +38,14 @@ class SpecialRequestDetailsRequest extends FormRequest
                 'required',
                 function ($attribute, $value, $fail) {
                     if ($this->type === 'file' && !$this->hasFile('content')) {
-                        $fail('The content must be a valid file when type is file.');
+                        $fail(__('lang.content_must_be_file'));
                     }
     
                     if ($this->type === 'text') {
                         if (!is_string($value)) {
-                            $fail('The content must be a string when type is text.');
+                            $fail(__('lang.content_must_be_string'));
                         } elseif (strlen($value) > 255) {
-                            $fail('The content may not be greater than 255 characters.');
+                            $fail(__('lang.content_max'));
                         }
                     }
                 },
@@ -63,14 +63,14 @@ class SpecialRequestDetailsRequest extends FormRequest
     public function messages()
     {
         return [
-            'special_requests_id.required' => 'The special request ID is required.',
-            'special_requests_id.exists' => 'The selected special request does not exist.',
-            'user_id.required' => 'The user ID is required.',
-            'user_id.exists' => 'The selected user does not exist.',
-            'file_or_text.required' => 'You must specify whether it is a file or text.',
-            'file_or_text.in' => 'The file_or_text field must be either "file" or "text".',
-            'content.string' => 'The content must be a valid string.',
-            'content.max' => 'The content may not be greater than 255 characters.',
+            'special_requests_id.required' => __('lang.special_requests_id_required'),
+            'special_requests_id.exists' => __('lang.special_requests_id_exists'),
+            'user_id.required' => __('lang.user_id_required'),
+            'user_id.exists' => __('lang.user_id_exists'),
+            'file_or_text.required' => __('lang.file_or_text_required'),
+            'file_or_text.in' => __('lang.file_or_text_in'),
+            'content.string' => __('lang.content_string'),
+            'content.max' => __('lang.content_max'),
         ];
     }
 }

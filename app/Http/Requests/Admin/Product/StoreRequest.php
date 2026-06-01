@@ -50,15 +50,14 @@ class StoreRequest extends FormRequest
 
     public function messages(): array {
         return [
-            // 'code.exists'  => 'The code Is Not found.',
-            'name_ar.required'  => 'The name_ar are required',
-            'name_en.required'  => 'The name_en are required',
-            'description_ar.required'  => 'The description_ar are required',
-            'products.required'  => 'The Products are required',
-            'description_en.required'  => 'The description_en are required',
-            'main_image.max'  => 'The image size must not exceed 1MB.',
-            'images.*.max'  => 'Each image/video size must not exceed 20MB.',
-            'images.*.mimes' => 'Must be a valid image or video format.',
+            'name_ar.required'  => __('lang.name_ar_required'),
+            'name_en.required'  => __('lang.name_en_required'),
+            'description_ar.required'  => __('lang.description_required'),
+            'products.required'  => __('lang.products_required'),
+            'description_en.required'  => __('lang.description_required'),
+            'main_image.max'  => __('lang.The_image_size_must_not_exceed_1024_kilobytes'),
+            'images.*.max'  => __('lang.images_max_20mb'),
+            'images.*.mimes' => __('lang.images_mimes_format'),
         ];
     }
 }
