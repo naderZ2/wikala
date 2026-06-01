@@ -9,9 +9,9 @@ use App\Http\Requests\Admin\RolePermission\EditRequest;
 class RolePermissionController extends Controller
 {
     public function show($id){
-        $permissions = Permission::get();
-        $role = Role::find($id);
-        $rolePermissions= $role->getAllPermissions()->pluck('pivot.permission_id');
+        $role = Role::findOrFail($id);
+        $permissions = Permission::where('guard_name', $role->guard_name)->get();
+        $rolePermissions = $role->permissions()->pluck('id');
         return view('admin.role.edit',compact('permissions','rolePermissions','role'));
     }
 
