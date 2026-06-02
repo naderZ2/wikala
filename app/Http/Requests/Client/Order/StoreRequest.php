@@ -34,7 +34,7 @@ class StoreRequest extends FormRequest
             'delivery_time' => "sometimes|nullable",
             'address_id' => "required",
             'file' => "sometimes|nullable",
-            'code' => "sometimes|nullable",
+            'coupon_code' => "sometimes|nullable",
         ];
     }
 

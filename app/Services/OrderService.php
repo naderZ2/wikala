@@ -30,8 +30,8 @@ class OrderService{
         $couponDiscount  = 0.0;
         $discountRatio   = 0.0;
 
-        if($request->code){
-            $coupon = Coupon::where('code', $request->code)->first();
+        if($request->coupon_code){
+            $coupon = Coupon::where('code', $request->coupon_code)->first();
             if($coupon){
                 $eligibleSubtotal = $coupon->getEligibleSubtotal(auth()->id(), $basketSubtotal);
                 if ($eligibleSubtotal <= 0) {
@@ -43,7 +43,7 @@ class OrderService{
                 }
                 $couponDiscount = $coupon->calculateDiscount($eligibleSubtotal);
             } else {
-                $legacy = Discount::whereCode($request->code)->first();
+                $legacy = Discount::whereCode($request->coupon_code)->first();
                 if($legacy){
                     $discountRatio = $legacy->value / 100;
                 }
