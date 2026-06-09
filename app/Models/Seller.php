@@ -23,7 +23,8 @@ class Seller extends Authenticatable
         'latitude', 'longitude',
         'details', 'img_path', 'about',
         'shop_name_en', 'shop_name_ar', 'banner', 'parent_id',
-        'commission_type', 'commission_value'
+        'commission_type', 'commission_value',
+        'icarry_warehouse_name'
     ];
 
     protected $hidden = 

@@ -169,10 +169,44 @@ class OrderController extends Controller
 
         $order->update($updateData);
 
+        // Refresh iCarry tracking (driver live location/status) on out-for-delivery.
+        if ($request->status === 'out_for_delivery') {
+            try {
+                app(\App\Services\ICarryService::class)->syncTracking($order);
+            } catch (\Throwable $e) {
+                \Illuminate\Support\Facades\Log::error('iCARRY tracking sync failed (seller out_for_delivery).', [
+                    'order_id' => $order->id,
+                    'message'  => $e->getMessage(),
+                ]);
+            }
+        }
+
         return $this->success([
             'order_id' => $order->id,
             'status' => $order->status,
         ], 'Order status updated');
+    }
+
+    /**
+     * Live delivery tracking (driver location + iCarry status)
+     * GET /seller/orders/{id}/tracking
+     */
+    public function tracking(Request $request, $id)
+    {
+        $order = Order::where('id', $id)
+            ->where('seller_id', $request->user()->getMainSellerId())
+            ->firstOrFail();
+
+        $tracking = app(\App\Services\ICarryService::class)->syncTracking($order);
+
+        return $this->success([
+            'order_id'               => $order->id,
+            'status'                 => $order->status,
+            'icarry_tracking_number' => $order->icarry_tracking_number,
+            'icarry_status'          => $order->icarry_shipment_status,
+            'driver'                 => $tracking['driver'] ?? null,
+            'tracking'               => $tracking,
+        ], 'Order tracking');
     }
 
     /**

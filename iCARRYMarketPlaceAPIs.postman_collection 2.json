@@ -1,0 +1,564 @@
+{
+  "info": {
+    "_postman_id": "2a28dcae-d342-4c7d-aeb1-c45c64f9569f",
+    "name": "iCARRYMarketPlaceAPIs",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "40227387"
+  },
+  "item": [
+    {
+      "name": "Get Token",
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"Email\": \"string\",\r\n  \"Password\": \"string\"\r\n}\r\n",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://kw.icarry.com/api-frontend/Authenticate/GetTokenForCustomerApi",
+          "protocol": "https",
+          "host": [
+            "kw",
+            "icarry",
+            "com"
+          ],
+          "path": [
+            "api-frontend",
+            "Authenticate",
+            "GetTokenForCustomerApi"
+          ]
+        }
+      },
+      "response": [
+        {
+          "name": "Get Token",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"Email\": \"yallapay@gmail.com\",//yallapay's own affiliate account, use the email in the create customer response to get their token\r\n  \"Password\": \"yallapay123\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://test.icarry.com/api-frontend/Authenticate/GetTokenForCustomerApi",
+              "protocol": "https",
+              "host": [
+                "test",
+                "icarry",
+                "com"
+              ],
+              "path": [
+                "api-frontend",
+                "Authenticate",
+                "GetTokenForCustomerApi"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json",
+              "description": "",
+              "type": "text"
+            }
+          ],
+          "cookie": [
+            {
+              "expires": "Invalid Date",
+              "domain": "",
+              "path": ""
+            }
+          ],
+          "body": "{\n    \"email\": \"yallapay@gmail.com\",\n    \"customer_id\": 31975653,\n    \"api_plugin_type\": \"\",\n    \"site_url\": \"\",\n    \"token\": \"xxxxxxxxxxxxx\"\n}"
+        }
+      ]
+    },
+    {
+      "name": "get Rates",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"pickupLocation\": \"string\",\r\n  \"incluedShippingCost\": true,\r\n  \"CODAmount\": 0,\r\n  \"COdCurrency\": \"string\",\r\n  \"DropOffLocation\": \"string\",\r\n  \"ToLatitude\": 0,\r\n  \"ToLongitude\": 0,\r\n  \"ActualWeight\": 0,\r\n  \"Dimensions\": {\r\n    \"Length\": 0,\r\n    \"Width\": 0,\r\n    \"Height\": 0,\r\n    \"Unit\": \"string\"\r\n  },\r\n  \"PackageType\": \"Documents\",\r\n  \"DropAddress\": {\r\n    \"CountryCode\": \"string\",\r\n    \"City\": \"string\",\r\n    \"ZipPostCode\": \"string\"\r\n  },\r\n  \"IsVendor\": true,\r\n  \"ParcelDimensionsList\": [\r\n    {\r\n      \"ShipmentId\": 0,\r\n      \"FailedRequestId\": 0,\r\n      \"Sku\": \"string\",\r\n      \"Quantity\": 0,\r\n      \"Weight\": 0,\r\n      \"Length\": 0,\r\n      \"Width\": 0,\r\n      \"Height\": 0,\r\n      \"Id\": 0\r\n    }\r\n  ]\r\n}\r\n",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://test.icarry.com/api-frontend/SmartwareShipment/EstimateRatesForMarketplace",
+          "protocol": "https",
+          "host": [
+            "test",
+            "icarry",
+            "com"
+          ],
+          "path": [
+            "api-frontend",
+            "SmartwareShipment",
+            "EstimateRatesForMarketplace"
+          ]
+        }
+      },
+      "response": [
+        {
+          "name": "get Rates",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"pickupLocation\": \"testApiWarehouse23\",// from locations api\r\n  \"incluedShippingCost\": true,\r\n  \"CODAmount\": 2,\r\n  \"COdCurrency\": \"USD\",\r\n  \"DropOffLocation\": \"Beirut, Lebanon\",\r\n  \"ToLatitude\": 0,\r\n  \"ToLongitude\": 0,\r\n  \"ActualWeight\": 3,\r\n  \"Dimensions\": {\r\n    \"Length\": 10,\r\n    \"Width\": 10,\r\n    \"Height\":10,\r\n    \"Unit\": \"cm\"\r\n  },\r\n  \"PackageType\": \"Parcel\", //Parcel, Product\r\n  \"DropAddress\": {\r\n    \"CountryCode\": \"LB\",\r\n    \"City\": \"Beirut\",\r\n    \"ZipPostCode\": null\r\n  },\r\n  \"IsVendor\": true,\r\n  \"ParcelDimensionsList\": [\r\n    {\r\n      \r\n      \"Sku\": \"test\",\r\n      \"Quantity\": 1,\r\n      \"Weight\": 1,\r\n      \"Length\": 1,\r\n      \"Width\":1,\r\n      \"Height\":1\r\n      \r\n    }\r\n  ]\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://test.icarry.com/api-frontend/SmartwareShipment/EstimateRatesForMarketplace",
+              "protocol": "https",
+              "host": [
+                "test",
+                "icarry",
+                "com"
+              ],
+              "path": [
+                "api-frontend",
+                "SmartwareShipment",
+                "EstimateRatesForMarketplace"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json",
+              "description": "",
+              "type": "text"
+            }
+          ],
+          "cookie": [
+            {
+              "expires": "Invalid Date",
+              "domain": "",
+              "path": ""
+            }
+          ],
+          "body": "[\n    {\n        \"Name\": \"No Limit\",\n        \"CarrierModel\": {\n            \"Id\": 42,\n            \"EditShippigStatus\": false,\n            \"SystemName\": \"Shipping.ICarry.NoLimit\",\n            \"StaticName\": null,\n            \"MethodName\": null,\n            \"MethodDisplayName\": null,\n            \"CarrierName\": \"No Limit\",\n            \"Email\": null,\n            \"Icon\": null,\n            \"IsActive\": false,\n            \"IsOnline\": false,\n            \"ReturnApplicable\": false,\n            \"PublicRate\": false,\n            \"ShippingTripType\": null,\n            \"LimitedToStore\": null,\n            \"ShippingTripTypeIds\": [],\n            \"LimitedToStoreIds\": [],\n            \"MarkUpPercentage\": 0,\n            \"IntlMarkUpPercentage\": 0,\n            \"OnDemandMarkUpPercentage\": 0,\n            \"OnDemandIntlMarkUpPercentage\": 0,\n            \"CustomMarkUpPercentage\": 0,\n            \"CustomIntlMarkUpPercentage\": 0,\n            \"DomesticDiscountPercentage\": 0,\n            \"InternationalDiscountPercentage\": 0,\n            \"OnDemandDomesticDiscountPercentage\": 0,\n            \"OnDemandInternationalDiscountPercentage\": 0,\n            \"CustomDomesticDiscountPercentage\": 0,\n            \"CustomInternationalDiscountPercentage\": 0,\n            \"CarrierCODPercentage\": 0,\n            \"IntlCODPercentage\": 0,\n            \"CarrierCODMinimalCharge\": 0,\n            \"IntlCODMinimalCharge\": 0,\n            \"CarrierCODMinimalProfit\": 0,\n            \"IcarryIntlCodCharge\": 0,\n            \"IcarryCodCharge\": 0,\n            \"IntlCODMinimalProfit\": 0,\n            \"ReturnUponDeliveryRate\": 0,\n            \"FailedDeliveryRate\": 0,\n            \"Configure\": false,\n            \"CarrierAWBType\": \"CarriersLabelsAndAWB\",\n            \"ConfigureUrl\": null,\n            \"DisplayOrder\": 0,\n            \"TransitDays\": 1,\n            \"TotalRate\": 3,\n            \"IconUrl\": \"http://test.icarry.com/images/thumbs/0000288_no-limit.png\",\n            \"IconId\": 0,\n            \"TermsUrl\": null,\n            \"AvailableShippingTripType\": [],\n            \"AvailableStores\": [],\n            \"AvailableCarriersLibraries\": [],\n            \"VendorId\": 0,\n            \"AvailableVendors\": [],\n            \"AvailableCountries\": [],\n            \"SelectedVendors\": [],\n            \"SelectedCountries\": [],\n            \"PrimaryStoreCurrencyCode\": null,\n            \"VatPercentage\": 0,\n            \"isICarryCarrier\": false,\n            \"IsAvailableForOnDemand\": false,\n            \"IsAvailableForAllVendors\": false,\n            \"IsCODProvided\": false,\n            \"EnableSchedule\": false,\n            \"EnableAutoPickupRequest\": false,\n            \"HasRateAPI\": false,\n            \"ShippingProviderHasRateAPI\": false,\n            \"IntegrationType\": 0,\n            \"ProofDeliveryIds\": [],\n            \"GridPageSize\": 0,\n            \"AvailablePageSizes\": [],\n            \"Locales\": [],\n            \"CustomProperties\": {},\n            \"friendlyPluginName\": null\n        },\n        \"ShippingRateComputationMethodSystemName\": \"Shipping.ICarry.NoLimit\",\n        \"MethodName\": \"test method\",\n        \"LocalizedMethodName\": null,\n        \"MethodId\": \"71\",\n        \"MethodBodyInfo\": null,\n        \"CarrierTransportationTypeId\": 3,\n        \"CarrierAdminVehicleTypeId\": 3,\n        \"Description\": \"test\",\n        \"Price\": \"$2.14\",\n        \"CODCurrency\": \"USD\",\n        \"Rate\": 2.141,\n        \"Finance\": {\n            \"ShipmentID\": 0,\n            \"OrderID\": 0,\n            \"DeliveryRate\": 2.1,\n            \"DeliveryCharge\": 2.121,\n            \"CODCharge\": 0.02,\n            \"ServiceFee\": 0,\n            \"SubscriptionplanVendorID\": null,\n            \"Revenues\": 2.141,\n            \"TaxRate\": 0,\n            \"TaxValue\": 0,\n            \"DeliveryExpense\": 2.1,\n            \"CODExpense\": 0.02,\n            \"Expenses\": 2.12,\n            \"GrossProfit\": 0.021,\n            \"AffiliateCost\": 0,\n            \"FulfillmentProfit\": 0,\n            \"FulfillmentCost\": 0,\n            \"IsSpecialRate\": false,\n            \"OriginalRate\": 0,\n            \"Deleted\": false,\n            \"Completed\": true,\n            \"StorageCost\": 0,\n            \"LabellingCost\": 0,\n            \"HandlingCost\": 0,\n            \"CarrierMethodCodFees\": 0,\n            \"Id\": 0\n        },\n        \"DeliveryDateFormat\": null,\n        \"DisplayOrder\": 0,\n        \"Selected\": false,\n        \"WorkingCurrency\": {\n            \"Name\": \"US Dollar\",\n            \"CurrencyCode\": \"USD\",\n            \"Rate\": 1,\n            \"DisplayLocale\": \"en-US\",\n            \"CustomFormatting\": null,\n            \"LimitedToStores\": true,\n            \"Published\": true,\n            \"DisplayOrder\": 0,\n            \"CreatedOnUtc\": \"2022-01-22T17:28:36\",\n            \"UpdatedOnUtc\": \"2022-04-05T11:24:20\",\n            \"RoundingTypeId\": 0,\n            \"RoundingType\": \"Rounding001\",\n            \"Id\": 1\n        },\n        \"CustomProperties\": {},\n        \"friendlyPluginName\": null\n    }\n]"
+        }
+      ]
+    },
+    {
+      "name": "Create Order",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"ParcelDimensionsList\": [\r\n    {\r\n      \"Sku\": \"string\",\r\n      \"Quantity\": 1,\r\n      \"Weight\": 1,\r\n      \"Length\": 1,\r\n      \"Width\": 1,\r\n      \"Height\": 1,\r\n      \"HSCode\": \"9506.91.00.00.07\"\r\n    },\r\n    {\r\n      \"Sku\": \"string\",\r\n      \"Quantity\": 1,\r\n      \"Weight\": 1,\r\n      \"Length\": 1,\r\n      \"Width\": 1,\r\n      \"Height\": 1,\r\n      \"HSCode\": \"9506.91.00.00.10\"\r\n    }\r\n  ],\r\n  \"ProcessOrder\": false,\r\n  \"ExternalId\": \"testexternalid_mizyana\",\r\n  \"pickupLocation\": \"maharashtra\",\r\n  \"dropOffAddress\": {\r\n    \"FirstName\": \"test\",\r\n    \"LastName\": \"test\",\r\n    \"Email\": \"test@dummy.com\",\r\n    \"PhoneNumber\": \"+965 567 75251\",\r\n    \"Country\": \"Kuwait\",\r\n    \"City\": \"Kuwait City\",\r\n    \"Address1\": \"kuwait city, kuwait\",\r\n    \"Address2\": \"kuwait city\",\r\n    \"ZipPostalCode\": \"string\"\r\n  },\r\n  \"CODAmount\": 0,\r\n  \"COdCurrency\": null,\r\n  \"ActualWeight\": 5,\r\n  \"PackageType\": \"Parcel\",\r\n  \"Length\": 1,\r\n  \"Width\": 1,\r\n  \"Height\": 1,\r\n  \"Notes\": \"test\",\r\n  \"SystemShipmentProvider\": \"string\",\r\n  \"MethodName\": \"string\",\r\n  \"MethodId\": \"string\",\r\n  \"MethodDescription\": \"string\",\r\n  \"Price\": 2,\r\n  \"ParcelQuantity\": 2,\r\n  \"ParcelPackageValue\": 2,\r\n  \"ParcelPackageCurrency\": \"KWD\",\r\n  \"ParcelDescription\": \"test\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://kw.icarry.com/api-frontend/SmartwareShipment/CreateOrderForMarketPlace",
+          "protocol": "https",
+          "host": [
+            "kw",
+            "icarry",
+            "com"
+          ],
+          "path": [
+            "api-frontend",
+            "SmartwareShipment",
+            "CreateOrderForMarketPlace"
+          ]
+        }
+      },
+      "response": [
+        {
+          "name": "Create Order",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"ParcelDimensionsList\": [\r\n    {\r\n      \"Sku\": \"string\",\r\n      \"Quantity\": 1,\r\n      \"Weight\": 1,\r\n      \"Length\": 1,\r\n      \"Width\": 1,\r\n      \"Height\": 1\r\n      \r\n    }\r\n  ],\r\n  \"ProcessOrder\": true, // if the customer's connector has auto process on it will auto process the order when it arrives to iCARRY\r\n  \"ExternalId\": \"string\", // yallapay's reference number, preferably in such format yallapay_xxxxx\r\n  \"pickupLocation\": \"testApiWarehouse23\", // get each customer's location by get locations api\r\n  \"dropOffAddress\": {\r\n    \"FirstName\": \"test\",\r\n    \"LastName\": \"test\",\r\n    \"Email\": \"test123@email.com\",\r\n    \"PhoneNumber\": \"+96178000000\",\r\n    \"Country\": \"lebanon\",\r\n    \"City\": \"Beirut\",\r\n    \"Address1\": \"Beirut,Lebanon\",\r\n    \"Address2\": \"\",\r\n    \"ZipPostalCode\": \"\"\r\n  },\r\n  \"productDtos\": [ //for product package type\r\n    {\r\n      \"ProductId\": 0,\r\n      \"WarehouseId\": 0,\r\n      \"Quantity\": 0,\r\n      \"Color\": \"string\",\r\n      \"Size\": \"string\"\r\n    }\r\n  ],\r\n  \"CODAmount\": 2,\r\n  \"COdCurrency\": \"USD\",\r\n  \"ActualWeight\": 2,\r\n  \"PackageType\": \"Parcel\",\r\n  \"Length\": 1,\r\n  \"Width\": 1,\r\n  \"Height\": 1,\r\n  \"Notes\": \"string\",\r\n  \"SystemShipmentProvider\": \"Shipping.ICarry.NoLimit\",\r\n  \"MethodName\": \"string\",\r\n  \"MethodId\": \"71\",\r\n  \"MethodDescription\": \"string\",\r\n  \"Price\": 3,\r\n  \"ParcelQuantity\": 1,\r\n  \"ParcelPackageValue\":5,\r\n  \"ParcelPackageCurrency\": \"USD\",\r\n  \"ParcelDescription\": \"contains parcels ...\"\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://test.icarry.com/api-frontend/SmartwareShipment/CreateOrderForMarketPlace",
+              "protocol": "https",
+              "host": [
+                "test",
+                "icarry",
+                "com"
+              ],
+              "path": [
+                "api-frontend",
+                "SmartwareShipment",
+                "CreateOrderForMarketPlace"
+              ]
+            }
+          },
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json",
+              "description": "",
+              "type": "text"
+            }
+          ],
+          "cookie": [
+            {
+              "expires": "Invalid Date",
+              "domain": "",
+              "path": ""
+            }
+          ],
+          "body": "{\n    \"OrderId\": 0,\n    \"ShippingProviderOrderId\": null,\n    \"ShippingProviderPickupId\": null,\n    \"StoreId\": 1,\n    \"TrackingNumber\": \"IC01xxxxxxxx\",\n    \"ShippingMethod\": null,\n    \"ShippingMethodId\": null,\n    \"ShippingMethodDescription\": null,\n    \"TotalWeight\": 0,\n    \"ShippedDateUtc\": null,\n    \"DeliveryDateUtc\": null,\n    \"ReadyForPickupDateUtc\": null,\n    \"PickupDateUtc\": null,\n    \"AdminComment\": null,\n    \"CreatedOnUtc\": \"2024-07-10T09:28:55\",\n    \"IsCustomConfiguration\": false,\n    \"DriverId\": 0,\n    \"CollectedCod\": null,\n    \"NotCllectedNote\": null,\n    \"CollectingTypeId\": 0,\n    \"CollectingType\": 0,\n    \"Deleted\": false,\n    \"IsPickupScheduled\": false,\n    \"deliveryScheduledDateUtc\": null,\n    \"StationId\": 0,\n    \"IsLocked\": false,\n    \"IsCODCollected\": false,\n    \"CODCollectedDate\": null,\n    \"CODManagementId\": 0,\n    \"IsFreshFood\": false,\n    \"FulfillStatusId\": 0,\n    \"FulfillStatus\": 0,\n    \"FulfilledDateUtc\": null,\n    \"FulfilledCreatorId\": 0,\n    \"PostPaidId\": 0,\n    \"isCODPaidByCoupon\": false,\n    \"CouponQuantity\": null,\n    \"SenderId\": 22532893,\n    \"RecipientId\": 0,\n    \"FromID\": 0,\n    \"ToID\": 2868,\n    \"VendorId\": 185,\n    \"IsForward\": true,\n    \"Price\": 0,\n    \"ShipmentStatusId\": 10,\n    \"AWBNumber\": null,\n    \"AWB\": null,\n    \"SystemShipmentProvider\": null,\n    \"Weight\": 0,\n    \"Length\": 0,\n    \"Width\": 0,\n    \"Height\": 0,\n    \"VolumetricWeight\": 0,\n    \"Notes\": \"string\",\n    \"PackageTypeId\": 30,\n    \"ParcelDescription\": \"string\",\n    \"ParcelQuantity\": 0,\n    \"IsCOD\": false,\n    \"IsDomestic\": true,\n    \"CODAmount\": 0,\n    \"CODAmount2\": null,\n    \"CODSubAmount\": 0,\n    \"PackageValue\": 0,\n    \"PackageCurrency\": \"string\",\n    \"AdditionalFees\": null,\n    \"COdCurrency\": \"string\",\n    \"COdCurrency2\": null,\n    \"OriginalShipmentId\": 0,\n    \"IsCritical\": false,\n    \"DelayDeliveryDate\": false,\n    \"OutOfPlatform\": false,\n    \"ExternalId\": \"string\",\n    \"OndemandFailedError\": null,\n    \"FulfillmentReference\": null,\n    \"PickupError\": null,\n    \"coordinate\": null,\n    \"CreditAmount\": 0,\n    \"ApplyMultiPiece\": false,\n    \"CarrierInvoice\": null,\n    \"StickerLabelsIds\": null,\n    \"shipmentStatus\": \"UnAssignCarrier\",\n    \"packageType\": \"Product\",\n    \"ShopifyExternalId\": null,\n    \"Id\": 5837\n}"
+        }
+      ]
+    },
+    {
+      "name": "get Locations",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://test.icarry.com/api-frontend/Warehouse/GetAll",
+          "protocol": "https",
+          "host": [
+            "test",
+            "icarry",
+            "com"
+          ],
+          "path": [
+            "api-frontend",
+            "Warehouse",
+            "GetAll"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "create warehouse",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"Name\": \"string\",\r\n  \"IsActive\": true,\r\n  \"Address\": {\r\n    \"FirstName\": \"string\",\r\n    \"LastName\": \"string\",\r\n    \"Email\": \"string\",\r\n    \"County\": \"string\",\r\n    \"City\": \"string\",\r\n    \"Address1\": \"string\",\r\n    \"Address2\": \"\",\r\n    \"ZipPostalCode\": \"\",\r\n    \"PhoneNumber\": \"string\"\r\n  }\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://test.icarry.com/api-frontend/Warehouse/createWarehouseForMarketPlace",
+          "protocol": "https",
+          "host": [
+            "test",
+            "icarry",
+            "com"
+          ],
+          "path": [
+            "api-frontend",
+            "Warehouse",
+            "createWarehouseForMarketPlace"
+          ]
+        }
+      },
+      "response": [
+        {
+          "name": "create warehouse",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"Name\": \"testApiWarehouse23\",\r\n  \"IsActive\": true,\r\n  \"Address\": {\r\n    \"FirstName\": \"test\",\r\n    \"LastName\": \"apiWarehouse\",\r\n    \"Email\": \"apiWarehouse2@test.com\",\r\n    \"County\": \"lebanon\",\r\n    \"City\": \"beirut\",\r\n    \"Address1\": \"beirut,lebanon\",\r\n    \"Address2\": \"\",\r\n    \"ZipPostalCode\": \"\",\r\n    \"PhoneNumber\": \"+20155866324\"\r\n  }\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://test.icarry.com/api-frontend/Warehouse/createWarehouseForMarketPlace",
+              "protocol": "https",
+              "host": [
+                "test",
+                "icarry",
+                "com"
+              ],
+              "path": [
+                "api-frontend",
+                "Warehouse",
+                "createWarehouseForMarketPlace"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json",
+              "description": "",
+              "type": "text"
+            }
+          ],
+          "cookie": [
+            {
+              "expires": "Invalid Date",
+              "domain": "",
+              "path": ""
+            }
+          ],
+          "body": "{\n    \"Name\": \"testApiWarehouse23\",\n    \"ExternalId\": null,\n    \"VendorId\": 266,\n    \"CarrierId\": null,\n    \"ThirdParty\": false,\n    \"IsActive\": true,\n    \"Deleted\": false,\n    \"AdminComment\": null,\n    \"AddressId\": 5207,\n    \"LimitedToStores\": false,\n    \"IsFulfillmentCenter\": false,\n    \"ManageByUserId\": 0,\n    \"IsSpecificForVendors\": false,\n    \"FulfillmentProfit\": 0,\n    \"FulfillmentCost\": 0,\n    \"FulfillmentProviderSystemName\": null,\n    \"Id\": 668\n}"
+        }
+      ]
+    },
+    {
+      "name": "Tracking Order",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://test.icarry.com/api-frontend/SmartwareShipment/orderTracking?trackingNumber=IC01xxxxxxxx",
+          "protocol": "https",
+          "host": [
+            "test",
+            "icarry",
+            "com"
+          ],
+          "path": [
+            "api-frontend",
+            "SmartwareShipment",
+            "orderTracking"
+          ],
+          "query": [
+            {
+              "key": "trackingNumber",
+              "value": "IC01xxxxxxxx"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Cancel Order",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://test.icarry.com/api-frontend/SmartwareShipment/CancelOrder?trackingNumber=IC01xxxxxxx",
+          "protocol": "https",
+          "host": [
+            "test",
+            "icarry",
+            "com"
+          ],
+          "path": [
+            "api-frontend",
+            "SmartwareShipment",
+            "CancelOrder"
+          ],
+          "query": [
+            {
+              "key": "trackingNumber",
+              "value": "IC01xxxxxxx"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Create Customer",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"Email\": \"string\",\r\n  \"FirstName\": \"string\",\r\n  \"LastName\": \"string\",\r\n  \"Company\": \"string\",\r\n  \"Phone\": \"string\",\r\n  \"Password\": \"string\",\r\n  \"AffiliateCode\": \"string\",\r\n  \"WarehouseName\": \"string\",\r\n  \"ConnectorType\": \"string\",\r\n  \"ConnectorSiteURL\": \"string\"\r\n}\r\n",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://test.icarry.com/api-frontend/Customer/CreateMarchantAccountForECommerce",
+          "protocol": "https",
+          "host": [
+            "test",
+            "icarry",
+            "com"
+          ],
+          "path": [
+            "api-frontend",
+            "Customer",
+            "CreateMarchantAccountForECommerce"
+          ]
+        }
+      },
+      "response": [
+        {
+          "name": "Create Customer",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"Email\": \"testemail@gmail.com\",\r\n  \"FirstName\": \"test customer\",\r\n  \"LastName\": \"test\",\r\n  \"Company\": \"test yallapay\",\r\n  \"Phone\": \"+96178111111\",\r\n  \"Password\": \"yallapaycustomer123\",\r\n  \"AffiliateCode\": \"yallapay\", //yallapay' affiliate code for testing\r\n  \"WarehouseName\": \"test customer\",\r\n  \"ConnectorType\": \"CustomDevelopment\", //for testing add CustomDevelopment, later you can use yallapay option\r\n  \"ConnectorSiteURL\": \"https://testurl.com\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://test.icarry.com/api-frontend/Customer/CreateMarchantAccountForECommerce",
+              "protocol": "https",
+              "host": [
+                "test",
+                "icarry",
+                "com"
+              ],
+              "path": [
+                "api-frontend",
+                "Customer",
+                "CreateMarchantAccountForECommerce"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json",
+              "description": "",
+              "type": "text"
+            }
+          ],
+          "cookie": [
+            {
+              "expires": "Invalid Date",
+              "domain": "",
+              "path": ""
+            }
+          ],
+          "body": "{\n    \"connectorEmail\": \"connector.testemail@gmail.com\",\n    \"connectorPassword\": \"yallapaycustomer123\",\n    \"Email\": \"testemail@gmail.com\",\n    \"FirstName\": \"test customer\",\n    \"LastName\": \"test\",\n    \"Company\": \"test yallapay\",\n    \"Phone\": \"+96178111111\",\n    \"Password\": \"yallapaycustomer123\",\n    \"AffiliateCode\": \"yallapay\",\n    \"WarehouseName\": \"test customer\",\n    \"ConnectorType\": \"CustomDevelopment\",\n    \"ConnectorSiteURL\": \"https://testurl.com\"\n}"
+        }
+      ]
+    }
+  ]
+}

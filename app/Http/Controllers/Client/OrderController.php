@@ -40,8 +40,21 @@ class OrderController extends Controller
 
     public function tracking(CheckRequest $request){
         $order=Order::whereId($request->id)
+        ->where('user_id', auth()->id())
         ->with('driver:id,name,phone')
         ->first();
+
+        if(!$order){
+            return $this->failed(null, trans('lang.order_not_found'));
+        }
+
+        // Live driver location from iCarry — only meaningful once out for delivery.
+        $tracking = ['success' => false, 'driver' => null];
+        if(!empty($order->icarry_tracking_number) && $order->status === 'out_for_delivery'){
+            $tracking = app(\App\Services\ICarryService::class)->syncTracking($order);
+        }
+        $order->icarry_tracking = $tracking;
+
         return $this->success($order);
     }
 

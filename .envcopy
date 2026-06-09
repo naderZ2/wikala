@@ -57,3 +57,13 @@ GOOGLE_REDIRECT_URL=http://127.0.0.1:8000/login/google/callback
 
 MIX_PUSHER_APP_KEY="${PUSHER_APP_KEY}"
 MIX_PUSHER_APP_CLUSTER="${PUSHER_APP_CLUSTER}"
+
+# iCARRY Shipping Integration
+ICARRY_BASE_URL=https://test.icarry.com/api-frontend
+ICARRY_EMAIL=yallapay@gmail.com
+ICARRY_PASSWORD=yallapay123
+# Global fallback warehouse (used when a seller has no iCarry warehouse yet)
+ICARRY_PICKUP_LOCATION=
+ICARRY_COD_CURRENCY=KWD
+ICARRY_DEFAULT_COUNTRY=Kuwait
+

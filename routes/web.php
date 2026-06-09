@@ -350,6 +350,7 @@ Route::group(['middleware' => ['auth:admin', 'CheckUserActiviation']], function 
         Route::get('orders/new', [Admin\OrderController::class, 'index'])->name('order.new');
         Route::get('orders/under_preparation', [Admin\OrderController::class, 'index'])->name('order.under_preparation');
 
+        Route::get('order/tracking/{id}', [Admin\OrderController::class, 'tracking'])->name('order.tracking');
         Route::get('order/{id}', [Admin\OrderController::class, 'details'])->name('order.details');
         Route::get('invoice/{id}', [Admin\OrderController::class, 'generateInvoice'])->name('order.generate_nvoice');
         Route::get('invoice/show/{id}', [Admin\OrderController::class, 'ShowInvoice'])->name('order.show_invoice');

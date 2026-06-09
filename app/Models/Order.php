@@ -17,7 +17,10 @@ class Order extends Model
         'confirmed_time' , 'shipped_time',
         'out_for_delivery_time' , 'address_id',
         'file','type','reason' ,'bill_url','payment_status','delivery_fee','group_id',
-        'coupon_id','coupon_code','discount_amount'
+        'coupon_id','coupon_code','discount_amount',
+        'icarry_order_id','icarry_tracking_number','icarry_shipment_status',
+        'icarry_driver_id','icarry_driver_lat','icarry_driver_lng',
+        'icarry_tracking_data','icarry_synced_at'
     ];
     
     protected $dates = [
@@ -38,9 +41,10 @@ class Order extends Model
 	'confirmed_time' => 'datetime:d-M-Y',
 	'actual_delivery_time' => 'datetime:d-M-Y',
 	'delivery_time' => 'datetime:d-M-Y',
+	'icarry_tracking_data' => 'array',
 
     ];
-    protected $hidden = ['user_id','seller_id','driver_id','address_id'];
+    protected $hidden = ['user_id','seller_id','driver_id','address_id','icarry_tracking_data'];
 
     public function orderDetails(){
         return $this->hasMany(OrderDetails::class);

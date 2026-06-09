@@ -1,7 +1,11 @@
 {
   "permissions": {
     "allow": [
-      "Bash(xargs grep *)"
+      "Bash(xargs grep *)",
+      "Bash(node -e \"const fs=require\\('fs'\\);const j=JSON.parse\\(fs.readFileSync\\('iCARRYMarketPlaceAPIs.postman_collection 2.json','utf8'\\)\\);function walk\\(items,d\\){for\\(const it of items\\){console.log\\('  '.repeat\\(d\\)+\\(it.request?\\('['+it.request.method+'] '\\):''\\)+it.name\\);if\\(it.item\\)walk\\(it.item,d+1\\);}}console.log\\('NAME:',j.info&&j.info.name\\);walk\\(j.item||[],0\\);\")",
+      "Bash(node -e ' *)",
+      "WebFetch(domain:developer.icarry.com)",
+      "Bash(php artisan *)"
     ]
   }
 }

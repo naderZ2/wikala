@@ -12,6 +12,8 @@ use App\Traits\ResponsesTrait;
 use App\Traits\FileUploadTrait;
 use App\Models\ProductExtraService;
 use App\Models\OrderDetailsExtraServices;
+use App\Services\ICarryService;
+use Illuminate\Support\Facades\Log;
 
 class OrderService{
     use ResponsesTrait;
@@ -116,6 +118,21 @@ class OrderService{
         }
 
         $orders = Order::where('group_id',$groupId)->get();
+
+        // Push each seller-order to the iCarry delivery integration. The orders
+        // are already committed, so an iCarry outage must never break checkout.
+        $icarry = app(ICarryService::class);
+        foreach($orders as $order){
+            try {
+                $icarry->syncCreateOrder($order);
+            } catch (\Throwable $e) {
+                Log::error('iCARRY order push failed during checkout.', [
+                    'order_id' => $order->id,
+                    'message'  => $e->getMessage(),
+                ]);
+            }
+        }
+
         $subTotal = $orders->sum('total_price');
         $deliveryTotal = $orders->sum('delivery_fee');
 
@@ -292,6 +309,19 @@ class OrderService{
                 $status = ['status' =>"delivered" ,'actual_delivery_time' =>now()];
             }
             $order->update($status);
+
+            // When the order moves to "out for delivery", refresh the iCarry
+            // tracking so the driver's live location/status is available.
+            if (($status['status'] ?? null) === 'out_for_delivery') {
+                try {
+                    app(ICarryService::class)->syncTracking($order);
+                } catch (\Throwable $e) {
+                    Log::error('iCARRY tracking sync failed (out_for_delivery).', [
+                        'order_id' => $order->id,
+                        'message'  => $e->getMessage(),
+                    ]);
+                }
+            }
         }
 
     }

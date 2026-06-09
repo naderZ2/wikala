@@ -58,6 +58,7 @@ Route::middleware('auth:seller-api')->group(function () {
     Route::get('orders', [Seller\OrderController::class, 'index']);
     Route::get('orders/{id}', [Seller\OrderController::class, 'details']);
     Route::get('orders/{id}/invoice', [Seller\OrderController::class, 'generateInvoice']);
+    Route::get('orders/{id}/tracking', [Seller\OrderController::class, 'tracking']);
 
     Route::group(['middleware' => ['permission:manage-orders,seller-api']], function () {
         Route::put('orders/{id}/status', [Seller\OrderController::class, 'changeOrderStatus']);

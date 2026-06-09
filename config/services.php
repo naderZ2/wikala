@@ -48,4 +48,13 @@ return [
         'redirect'      => env('GOOGLE_REDIRECT_URL', 'http://127.0.0.1:8000/login/google/callback'),
     ],
 
+    'icarry' => [
+        'base_url' => env('ICARRY_BASE_URL', 'https://test.icarry.com/api-frontend'),
+        'email' => env('ICARRY_EMAIL'),
+        'password' => env('ICARRY_PASSWORD'),
+        'pickup_location' => env('ICARRY_PICKUP_LOCATION'),      // global fallback warehouse name
+        'cod_currency' => env('ICARRY_COD_CURRENCY', 'KWD'),
+        'default_country' => env('ICARRY_DEFAULT_COUNTRY', 'Kuwait'),
+    ],
+
 ];

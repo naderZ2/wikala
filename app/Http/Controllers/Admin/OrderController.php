@@ -89,6 +89,18 @@ class OrderController extends Controller
 
         $order->update($update);
 
+        // Refresh iCarry tracking (driver live location/status) on out-for-delivery.
+        if ($request->status === 'out_for_delivery') {
+            try {
+                app(\App\Services\ICarryService::class)->syncTracking($order);
+            } catch (\Throwable $e) {
+                Log::error('iCARRY tracking sync failed (admin out_for_delivery).', [
+                    'order_id' => $order->id,
+                    'message'  => $e->getMessage(),
+                ]);
+            }
+        }
+
         return back()->with('success', trans('lang.updated'));
     }
 
@@ -96,6 +108,25 @@ class OrderController extends Controller
         $order = Order::find($request->id);
         $order->update(['driver_id' => $request->driver_id]);
         return to_route('order.index')->with('success',trans('lang.updated'));
+    }
+
+    /**
+     * Live delivery tracking (driver location + iCarry status) as JSON.
+     * GET /admin/orders/tracking/{id}
+     */
+    public function tracking($id){
+        $order = Order::findOrFail($id);
+        $tracking = app(\App\Services\ICarryService::class)->syncTracking($order);
+
+        return response()->json([
+            'success'                => true,
+            'order_id'               => $order->id,
+            'status'                 => $order->status,
+            'icarry_tracking_number' => $order->icarry_tracking_number,
+            'icarry_status'          => $order->icarry_shipment_status,
+            'driver'                 => $tracking['driver'] ?? null,
+            'tracking'               => $tracking,
+        ]);
     }
 
 
