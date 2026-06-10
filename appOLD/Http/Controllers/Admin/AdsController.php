@@ -1,0 +1,196 @@
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use App\Models\Ad;
+use App\Models\City;
+use App\Models\User;
+use App\Models\AdsType;
+use App\Models\Category;
+use App\Models\Attribute;
+use App\Services\AdService;
+use Illuminate\Http\Request;
+use App\Models\RejectedReason;
+use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\Ads\EditRequest;
+use App\Http\Requests\Admin\Ads\StoreRequest;
+
+class AdsController extends Controller
+{
+
+    protected $adService;
+
+    public function __construct(AdService $adService)
+    {
+        $this->adService = $adService;
+    }
+
+    public function index(Request $request)
+    {
+        $status = $request->get('status', 'all');
+
+        $query = Ad::select('id', 'ad_number', 'title', 'start_date', 'end_date', 'user_id', 'is_sponsored', 'sponsored_price');
+
+        if ($status === 'outdated') {
+            $query->where('end_date', '<', now());
+        } elseif (in_array($status, ['under_review', 'accepted', 'rejected'])) {
+            $query->where('status', $status);
+        }
+
+        $ads = $query->latest()->with('user')->get();
+        // dd( $ads);
+
+        return view('admin.ads.index', compact('ads', 'status'));
+    }
+
+
+
+
+    public function details(Request $request, $id)
+    {
+        $this->lang();
+        $ad = Ad::with(['user', "category:id,$this->name", "attributes.attribute:id,$this->name,type,image", 'rejectedReason', 'images', "city:id,$this->name", "region:id,$this->name"])->findOrFail($id);
+        Log::info($ad->rejectedReason);
+
+        return view('admin.ads.details', compact('ad'));
+    }
+
+    public function editStatus(Request $request, $id)
+    {
+        $this->lang();
+        $ad = Ad::findOrFail($id);
+        $rejectedReasons = RejectedReason::all();
+        // return view('admin.ads.editStatus', compact('ad', 'ads', 'rejectedReasons'));
+        $ads = Ad::select('id', 'ad_number', 'title')->get();
+        $rejectedReasons = RejectedReason::where('enable', 1)->get();
+        return view('admin.ads.editStatus', compact('ad', 'rejectedReasons'));
+    }
+
+
+    public function changeStatus(Request $request, $id)
+    {
+        $this->lang();
+        // Log::info($request->all(), ['id' => $id]);
+
+
+        $request->validate([
+            'status' => 'required|in:under_review,accepted,rejected',
+            'rejected_id' => 'nullable|required_if:status,rejected|exists:rejected_reason,id',
+        ], [
+            'rejected_id.required_if' => __('lang.rejected_reason_required'),
+        ]);
+
+        $ad = Ad::findOrFail($id);
+
+        $ad->status = $request->status;
+
+        // Handle rejected reason logic
+        if ($request->status === 'rejected') {
+            $ad->rejected_id = $request->rejected_id;
+        } else {
+            $ad->rejected_id = null; // Clear it if not rejected
+        }
+
+        $ad->save();
+
+        // return redirect()->route('ads.index')->with('success', trans('lang.updated'));
+        return redirect()->route('ads.details', $id)->with('success', trans('lang.updated'));
+    }
+
+
+
+
+    public function create()
+    {
+        $this->lang();
+        $thename = $this->name;
+        $users = User::select('id', 'name')->get();
+        $categories = Category::select('id', $thename)->get();
+        $types = AdsType::select('id', $thename)->get();
+        $cities = City::select('id', $thename)->whereNull('parent_id')->get();
+        $regions = City::select('id', $thename)->whereNotNull('parent_id')->get();
+        $attributes  = Attribute::select('id', $thename)->get();
+        return view('admin.ads.add', compact('users', 'categories', 'types', 'cities', 'regions', 'attributes'));
+    }
+
+    // public function store(StoreRequest $request)
+    public function store(StoreRequest $request)
+    {
+        $data = $request->validated();
+        $data['images']     = $request->file('images', []);
+        $data['main_image'] = $request->file('main_image');
+        // $data[] = $request;
+        if ($request->hasFile('image')) {
+            $data['image'] = $this->uploadFile($request->image, 'ads');
+        }
+
+
+        $ad = $this->adService->storeAdWithImages($data);
+        // $user= auth()->user();
+        $userId = $data['user_id'];
+        $user   = User::findOrFail($userId);
+        $user->update(
+            ['limit_ad' => $user->limit_ad - 1]
+        );
+        // Ad::create($data);
+        return to_route('ads.index')->with('success', trans('lang.created'));
+    }
+
+    /**
+     * Show sponsored ads management page
+     */
+    public function sponsoredAds()
+    {
+        $ads = Ad::select('id', 'ad_number', 'title', 'is_sponsored', 'sponsored_price', 'sponsored_at', 'user_id')
+            ->where('is_sponsored', 1)
+            ->orderBy('sponsored_price', 'desc')
+            ->with('user')
+            ->get();
+
+        return view('admin.ads.sponsored', compact('ads'));
+    }
+
+    /**
+     * Show set sponsor form
+     */
+    public function editSponsor($id)
+    {
+        $ad = Ad::findOrFail($id);
+        return view('admin.ads.editSponsor', compact('ad'));
+    }
+
+    /**
+     * Set an ad as sponsored with price
+     */
+    public function setSponsor(Request $request, $id)
+    {
+        $request->validate([
+            'sponsored_price' => 'required|numeric|min:0',
+        ]);
+
+        $ad = Ad::findOrFail($id);
+        $ad->update([
+            'is_sponsored' => true,
+            'sponsored_price' => $request->sponsored_price,
+            'sponsored_at' => now(),
+        ]);
+
+        return redirect()->route('ads.details', $id)->with('success', trans('lang.ad_sponsored_successfully'));
+    }
+
+    /**
+     * Remove sponsored status from an ad
+     */
+    public function removeSponsor($id)
+    {
+        $ad = Ad::findOrFail($id);
+        $ad->update([
+            'is_sponsored' => false,
+            'sponsored_price' => 0,
+            'sponsored_at' => null,
+        ]);
+
+        return redirect()->route('ads.details', $id)->with('success', trans('lang.sponsor_removed'));
+    }
+}
