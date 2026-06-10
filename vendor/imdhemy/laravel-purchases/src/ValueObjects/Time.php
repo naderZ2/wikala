@@ -1,5 +1,6 @@
 <?php
 
+declare(strict_types=1);
 
 namespace Imdhemy\Purchases\ValueObjects;
 
@@ -7,26 +8,28 @@ use Carbon\Carbon;
 use DateTime;
 use Imdhemy\AppStore\ValueObjects\Time as AppStoreTime;
 use Imdhemy\GooglePlay\ValueObjects\Time as GoogleTime;
+use Stringable;
 
-final class Time
+/**
+ * Class Time
+ * A smart value object for time.
+ */
+final class Time implements Stringable
 {
     /**
-     * @var Carbon
+     * @var int the number of microseconds since the Unix epoch
      */
-    private $carbon;
+    private int $timestampMilliseconds;
 
     /**
-     * Time constructor
-     *
-     * @param int $timestampMs
+     * Time constructor.
      */
-    public function __construct(int $timestampMs)
+    public function __construct(int $timestampMilliseconds)
     {
-        $this->carbon = Carbon::createFromTimestampMs($timestampMs);
+        $this->timestampMilliseconds = $timestampMilliseconds;
     }
 
     /**
-     * @param GoogleTime $time
      * @return static
      */
     public static function fromGoogleTime(GoogleTime $time): self
@@ -35,55 +38,65 @@ final class Time
     }
 
     /**
-     * @param AppStoreTime $time
      * @return static
      */
     public static function fromAppStoreTime(AppStoreTime $time): self
     {
-        return self::fromCarbon($time->getCarbon());
+        return self::fromCarbon($time->toCarbon());
     }
 
     /**
-     * @param Carbon $carbon
      * @return static
      */
     public static function fromCarbon(Carbon $carbon): self
     {
-        $obj = new self(0);
-        $obj->carbon = $carbon;
-
-        return $obj;
+        return new self($carbon->getTimestampMs());
     }
 
     /**
-     * @return bool
+     * @return static
      */
+    public static function fromDateTime(DateTime $dateTime): self
+    {
+        return self::fromCarbon(Carbon::instance($dateTime));
+    }
+
     public function isFuture(): bool
     {
-        return Carbon::now()->lessThan($this->carbon);
+        return $this->toCarbon()->isFuture();
     }
 
-    /**
-     * @return bool
-     */
     public function isPast(): bool
     {
-        return Carbon::now()->greaterThan($this->carbon);
+        return $this->toCarbon()->isPast();
     }
 
     /**
-     * @return Carbon
+     * @deprecated use toCarbon() instead
      */
     public function getCarbon(): Carbon
     {
-        return $this->carbon;
+        return $this->toCarbon();
     }
 
     /**
-     * @return DateTime
+     * Converts the value object to a Carbon instance.
+     */
+    public function toCarbon(): Carbon
+    {
+        return Carbon::createFromTimestampMs($this->timestampMilliseconds);
+    }
+
+    /**
+     * Convert the value object to a DateTime instance.
      */
     public function toDateTime(): DateTime
     {
-        return $this->carbon->toDateTime();
+        return $this->toCarbon()->toDateTime();
+    }
+
+    public function __toString(): string
+    {
+        return (string)$this->toCarbon();
     }
 }

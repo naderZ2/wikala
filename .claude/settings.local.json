@@ -5,7 +5,11 @@
       "Bash(node -e \"const fs=require\\('fs'\\);const j=JSON.parse\\(fs.readFileSync\\('iCARRYMarketPlaceAPIs.postman_collection 2.json','utf8'\\)\\);function walk\\(items,d\\){for\\(const it of items\\){console.log\\('  '.repeat\\(d\\)+\\(it.request?\\('['+it.request.method+'] '\\):''\\)+it.name\\);if\\(it.item\\)walk\\(it.item,d+1\\);}}console.log\\('NAME:',j.info&&j.info.name\\);walk\\(j.item||[],0\\);\")",
       "Bash(node -e ' *)",
       "WebFetch(domain:developer.icarry.com)",
-      "Bash(php artisan *)"
+      "Bash(php artisan *)",
+      "Bash(node -e \"const fs=require\\('fs'\\);const l=JSON.parse\\(fs.readFileSync\\('composer.lock','utf8'\\)\\);const f=l.packages.filter\\(p=>/pusher|websockets|reverb/i.test\\(p.name\\)\\);f.forEach\\(p=>console.log\\(p.name,'@',p.version,'| laravel-req:',\\(p.require&&\\(p.require['laravel/framework']||p.require['illuminate/support']||p.require['illuminate/broadcasting']\\)\\)||'\\(php-only\\)'\\)\\);\")",
+      "Bash(composer show *)",
+      "Bash(composer update *)",
+      "Bash(cd \"c:\\\\Users\\\\HP\\\\OneDrive\\\\Desktop\\\\_\\\\codeing\\\\work\\\\mazen\\\\E-EXPO\\\\pro\" && rm -f bootstrap/cache/packages.php bootstrap/cache/services.php bootstrap/cache/*.tmp && echo \"cleared stale cache\" && echo \"=== regenerate manifest + boot check ===\" && php artisan package:discover --ansi 2>&1 | tail -30)"
     ]
   }
 }

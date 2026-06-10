@@ -1,10 +1,20 @@
 <?php
 
-
 namespace Imdhemy\GooglePlay\DeveloperNotifications;
 
-class TestNotification
+use Imdhemy\GooglePlay\DeveloperNotifications\Contracts\NotificationPayload;
+
+/**
+ * TestNotification class
+ * Test Notification
+ * {@link https://developer.android.com/google/play/billing/rtdn-reference#test}.
+ *
+ * @deprecated use {@link \Imdhemy\GooglePlay\Domain\Rtdn\Notification\TestNotification}
+ */
+class TestNotification implements NotificationPayload
 {
+    public const int TEST_NOTIFICATION_TYPE = -1;
+
     /**
      * @var string
      */
@@ -12,18 +22,29 @@ class TestNotification
 
     /**
      * TestNotification constructor.
-     * @param string $version
      */
     public function __construct(string $version)
     {
         $this->version = $version;
     }
 
-    /**
-     * @return string
-     */
+    public static function create(array $attributes): TestNotification
+    {
+        return new self($attributes['version']);
+    }
+
     public function getVersion(): string
     {
         return $this->version;
+    }
+
+    public function getType(): string
+    {
+        return self::TEST_NOTIFICATION;
+    }
+
+    public function getNotificationType(): int
+    {
+        return self::TEST_NOTIFICATION_TYPE;
     }
 }

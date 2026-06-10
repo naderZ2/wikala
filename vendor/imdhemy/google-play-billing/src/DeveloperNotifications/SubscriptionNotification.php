@@ -1,23 +1,33 @@
 <?php
 
-
 namespace Imdhemy\GooglePlay\DeveloperNotifications;
 
-class SubscriptionNotification
+use Imdhemy\GooglePlay\DeveloperNotifications\Contracts\NotificationPayload;
+
+/**
+ * SubscriptionNotification Class
+ * Subscription notification
+ * {@link https://developer.android.com/google/play/billing/integrate}
+ * {@link https://developer.android.com/google/play/billing/rtdn-reference#sub}.
+ *
+ * @deprecated use {@link \Imdhemy\GooglePlay\Domain\Rtdn\Notification\SubscriptionNotification}
+ */
+class SubscriptionNotification implements NotificationPayload
 {
-    public const SUBSCRIPTION_RECOVERED = 1;
-    public const SUBSCRIPTION_RENEWED = 2;
-    public const SUBSCRIPTION_CANCELED = 3;
-    public const SUBSCRIPTION_PURCHASED = 4;
-    public const SUBSCRIPTION_ON_HOLD = 5;
-    public const SUBSCRIPTION_IN_GRACE_PERIOD = 6;
-    public const SUBSCRIPTION_RESTARTED = 7;
-    public const SUBSCRIPTION_PRICE_CHANGE_CONFIRMED = 8;
-    public const SUBSCRIPTION_DEFERRED = 9;
-    public const SUBSCRIPTION_PAUSED = 10;
-    public const SUBSCRIPTION_PAUSE_SCHEDULE_CHANGED = 11;
-    public const SUBSCRIPTION_REVOKED = 12;
-    public const SUBSCRIPTION_EXPIRED = 13;
+    public const int SUBSCRIPTION_RECOVERED = 1;
+    public const int SUBSCRIPTION_RENEWED = 2;
+    public const int SUBSCRIPTION_CANCELED = 3;
+    public const int SUBSCRIPTION_PURCHASED = 4;
+    public const int SUBSCRIPTION_ON_HOLD = 5;
+    public const int SUBSCRIPTION_IN_GRACE_PERIOD = 6;
+    public const int SUBSCRIPTION_RESTARTED = 7;
+    public const int SUBSCRIPTION_PRICE_CHANGE_CONFIRMED = 8;
+    public const int SUBSCRIPTION_DEFERRED = 9;
+    public const int SUBSCRIPTION_PAUSED = 10;
+    public const int SUBSCRIPTION_PAUSE_SCHEDULE_CHANGED = 11;
+    public const int SUBSCRIPTION_REVOKED = 12;
+    public const int SUBSCRIPTION_EXPIRED = 13;
+    public const int SUBSCRIPTION_PENDING_PURCHASE_CANCELED = 20;
 
     /**
      * @var string
@@ -41,52 +51,47 @@ class SubscriptionNotification
 
     /**
      * SubscriptionNotification constructor.
-     * @param string $version
-     * @param int $notificationType
-     * @param string $purchaseToken
-     * @param string $subscriptionId
      */
-    public function __construct(
-        string $version,
-        int $notificationType,
-        string $purchaseToken,
-        string $subscriptionId
-    ) {
+    public function __construct(string $version, int $notificationType, string $purchaseToken, string $subscriptionId)
+    {
         $this->version = $version;
         $this->notificationType = $notificationType;
         $this->purchaseToken = $purchaseToken;
         $this->subscriptionId = $subscriptionId;
     }
 
-    /**
-     * @return string
-     */
+    public static function create(array $attributes): SubscriptionNotification
+    {
+        return new self(
+            version: $attributes['version'],
+            notificationType: $attributes['notificationType'],
+            purchaseToken: $attributes['purchaseToken'],
+            subscriptionId: (string)($attributes['subscriptionId'] ?? null)
+        );
+    }
+
     public function getVersion(): string
     {
         return $this->version;
     }
 
-    /**
-     * @return int
-     */
     public function getNotificationType(): int
     {
         return $this->notificationType;
     }
 
-    /**
-     * @return string
-     */
     public function getPurchaseToken(): string
     {
         return $this->purchaseToken;
     }
 
-    /**
-     * @return string
-     */
     public function getSubscriptionId(): string
     {
         return $this->subscriptionId;
+    }
+
+    public function getType(): string
+    {
+        return self::SUBSCRIPTION_NOTIFICATION;
     }
 }

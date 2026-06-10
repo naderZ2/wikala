@@ -1,13 +1,14 @@
 <?php
 
+declare(strict_types=1);
 
 namespace Imdhemy\Purchases\Events\GooglePlay;
 
 use Imdhemy\Purchases\Events\PurchaseEvent;
+use Imdhemy\Purchases\ServerNotifications\GoogleServerNotification;
 
 /**
- * Class SubscriptionPurchased
- * @package Imdhemy\Purchases\Events\GooglePlay
+ * @method GoogleServerNotification getServerNotification()
  */
 class SubscriptionPurchased extends PurchaseEvent
 {

@@ -1,70 +1,72 @@
 <?php
 
-
 namespace Imdhemy\GooglePlay\ValueObjects;
 
+/**
+ * Subscription Price Change.
+ *
+ * Contains the price change information for a subscription that
+ * can be used to control the user journey for the price change in the app.
+ * This can be in the form of seeking confirmation from the user or
+ * tailoring the experience for a successful conversion.
+ *
+ * @see https://developers.google.com/android-publisher/api-ref/rest/v3/purchases.subscriptions#subscriptionpricechange
+ */
 final class SubscriptionPriceChange
 {
+    public const STATE_OUTSTANDING = 0;
+    public const STATE_ACCEPTED = 1;
+
+    public const ATTR_NEW_PRICE = 'newPrice';
+    public const ATTR_STATE = 'state';
+
     /**
      * @var Price
      */
     private $newPrice;
 
     /**
-     * @var PriceChangeState
+     * @var int
      */
     private $state;
 
     /**
      * SubscriptionPriceChange constructor.
-     * @param Price $newPrice
-     * @param PriceChangeState $state
      */
-    public function __construct(Price $newPrice, PriceChangeState $state)
+    public function __construct(Price $newPrice, int $state)
     {
         $this->newPrice = $newPrice;
         $this->state = $state;
     }
 
-    /**
-     * @return Price
-     */
     public function getNewPrice(): Price
     {
         return $this->newPrice;
     }
 
-    /**
-     * @return PriceChangeState
-     */
-    public function getState(): PriceChangeState
+    public function getState(): int
     {
         return $this->state;
     }
 
-    /**
-     * @return static
-     */
-    public static function fake(): self
+    public function isOutstanding(): bool
     {
-        return new self(Price::fake(), PriceChangeState::fake());
+        return self::STATE_OUTSTANDING === $this->state;
+    }
+
+    public function isAccepted(): bool
+    {
+        return self::STATE_ACCEPTED === $this->state;
     }
 
     /**
-     * @param Price $price
-     * @return static
+     * Get array representation of current value.
      */
-    public static function fakeWithPrice(Price $price): self
+    public function toArray(): array
     {
-        return new self($price, PriceChangeState::fake());
-    }
-
-    /**
-     * @param PriceChangeState $priceChangeState
-     * @return static
-     */
-    public static function fakeWithPriceChangeState(PriceChangeState $priceChangeState): self
-    {
-        return new self(Price::fake(), $priceChangeState);
+        return [
+            self::ATTR_NEW_PRICE => $this->newPrice->toArray(),
+            self::ATTR_STATE => $this->state,
+        ];
     }
 }

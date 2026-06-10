@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
 
 namespace Imdhemy\Purchases\ServerNotifications;
 
+use GuzzleHttp\ClientInterface;
 use Imdhemy\AppStore\ServerNotifications\ServerNotification;
-use Imdhemy\AppStore\ValueObjects\ReceiptInfo;
+use Imdhemy\AppStore\ValueObjects\LatestReceiptInfo;
 use Imdhemy\Purchases\Contracts\ServerNotificationContract;
 use Imdhemy\Purchases\Contracts\SubscriptionContract;
 use Imdhemy\Purchases\Subscriptions\AppStoreSubscription;
@@ -12,64 +14,53 @@ use Imdhemy\Purchases\ValueObjects\Time;
 
 class AppStoreServerNotification implements ServerNotificationContract
 {
-    /**
-     * @var ServerNotification
-     */
-    private $notification;
+    private ServerNotification $notification;
 
     /**
      * AppStoreServerNotification constructor.
-     * @param ServerNotification $notification
      */
     public function __construct(ServerNotification $notification)
     {
         $this->notification = $notification;
     }
 
-    /**
-     * @return string
-     */
     public function getType(): string
     {
         return $this->notification->getNotificationType();
     }
 
-    /**
-     * @param array $jsonKey
-     * @return SubscriptionContract
-     */
-    public function getSubscription(array $jsonKey = []): SubscriptionContract
+    public function getSubscription(?ClientInterface $client = null): SubscriptionContract
     {
-        return new AppStoreSubscription($this->getFirstReceipt());
+        $firstReceipt = $this->getFirstReceipt();
+        assert($firstReceipt instanceof LatestReceiptInfo);
+
+        return new AppStoreSubscription($firstReceipt);
     }
 
-    /**
-     * @return bool
-     */
     public function isTest(): bool
     {
         return false;
     }
 
-    /**
-     * @return ReceiptInfo
-     */
-    private function getFirstReceipt(): ReceiptInfo
+    private function getFirstReceipt(): ?LatestReceiptInfo
     {
-        return $this->notification->getUnifiedReceipt()->getLatestReceiptInfo()[0];
+        $unifiedReceipt = $this->notification->getUnifiedReceipt();
+
+        if ($unifiedReceipt && is_array($receipts = $unifiedReceipt->getLatestReceiptInfo()) && ! empty($receipts)) {
+            $latestReceiptInfo = $receipts[0];
+            assert($latestReceiptInfo instanceof LatestReceiptInfo);
+
+            return $latestReceiptInfo;
+        }
+
+        return null;
     }
 
-    /**
-     * @return bool
-     */
     public function isAutoRenewal(): bool
     {
-        return $this->notification->isAutoRenewStatus();
+        return true === $this->notification->getAutoRenewStatus();
     }
 
-    /**
-     * @return Time|null
-     */
     public function getAutoRenewStatusChangeDate(): ?Time
     {
         $time = $this->notification->getAutoRenewStatusChangeDate();
@@ -80,11 +71,26 @@ class AppStoreServerNotification implements ServerNotificationContract
         return null;
     }
 
-    /**
-     * @return string
-     */
     public function getBundle(): string
     {
-        return $this->notification->getBid();
+        return (string)$this->notification->getBid();
+    }
+
+    /**
+     * Gets the notification payload.
+     */
+    public function getPayload(): array
+    {
+        return $this->notification->toArray();
+    }
+
+    public function getAutoRenewProductId(): ?string
+    {
+        return $this->notification->getAutoRenewProductId();
+    }
+
+    public function getProvider(): string
+    {
+        return self::PROVIDER_APP_STORE;
     }
 }

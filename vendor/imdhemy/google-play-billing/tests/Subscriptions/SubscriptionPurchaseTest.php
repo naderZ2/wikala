@@ -1,142 +1,387 @@
 <?php
 
-namespace Imdhemy\GooglePlay\Tests\Subscriptions;
+namespace Tests\Subscriptions;
 
-use Faker\Factory;
-use GuzzleHttp\Exception\GuzzleException;
-use Imdhemy\GooglePlay\ClientFactory;
-use Imdhemy\GooglePlay\Subscriptions\Subscription;
+use Carbon\Carbon;
 use Imdhemy\GooglePlay\Subscriptions\SubscriptionPurchase;
-use Imdhemy\GooglePlay\Tests\TestCase;
 use Imdhemy\GooglePlay\ValueObjects\Cancellation;
 use Imdhemy\GooglePlay\ValueObjects\IntroductoryPriceInfo;
-use Imdhemy\GooglePlay\ValueObjects\PromotionType;
-use Imdhemy\GooglePlay\ValueObjects\SubscriptionPriceChange;
+use Imdhemy\GooglePlay\ValueObjects\SubscriptionCancelSurveyResult;
+use JsonException;
+use PHPUnit\Framework\Attributes\Test;
+use ReflectionClass;
+use ReflectionMethod;
+use Tests\TestCase;
 
 class SubscriptionPurchaseTest extends TestCase
 {
-    /**
-     * @test
-     */
-    public function test_it_can_be_created_from_response_body()
+    #[Test]
+    public function test_it_can_be_created_from_array()
     {
-        $faker = Factory::create();
         $body = [
             'kind' => 'some_kind',
-            'startTimeMillis' => $faker->unixTime,
-            'expiryTimeMillis' => $faker->unixTime,
+            'startTimeMillis' => $this->faker->unixTime(),
+            'expiryTimeMillis' => $this->faker->unixTime(),
             'autoResumeTimeMillis' => null,
-            'autoRenewing' => $faker->boolean,
-            'priceCurrencyCode' => $faker->currencyCode,
+            'autoRenewing' => $this->faker->boolean(),
+            'priceCurrencyCode' => $this->faker->currencyCode(),
             'introductoryPriceInfo' => null,
-            'countryCode' => $faker->countryCode,
+            'countryCode' => $this->faker->countryCode(),
         ];
 
-        $this->assertInstanceOf(SubscriptionPurchase::class, SubscriptionPurchase::fromResponseBody($body));
+        $this->assertInstanceOf(SubscriptionPurchase::class, SubscriptionPurchase::fromArray($body));
     }
 
-    /**
-     * @test
-     */
-    public function test_it_can_get_IntroductoryPriceInfo()
+    #[Test]
+    public function it_can_get_the_plain_response_body()
     {
-        $faker = Factory::create();
         $body = [
             'kind' => 'some_kind',
-            'introductoryPriceInfo' => [
-                'introductoryPriceCurrencyCode' => $faker->currencyCode,
-                'introductoryPriceAmountMicros' => $faker->numberBetween(),
-                'introductoryPricePeriod' => $faker->randomElement(['P1W', 'P1M', 'P3M', 'P6M', 'P1Y']),
-                'introductoryPriceCycles' => $faker->numberBetween(),
+            'startTimeMillis' => $this->faker->unixTime(),
+            'expiryTimeMillis' => $this->faker->unixTime(),
+            'autoResumeTimeMillis' => null,
+            'autoRenewing' => $this->faker->boolean(),
+            'priceCurrencyCode' => $this->faker->currencyCode(),
+            'introductoryPriceInfo' => null,
+            'countryCode' => $this->faker->countryCode(),
+        ];
+        $subscriptionPurchase = SubscriptionPurchase::fromArray($body);
+        $this->assertSame($body, $subscriptionPurchase->toArray());
+    }
+
+    #[Test]
+    public function all_props_are_optional(): void
+    {
+        $productPurchase = SubscriptionPurchase::fromArray([]);
+
+        $reflectionClass = new ReflectionClass($productPurchase);
+        $publicMethods = $reflectionClass->getMethods(ReflectionMethod::IS_PUBLIC);
+        $staticMethods = $reflectionClass->getMethods(ReflectionMethod::IS_STATIC);
+        $methodObjects = array_diff($publicMethods, $staticMethods);
+
+        $methods = [];
+
+        foreach ($methodObjects as $methodObject) {
+            $methods[] = $methodObject->getName();
+        }
+
+        $methods = array_diff($methods, ['getPlainResponse', 'toArray', 'jsonSerialize']);
+
+        foreach ($methods as $getter) {
+            $this->assertNull($productPurchase->$getter(), $getter);
+        }
+    }
+
+    #[Test]
+    public function test_kind()
+    {
+        $value = $this->faker->word();
+        $subscriptionPurchase = SubscriptionPurchase::fromArray(['kind' => $value]);
+        $this->assertEquals($value, $subscriptionPurchase->getKind());
+    }
+
+    #[Test]
+    public function test_start_time()
+    {
+        $value = Carbon::now()->getTimestampMs();
+        $subscriptionPurchase = SubscriptionPurchase::fromArray(['startTimeMillis' => $value]);
+        $this->assertEquals($value, $subscriptionPurchase->getStartTime()->getCarbon()->getTimestampMs());
+    }
+
+    #[Test]
+    public function expiry_time()
+    {
+        $value = Carbon::now()->getTimestampMs();
+        $subscriptionPurchase = SubscriptionPurchase::fromArray(['expiryTimeMillis' => $value]);
+        $this->assertEquals($value, $subscriptionPurchase->getExpiryTime()->getCarbon()->getTimestampMs());
+    }
+
+    #[Test]
+    public function auto_resume_time()
+    {
+        $value = Carbon::now()->getTimestampMs();
+        $subscriptionPurchase = SubscriptionPurchase::fromArray(['autoResumeTimeMillis' => $value]);
+        $this->assertEquals($value, $subscriptionPurchase->getAutoResumeTime()->getCarbon()->getTimestampMs());
+    }
+
+    #[Test]
+    public function auto_renewing()
+    {
+        $value = $this->faker->boolean();
+        $subscriptionPurchase = SubscriptionPurchase::fromArray(['autoRenewing' => $value]);
+        $this->assertEquals($value, $subscriptionPurchase->isAutoRenewing());
+    }
+
+    #[Test]
+    public function price_currency_code()
+    {
+        $value = $this->faker->currencyCode();
+        $subscriptionPurchase = SubscriptionPurchase::fromArray(['priceCurrencyCode' => $value]);
+        $this->assertEquals($value, $subscriptionPurchase->getPriceCurrencyCode());
+    }
+
+    #[Test]
+    public function price_amount_micros()
+    {
+        $value = $this->faker->randomElement(range(0, 100));
+        $subscriptionPurchase = SubscriptionPurchase::fromArray(['priceAmountMicros' => $value]);
+        $this->assertEquals($value, $subscriptionPurchase->getPriceAmountMicros());
+    }
+
+    #[Test]
+    public function introductory_price_info()
+    {
+        $value = [
+            'introductoryPriceCurrencyCode' => $this->faker->currencyCode(),
+            'introductoryPriceAmountMicros' => $this->faker->randomElement(range(0, 100)),
+            'introductoryPricePeriod' => $this->faker->randomElement(IntroductoryPriceInfo::INTRO_PRICE_PERIODS),
+            'introductoryPriceCycles' => $this->faker->randomElement(range(0, 10)),
+        ];
+
+        $subscriptionPurchase = SubscriptionPurchase::fromArray(['introductoryPriceInfo' => $value]);
+        $this->assertEquals($value, $subscriptionPurchase->getIntroductoryPriceInfo()->toArray());
+    }
+
+    #[Test]
+    public function country_code()
+    {
+        $value = $this->faker->countryCode();
+        $subscriptionPurchase = SubscriptionPurchase::fromArray(['countryCode' => $value]);
+        $this->assertEquals($value, $subscriptionPurchase->getCountryCode());
+    }
+
+    #[Test]
+    public function developer_payload()
+    {
+        $value = json_encode(['uuid' => $this->faker->uuid()]);
+        $subscriptionPurchase = SubscriptionPurchase::fromArray(['developerPayload' => $value]);
+        $this->assertEquals($value, $subscriptionPurchase->getDeveloperPayload());
+    }
+
+    #[Test]
+    public function payment_state()
+    {
+        $value = $this->faker->randomElement([
+            SubscriptionPurchase::PAYMENT_STATE_PENDING,
+            SubscriptionPurchase::PAYMENT_STATE_RECEIVED,
+            SubscriptionPurchase::PAYMENT_STATE_DEFERRED,
+        ]);
+
+        $subscriptionPurchase = SubscriptionPurchase::fromArray(['paymentState' => $value]);
+        $this->assertEquals($value, $subscriptionPurchase->getPaymentState());
+    }
+
+    #[Test]
+    public function cancel_reason()
+    {
+        $value = $this->faker->randomElement([
+            Cancellation::CANCEL_REASON_BY_USER,
+            Cancellation::CANCEL_REASON_BY_SYSTEM,
+            Cancellation::CANCEL_REASON_REPLACED,
+            Cancellation::CANCEL_REASON_BY_DEVELOPER,
+        ]);
+
+        $subscriptionPurchase = SubscriptionPurchase::fromArray(['cancelReason' => $value]);
+        $this->assertEquals($value, $subscriptionPurchase->getCancellation()->getCancelReason());
+    }
+
+    #[Test]
+    public function user_cancellation_time()
+    {
+        $value = Carbon::now()->getTimestampMs();
+        $subscriptionPurchase = SubscriptionPurchase::fromArray(['userCancellationTimeMillis' => $value]);
+        $this->assertEquals(
+            $value,
+            $subscriptionPurchase->getCancellation()->getUserCancellationTime()->getCarbon()->getTimestampMs()
+        );
+    }
+
+    #[Test]
+    public function cancel_survey_result()
+    {
+        $reason = $this->faker->randomElement([
+            SubscriptionCancelSurveyResult::CANCEL_SURVEY_REASON_OTHER,
+            SubscriptionCancelSurveyResult::CANCEL_SURVEY_REASON_NOT_USING_ENOUGH,
+            SubscriptionCancelSurveyResult::CANCEL_SURVEY_REASON_TECHNICAL_ISSUES,
+            SubscriptionCancelSurveyResult::CANCEL_SURVEY_REASON_COST_RELATED,
+            SubscriptionCancelSurveyResult::CANCEL_SURVEY_REASON_FOUND_BETTER_APP,
+        ]);
+        $userInput = $this->faker->sentence();
+
+        $value = [
+            'cancelSurveyReason' => $reason,
+            'userInputCancelReason' => $userInput,
+        ];
+
+        $subscriptionPurchase = SubscriptionPurchase::fromArray(['cancelSurveyResult' => $value]);
+
+        $this->assertEquals($value, $subscriptionPurchase->getCancellation()->getCancelSurveyResult()->toArray());
+    }
+
+    #[Test]
+    public function order_id()
+    {
+        $value = $this->faker->uuid();
+        $subscriptionPurchase = SubscriptionPurchase::fromArray(['orderId' => $value]);
+        $this->assertEquals($value, $subscriptionPurchase->getOrderId());
+    }
+
+    #[Test]
+    public function linked_purchase_token()
+    {
+        $value = $this->faker->uuid();
+        $subscriptionPurchase = SubscriptionPurchase::fromArray(['linkedPurchaseToken' => $value]);
+        $this->assertEquals($value, $subscriptionPurchase->getLinkedPurchaseToken());
+    }
+
+    #[Test]
+    public function purchase_type()
+    {
+        $value = $this->faker->randomElement([
+            SubscriptionPurchase::PURCHASE_TYPE_TEST,
+            SubscriptionPurchase::PURCHASE_TYPE_PROMO,
+        ]);
+        $subscriptionPurchase = SubscriptionPurchase::fromArray(['purchaseType' => $value]);
+        $this->assertEquals($value, $subscriptionPurchase->getPurchaseType());
+    }
+
+    #[Test]
+    public function price_change()
+    {
+        $value = [
+            'newPrice' => [
+                'priceMicros' => $this->faker->randomElement(range(0, 100)),
+                'currency' => $this->faker->currencyCode(),
             ],
+            'state' => 0,
         ];
-        $introductoryPriceInfo = SubscriptionPurchase::fromResponseBody($body)->getIntroductoryPriceInfo();
-        $this->assertInstanceOf(IntroductoryPriceInfo::class, $introductoryPriceInfo);
+
+        $subscriptionPurchase = SubscriptionPurchase::fromArray(['priceChange' => $value]);
+
+        $this->assertEquals($value, $subscriptionPurchase->getPriceChange()->toArray());
+    }
+
+    #[Test]
+    public function profile_name()
+    {
+        $value = $this->faker->name();
+        $subscriptionPurchase = SubscriptionPurchase::fromArray(['profileName' => $value]);
+        $this->assertEquals($value, $subscriptionPurchase->getProfileName());
+    }
+
+    #[Test]
+    public function email_address()
+    {
+        $value = $this->faker->email();
+        $subscriptionPurchase = SubscriptionPurchase::fromArray(['emailAddress' => $value]);
+        $this->assertEquals($value, $subscriptionPurchase->getEmailAddress());
+    }
+
+    #[Test]
+    public function given_name()
+    {
+        $value = $this->faker->name();
+        $subscriptionPurchase = SubscriptionPurchase::fromArray(['givenName' => $value]);
+        $this->assertEquals($value, $subscriptionPurchase->getGivenName());
+    }
+
+    #[Test]
+    public function family_name()
+    {
+        $value = $this->faker->name();
+        $subscriptionPurchase = SubscriptionPurchase::fromArray(['familyName' => $value]);
+        $this->assertEquals($value, $subscriptionPurchase->getFamilyName());
+    }
+
+    #[Test]
+    public function profile_id()
+    {
+        $value = $this->faker->uuid();
+        $subscriptionPurchase = SubscriptionPurchase::fromArray(['profileId' => $value]);
+        $this->assertEquals($value, $subscriptionPurchase->getProfileId());
+    }
+
+    #[Test]
+    public function acknowledgement_state()
+    {
+        $value = $this->faker->randomElement([
+            SubscriptionPurchase::ACKNOWLEDGEMENT_STATE_NOT_ACKNOWLEDGED,
+            SubscriptionPurchase::ACKNOWLEDGEMENT_STATE_ACKNOWLEDGED,
+        ]);
+
+        $subscriptionPurchase = SubscriptionPurchase::fromArray(['acknowledgementState' => $value]);
+        $this->assertEquals($value, $subscriptionPurchase->getAcknowledgementState());
+    }
+
+    #[Test]
+    public function external_account_id()
+    {
+        $value = $this->faker->uuid();
+        $subscriptionPurchase = SubscriptionPurchase::fromArray(['externalAccountId' => $value]);
+        $this->assertEquals($value, $subscriptionPurchase->getExternalAccountId());
+    }
+
+    #[Test]
+    public function promotion_type()
+    {
+        $value = $this->faker->randomElement([
+            SubscriptionPurchase::PROMOTION_TYPE_ONE_TIME_CODE,
+            SubscriptionPurchase::PROMOTION_TYPE_VANITY_CODE,
+        ]);
+        $subscriptionPurchase = SubscriptionPurchase::fromArray(['promotionType' => $value]);
+        $this->assertEquals($value, $subscriptionPurchase->getPromotionType());
+    }
+
+    #[Test]
+    public function promotion_code()
+    {
+        $value = $this->faker->uuid();
+        $subscriptionPurchase = SubscriptionPurchase::fromArray([
+            'promotionType' => 1,
+            'promotionCode' => $value,
+        ]);
+        $this->assertEquals($value, $subscriptionPurchase->getPromotionCode());
+    }
+
+    #[Test]
+    public function obfuscated_external_account_id()
+    {
+        $value = $this->faker->uuid();
+        $subscriptionPurchase = SubscriptionPurchase::fromArray(['obfuscatedExternalAccountId' => $value]);
+        $this->assertEquals($value, $subscriptionPurchase->getObfuscatedExternalAccountId());
+    }
+
+    #[Test]
+    public function obfuscated_external_profile_id()
+    {
+        $value = $this->faker->uuid();
+        $subscriptionPurchase = SubscriptionPurchase::fromArray(['obfuscatedExternalProfileId' => $value]);
+        $this->assertEquals($value, $subscriptionPurchase->getObfuscatedExternalProfileId());
     }
 
     /**
      * @test
+     *
+     * @throws JsonException
      */
-    public function test_it_can_get_PriceChange()
+    public function it_should_be_json_serializable(): void
     {
-        $faker = Factory::create();
-        $body = [
+        $attributes = [
             'kind' => 'some_kind',
-            'priceChange' => [
-                'newPrice' => [
-                    'priceMicros' => $faker->numberBetween(),
-                    'currency' => $faker->currencyCode,
-                ],
-                'state' => $faker->randomElement([0, 1]),
-            ],
+            'startTimeMillis' => $this->faker->unixTime(),
+            'expiryTimeMillis' => $this->faker->unixTime(),
+            'autoResumeTimeMillis' => null,
+            'autoRenewing' => $this->faker->boolean(),
+            'priceCurrencyCode' => $this->faker->currencyCode(),
+            'introductoryPriceInfo' => null,
+            'countryCode' => $this->faker->countryCode(),
         ];
 
-        $priceChange = SubscriptionPurchase::fromResponseBody($body)->getPriceChange();
-        $this->assertInstanceOf(SubscriptionPriceChange::class, $priceChange);
-    }
+        $sut = SubscriptionPurchase::fromArray($attributes);
 
-    /**
-     * @test
-     */
-    public function test_it_can_get_cancellation()
-    {
-        $faker = Factory::create();
-        $body = [
-            'kind' => 'some_kind',
-            'cancelReason' => $faker->randomElement([0, 1, 2, 3]),
-            'userCancellationTimeMillis' => $faker->unixTime,
-            'cancelSurveyResult' => [
-                'cancelSurveyReason' => $faker->randomElement(range(0, 4)),
-                'userInputCancelReason' => $faker->sentence,
-            ],
-        ];
-
-        $cancellation = SubscriptionPurchase::fromResponseBody($body)->getCancellation();
-        $this->assertInstanceOf(Cancellation::class, $cancellation);
-    }
-
-    /**
-     * @test
-     */
-    public function test_it_can_get_promotion()
-    {
-        $faker = Factory::create();
-        $body = [
-            'kind' => 'some_kind',
-            'promotionType' => rand(0, 1),
-            'promotionCode' => $faker->word(),
-        ];
-
-        $promotion = SubscriptionPurchase::fromResponseBody($body)->getPromotionType();
-        $this->assertInstanceOf(PromotionType::class, $promotion);
-    }
-
-    /**
-     * @test
-     */
-    public function test_time_values_may_be_missed()
-    {
-        $purchase = SubscriptionPurchase::fromResponseBody([]);
-
-        $this->assertNull($purchase->getStartTime());
-        $this->assertNull($purchase->getExpiryTime());
-        $this->assertNull($purchase->getAutoResumeTime());
-        $this->assertNull($purchase->getCancellation()->getUserCancellationTime());
-    }
-
-    /**
-     * @test
-     * @throws GuzzleException
-     */
-    public function test_it_can_get_null_linked_purchaseToken()
-    {
-        $client = ClientFactory::create([ClientFactory::SCOPE_ANDROID_PUBLISHER]);
-        $packageName = 'com.twigano.fashion';
-        $subscriptionId = 'week_premium';
-        $token = 'fbfkmfikhhhgienojccgafoe.AO-J1OzzBrmgttPXhWuMXb6B371gmcDsrSVAZCvb9OGzd8PESkDNL-i3aOqpfHKVHUgtcbbfS53WH8KKAXncmPy5qHP_h3A8rQ';
-
-        $purchase = (new Subscription($client, $packageName, $subscriptionId, $token))->get();
-        $linkedPurchaseToken = $purchase->getLinkedPurchaseToken();
-        $this->assertNull($linkedPurchaseToken);
+        $this->assertJsonStringEqualsJsonString(
+            json_encode($attributes, JSON_THROW_ON_ERROR),
+            json_encode($sut, JSON_THROW_ON_ERROR)
+        );
     }
 }

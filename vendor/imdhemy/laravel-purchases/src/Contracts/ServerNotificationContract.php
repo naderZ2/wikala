@@ -1,32 +1,46 @@
 <?php
 
+declare(strict_types=1);
 
 namespace Imdhemy\Purchases\Contracts;
 
+use GuzzleHttp\ClientInterface;
+
 /**
- * Interface ServerNotificationContract
- * @package Imdhemy\Purchases\Events\Contracts
+ * Interface ServerNotificationContract.
  */
 interface ServerNotificationContract
 {
+    public const string PROVIDER_GOOGLE_PLAY = 'google_play';
+    public const string PROVIDER_APP_STORE = 'app_store';
+
     /**
-     * @return string
+     * Gets the notification type.
      */
     public function getType(): string;
 
     /**
-     * @param array $jsonKey
-     * @return SubscriptionContract
+     * Gets the subscription associated with the notification.
      */
-    public function getSubscription(array $jsonKey = []): SubscriptionContract;
+    public function getSubscription(?ClientInterface $client = null): SubscriptionContract;
 
     /**
-     * @return bool
+     * Returns true if the notification is a test notification.
      */
     public function isTest(): bool;
 
     /**
-     * @return string
+     * Gets the application bundle.
      */
     public function getBundle(): string;
+
+    /**
+     * Gets the notification payload.
+     */
+    public function getPayload(): array;
+
+    /**
+     * Gets the notification provider.
+     */
+    public function getProvider(): string;
 }

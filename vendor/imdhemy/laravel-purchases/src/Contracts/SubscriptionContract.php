@@ -1,40 +1,33 @@
 <?php
 
+declare(strict_types=1);
 
 namespace Imdhemy\Purchases\Contracts;
 
-use Imdhemy\AppStore\ValueObjects\ReceiptInfo;
+use Imdhemy\AppStore\Receipts\ReceiptResponse;
+use Imdhemy\AppStore\ServerNotifications\V2DecodedPayload;
 use Imdhemy\GooglePlay\Subscriptions\SubscriptionPurchase;
 use Imdhemy\Purchases\ValueObjects\Time;
 
 /**
- * Interface SubscriptionContract
- * @package Imdhemy\Purchases\Events\Contracts
+ * Interface SubscriptionContract.
  */
 interface SubscriptionContract
 {
-    /**
-     * @return Time
-     */
+    // List of providers
+    public const string PROVIDER_APP_STORE = 'app_store';
+    public const string PROVIDER_GOOGLE_PLAY = 'google_play';
+
     public function getExpiryTime(): Time;
 
-    /**
-     * @return string
-     */
     public function getItemId(): string;
 
-    /**
-     * @return string
-     */
     public function getProvider(): string;
 
-    /**
-     * @return string
-     */
     public function getUniqueIdentifier(): string;
 
     /**
-     * @return mixed|SubscriptionPurchase|ReceiptInfo
+     * @return mixed|SubscriptionPurchase|ReceiptResponse|V2DecodedPayload
      */
     public function getProviderRepresentation();
 }
