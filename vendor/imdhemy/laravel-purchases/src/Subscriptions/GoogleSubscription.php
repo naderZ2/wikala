@@ -1,38 +1,29 @@
 <?php
 
+declare(strict_types=1);
 
 namespace Imdhemy\Purchases\Subscriptions;
 
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\GuzzleException;
 use Imdhemy\GooglePlay\DeveloperNotifications\DeveloperNotification;
+use Imdhemy\GooglePlay\DeveloperNotifications\SubscriptionNotification;
 use Imdhemy\GooglePlay\Subscriptions\SubscriptionPurchase;
 use Imdhemy\Purchases\Contracts\SubscriptionContract;
+use Imdhemy\Purchases\Exceptions\InvalidNotificationTypeException;
 use Imdhemy\Purchases\Facades\Subscription;
 use Imdhemy\Purchases\ValueObjects\Time;
 
 class GoogleSubscription implements SubscriptionContract
 {
-    /**
-     * @var SubscriptionPurchase
-     */
-    protected $subscription;
+    protected SubscriptionPurchase $subscription;
 
-    /**
-     * @var string
-     */
-    protected $itemId;
+    protected string $itemId;
 
-    /**
-     * @var string
-     */
-    protected $token;
+    protected string $token;
 
     /**
      * GoogleSubscription constructor.
-     * @param SubscriptionPurchase $subscription
-     * @param string $itemId
-     * @param string $token
      */
     public function __construct(SubscriptionPurchase $subscription, string $itemId, string $token)
     {
@@ -42,17 +33,20 @@ class GoogleSubscription implements SubscriptionContract
     }
 
     /**
-     * @param DeveloperNotification $developerNotification
-     * @param ClientInterface|null $client
-     * @return static
      * @throws GuzzleException
      */
     public static function createFromDeveloperNotification(
-        DeveloperNotification $developerNotification,
-        ?ClientInterface $client = null
+        DeveloperNotification $rtdNotification,
+        ?ClientInterface $client = null,
     ): self {
-        $notification = $developerNotification->getSubscriptionNotification();
-        $packageName = $developerNotification->getPackageName();
+        $notification = $rtdNotification->getPayload();
+
+        // Make sure the notification is a subscription notification
+        if (! $notification instanceof SubscriptionNotification) {
+            throw InvalidNotificationTypeException::create(SubscriptionNotification::class, get_class($notification));
+        }
+
+        $packageName = $rtdNotification->getPackageName();
 
         $subscriptionPurchase = Subscription::googlePlay($client)
             ->packageName($packageName)
@@ -67,42 +61,30 @@ class GoogleSubscription implements SubscriptionContract
         );
     }
 
-    /**
-     * @return Time
-     */
     public function getExpiryTime(): Time
     {
-        return Time::fromGoogleTime($this->subscription->getExpiryTime());
+        $time = $this->subscription->getExpiryTime();
+        assert(! is_null($time));
+
+        return Time::fromGoogleTime($time);
     }
 
-    /**
-     * @return string
-     */
     public function getItemId(): string
     {
         return $this->itemId;
     }
 
-    /**
-     * @return string
-     */
     public function getProvider(): string
     {
         return 'google_play';
     }
 
-    /**
-     * @return string
-     */
     public function getUniqueIdentifier(): string
     {
         return $this->token;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getProviderRepresentation()
+    public function getProviderRepresentation(): SubscriptionPurchase
     {
         return $this->subscription;
     }

@@ -13,5 +13,6 @@ class VerifyCsrfToken extends Middleware
      */
     protected $except = [
         'login/redirect',
+        'broadcasting/auth', // token clients (passport) auth here without a CSRF token
     ];
 }

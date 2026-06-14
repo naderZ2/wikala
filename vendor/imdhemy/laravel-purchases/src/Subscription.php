@@ -1,9 +1,9 @@
 <?php
 
+declare(strict_types=1);
 
 namespace Imdhemy\Purchases;
 
-use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\GuzzleException;
 use Imdhemy\AppStore\ClientFactory as AppStoreClientFactory;
@@ -11,94 +11,60 @@ use Imdhemy\AppStore\Exceptions\InvalidReceiptException;
 use Imdhemy\AppStore\Receipts\ReceiptResponse;
 use Imdhemy\AppStore\Receipts\Verifier;
 use Imdhemy\GooglePlay\ClientFactory as GooglePlayClientFactory;
-use Imdhemy\GooglePlay\Subscriptions\Subscription as GooglePlaySubscription;
+use Imdhemy\GooglePlay\Subscriptions\SubscriptionClient as GooglePlaySubscription;
 use Imdhemy\GooglePlay\Subscriptions\SubscriptionPurchase;
+use Imdhemy\GooglePlay\ValueObjects\EmptyResponse;
 use Imdhemy\Purchases\Contracts\SubscriptionContract;
 use Imdhemy\Purchases\Subscriptions\AppStoreSubscription;
 use Imdhemy\Purchases\Subscriptions\GoogleSubscription;
 
 class Subscription
 {
-    /**
-     * @var string
-     */
-    protected $itemId;
+    protected ?string $itemId = null;
+
+    protected ?string $token = null;
+
+    protected ?ClientInterface $client = null;
+
+    protected ?string $packageName = null;
+
+    protected ?string $receiptData = null;
+
+    protected ?string $password = null;
+
+    protected bool $renewalAble = false;
+
+    protected ?SubscriptionPurchase $googleGetResponse = null;
+
+    protected bool $isGoogle = false;
+
+    private ?ReceiptResponse $appStoreResponse = null;
 
     /**
-     * @var string
-     */
-    protected $token;
-
-    /**
-     * @var Client
-     */
-    protected $client;
-
-    /**
-     * @var string
-     */
-    protected $packageName;
-
-    /**
-     * @var string
-     */
-    protected $receiptData;
-
-    /**
-     * @var string
-     */
-    protected $password;
-
-    /**
-     * @var bool
-     */
-    protected $renewalAble;
-
-    /**
-     * @var SubscriptionPurchase
-     */
-    protected $googleGetResponse;
-
-    /**
-     * @var ReceiptResponse
-     */
-    private $appStoreResponse;
-
-    /**
-     * @var bool
-     */
-    protected $isGoogle = false;
-
-    /**
-     * @param ClientInterface|null $client
-     * @return self
+     * @psalm-suppress PropertyTypeCoercion - The client type is compatible
      */
     public function googlePlay(?ClientInterface $client = null): self
     {
         $this->isGoogle = true;
         $this->client = $client ?? GooglePlayClientFactory::create([GooglePlayClientFactory::SCOPE_ANDROID_PUBLISHER]);
-        $this->packageName = config('purchase.google_play_package_name');
+        $this->packageName = (string)config('liap.google_play_package_name');
 
         return $this;
     }
 
     /**
-     * @return self
+     * @psalm-suppress PropertyTypeCoercion - The client type is compatible
      */
-    public function appStore(): self
+    public function appStore(?ClientInterface $client = null): self
     {
         $this->isGoogle = false;
-        $this->client = AppStoreClientFactory::create();
-        $this->password = config('purchase.appstore_password');
+        $this->client = $client ?? AppStoreClientFactory::createForITunes();
+        $this->password = (string)config('liap.appstore_password');
         $this->renewalAble = false;
 
         return $this;
     }
 
-    /**
-     * @param string $itemId
-     * @return self
-     */
     public function id(string $itemId): self
     {
         $this->itemId = $itemId;
@@ -106,10 +72,6 @@ class Subscription
         return $this;
     }
 
-    /**
-     * @param string $token
-     * @return self
-     */
     public function token(string $token): self
     {
         $this->token = $token;
@@ -117,10 +79,6 @@ class Subscription
         return $this;
     }
 
-    /**
-     * @param string $packageName
-     * @return self
-     */
     public function packageName(string $packageName): self
     {
         $this->packageName = $packageName;
@@ -129,33 +87,34 @@ class Subscription
     }
 
     /**
-     * @return ReceiptResponse
-     * @throws GuzzleException|InvalidReceiptException
+     * @throws GuzzleException
+     * @throws InvalidReceiptException
      */
-    public function verifyReceipt(): ReceiptResponse
+    public function verifyRenewable(?ClientInterface $sandboxClient = null): ReceiptResponse
+    {
+        $this->renewalAble = true;
+
+        return $this->verifyReceipt($sandboxClient);
+    }
+
+    /**
+     * @throws GuzzleException
+     * @throws InvalidReceiptException
+     */
+    public function verifyReceipt(?ClientInterface $sandboxClient = null): ReceiptResponse
     {
         if (is_null($this->appStoreResponse)) {
+            assert(! is_null($this->client));
+            assert(! is_null($this->receiptData));
+            assert(! is_null($this->password));
+
             $verifier = new Verifier($this->client, $this->receiptData, $this->password);
-            $this->appStoreResponse = $verifier->verify($this->renewalAble);
+            $this->appStoreResponse = $verifier->verify($this->renewalAble, $sandboxClient);
         }
 
         return $this->appStoreResponse;
     }
 
-    /**
-     * @return ReceiptResponse
-     * @throws GuzzleException|InvalidReceiptException
-     */
-    public function verifyRenewable(): ReceiptResponse
-    {
-        $this->renewalAble = true;
-
-        return $this->verifyReceipt();
-    }
-
-    /**
-     * @return self
-     */
     public function renewable(): self
     {
         $this->renewalAble = true;
@@ -163,9 +122,6 @@ class Subscription
         return $this;
     }
 
-    /**
-     * @return self
-     */
     public function nonRenewable(): self
     {
         $this->renewalAble = false;
@@ -174,29 +130,15 @@ class Subscription
     }
 
     /**
-     * @return SubscriptionPurchase
      * @throws GuzzleException
      */
-    public function get(): SubscriptionPurchase
+    public function acknowledge(?string $developerPayload = null): EmptyResponse
     {
-        if (is_null($this->googleGetResponse)) {
-            $this->googleGetResponse = $this->createSubscription()->get();
-        }
-
-        return $this->googleGetResponse;
+        return $this->createSubscription()->acknowledge($developerPayload);
     }
 
     /**
-     * @param string|null $developerPayload
-     * @throws GuzzleException
-     */
-    public function acknowledge(?string $developerPayload = null): void
-    {
-        $this->createSubscription()->acknowledge($developerPayload);
-    }
-
-    /**
-     * @return GooglePlaySubscription
+     * @psalm-suppress PossiblyNullArgument - This method should not be called if params are null
      */
     public function createSubscription(): GooglePlaySubscription
     {
@@ -209,7 +151,6 @@ class Subscription
     }
 
     /**
-     * @param string $receiptData
      * @return $this
      */
     public function receiptData(string $receiptData): self
@@ -220,7 +161,6 @@ class Subscription
     }
 
     /**
-     * @param string $password
      * @return $this
      */
     public function password(string $password): self
@@ -231,9 +171,12 @@ class Subscription
     }
 
     /**
-     * @return SubscriptionContract
      * @throws GuzzleException
      * @throws InvalidReceiptException
+     *
+     * @psalm-suppress  PossiblyNullArgument - This method should not be called if itemId and token are null
+     * @psalm-suppress  MixedArgument - We know the type of the latest receipt info
+     * @psalm-suppress  PossiblyNullArrayAccess - This method should not be called if the array if empty
      */
     public function toStd(): SubscriptionContract
     {
@@ -246,5 +189,25 @@ class Subscription
         $response = $this->verifyReceipt();
 
         return new AppStoreSubscription($response->getLatestReceiptInfo()[0]);
+    }
+
+    /**
+     * @throws GuzzleException
+     */
+    public function get(): SubscriptionPurchase
+    {
+        if (is_null($this->googleGetResponse)) {
+            $this->googleGetResponse = $this->createSubscription()->get();
+        }
+
+        return $this->googleGetResponse;
+    }
+
+    /**
+     * @throws GuzzleException
+     */
+    public function cancel(): EmptyResponse
+    {
+        return $this->createSubscription()->cancel();
     }
 }

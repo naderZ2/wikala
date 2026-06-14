@@ -1,231 +1,266 @@
 <?php
 
-
 namespace Imdhemy\GooglePlay\Subscriptions;
 
-use Imdhemy\GooglePlay\ValueObjects\AcknowledgementState;
 use Imdhemy\GooglePlay\ValueObjects\Cancellation;
 use Imdhemy\GooglePlay\ValueObjects\IntroductoryPriceInfo;
 use Imdhemy\GooglePlay\ValueObjects\Price;
-use Imdhemy\GooglePlay\ValueObjects\PriceChangeState;
-use Imdhemy\GooglePlay\ValueObjects\PromotionType;
-use Imdhemy\GooglePlay\ValueObjects\PurchaseType;
 use Imdhemy\GooglePlay\ValueObjects\SubscriptionPriceChange;
 use Imdhemy\GooglePlay\ValueObjects\Time;
+use JsonSerializable;
 
-class SubscriptionPurchase
+/**
+ * Subscription purchase class
+ * A SubscriptionPurchase resource indicates the status of a user's subscription purchase.
+ *
+ * @see https://developers.google.com/android-publisher/api-ref/rest/v3/purchases.subscriptions#SubscriptionPurchase
+ * @deprecated
+ */
+class SubscriptionPurchase implements JsonSerializable
 {
+    public const int PURCHASE_TYPE_TEST = 0;
+    public const int PURCHASE_TYPE_PROMO = 1;
+
+    public const int ACKNOWLEDGEMENT_STATE_NOT_ACKNOWLEDGED = 0;
+    public const int ACKNOWLEDGEMENT_STATE_ACKNOWLEDGED = 1;
+
+    public const int PROMOTION_TYPE_VANITY_CODE = 1;
+    public const int PROMOTION_TYPE_ONE_TIME_CODE = 0;
+
+    public const int PAYMENT_STATE_FREE_TRIAL = 2;
+    public const int PAYMENT_STATE_PENDING = 0;
+    public const int PAYMENT_STATE_DEFERRED = 3;
+    public const int PAYMENT_STATE_RECEIVED = 1;
+
     /**
-     * @var string
+     * @var string|null
      */
     protected $kind;
 
     /**
-     * @var int
+     * @var int|null
      */
     protected $startTimeMillis;
 
     /**
-     * @var int
+     * @var int|null
      */
     protected $expiryTimeMillis;
 
     /**
-     * @var int
+     * @var int|null
      */
     protected $autoResumeTimeMillis;
 
     /**
-     * @var bool
+     * @var bool|null
      */
     protected $autoRenewing;
 
     /**
-     * @var string
+     * @var string|null
      */
     protected $priceCurrencyCode;
 
     /**
-     * @var int
+     * @var int|null
      */
     protected $priceAmountMicros;
 
     /**
-     * @var array
+     * @var array|null
      */
     protected $introductoryPriceInfo;
 
     /**
-     * @var string
+     * @var string|null
      */
     protected $countryCode;
 
     /**
-     * @var string
+     * @var string|null
      */
     protected $developerPayload;
 
     /**
-     * @var int
+     * @var int|null
      */
     protected $paymentState;
 
     /**
-     * @var int
+     * @var int|null
      */
     protected $cancelReason;
 
     /**
-     * @var int
+     * @var int|null
      */
     protected $userCancellationTimeMillis;
 
     /**
-     * @var array
+     * @var array|null
      */
     protected $cancelSurveyResult;
 
     /**
-     * @var string
+     * @var string|null
      */
     protected $orderId;
 
     /**
-     * @var string
+     * @var string|null
      */
     protected $linkedPurchaseToken;
 
     /**
-     * @var int
+     * @var int|null
      */
     protected $purchaseType;
 
     /**
-     * @var array
+     * @var array|null
      */
     protected $priceChange;
 
     /**
-     * @var string
+     * @var string|null
+     */
+    protected $profileName;
+
+    /**
+     * @var string|null
      */
     protected $emailAddress;
 
     /**
-     * @var string
+     * @var string|null
      */
     protected $givenName;
 
     /**
-     * @var string
+     * @var string|null
+     */
+    protected $familyName;
+
+    /**
+     * @var string|null
      */
     protected $profileId;
 
     /**
-     * @var int
+     * @var int|null
      */
     protected $acknowledgementState;
 
     /**
-     * @var string
+     * @var string|null
      */
     protected $externalAccountId;
 
     /**
-     * @var int
+     * @var int|null
      */
     protected $promotionType;
 
     /**
-     * @var string
+     * @var string|null
      */
     protected $promotionCode;
 
     /**
-     * @var string
+     * @var string|null
      */
     protected $obfuscatedExternalAccountId;
 
     /**
-     * @var string
+     * @var string|null
      */
     protected $obfuscatedExternalProfileId;
 
     /**
-     * @param array $responseBody
-     * @return self
+     * @var array
      */
-    public static function fromResponseBody(array $responseBody): self
-    {
-        $object = new self();
+    protected $plainResponse;
 
+    /**
+     * Subscription Purchase Constructor.
+     */
+    public function __construct(array $responseBody = [])
+    {
         $attributes = array_keys(get_class_vars(self::class));
+
         foreach ($attributes as $attribute) {
             if (isset($responseBody[$attribute])) {
-                $object->$attribute = $responseBody[$attribute];
+                $this->$attribute = $responseBody[$attribute];
             }
         }
 
-        return $object;
+        $this->plainResponse = $responseBody;
+    }
+
+    public static function fromArray(array $responseBody): self
+    {
+        return new self($responseBody);
     }
 
     /**
-     * @return string
+     * @ return string|null
      */
-    public function getKind(): string
+    public function getKind(): ?string
     {
         return $this->kind;
     }
 
     /**
-     * @return bool
+     * @ return bool|null
      */
-    public function isAutoRenewing(): bool
+    public function isAutoRenewing(): ?bool
     {
         return $this->autoRenewing;
     }
 
     /**
-     * @return string
+     * @ return string|null
      */
-    public function getPriceCurrencyCode(): string
+    public function getPriceCurrencyCode(): ?string
     {
         return $this->priceCurrencyCode;
     }
 
     /**
-     * @return int
+     * @ return int|null
      */
-    public function getPriceAmountMicros(): int
+    public function getPriceAmountMicros(): ?int
     {
         return $this->priceAmountMicros;
     }
 
     /**
-     * @return string
+     * @ return string|null
      */
-    public function getCountryCode(): string
+    public function getCountryCode(): ?string
     {
         return $this->countryCode;
     }
 
     /**
-     * @return string
+     * @ return string|null
      */
-    public function getDeveloperPayload(): string
+    public function getDeveloperPayload(): ?string
     {
         return $this->developerPayload;
     }
 
     /**
-     * @return string
+     * @ return string|null
      */
-    public function getOrderId(): string
+    public function getOrderId(): ?string
     {
         return $this->orderId;
     }
 
     /**
-     * @return string
+     * @ return string|null
      */
     public function getLinkedPurchaseToken(): ?string
     {
@@ -233,137 +268,187 @@ class SubscriptionPurchase
     }
 
     /**
-     * @return string
+     * @ return string|null
      */
-    public function getEmailAddress(): string
+    public function getEmailAddress(): ?string
     {
         return $this->emailAddress;
     }
 
     /**
-     * @return string
+     * @ return string|null
      */
-    public function getGivenName(): string
+    public function getGivenName(): ?string
     {
         return $this->givenName;
     }
 
     /**
-     * @return string
+     * @ return string|null
      */
-    public function getProfileId(): string
+    public function getProfileId(): ?string
     {
         return $this->profileId;
     }
 
     /**
-     * @return string
+     * @ return string|null
      */
-    public function getExternalAccountId(): string
+    public function getExternalAccountId(): ?string
     {
         return $this->externalAccountId;
     }
 
     /**
-     * @return string
+     * @ return string|null
      */
-    public function getObfuscatedExternalAccountId(): string
+    public function getObfuscatedExternalAccountId(): ?string
     {
         return $this->obfuscatedExternalAccountId;
     }
 
     /**
-     * @return string
+     * @ return string|null
      */
-    public function getObfuscatedExternalProfileId(): string
+    public function getObfuscatedExternalProfileId(): ?string
     {
         return $this->obfuscatedExternalProfileId;
     }
 
-    /**
-     * @return Time|null
-     */
     public function getStartTime(): ?Time
     {
-        return $this->startTimeMillis ? new Time($this->startTimeMillis) : null;
+        return is_null($this->startTimeMillis) ? null : new Time((string)$this->startTimeMillis);
     }
 
-    /**
-     * @return Time|null
-     */
     public function getExpiryTime(): ?Time
     {
-        return $this->expiryTimeMillis ? new Time($this->expiryTimeMillis) : null;
+        return is_null($this->expiryTimeMillis) ? null : new Time((string)$this->expiryTimeMillis);
     }
 
-    /**
-     * @return Time|null
-     */
     public function getAutoResumeTime(): ?Time
     {
-        return $this->autoResumeTimeMillis ? new Time($this->autoResumeTimeMillis) : null;
+        return is_null($this->autoResumeTimeMillis) ? null : new Time((string)$this->autoResumeTimeMillis);
     }
 
-    /**
-     * @return IntroductoryPriceInfo
-     */
-    public function getIntroductoryPriceInfo(): IntroductoryPriceInfo
+    public function getIntroductoryPriceInfo(): ?IntroductoryPriceInfo
     {
-        return IntroductoryPriceInfo::fromArray($this->introductoryPriceInfo);
+        return is_null($this->introductoryPriceInfo) ?
+            null :
+            IntroductoryPriceInfo::fromArray($this->introductoryPriceInfo);
     }
 
-    /**
-     * @return SubscriptionPriceChange
-     */
-    public function getPriceChange(): SubscriptionPriceChange
+    public function getPriceChange(): ?SubscriptionPriceChange
     {
-        $newPrice = new Price(...array_values($this->priceChange['newPrice']));
-        $state = new PriceChangeState($this->priceChange['state']);
+        if (is_null($this->priceChange)) {
+            return null;
+        }
+
+        $newPrice = Price::fromArray($this->priceChange['newPrice']);
+        $state = $this->priceChange['state'];
 
         return new SubscriptionPriceChange($newPrice, $state);
     }
 
-    /**
-     * @return Cancellation
-     */
-    public function getCancellation(): Cancellation
+    public function getCancellation(): ?Cancellation
     {
-        return Cancellation::fromScalars(
-            $this->cancelReason,
-            $this->userCancellationTimeMillis,
-            $this->cancelSurveyResult
-        );
+        $noCancellationData =
+            is_null($this->cancelReason)
+            && is_null($this->userCancellationTimeMillis)
+            && is_null($this->cancelSurveyResult);
+
+        if ($noCancellationData) {
+            return null;
+        }
+
+        return Cancellation::fromArray([
+            Cancellation::ATTR_CANCEL_REASON => $this->cancelReason,
+            Cancellation::ATTR_USER_CANCELLATION_TIME_MILLIS => $this->userCancellationTimeMillis,
+            Cancellation::ATTR_cancelSurveyResult => $this->cancelSurveyResult,
+        ]);
     }
 
-    /**
-     * @return PromotionType
-     */
-    public function getPromotionType(): PromotionType
+    public function getAcknowledgementState(): ?int
     {
-        return new PromotionType($this->promotionType, $this->promotionCode);
+        return $this->acknowledgementState;
     }
 
-    /**
-     * @return AcknowledgementState
-     */
-    public function getAcknowledgementState(): AcknowledgementState
-    {
-        return new AcknowledgementState($this->acknowledgementState);
-    }
-
-    /**
-     * @return int
-     */
-    public function getPaymentState(): int
+    public function getPaymentState(): ?int
     {
         return $this->paymentState;
     }
-    
-    /**
-     * @return PurchaseType
-     */
-    public function getPurchaseType(): PurchaseType
+
+    public function getPurchaseType(): ?int
     {
-        return new PurchaseType($this->purchaseType);
+        return $this->purchaseType;
+    }
+
+    public function getProfileName(): ?string
+    {
+        return $this->profileName;
+    }
+
+    public function getFamilyName(): ?string
+    {
+        return $this->familyName;
+    }
+
+    public function getPlainResponse(): array
+    {
+        return $this->plainResponse;
+    }
+
+    public function toArray(): array
+    {
+        return $this->getPlainResponse();
+    }
+
+    public function getPromotionType(): ?int
+    {
+        return $this->promotionType;
+    }
+
+    public function getPromotionCode(): ?string
+    {
+        return $this->promotionCode;
+    }
+
+    public function getStartTimeMillis(): ?int
+    {
+        return $this->startTimeMillis;
+    }
+
+    public function getExpiryTimeMillis(): ?int
+    {
+        return $this->expiryTimeMillis;
+    }
+
+    public function getAutoResumeTimeMillis(): ?int
+    {
+        return $this->autoResumeTimeMillis;
+    }
+
+    public function getAutoRenewing(): ?bool
+    {
+        return $this->autoRenewing;
+    }
+
+    public function getCancelReason(): ?int
+    {
+        return $this->cancelReason;
+    }
+
+    public function getUserCancellationTimeMillis(): ?int
+    {
+        return $this->userCancellationTimeMillis;
+    }
+
+    public function getCancelSurveyResult(): ?array
+    {
+        return $this->cancelSurveyResult;
+    }
+
+    public function jsonSerialize(): array
+    {
+        return $this->toArray();
     }
 }

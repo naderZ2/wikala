@@ -24,7 +24,13 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')->hourly();
+        // Poll iCarry every 15s for out-for-delivery orders and broadcast the
+        // driver's live location over Reverb. Requires a running scheduler
+        // (`php artisan schedule:work`) for the sub-minute frequency to fire.
+        $schedule->command('icarry:poll-tracking')
+            ->everyFifteenSeconds()
+            ->withoutOverlapping()
+            ->runInBackground();
     }
 
     /**

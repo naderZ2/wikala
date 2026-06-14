@@ -1,0 +1,341 @@
+{
+  "info": {
+    "name": "E-EXPO — iCarry Integration + Realtime (Reverb)",
+    "_postman_id": "e1c2a7d0-0001-4a10-9f00-eexpoicarryrt",
+    "description": "Tests the iCarry delivery integration and the real-time driver tracking (Laravel Reverb).\n\nFLOW:\n1. Auth → Client Login + Seller Login (tokens are auto-saved to collection variables).\n2. Client → Add To Basket, then Place Order (this is where the order is pushed to iCarry; the created order id is auto-saved).\n3. Seller → Change Status to `out_for_delivery` (this refreshes iCarry tracking and broadcasts the driver location).\n4. Tracking → Client / Seller / Admin endpoints return the driver's live location + iCarry status.\n5. Realtime → Get a broadcast auth signature, then connect a WebSocket to Reverb and subscribe to `private-order.{order_id}` to receive `driver.location` events.\n\nSet the collection variables first (base_url, phones/passwords, product_id, address_id, and the REVERB_* values from your .env).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "base_url", "value": "http://127.0.0.1:8000", "type": "string" },
+    { "key": "client_phone", "value": "", "type": "string" },
+    { "key": "client_password", "value": "", "type": "string" },
+    { "key": "device_id", "value": "postman-device", "type": "string" },
+    { "key": "seller_phone", "value": "", "type": "string" },
+    { "key": "seller_password", "value": "", "type": "string" },
+    { "key": "client_token", "value": "", "type": "string" },
+    { "key": "seller_token", "value": "", "type": "string" },
+    { "key": "product_id", "value": "1", "type": "string" },
+    { "key": "address_id", "value": "1", "type": "string" },
+    { "key": "order_id", "value": "", "type": "string" },
+    { "key": "tracking_number", "value": "", "type": "string" },
+    { "key": "socket_id", "value": "", "type": "string" },
+    { "key": "ws_auth", "value": "", "type": "string" },
+    { "key": "reverb_host", "value": "127.0.0.1", "type": "string" },
+    { "key": "reverb_port", "value": "8080", "type": "string" },
+    { "key": "reverb_key", "value": "", "type": "string" },
+    { "key": "ws_url", "value": "ws://{{reverb_host}}:{{reverb_port}}/app/{{reverb_key}}?protocol=7&client=js&version=8.4.0&flash=false", "type": "string" }
+  ],
+  "item": [
+    {
+      "name": "1. Auth",
+      "item": [
+        {
+          "name": "Client Login (api / passport)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json && json.result && json.result.token) {",
+                  "  pm.collectionVariables.set('client_token', json.result.token);",
+                  "  pm.test('client_token saved', () => pm.expect(json.result.token).to.be.a('string'));",
+                  "} else {",
+                  "  pm.test('login returned a token', () => pm.expect.fail('No result.token in response'));",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phone\": \"{{client_phone}}\",\n  \"password\": \"{{client_password}}\",\n  \"device_id\": \"{{device_id}}\"\n}"
+            },
+            "url": { "raw": "{{base_url}}/api/login", "host": ["{{base_url}}"], "path": ["api", "login"] },
+            "description": "Customer login. Saves result.token -> {{client_token}}."
+          }
+        },
+        {
+          "name": "Seller Login (seller-api / passport)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json && json.result && json.result.token) {",
+                  "  pm.collectionVariables.set('seller_token', json.result.token);",
+                  "  pm.test('seller_token saved', () => pm.expect(json.result.token).to.be.a('string'));",
+                  "} else {",
+                  "  pm.test('login returned a token', () => pm.expect.fail('No result.token in response'));",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phone\": \"{{seller_phone}}\",\n  \"password\": \"{{seller_password}}\"\n}"
+            },
+            "url": { "raw": "{{base_url}}/seller/login", "host": ["{{base_url}}"], "path": ["seller", "login"] },
+            "description": "Seller login. Saves result.token -> {{seller_token}}."
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Client (Customer)",
+      "item": [
+        {
+          "name": "Add To Basket",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{client_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"product_id\": {{product_id}},\n  \"quantity\": 1\n}"
+            },
+            "url": { "raw": "{{base_url}}/api/addToBasket", "host": ["{{base_url}}"], "path": ["api", "addToBasket"] },
+            "description": "Adds a product to the basket. Run before Place Order. Add product_variation_id / variation_attribute_ids / extraService if your product needs them."
+          }
+        },
+        {
+          "name": "Place Order  (→ pushes order to iCarry)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json && json.result && Array.isArray(json.result.orders) && json.result.orders.length) {",
+                  "  pm.collectionVariables.set('order_id', String(json.result.orders[0]));",
+                  "  pm.test('order_id saved', () => pm.expect(json.result.orders[0]).to.exist);",
+                  "} else {",
+                  "  pm.test('order created', () => pm.expect.fail('No result.orders[] in response: ' + JSON.stringify(json)));",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{client_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"payment_type\": \"cash\",\n  \"address_id\": {{address_id}},\n  \"delivery_time\": null\n}"
+            },
+            "url": { "raw": "{{base_url}}/api/add_order", "host": ["{{base_url}}"], "path": ["api", "add_order"] },
+            "description": "Checkout. Converts the basket into one order per seller and pushes each to iCarry (OrderService::addOrder -> ICarryService::syncCreateOrder). Saves the first order id -> {{order_id}}.\n\nUse payment_type=cash to exercise the COD path."
+          }
+        },
+        {
+          "name": "My Orders",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{client_token}}" }
+            ],
+            "url": { "raw": "{{base_url}}/api/myOrders", "host": ["{{base_url}}"], "path": ["api", "myOrders"] }
+          }
+        },
+        {
+          "name": "Order Tracking  (+ driver location)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const json = pm.response.json();",
+                  "const r = json && json.result;",
+                  "if (r && r.icarry_tracking_number) { pm.collectionVariables.set('tracking_number', r.icarry_tracking_number); }",
+                  "pm.test('has icarry_tracking block', () => pm.expect(r).to.have.property('icarry_tracking'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{client_token}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/order_tracking?id={{order_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "order_tracking"],
+              "query": [{ "key": "id", "value": "{{order_id}}" }]
+            },
+            "description": "Returns the order with the local driver and an `icarry_tracking` block. The live iCarry driver location is fetched only when the order status is `out_for_delivery`."
+          }
+        },
+        {
+          "name": "Cancel Order",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{client_token}}" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"id\": {{order_id}},\n  \"reason\": \"testing\"\n}" },
+            "url": { "raw": "{{base_url}}/api/cancel_order", "host": ["{{base_url}}"], "path": ["api", "cancel_order"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Seller",
+      "item": [
+        {
+          "name": "List Orders",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{seller_token}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/seller/orders?status=all",
+              "host": ["{{base_url}}"],
+              "path": ["seller", "orders"],
+              "query": [{ "key": "status", "value": "all" }]
+            }
+          }
+        },
+        {
+          "name": "Order Details",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{seller_token}}" }
+            ],
+            "url": { "raw": "{{base_url}}/seller/orders/{{order_id}}", "host": ["{{base_url}}"], "path": ["seller", "orders", "{{order_id}}"] }
+          }
+        },
+        {
+          "name": "Change Status → out_for_delivery  (→ sync + broadcast)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{seller_token}}" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"status\": \"out_for_delivery\"\n}" },
+            "url": { "raw": "{{base_url}}/seller/orders/{{order_id}}/status", "host": ["{{base_url}}"], "path": ["seller", "orders", "{{order_id}}", "status"] },
+            "description": "Requires the manage-orders permission. Setting out_for_delivery triggers ICarryService::syncTracking, which broadcasts DriverLocationUpdated on private-order.{{order_id}} when the driver has coordinates.\n\nValid statuses: confirmed, shipped, out_for_delivery, delivered, cancel."
+          }
+        },
+        {
+          "name": "Order Tracking  (driver location)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{seller_token}}" }
+            ],
+            "url": { "raw": "{{base_url}}/seller/orders/{{order_id}}/tracking", "host": ["{{base_url}}"], "path": ["seller", "orders", "{{order_id}}", "tracking"] },
+            "description": "Calls iCarry tracking and returns { order_id, status, icarry_tracking_number, icarry_status, driver:{id,lat,lng,...}, tracking }."
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Admin (session auth)",
+      "description": "Admin order routes use the web/session guard (not bearer tokens). To call this from Postman: log into the admin panel in a browser, copy the session cookie (e.g. `laravel_session` + XSRF) into Postman, or use the Postman Interceptor. Otherwise you'll be redirected to login.",
+      "item": [
+        {
+          "name": "Order Tracking (JSON)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/orders/order/tracking/{{order_id}}", "host": ["{{base_url}}"], "path": ["orders", "order", "tracking", "{{order_id}}"] },
+            "description": "Admin\\OrderController@tracking — returns driver location + iCarry status as JSON. Needs an authenticated admin session."
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. Realtime (Reverb WebSocket)",
+      "description": "HOW TO TEST THE LIVE DRIVER LOCATION:\n\nPrereqs:\n- Set REVERB_APP_ID/KEY/SECRET in .env (or run `php artisan reverb:install`).\n- Start the server: `php artisan reverb:start`\n- Start the poller (drives the 15s updates): `php artisan schedule:work`\n- Put the REVERB_APP_KEY into the `reverb_key` collection variable; check reverb_host/reverb_port match .env (REVERB_HOST / REVERB_PORT).\n\nSteps:\n1. Run 'Get Broadcasting Auth' below — it returns an `auth` signature and saves it to {{ws_auth}}. (It needs {{socket_id}} from step 2, so the very first time, open the WebSocket first to read the socket_id from the pusher:connection_established message, paste it into the {{socket_id}} variable, then run this.)\n2. Open a NEW WebSocket request in Postman (New → WebSocket Request) and connect to the URL in {{ws_url}}.\n3. On connect you receive: {\"event\":\"pusher:connection_established\",\"data\":\"{...socket_id...}\"}. Copy that socket_id into the {{socket_id}} variable and (re)run 'Get Broadcasting Auth'.\n4. In the WebSocket request, SEND this message to subscribe:\n   {\"event\":\"pusher:subscribe\",\"data\":{\"auth\":\"<paste {{ws_auth}}>\",\"channel\":\"private-order.<order_id>\"}}\n5. You'll get pusher_internal:subscription_succeeded. Now trigger movement (Seller → Change Status to out_for_delivery, or hit a tracking endpoint, or wait for the 15s poller). When the driver coords change you receive:\n   {\"event\":\"driver.location\",\"channel\":\"private-order.<order_id>\",\"data\":\"{order_id, status, tracking_number, driver:{id,lat,lng,name,phone}, updated_at}\"}\n\nNote: a payload only arrives when iCarry returns NEW coordinates (the app only broadcasts on actual movement). With the iCarry TEST environment you may need a real out-for-delivery shipment to see coordinates change.",
+      "item": [
+        {
+          "name": "Get Broadcasting Auth (private channel)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "try {",
+                  "  const json = pm.response.json();",
+                  "  if (json && json.auth) {",
+                  "    pm.collectionVariables.set('ws_auth', json.auth);",
+                  "    pm.test('ws_auth saved', () => pm.expect(json.auth).to.be.a('string'));",
+                  "  } else {",
+                  "    pm.test('auth returned', () => pm.expect.fail('No auth in response: ' + pm.response.text()));",
+                  "  }",
+                  "} catch (e) {",
+                  "  pm.test('auth returned JSON', () => pm.expect.fail(pm.response.text()));",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{client_token}}" },
+              { "key": "Content-Type", "value": "application/x-www-form-urlencoded" }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                { "key": "socket_id", "value": "{{socket_id}}" },
+                { "key": "channel_name", "value": "private-order.{{order_id}}" }
+              ]
+            },
+            "url": { "raw": "{{base_url}}/broadcasting/auth", "host": ["{{base_url}}"], "path": ["broadcasting", "auth"] },
+            "description": "Authorizes the private channel. Uses the customer's bearer token here; for the seller dashboard use {{seller_token}} instead, and channel_name stays `private-order.{{order_id}}`. Requires {{socket_id}} from the open WebSocket connection."
+          }
+        },
+        {
+          "name": "WebSocket: Connect & Subscribe (reference)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{ws_url}}", "host": ["{{ws_url}}"] },
+            "description": "Reference only — Postman opens WebSockets from a dedicated 'WebSocket Request' tab (New → WebSocket Request), not from a normal HTTP item.\n\nConnect to: {{ws_url}}\n\nSubscribe message to send after connecting (paste your ws_auth + order_id):\n{\"event\":\"pusher:subscribe\",\"data\":{\"auth\":\"{{ws_auth}}\",\"channel\":\"private-order.{{order_id}}\"}}\n\nExpected inbound events: pusher:connection_established, pusher_internal:subscription_succeeded, and driver.location (the live update)."
+          }
+        }
+      ]
+    }
+  ]
+}

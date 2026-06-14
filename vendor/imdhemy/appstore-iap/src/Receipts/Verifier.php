@@ -1,39 +1,36 @@
 <?php
 
-
 namespace Imdhemy\AppStore\Receipts;
 
-use GuzzleHttp\Client;
+use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\GuzzleException;
 use Imdhemy\AppStore\ClientFactory;
 use Imdhemy\AppStore\Exceptions\InvalidReceiptException;
 
+/**
+ * Verifier class
+ *
+ * @see     https://developer.apple.com/documentation/appstorereceipts/verifyreceipt
+ * @package Imdhemy\AppStore;
+ *          This class is responsible for handling verification requests
+ */
 class Verifier
 {
-    const TEST_ENV_CODE = 21007;
+    public const int TEST_ENV_CODE = 21007;
 
-    /**
-     * @var Client
-     */
-    protected $client;
+    public const string VERIFY_RECEIPT_PATH = '/verifyReceipt';
 
-    /**
-     * @var string
-     */
-    private $receiptData;
+    protected ClientInterface $client;
 
-    /**
-     * @var string
-     */
-    private $password;
+    protected string $receiptData;
+
+    protected string $password;
 
     /**
      * Receipt constructor.
-     * @param Client $client
-     * @param string $receiptData
-     * @param string $password
+     *
      */
-    public function __construct(Client $client, string $receiptData, string $password)
+    public function __construct(ClientInterface $client, string $receiptData, string $password)
     {
         $this->client = $client;
         $this->receiptData = $receiptData;
@@ -41,51 +38,55 @@ class Verifier
     }
 
     /**
-     * @param bool $excludeOldTransactions
-     * @return ReceiptResponse
+     * @throws GuzzleException|InvalidReceiptException
+     * @deprecated Use verify() instead - this method will be removed in the next major release
+     */
+    public function verifyRenewable(?ClientInterface $sandboxClient = null): ReceiptResponse
+    {
+        return $this->verify(true, $sandboxClient);
+    }
+
+    /**
+     *
      * @throws GuzzleException|InvalidReceiptException
      */
-    public function verify(bool $excludeOldTransactions = false): ReceiptResponse
-    {
+    public function verify(
+        bool $excludeOldTransactions = false,
+        ?ClientInterface $sandboxClient = null
+    ): ReceiptResponse {
         $responseBody = $this->sendVerifyRequest($excludeOldTransactions);
-
         $status = $responseBody['status'];
 
-        if ($this->isFromTestEnv($status)) {
-            $this->client = ClientFactory::createSandbox();
-            $responseBody = $this->sendVerifyRequest($excludeOldTransactions);
+        if ($this->isInvalidReceiptStatus($status)) {
+            throw InvalidReceiptException::create($status);
         }
 
-        return new ReceiptResponse($responseBody);
+        if ($this->isFromTestEnv($status)) {
+            $sandboxClient = $sandboxClient ?? ClientFactory::createForITunesSandbox();
+            $responseBody = $this->sendVerifyRequest($excludeOldTransactions, $sandboxClient);
+        }
+
+        return ReceiptResponse::fromArray($responseBody);
     }
 
     /**
-     * @return ReceiptResponse
-     * @throws GuzzleException|InvalidReceiptException
-     */
-    public function verifyRenewable(): ReceiptResponse
-    {
-        return $this->verify(true);
-    }
-
-    /**
-     * @param bool $excludeOldTransactions
-     * @return array
+     *
      * @throws GuzzleException
      */
-    protected function sendVerifyRequest(bool $excludeOldTransactions = false): array
+    private function sendVerifyRequest(bool $excludeOldTransactions = false, ?ClientInterface $client = null): array
     {
+        $client = $client ?? $this->client;
         $options = $this->buildRequestOptions($excludeOldTransactions);
-        $response = $this->client->post('/verifyReceipt', $options);
+        $response = $client->post(self::VERIFY_RECEIPT_PATH, $options);
 
         return json_decode((string)$response->getBody(), true);
     }
 
     /**
-     * @param bool $excludeOldTransactions
+     *
      * @return array[]
      */
-    protected function buildRequestOptions(bool $excludeOldTransactions): array
+    private function buildRequestOptions(bool $excludeOldTransactions): array
     {
         return [
             'json' => [
@@ -96,11 +97,16 @@ class Verifier
         ];
     }
 
-    /**
-     * @param int $status
-     * @return bool
-     */
-    protected function isFromTestEnv(int $status): bool
+    private function isInvalidReceiptStatus(int $status): bool
+    {
+        if ($status === self::TEST_ENV_CODE) {
+            return false;
+        }
+
+        return array_key_exists($status, InvalidReceiptException::ERROR_STATUS_MAP);
+    }
+
+    private function isFromTestEnv(int $status): bool
     {
         return $status === self::TEST_ENV_CODE;
     }

@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Order;
 use App\Models\Seller;
+use App\Events\DriverLocationUpdated;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
@@ -465,6 +466,10 @@ class ICarryService
             $driver = $this->extractDriverLocation($data);
             $status = $this->extractStatus($data);
 
+            // Remember the previously broadcast position to detect movement.
+            $prevLat = $order->icarry_driver_lat !== null ? (float) $order->icarry_driver_lat : null;
+            $prevLng = $order->icarry_driver_lng !== null ? (float) $order->icarry_driver_lng : null;
+
             $order->icarry_tracking_data = $data ?: null;
             $order->icarry_synced_at     = now();
             if ($status !== null)        { $order->icarry_shipment_status = $status; }
@@ -472,6 +477,20 @@ class ICarryService
             if ($driver['lat'] !== null) { $order->icarry_driver_lat  = $driver['lat']; }
             if ($driver['lng'] !== null) { $order->icarry_driver_lng  = $driver['lng']; }
             $order->save();
+
+            // Broadcast a real-time update when we have a position and it moved
+            // (or was previously unknown). Never let a broadcast failure break sync.
+            if ($driver['lat'] !== null && $driver['lng'] !== null
+                && ($driver['lat'] !== $prevLat || $driver['lng'] !== $prevLng)) {
+                try {
+                    event(new DriverLocationUpdated($order, $driver));
+                } catch (\Throwable $e) {
+                    Log::warning('iCARRY DriverLocationUpdated broadcast failed.', [
+                        'order_id' => $order->id,
+                        'message'  => $e->getMessage(),
+                    ]);
+                }
+            }
 
             return [
                 'success'         => $result['success'] ?? false,

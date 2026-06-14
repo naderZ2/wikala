@@ -1,234 +1,117 @@
 <?php
 
-
 namespace Imdhemy\GooglePlay\DeveloperNotifications;
 
+use Imdhemy\GooglePlay\DeveloperNotifications\Builders\DeveloperNotificationBuilder;
+use Imdhemy\GooglePlay\DeveloperNotifications\Contracts\Arrayable;
+use Imdhemy\GooglePlay\DeveloperNotifications\Contracts\NotificationPayload;
+use Imdhemy\GooglePlay\DeveloperNotifications\Contracts\RealTimeDeveloperNotification;
 use Imdhemy\GooglePlay\ValueObjects\Time;
+use JsonException;
+use RuntimeException;
 
-class DeveloperNotification
+/**
+ * Class DeveloperNotification
+ * This class represents the Real-time developer notifications from Google
+ * {@link https://developer.android.com/google/play/billing/rtdn-reference}.
+ *
+ * @deprecated use {@link \Imdhemy\GooglePlay\Domain\Rtdn\Notification\DeveloperNotification} instead
+ */
+class DeveloperNotification implements RealTimeDeveloperNotification, Arrayable
 {
-    public const ONE_TIME_PRODUCT_NOTIFICATION = 'oneTimeProductNotification';
-    public const SUBSCRIPTION_NOTIFICATION = 'subscriptionNotification';
-    public const TEST_NOTIFICATION = 'testNotification';
+    /**
+     * The version of this notification.
+     * Initially, this is "1.0". This version is distinct from other version fields.
+     */
+    protected string $version;
 
     /**
-     * @var string
+     * The package name of the application that this notification relates to
+     * (for example, `com.some.thing`).
      */
-    protected $version;
+    protected string $packageName;
 
     /**
-     * @var string
+     * The timestamp when the event occurred, in milliseconds since the Epoch.
      */
-    protected $packageName;
+    protected int $eventTimeMillis;
 
-    /**
-     * @var int
-     */
-    protected $eventTimeMillis;
+    private NotificationPayload $payload;
 
-    /**
-     * @var array|null
-     */
-    protected $oneTimeProductNotification;
+    private array $decodedData;
 
-    /**
-     * @var array|null
-     */
-    protected $subscriptionNotification;
-
-    /**
-     * @var array|null
-     */
-    protected $testNotification;
-
-    /**
-     * DeveloperNotification constructor.
-     * @param string $version
-     * @param string $packageName
-     * @param int $eventTimeMillis
-     * @param array|null $oneTimeProductNotification
-     * @param array|null $subscriptionNotification
-     * @param array|null $testNotification
-     */
-    public function __construct(
-        string $version,
-        string $packageName,
-        int $eventTimeMillis,
-        ?array $oneTimeProductNotification = null,
-        ?array $subscriptionNotification = null,
-        ?array $testNotification = null
-    ) {
-        $this->version = $version;
-        $this->packageName = $packageName;
-        $this->eventTimeMillis = $eventTimeMillis;
-        $this->oneTimeProductNotification = $oneTimeProductNotification;
-        $this->subscriptionNotification = $subscriptionNotification;
-        $this->testNotification = $testNotification;
-    }
-
-    /**
-     * @param string $data
-     * @return self
-     */
-    public static function parse(string $data): self
+    public function __construct(DeveloperNotificationBuilder $builder)
     {
-        $decodedData = json_decode(base64_decode($data), true);
-        $params = array_values($decodedData);
+        $this->version = $builder->getVersion();
+        $this->packageName = $builder->getPackageName();
+        $this->eventTimeMillis = $builder->getEventTimeMillis();
+        $this->payload = $builder->getPayload();
+        $this->decodedData = $builder->getDecodedData();
+    }
 
-        if (isset($decodedData[self::ONE_TIME_PRODUCT_NOTIFICATION])) {
-            return self::oneTimeProductNotification(...$params);
+    /**
+     * Parses the notification data into a developer notification.
+     */
+    public static function parse(string $data): DeveloperNotification
+    {
+        try {
+            $decodedData = json_decode(base64_decode($data), true, 512, JSON_THROW_ON_ERROR);
+        } catch (JsonException $e) {
+            throw new RuntimeException('Invalid notification data');
         }
 
-        if (isset($decodedData[self::SUBSCRIPTION_NOTIFICATION])) {
-            return self::subscriptionNotification(...$params);
-        }
-
-        return self::testNotification(...$params);
+        return DeveloperNotificationBuilder::init()
+            ->setDecodedData($decodedData)
+            ->setVersion($decodedData['version'])
+            ->setPackageName($decodedData['packageName'])
+            ->setEventTimeMillis($decodedData['eventTimeMillis'])
+            ->setPayloadFromArray($decodedData)
+            ->build();
     }
 
-    /**
-     * @param string $version
-     * @param string $packageName
-     * @param int $eventTimeMillis
-     * @param array $oneTimeProductNotification
-     * @return static
-     */
-    protected static function oneTimeProductNotification(
-        string $version,
-        string $packageName,
-        int $eventTimeMillis,
-        array $oneTimeProductNotification
-    ): self {
-        return new self($version, $packageName, $eventTimeMillis, $oneTimeProductNotification);
-    }
-
-    /**
-     * @param string $version
-     * @param string $packageName
-     * @param int $eventTimeMillis
-     * @param array $subscriptionNotification
-     * @return static
-     */
-    protected static function subscriptionNotification(
-        string $version,
-        string $packageName,
-        int $eventTimeMillis,
-        array $subscriptionNotification
-    ): self {
-        return new self($version, $packageName, $eventTimeMillis, null, $subscriptionNotification);
-    }
-
-    /**
-     * @param string $version
-     * @param string $packageName
-     * @param int $eventTimeMillis
-     * @param array $testNotification
-     * @return static
-     */
-    protected static function testNotification(
-        string $version,
-        string $packageName,
-        int $eventTimeMillis,
-        array $testNotification
-    ): self {
-        return new self($version, $packageName, $eventTimeMillis, null, null, $testNotification);
-    }
-
-    /**
-     * @return string
-     */
     public function getType(): string
     {
-        if ($this->isOneTimeProductionNotification()) {
-            return self::ONE_TIME_PRODUCT_NOTIFICATION;
-        }
-
-        if ($this->isSubscriptionNotification()) {
-            return self::SUBSCRIPTION_NOTIFICATION;
-        }
-
-        return self::TEST_NOTIFICATION;
+        return $this->payload->getType();
     }
 
-    /**
-     * @return SubscriptionNotification
-     */
-    public function getSubscriptionNotification(): SubscriptionNotification
-    {
-        return new SubscriptionNotification(
-            $this->version,
-            $this->subscriptionNotification['notificationType'],
-            $this->subscriptionNotification['purchaseToken'],
-            $this->subscriptionNotification['subscriptionId']
-        );
-    }
-
-    /**
-     * @return OneTimePurchaseNotification
-     */
-    public function getOneTimeProductNotification(): OneTimePurchaseNotification
-    {
-        return new OneTimePurchaseNotification(
-            $this->version,
-            $this->oneTimeProductNotification['notificationType'],
-            $this->oneTimeProductNotification['purchaseToken'],
-            $this->oneTimeProductNotification['sku']
-        );
-    }
-
-    /**
-     * @return TestNotification
-     */
-    public function getTestNotification(): TestNotification
-    {
-        return new TestNotification($this->testNotification['version']);
-    }
-
-    /**
-     * @return string
-     */
     public function getVersion(): string
     {
         return $this->version;
     }
 
-    /**
-     * @return string
-     */
     public function getPackageName(): string
     {
         return $this->packageName;
     }
 
-    /**
-     * @return Time
-     */
     public function getEventTime(): Time
     {
-        return new Time($this->eventTimeMillis);
+        return new Time((string)$this->eventTimeMillis);
     }
 
-    /**
-     * @return bool
-     */
-    public function isSubscriptionNotification(): bool
+    public function getEventTimeMillis(): int
     {
-        return ! is_null($this->subscriptionNotification);
+        return $this->eventTimeMillis;
     }
 
     /**
-     * @return bool
+     * @return NotificationPayload|OneTimePurchaseNotification|SubscriptionNotification|TestNotification
      */
-    public function isOneTimeProductionNotification(): bool
+    public function getPayload(): NotificationPayload
     {
-        return ! is_null($this->oneTimeProductNotification);
+        return $this->payload;
     }
 
-    /**
-     * @return bool
-     */
     public function isTestNotification(): bool
     {
-        return ! is_null($this->testNotification);
+        return $this->payload instanceof TestNotification;
+    }
+
+    /**
+     * Return the instance as an array.
+     */
+    public function toArray(): array
+    {
+        return $this->decodedData;
     }
 }

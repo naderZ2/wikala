@@ -185,3 +185,4 @@
 [01-Jun-2026 12:59:20 UTC] PHP Fatal error:  Allowed memory size of 33554432 bytes exhausted (tried to allocate 2621440 bytes) in /home/wikala/public_html/ex/vendor/composer/autoload_static.php on line 783
 [01-Jun-2026 12:59:49 UTC] PHP Fatal error:  Allowed memory size of 33554432 bytes exhausted (tried to allocate 2621440 bytes) in /home/wikala/public_html/ex/vendor/composer/autoload_static.php on line 783
 [01-Jun-2026 12:59:54 UTC] PHP Fatal error:  Allowed memory size of 33554432 bytes exhausted (tried to allocate 2621440 bytes) in /home/wikala/public_html/ex/vendor/composer/autoload_static.php on line 783
+[14-Jun-2026 21:21:30 UTC] PHP Fatal error:  Composer detected issues in your platform: Your Composer dependencies require a PHP version ">= 8.4.1". You are running 8.2.31. in /home/wikala/public_html/ex/vendor/composer/platform_check.php on line 22

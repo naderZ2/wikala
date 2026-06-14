@@ -1,139 +1,200 @@
 <?php
 
-
 namespace Imdhemy\AppStore\Receipts;
 
-use Imdhemy\AppStore\Exceptions\InvalidReceiptException;
+use Imdhemy\AppStore\Contracts\Arrayable;
+use Imdhemy\AppStore\ValueObjects\LatestReceiptInfo;
 use Imdhemy\AppStore\ValueObjects\PendingRenewal;
 use Imdhemy\AppStore\ValueObjects\Receipt;
-use Imdhemy\AppStore\ValueObjects\ReceiptInfo;
 use Imdhemy\AppStore\ValueObjects\Status;
 
 /**
  * Class ReceiptResponse
+ *
+ * @see     https://developer.apple.com/documentation/appstorereceipts/responsebody
  * @package Imdhemy\AppStore\Receipts
  */
-class ReceiptResponse
+class ReceiptResponse implements Arrayable
 {
-    /**
-     * @var string
-     */
-    protected $environment;
+    public const string ENV_SANDBOX = 'Sandbox';
+
+    public const string ENV_PRODUCTION = 'Production';
 
     /**
-     * @var bool|null
-     */
-    protected $isRetryable;
-
-    /**
+     * The environment for which the receipt was generated.
+     *
      * @var string|null
      */
-    protected $latestReceipt;
+    protected ?string $environment;
 
     /**
-     * @var array|ReceiptInfo[]
+     * An indicator that an error occurred during the request.
+     *
+     * @var bool|null
      */
-    protected $latestReceiptInfo;
+    protected ?bool $isRetryable;
 
     /**
-     * @var array|PendingRenewal[]
+     * The latest Base64 encoded app receipt.
+     * Only returned for receipts that contain auto-renewable subscriptions.
+     *
+     * @var string|null
      */
-    protected $pendingRenewalInfo;
+    protected ?string $latestReceipt;
 
     /**
-     * @var Receipt|null
+     * An array that contains all in-app purchase transactions.
+     *
+     * @var array|LatestReceiptInfo[]|null
      */
-    protected $receipt;
+    protected ?array $latestReceiptInfo;
 
     /**
-     * @var Status
+     * In the JSON file, an array where each element contains the pending renewal information
+     * for each auto-renewable subscription identified by the product_id.
+     *
+     * @var array|PendingRenewal[]|null
      */
-    protected $status;
+    protected ?array $pendingRenewalInfo;
 
     /**
-     * ReceiptResponse constructor.
-     * TODO: replace public constructor usage with a static factory method
-     * @param array $attributes
-     * @throws InvalidReceiptException
+     * the receipt that was sent for verification.
+     *
+     * @var array|null
      */
-    public function __construct(array $attributes)
+    protected ?array $receipt;
+
+    /**
+     * Either `0` if the receipt is valid, or a status code if there is an error.
+     *
+     * @see https://developer.apple.com/documentation/appstorereceipts/status
+     * @var int
+     */
+    protected int $status;
+
+    private bool $parsedLatestReceiptInfo;
+
+    private bool $parsedPendingRenewalInfo;
+
+    /**
+     * @var array The raw data from the response.
+     */
+    private array $rawBody = [];
+
+    /**
+     * ReceiptResponse Constructor
+     *
+     * @deprecated Use ReceiptResponse::fromArray() instead.
+     * This constructor will be private in the next major release.
+     * Using it will result in inaccessibility to the response body as an array.
+     */
+    public function __construct(int $status)
     {
-        if ($attributes['status'] !== 0) {
-            throw InvalidReceiptException::create($attributes['status']);
-        }
-
-        $this->environment = $attributes['environment'];
-        $this->latestReceipt = $attributes['latest_receipt'] ?? null;
-
-        $this->latestReceiptInfo = [];
-        foreach ($attributes['latest_receipt_info'] ?? [] as $itemAttributes) {
-            $this->latestReceiptInfo[] = ReceiptInfo::fromArray($itemAttributes);
-        }
-
-        $this->receipt = isset($attributes['receipt']) ? Receipt::fromArray($attributes['receipt']) : null;
-        $this->status = new Status($attributes['status']);
-
-        $this->pendingRenewalInfo = [];
-        foreach ($attributes['pending_renewal_info'] ?? [] as $item) {
-            $this->pendingRenewalInfo[] = PendingRenewal::fromArray($item);
-        }
-
-        $this->isRetryable = $attributes['is-retryable'] ?? null;
+        $this->status = $status;
+        $this->parsedLatestReceiptInfo = false;
+        $this->parsedPendingRenewalInfo = false;
     }
 
     /**
-     * @return string
+     * Static factory method
      */
-    public function getEnvironment(): string
+    public static function fromArray(array $body): self
+    {
+        $obj = new self($body['status']);
+        $obj->rawBody = $body;
+
+        $obj->environment = $body['environment'] ?? null;
+        $obj->isRetryable = $body['is-retryable'] ?? null;
+        $obj->latestReceipt = $body['latest_receipt'] ?? null;
+        $obj->latestReceiptInfo = $body['latest_receipt_info'] ?? null;
+        $obj->pendingRenewalInfo = $body['pending_renewal_info'] ?? null;
+        $obj->receipt = $body['receipt'] ?? null;
+
+        return $obj;
+    }
+
+    public function getEnvironment(): ?string
     {
         return $this->environment;
     }
 
-    /**
-     * @return bool|null
-     */
     public function getIsRetryable(): ?bool
     {
         return $this->isRetryable;
     }
 
-    /**
-     * @return string
-     */
     public function getLatestReceipt(): ?string
     {
         return $this->latestReceipt;
     }
 
     /**
-     * @return array|ReceiptInfo[]
+     * @return array|LatestReceiptInfo[]|null
      */
-    public function getLatestReceiptInfo(): array
+    public function getLatestReceiptInfo(): ?array
     {
+        if (null === $this->latestReceiptInfo) {
+            return null;
+        }
+
+        if ($this->parsedLatestReceiptInfo) {
+            return $this->latestReceiptInfo;
+        }
+
+        $data = [];
+
+        foreach ($this->latestReceiptInfo as $receiptInfo) {
+            $data[] = LatestReceiptInfo::fromArray($receiptInfo);
+        }
+
+        $this->latestReceiptInfo = $data;
+        $this->parsedLatestReceiptInfo = true;
+
         return $this->latestReceiptInfo;
     }
 
     /**
-     * @return array|PendingRenewal[]
+     * @return array|PendingRenewal[]|null
      */
-    public function getPendingRenewalInfo(): array
+    public function getPendingRenewalInfo(): ?array
     {
+        if (null === $this->pendingRenewalInfo) {
+            return null;
+        }
+
+        if ($this->parsedPendingRenewalInfo) {
+            return $this->pendingRenewalInfo;
+        }
+
+        $data = [];
+        foreach ($this->pendingRenewalInfo as $renewalInfo) {
+            $data[] = PendingRenewal::fromArray($renewalInfo);
+        }
+
+        $this->pendingRenewalInfo = $data;
+        $this->parsedPendingRenewalInfo = true;
+
         return $this->pendingRenewalInfo;
     }
 
-    /**
-     * @return Receipt|null
-     */
     public function getReceipt(): ?Receipt
     {
-        return $this->receipt;
+        return
+            is_array($this->receipt) ?
+                Receipt::fromArray($this->receipt) :
+                null;
+    }
+
+    public function getStatus(): Status
+    {
+        return new Status($this->status);
     }
 
     /**
-     * @return Status
+     * @inheritDoc
      */
-    public function getStatus(): Status
+    public function toArray(): array
     {
-        return $this->status;
+        return $this->rawBody;
     }
 }
