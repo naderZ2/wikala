@@ -14,23 +14,22 @@ use JsonSerializable;
  * A SubscriptionPurchase resource indicates the status of a user's subscription purchase.
  *
  * @see https://developers.google.com/android-publisher/api-ref/rest/v3/purchases.subscriptions#SubscriptionPurchase
- * @deprecated
  */
 class SubscriptionPurchase implements JsonSerializable
 {
-    public const int PURCHASE_TYPE_TEST = 0;
-    public const int PURCHASE_TYPE_PROMO = 1;
+    public const PURCHASE_TYPE_TEST = 0;
+    public const PURCHASE_TYPE_PROMO = 1;
 
-    public const int ACKNOWLEDGEMENT_STATE_NOT_ACKNOWLEDGED = 0;
-    public const int ACKNOWLEDGEMENT_STATE_ACKNOWLEDGED = 1;
+    public const ACKNOWLEDGEMENT_STATE_NOT_ACKNOWLEDGED = 0;
+    public const ACKNOWLEDGEMENT_STATE_ACKNOWLEDGED = 1;
 
-    public const int PROMOTION_TYPE_VANITY_CODE = 1;
-    public const int PROMOTION_TYPE_ONE_TIME_CODE = 0;
+    public const PROMOTION_TYPE_VANITY_CODE = 1;
+    public const PROMOTION_TYPE_ONE_TIME_CODE = 0;
 
-    public const int PAYMENT_STATE_FREE_TRIAL = 2;
-    public const int PAYMENT_STATE_PENDING = 0;
-    public const int PAYMENT_STATE_DEFERRED = 3;
-    public const int PAYMENT_STATE_RECEIVED = 1;
+    public const PAYMENT_STATE_FREE_TRIAL = 2;
+    public const PAYMENT_STATE_PENDING = 0;
+    public const PAYMENT_STATE_DEFERRED = 3;
+    public const PAYMENT_STATE_RECEIVED = 1;
 
     /**
      * @var string|null
@@ -317,17 +316,17 @@ class SubscriptionPurchase implements JsonSerializable
 
     public function getStartTime(): ?Time
     {
-        return is_null($this->startTimeMillis) ? null : new Time((string)$this->startTimeMillis);
+        return is_null($this->startTimeMillis) ? null : new Time($this->startTimeMillis);
     }
 
     public function getExpiryTime(): ?Time
     {
-        return is_null($this->expiryTimeMillis) ? null : new Time((string)$this->expiryTimeMillis);
+        return is_null($this->expiryTimeMillis) ? null : new Time($this->expiryTimeMillis);
     }
 
     public function getAutoResumeTime(): ?Time
     {
-        return is_null($this->autoResumeTimeMillis) ? null : new Time((string)$this->autoResumeTimeMillis);
+        return is_null($this->autoResumeTimeMillis) ? null : new Time($this->autoResumeTimeMillis);
     }
 
     public function getIntroductoryPriceInfo(): ?IntroductoryPriceInfo

@@ -2,35 +2,62 @@
 
 namespace Tests\ValueObjects;
 
+use DateTime;
+use DateTimeInterface;
 use Imdhemy\GooglePlay\ValueObjects\Time;
-use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class TimeTest extends TestCase
 {
-    #[Test]
-    public function create_from_time_millis(): void
+    /**
+     * @test
+     */
+    public function test_it_can_be_constructed_from_time_millis()
     {
         $millis = $this->faker->dateTimeBetween('+1 day', '+1 year')->getTimestamp() * 1000;
 
-        $time = new Time((string)$millis);
+        $time = new Time($millis);
 
-        $this->assertEquals($millis, $time->originalValue);
-        $this->assertEquals($millis, $time->carbon->getTimestampMs());
-        $this->assertTrue($time->isFuture());
-        $this->assertFalse($time->isPast());
+        $this->assertInstanceOf(Time::class, $time);
     }
 
-    #[Test]
-    public function create_from_zulu_timestamp(): void
+    /**
+     * @test
+     */
+    public function test_it_can_check_if_is_future()
     {
-        $value = '2014-10-02T15:01:23.045123456Z';
+        $futureMillis = $this->faker->dateTimeBetween('+1 day', '+1 year')->getTimestamp() * 1000;
 
-        $time = new Time($value);
+        $time = new Time($futureMillis);
 
-        $this->assertEquals($value, $time->originalValue);
-        $this->assertEquals('2014-10-02 15:01:23', $time->carbon->toDateTimeString());
+        $this->assertTrue($time->isFuture());
+    }
+
+    /**
+     * @test
+     */
+    public function test_is_can_check_if_is_past()
+    {
+        $pastMillis = $this->faker->dateTimeBetween('-1 year', '-1 day')->getTimestamp() * 1000;
+
+        $time = new Time($pastMillis);
+
         $this->assertTrue($time->isPast());
-        $this->assertFalse($time->isFuture());
+    }
+
+    /**
+     * @test
+     */
+    public function to_date_time()
+    {
+        $dateTime = new DateTime();
+        $timeMillis = strtotime($dateTime->format(DateTimeInterface::ATOM)) * 1000;
+
+        $time = new Time($timeMillis);
+        $this->assertInstanceOf(DateTime::class, $time->toDateTime());
+        $this->assertEquals(
+            $dateTime->format(DateTimeInterface::ATOM),
+            $time->toDateTime()->format(DateTimeInterface::ATOM)
+        );
     }
 }

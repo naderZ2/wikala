@@ -11,13 +11,11 @@ use Imdhemy\GooglePlay\DeveloperNotifications\Contracts\NotificationPayload;
  * For more information, see Integrate the library into your app.
  * {@link https://developer.android.com/google/play/billing/integrate}
  * {@link https://developer.android.com/google/play/billing/rtdn-reference#one-time}.
- *
- * @deprecated use {@link \Imdhemy\GooglePlay\Domain\Rtdn\Notification\OneTimeProductNotification} instead
  */
 class OneTimePurchaseNotification implements NotificationPayload
 {
-    public const int ONE_TIME_PRODUCT_CANCELED = 2;
-    public const int ONE_TIME_PRODUCT_PURCHASED = 1;
+    public const ONE_TIME_PRODUCT_CANCELED = 2;
+    public const ONE_TIME_PRODUCT_PURCHASED = 1;
     /**
      * @var string
      */

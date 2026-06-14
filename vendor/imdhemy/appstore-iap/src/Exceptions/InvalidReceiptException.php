@@ -7,13 +7,16 @@ use Imdhemy\AppStore\ValueObjects\Status;
 
 /**
  * Class InvalidReceiptException
- *
  * @package Imdhemy\AppStore\Exceptions
  */
 class InvalidReceiptException extends Exception
 {
-    public const array ERROR_STATUS_MAP = Status::ERROR_STATUS_MAP;
+    public const ERROR_STATUS_MAP = Status::ERROR_STATUS_MAP;
 
+    /**
+     * @param int $status
+     * @return InvalidReceiptException
+     */
     public static function create(int $status): self
     {
         $msg = self::ERROR_STATUS_MAP[$status];

@@ -1,22 +1,25 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Imdhemy\GooglePlay\ValueObjects;
 
 use Carbon\Carbon;
 use DateTime;
 
-final readonly class Time
+final class Time
 {
-    public Carbon $carbon;
-    public string $originalValue;
+    /**
+     * @var Carbon
+     */
+    private $carbon;
 
-    public function __construct(string $value)
+    /**
+     * Time constructor.
+     *
+     * @param float|int|string $timestampMs
+     */
+    public function __construct($timestampMs)
     {
-        $this->originalValue = $value;
-
-        $this->carbon = is_numeric($value) ? Carbon::createFromTimestampMs($value) : Carbon::parse($value);
+        $this->carbon = Carbon::createFromTimestampMs($timestampMs);
     }
 
     public function isFuture(): bool
@@ -29,13 +32,11 @@ final readonly class Time
         return Carbon::now()->greaterThan($this->carbon);
     }
 
-    /** @deprecated use the public property {@see self::$carbon} */
     public function getCarbon(): Carbon
     {
         return $this->carbon;
     }
 
-    /** @deprecated depend on carbon instance instead {@see self::$carbon} */
     public function toDateTime(): DateTime
     {
         return $this->carbon->toDateTime();

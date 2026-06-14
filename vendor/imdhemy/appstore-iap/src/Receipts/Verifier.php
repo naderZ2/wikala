@@ -16,19 +16,31 @@ use Imdhemy\AppStore\Exceptions\InvalidReceiptException;
  */
 class Verifier
 {
-    public const int TEST_ENV_CODE = 21007;
+    public const TEST_ENV_CODE = 21007;
 
-    public const string VERIFY_RECEIPT_PATH = '/verifyReceipt';
+    public const VERIFY_RECEIPT_PATH = '/verifyReceipt';
 
-    protected ClientInterface $client;
+    /**
+     * @var ClientInterface
+     */
+    protected $client;
 
-    protected string $receiptData;
+    /**
+     * @var string
+     */
+    protected $receiptData;
 
-    protected string $password;
+    /**
+     * @var string
+     */
+    protected $password;
 
     /**
      * Receipt constructor.
      *
+     * @param ClientInterface $client
+     * @param string          $receiptData
+     * @param string          $password
      */
     public function __construct(ClientInterface $client, string $receiptData, string $password)
     {
@@ -38,6 +50,9 @@ class Verifier
     }
 
     /**
+     * @param ClientInterface|null $sandboxClient
+     *
+     * @return ReceiptResponse
      * @throws GuzzleException|InvalidReceiptException
      * @deprecated Use verify() instead - this method will be removed in the next major release
      */
@@ -47,7 +62,10 @@ class Verifier
     }
 
     /**
+     * @param bool                 $excludeOldTransactions
+     * @param ClientInterface|null $sandboxClient
      *
+     * @return ReceiptResponse
      * @throws GuzzleException|InvalidReceiptException
      */
     public function verify(
@@ -70,7 +88,10 @@ class Verifier
     }
 
     /**
+     * @param bool                 $excludeOldTransactions
+     * @param ClientInterface|null $client
      *
+     * @return array
      * @throws GuzzleException
      */
     private function sendVerifyRequest(bool $excludeOldTransactions = false, ?ClientInterface $client = null): array
@@ -83,6 +104,7 @@ class Verifier
     }
 
     /**
+     * @param bool $excludeOldTransactions
      *
      * @return array[]
      */
@@ -97,15 +119,25 @@ class Verifier
         ];
     }
 
+    /**
+     * @param int $status
+     *
+     * @return bool
+     */
     private function isInvalidReceiptStatus(int $status): bool
     {
         if ($status === self::TEST_ENV_CODE) {
             return false;
         }
 
-        return array_key_exists($status, InvalidReceiptException::ERROR_STATUS_MAP);
+        return in_array($status, array_keys(InvalidReceiptException::ERROR_STATUS_MAP));
     }
 
+    /**
+     * @param int $status
+     *
+     * @return bool
+     */
     private function isFromTestEnv(int $status): bool
     {
         return $status === self::TEST_ENV_CODE;

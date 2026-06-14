@@ -4,7 +4,7 @@ namespace Imdhemy\GooglePlay;
 
 use Exception;
 use Google\Auth\ApplicationDefaultCredentials;
-use Google\Auth\Credentials\ServiceAccountCredentials;
+use Google\Auth\CredentialsLoader;
 use Google\Auth\Middleware\AuthTokenMiddleware;
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
@@ -17,14 +17,12 @@ use Psr\Http\Message\ResponseInterface;
 /**
  * Class ClientFactory is responsible for creating an HTTP client for
  * different use cases.
- *
- * @deprecated use {@link \Imdhemy\GooglePlay\Infrastructure\Http\ClientFactory} instead
  */
 class ClientFactory
 {
-    public const string SCOPE_ANDROID_PUBLISHER = 'https://www.googleapis.com/auth/androidpublisher';
-    private const string BASE_URI = 'https://www.googleapis.com';
-    private const string GOOGLE_AUTH = 'google_auth';
+    public const SCOPE_ANDROID_PUBLISHER = 'https://www.googleapis.com/auth/androidpublisher';
+    private const BASE_URI = 'https://www.googleapis.com';
+    private const GOOGLE_AUTH = 'google_auth';
 
     /**
      * Creates a client using the specified scopes. This method requires the
@@ -50,9 +48,9 @@ class ClientFactory
      */
     public static function createWithJsonKey(
         array $jsonKey,
-        array $scopes = [self::SCOPE_ANDROID_PUBLISHER],
+        array $scopes = [self::SCOPE_ANDROID_PUBLISHER]
     ): ClientInterface {
-        $credentials = new ServiceAccountCredentials($scopes, $jsonKey);
+        $credentials = CredentialsLoader::makeCredentials($scopes, $jsonKey);
         $middleware = new AuthTokenMiddleware($credentials);
 
         return self::createWithMiddleware($middleware);

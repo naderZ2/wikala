@@ -8,14 +8,15 @@ use Imdhemy\GooglePlay\ValueObjects\Cancellation;
 use Imdhemy\GooglePlay\ValueObjects\IntroductoryPriceInfo;
 use Imdhemy\GooglePlay\ValueObjects\SubscriptionCancelSurveyResult;
 use JsonException;
-use PHPUnit\Framework\Attributes\Test;
 use ReflectionClass;
 use ReflectionMethod;
 use Tests\TestCase;
 
 class SubscriptionPurchaseTest extends TestCase
 {
-    #[Test]
+    /**
+     * @test
+     */
     public function test_it_can_be_created_from_array()
     {
         $body = [
@@ -32,7 +33,9 @@ class SubscriptionPurchaseTest extends TestCase
         $this->assertInstanceOf(SubscriptionPurchase::class, SubscriptionPurchase::fromArray($body));
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function it_can_get_the_plain_response_body()
     {
         $body = [
@@ -49,7 +52,9 @@ class SubscriptionPurchaseTest extends TestCase
         $this->assertSame($body, $subscriptionPurchase->toArray());
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function all_props_are_optional(): void
     {
         $productPurchase = SubscriptionPurchase::fromArray([]);
@@ -72,7 +77,9 @@ class SubscriptionPurchaseTest extends TestCase
         }
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function test_kind()
     {
         $value = $this->faker->word();
@@ -80,7 +87,9 @@ class SubscriptionPurchaseTest extends TestCase
         $this->assertEquals($value, $subscriptionPurchase->getKind());
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function test_start_time()
     {
         $value = Carbon::now()->getTimestampMs();
@@ -88,7 +97,9 @@ class SubscriptionPurchaseTest extends TestCase
         $this->assertEquals($value, $subscriptionPurchase->getStartTime()->getCarbon()->getTimestampMs());
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function expiry_time()
     {
         $value = Carbon::now()->getTimestampMs();
@@ -96,7 +107,9 @@ class SubscriptionPurchaseTest extends TestCase
         $this->assertEquals($value, $subscriptionPurchase->getExpiryTime()->getCarbon()->getTimestampMs());
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function auto_resume_time()
     {
         $value = Carbon::now()->getTimestampMs();
@@ -104,7 +117,9 @@ class SubscriptionPurchaseTest extends TestCase
         $this->assertEquals($value, $subscriptionPurchase->getAutoResumeTime()->getCarbon()->getTimestampMs());
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function auto_renewing()
     {
         $value = $this->faker->boolean();
@@ -112,7 +127,9 @@ class SubscriptionPurchaseTest extends TestCase
         $this->assertEquals($value, $subscriptionPurchase->isAutoRenewing());
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function price_currency_code()
     {
         $value = $this->faker->currencyCode();
@@ -120,7 +137,9 @@ class SubscriptionPurchaseTest extends TestCase
         $this->assertEquals($value, $subscriptionPurchase->getPriceCurrencyCode());
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function price_amount_micros()
     {
         $value = $this->faker->randomElement(range(0, 100));
@@ -128,7 +147,9 @@ class SubscriptionPurchaseTest extends TestCase
         $this->assertEquals($value, $subscriptionPurchase->getPriceAmountMicros());
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function introductory_price_info()
     {
         $value = [
@@ -142,7 +163,9 @@ class SubscriptionPurchaseTest extends TestCase
         $this->assertEquals($value, $subscriptionPurchase->getIntroductoryPriceInfo()->toArray());
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function country_code()
     {
         $value = $this->faker->countryCode();
@@ -150,7 +173,9 @@ class SubscriptionPurchaseTest extends TestCase
         $this->assertEquals($value, $subscriptionPurchase->getCountryCode());
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function developer_payload()
     {
         $value = json_encode(['uuid' => $this->faker->uuid()]);
@@ -158,7 +183,9 @@ class SubscriptionPurchaseTest extends TestCase
         $this->assertEquals($value, $subscriptionPurchase->getDeveloperPayload());
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function payment_state()
     {
         $value = $this->faker->randomElement([
@@ -171,7 +198,9 @@ class SubscriptionPurchaseTest extends TestCase
         $this->assertEquals($value, $subscriptionPurchase->getPaymentState());
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function cancel_reason()
     {
         $value = $this->faker->randomElement([
@@ -185,7 +214,9 @@ class SubscriptionPurchaseTest extends TestCase
         $this->assertEquals($value, $subscriptionPurchase->getCancellation()->getCancelReason());
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function user_cancellation_time()
     {
         $value = Carbon::now()->getTimestampMs();
@@ -196,7 +227,9 @@ class SubscriptionPurchaseTest extends TestCase
         );
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function cancel_survey_result()
     {
         $reason = $this->faker->randomElement([
@@ -218,7 +251,9 @@ class SubscriptionPurchaseTest extends TestCase
         $this->assertEquals($value, $subscriptionPurchase->getCancellation()->getCancelSurveyResult()->toArray());
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function order_id()
     {
         $value = $this->faker->uuid();
@@ -226,7 +261,9 @@ class SubscriptionPurchaseTest extends TestCase
         $this->assertEquals($value, $subscriptionPurchase->getOrderId());
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function linked_purchase_token()
     {
         $value = $this->faker->uuid();
@@ -234,7 +271,9 @@ class SubscriptionPurchaseTest extends TestCase
         $this->assertEquals($value, $subscriptionPurchase->getLinkedPurchaseToken());
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function purchase_type()
     {
         $value = $this->faker->randomElement([
@@ -245,7 +284,9 @@ class SubscriptionPurchaseTest extends TestCase
         $this->assertEquals($value, $subscriptionPurchase->getPurchaseType());
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function price_change()
     {
         $value = [
@@ -261,7 +302,9 @@ class SubscriptionPurchaseTest extends TestCase
         $this->assertEquals($value, $subscriptionPurchase->getPriceChange()->toArray());
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function profile_name()
     {
         $value = $this->faker->name();
@@ -269,7 +312,9 @@ class SubscriptionPurchaseTest extends TestCase
         $this->assertEquals($value, $subscriptionPurchase->getProfileName());
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function email_address()
     {
         $value = $this->faker->email();
@@ -277,7 +322,9 @@ class SubscriptionPurchaseTest extends TestCase
         $this->assertEquals($value, $subscriptionPurchase->getEmailAddress());
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function given_name()
     {
         $value = $this->faker->name();
@@ -285,7 +332,9 @@ class SubscriptionPurchaseTest extends TestCase
         $this->assertEquals($value, $subscriptionPurchase->getGivenName());
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function family_name()
     {
         $value = $this->faker->name();
@@ -293,7 +342,9 @@ class SubscriptionPurchaseTest extends TestCase
         $this->assertEquals($value, $subscriptionPurchase->getFamilyName());
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function profile_id()
     {
         $value = $this->faker->uuid();
@@ -301,7 +352,9 @@ class SubscriptionPurchaseTest extends TestCase
         $this->assertEquals($value, $subscriptionPurchase->getProfileId());
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function acknowledgement_state()
     {
         $value = $this->faker->randomElement([
@@ -313,7 +366,9 @@ class SubscriptionPurchaseTest extends TestCase
         $this->assertEquals($value, $subscriptionPurchase->getAcknowledgementState());
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function external_account_id()
     {
         $value = $this->faker->uuid();
@@ -321,7 +376,9 @@ class SubscriptionPurchaseTest extends TestCase
         $this->assertEquals($value, $subscriptionPurchase->getExternalAccountId());
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function promotion_type()
     {
         $value = $this->faker->randomElement([
@@ -332,7 +389,9 @@ class SubscriptionPurchaseTest extends TestCase
         $this->assertEquals($value, $subscriptionPurchase->getPromotionType());
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function promotion_code()
     {
         $value = $this->faker->uuid();
@@ -343,7 +402,9 @@ class SubscriptionPurchaseTest extends TestCase
         $this->assertEquals($value, $subscriptionPurchase->getPromotionCode());
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function obfuscated_external_account_id()
     {
         $value = $this->faker->uuid();
@@ -351,7 +412,9 @@ class SubscriptionPurchaseTest extends TestCase
         $this->assertEquals($value, $subscriptionPurchase->getObfuscatedExternalAccountId());
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function obfuscated_external_profile_id()
     {
         $value = $this->faker->uuid();

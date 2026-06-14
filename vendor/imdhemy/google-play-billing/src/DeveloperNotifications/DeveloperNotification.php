@@ -14,8 +14,6 @@ use RuntimeException;
  * Class DeveloperNotification
  * This class represents the Real-time developer notifications from Google
  * {@link https://developer.android.com/google/play/billing/rtdn-reference}.
- *
- * @deprecated use {@link \Imdhemy\GooglePlay\Domain\Rtdn\Notification\DeveloperNotification} instead
  */
 class DeveloperNotification implements RealTimeDeveloperNotification, Arrayable
 {
@@ -86,7 +84,7 @@ class DeveloperNotification implements RealTimeDeveloperNotification, Arrayable
 
     public function getEventTime(): Time
     {
-        return new Time((string)$this->eventTimeMillis);
+        return new Time($this->eventTimeMillis);
     }
 
     public function getEventTimeMillis(): int
