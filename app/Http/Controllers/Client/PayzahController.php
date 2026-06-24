@@ -40,8 +40,8 @@ class PayzahController extends Controller
         $payload = [
             "trackid" => $request->trackid,
             "amount" => $request->amount,
-            "success_url" => "https://expo.sys-web.net/success",
-            "error_url" => "https://expo.sys-web.net/error",
+            "success_url" => config('services.payzah.success_url') ?? "https://wikala.org/ex/api/success",
+            "error_url" => config('services.payzah.error_url') ?? "https://wikala.org/ex/api/fail",
             "currency" => $request->currency,
             "language" => $lang,
             "payment_type" => $request->input('payment_type', '1'),

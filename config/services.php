@@ -60,6 +60,8 @@ return [
     'payzah' => [
         'api_url' => env('PAYZAH_API_URL', 'https://development.payzah.net/ws/paymentgateway/index'),
         'private_key' => env('PAYZAH_PRIVATE_KEY'),
+        'success_url' => env('PAYZAH_SUCCESS_URL', 'https://wikala.org/ex/api/success'),
+        'error_url' => env('PAYZAH_ERROR_URL', 'https://wikala.org/ex/api/fail'),
     ],
 
 ];
