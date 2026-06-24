@@ -14,8 +14,8 @@ class OneSignalService
 
     public function __construct()
     {
-        $this->appId = config('services.onesignal.app_id');
-        $this->apiKey = config('services.onesignal.api_key');
+        $this->appId = config('services.onesignal.app_id') ?? '';
+        $this->apiKey = config('services.onesignal.api_key') ?? '';
     }
 
     /**

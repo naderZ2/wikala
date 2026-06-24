@@ -17,9 +17,9 @@ class ICarryService
 
     public function __construct()
     {
-        $this->baseUrl = rtrim(config('services.icarry.base_url', 'https://test.icarry.com/api-frontend'), '/');
-        $this->email = config('services.icarry.email', '');
-        $this->password = config('services.icarry.password', '');
+        $this->baseUrl = rtrim(config('services.icarry.base_url') ?? 'https://test.icarry.com/api-frontend', '/');
+        $this->email = config('services.icarry.email') ?? '';
+        $this->password = config('services.icarry.password') ?? '';
     }
 
     /**
