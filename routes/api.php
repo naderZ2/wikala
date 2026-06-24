@@ -93,6 +93,7 @@ Route::middleware(['checkLanguage'])->group(function () {
 
 
         Route::post('pay', [Client\PaymentController::class, 'payment']);
+        Route::post('pay/payzah', [Client\PayzahController::class, 'processPayment']);
 
         Route::get('notifications', [Client\NotificationController::class, 'index']);
 

@@ -57,4 +57,9 @@ return [
         'default_country' => env('ICARRY_DEFAULT_COUNTRY', 'Kuwait'),
     ],
 
+    'payzah' => [
+        'api_url' => env('PAYZAH_API_URL', 'https://development.payzah.net/ws/paymentgateway/index'),
+        'private_key' => env('PAYZAH_PRIVATE_KEY'),
+    ],
+
 ];
