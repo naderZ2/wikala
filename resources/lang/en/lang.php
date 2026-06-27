@@ -682,6 +682,18 @@ return  [
 	'other' => 'Other...',
 	'rejection_reason' => 'Rejection Reason',
 	'rejection_reason_placeholder' => 'Write a custom rejection reason...',
+	'plans' => 'Subscription Plans',
+	'add_plan' => 'Add Plan',
+	'edit_plan' => 'Edit Plan',
+	'Plan' => 'Plan',
+	'Payment' => 'Payment Status',
+	'description_ar' => 'Description (Arabic)',
+	'description_en' => 'Description (English)',
+	'name_ar' => 'Name (Arabic)',
+	'name_en' => 'Name (English)',
+	'deactivated' => 'Deactivated',
+	'paid' => 'Paid',
+	'pending' => 'Pending',
 
 ];
 ?>

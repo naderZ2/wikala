@@ -92,8 +92,8 @@ Route::middleware(['checkLanguage'])->group(function () {
         Route::get('auction/ad/{ad_id}', [AuctionController::class, 'getByAd'])->name('client.auction.by_ad');
 
 
-        Route::post('pay', [Client\PaymentController::class, 'payment']);
-        Route::post('pay/payzah', [Client\PayzahController::class, 'processPayment']);
+        // Route::post('pay', [Client\PaymentController::class, 'payment']);
+        // Route::post('pay/payzah', [Client\PayzahController::class, 'processPayment']);
 
         Route::get('notifications', [Client\NotificationController::class, 'index']);
 

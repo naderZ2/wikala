@@ -24,13 +24,19 @@ class Seller extends Authenticatable
         'details', 'img_path', 'about',
         'shop_name_en', 'shop_name_ar', 'banner', 'parent_id',
         'commission_type', 'commission_value',
-        'icarry_warehouse_name'
+        'icarry_warehouse_name',
+        'plan_id', 'payment_status', 'payment_details'
     ];
 
     protected $hidden = 
     [
         'password', 'updated_at'
     ];
+
+    public function plan()
+    {
+        return $this->belongsTo(Plan::class);
+    }
 
 
     public function discounts()

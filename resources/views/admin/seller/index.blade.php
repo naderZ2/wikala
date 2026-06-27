@@ -98,6 +98,8 @@
 									<th>Shop Name</th>
 									<th>@lang('lang.Email')</th>
 									<th>@lang('lang.Categories')</th>
+									<th>@lang('lang.Plan')</th>
+									<th>@lang('lang.Payment')</th>
 									<th>@lang('lang.Status')</th>
 									<th>@lang('lang.Image')</th>
 									<th>@lang('lang.joining_date')</th>
@@ -115,6 +117,22 @@
 											@foreach ($seller->categories as $category )
 												{{ $category->name }} <br>
 											@endforeach
+										</td>
+										<td>
+											@if ($seller->plan)
+												{{ app()->getLocale() == 'en' ? $seller->plan->name_en : $seller->plan->name_ar }} ({{ $seller->plan->price }} KWD)
+											@else
+												-
+											@endif
+										</td>
+										<td>
+											@if ($seller->payment_status == 'paid' || $seller->payment_status == 'success')
+												<span class="badge bg-success">@lang('lang.paid')</span>
+											@elseif ($seller->payment_status == 'pending')
+												<span class="badge bg-warning">@lang('lang.pending')</span>
+											@else
+												<span class="badge bg-danger">{{ $seller->payment_status ?? '-' }}</span>
+											@endif
 										</td>
 										<td>
 											@if ($seller->active == 1)
@@ -181,6 +199,8 @@
 									<th>Shop Name</th>
 									<th>@lang('lang.Email')</th>
 									<th>@lang('lang.Categories')</th>
+									<th>@lang('lang.Plan')</th>
+									<th>@lang('lang.Payment')</th>
 									<th>@lang('lang.Status')</th>
 									<th>@lang('lang.Image')</th>
 									<th>@lang('lang.joining_date')</th>

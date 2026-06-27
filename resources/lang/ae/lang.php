@@ -691,6 +691,18 @@ return  [
 	'other' => 'أخرى...',
 	'rejection_reason' => 'سبب الرفض',
 	'rejection_reason_placeholder' => 'اكتب سبب رفض مخصص...',
+	'plans' => 'خطط الاشتراك',
+	'add_plan' => 'إضافة خطة',
+	'edit_plan' => 'تعديل خطة',
+	'Plan' => 'خطة الاشتراك',
+	'Payment' => 'حالة الدفع',
+	'description_ar' => 'الوصف (بالعربية)',
+	'description_en' => 'الوصف (بالإنجليزية)',
+	'name_ar' => 'الاسم (بالعربية)',
+	'name_en' => 'الاسم (بالإنجليزية)',
+	'deactivated' => 'غير نشط',
+	'paid' => 'مدفوع',
+	'pending' => 'قيد الانتظار',
 
 ];
 ?>

@@ -30,6 +30,14 @@ class LoginController extends Controller
         }
 
         if (!$seller->active) {
+            if ($seller->payment_status === 'pending') {
+                $token = $seller->createToken('seller-token')->accessToken;
+                return $this->success([
+                    'token' => $token,
+                    'payment_pending' => true,
+                    'seller' => $seller
+                ], 'Payment pending. Please select a plan and pay to complete registration.');
+            }
             return $this->failed(null, 'Your account is under review by admin');
         }
 
