@@ -51,7 +51,7 @@ class PlanPaymentController extends Controller
         $plan = Plan::findOrFail($request->plan_id);
 
         // Generate a unique tracking ID for the plan payment
-        $trackid = 'SELLER_PLAN_' . $seller->id . '_' . time();
+        $trackid = 'SELLERPLAN' . $seller->id . time();
 
         // Calculate amount
         $amount = (float) $plan->price;
@@ -94,7 +94,7 @@ class PlanPaymentController extends Controller
         Log::info('Plan payment callback success: ' . $trackid, $request->all());
 
         $sellerId = null;
-        if ($trackid && preg_match('/^SELLER_PLAN_(\d+)_/', $trackid, $matches)) {
+        if ($trackid && preg_match('/^SELLERPLAN(\d+)\d{10}$/', $trackid, $matches)) {
             $sellerId = $matches[1];
         }
 
@@ -132,7 +132,7 @@ class PlanPaymentController extends Controller
         Log::warning('Plan payment callback failed: ' . $trackid, $request->all());
 
         $sellerId = null;
-        if ($trackid && preg_match('/^SELLER_PLAN_(\d+)_/', $trackid, $matches)) {
+        if ($trackid && preg_match('/^SELLERPLAN(\d+)\d{10}$/', $trackid, $matches)) {
             $sellerId = $matches[1];
         }
 
