@@ -27,7 +27,9 @@ class PlanPaymentController extends Controller
     public function getPlans()
     {
         $this->lang();
-        $plans = Plan::where('is_active', true)->get();
+        $plans = Plan::where('is_active', true)
+            ->select('id', \Illuminate\Support\Facades\DB::raw($this->name), \Illuminate\Support\Facades\DB::raw($this->description), 'price')
+            ->get();
         return $this->success($plans, 'Active plans retrieved successfully');
     }
 
