@@ -76,7 +76,6 @@
 									<th class="text-center">@lang('lang.Status')</th>
 									<th>@lang('lang.Client')</th>
 									<th>@lang('lang.Seller')</th>
-									<th>@lang('lang.delivery_fee')</th>
 									<th class="text-center">@lang('lang.Time')</th>
 									<th class="text-center">@lang('lang.delivery_time')</th>
 
@@ -103,16 +102,22 @@
 												<br><small class="text-muted">{{ $order?->seller?->phone }}</small>
 											@endif
 										</td>
-										<td>
-											{{-- @dd() --}}
-											{{ $order?->delivery_fee	}}
-											
-										</td>
 										<td class="text-center">{{ $order->created_at->format('Y-m-d - H:i') }}</td>
 										<td class="text-center">{{ $order?->delivery_time?->format('Y-m-d - H:i') }}</td>
 										<td>
 											
 											<a href="{{ route('order.details',$order->id) }}" class="btn btn-info m-1" >@lang('lang.details')</a>
+											@if ($order->bill_url)
+												<a href="{{ asset($order->bill_url) }}" download="invoice_{{ $order->order_number }}.pdf" class="btn btn-success m-1">
+													<i class="fa fa-download"></i> @lang('lang.downloadFile')
+												</a>
+											@else
+												@can('generate invoice')
+													<a href="{{ route('order.generate_nvoice', $order->id) }}" class="btn btn-secondary m-1">
+														<i class="fa fa-file-pdf-o"></i> @lang('lang.save_invoice')
+													</a>
+												@endcan
+											@endif
 											@if ( $order->status !=='delivered' && $order->status !=='cancel')
 												@can('change order status')
 													<a href="{{ route('order.change_status',[$order->id,'normal']) }}" class="btn btn-primary m-1" >@lang('lang.change_status')</a>
@@ -143,7 +148,6 @@
 									<th class="text-center">@lang('lang.Status')</th>
 									<th>@lang('lang.Client')</th>
 									<th>@lang('lang.Seller')</th>
-									<th>@lang('lang.delivery_fee')</th>
 									<th class="text-center">@lang('lang.Time')</th>
 									<th class="text-center">@lang('lang.delivery_time')</th>
 									<th></th>								

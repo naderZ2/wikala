@@ -30,6 +30,11 @@
 	<button class="btn btn-primary" type="button">
 		<a href="{{ asset($order->bill_url)}}"  target="_blank" style="color:white" >@lang('lang.Show_Invoice')</a>
 	</button>
+	<button class="btn btn-success" type="button">
+		<a href="{{ asset($order->bill_url)}}" download="invoice_{{ $order->order_number }}.pdf" style="color:white" >
+			<i class="fa fa-download"></i> @lang('lang.downloadFile')
+		</a>
+	</button>
 	@endif
 	
 		
