@@ -28,7 +28,7 @@ Route::post('select-plan', [Seller\PlanPaymentController::class, 'selectPlan']);
 // ==========================================
 // Protected routes (auth:seller-api required)
 // ==========================================
-Route::middleware('auth:seller-api')->group(function () {
+Route::middleware(['auth:seller-api', 'checkSellerPlanPayment'])->group(function () {
 
     // Auth
     Route::post('logout', [Seller\Auth\LoginController::class, 'logout']);

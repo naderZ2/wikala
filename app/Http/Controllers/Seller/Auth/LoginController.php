@@ -29,21 +29,22 @@ class LoginController extends Controller
             return $this->failed(null, 'Invalid phone or password');
         }
 
+        // Get the main seller (or parent seller if the current user is an employee)
+        $mainSeller = $seller->parent_id ? $seller->parent : $seller;
+
+        if (!$mainSeller || $mainSeller->payment_status !== 'paid') {
+            return $this->failed([
+                'payment_pending' => true,
+                'seller_id' => $seller->id
+            ], 'Payment pending. Please select a plan and pay to complete registration.');
+        }
+
         if (!$seller->active) {
-            if ($seller->payment_status === 'pending') {
-                $token = $seller->createToken('seller-token')->accessToken;
-                return $this->success([
-                    'token' => $token,
-                    'payment_pending' => true,
-                    'seller' => $seller
-                ], 'Payment pending. Please select a plan and pay to complete registration.');
-            }
             return $this->failed(null, 'Your account is under review by admin');
         }
 
         $token = $seller->createToken('seller-token')->accessToken;
 
-        
         return $this->success([
             'token' => $token,
             'seller' => $seller

@@ -13,6 +13,25 @@ class RegisterRequest extends FormRequest
         return true;
     }
 
+    protected function prepareForValidation()
+    {
+        $existingSeller = null;
+
+        if ($this->phone) {
+            $existingSeller = \App\Models\Seller::where('phone', $this->phone)->first();
+        }
+
+        if (!$existingSeller && $this->email) {
+            $existingSeller = \App\Models\Seller::where('email', $this->email)->first();
+        }
+
+        if ($existingSeller && $existingSeller->payment_status !== 'paid') {
+            $existingSeller->categories()->detach();
+            $existingSeller->cities()->detach();
+            $existingSeller->delete();
+        }
+    }
+
     public function rules()
     {
         return [
