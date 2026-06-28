@@ -97,6 +97,11 @@
 								<label class="col-sm-3 col-form-label">@lang('lang.add_image')</label>
 								<div class="col-sm-9">
 									<input class="form-control" type="file" name="image" value="{{ old('image') }}" required accept="image/*">
+                                    <div class="mt-2 text-muted">
+                                        <i class="fa fa-info-circle text-primary"></i> 
+                                        <strong>@lang('lang.recommended_size'):</strong> 500 x 500 px (Aspect Ratio 1:1). 
+                                        <span class="d-block mt-1">@lang('lang.category_size_hint')</span>
+                                    </div>
 								</div>
 							</div>
 						</div>

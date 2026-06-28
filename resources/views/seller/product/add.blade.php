@@ -137,6 +137,11 @@
                                         <div class="input-group mb-3">
 
                                             <input class="form-control" type="file" name="main_image" value="{{ old('images') }}" required accept="image/*" >
+                                            <div class="mt-2 text-muted w-100">
+                                                <i class="fa fa-info-circle text-primary"></i> 
+                                                <strong>@lang('lang.recommended_size'):</strong> 1080 x 1440 px (Aspect Ratio 3:4). 
+                                                <span class="d-block mt-1">@lang('lang.product_size_hint')</span>
+                                            </div>
                                             {{-- <div class="input-group-append">
                                                 <button id="removeRow" type="button" class="btn btn-danger">Remove</button>
                                             </div> --}}
@@ -156,6 +161,11 @@
                                         <div id="inputFormRow">
                                             <div class="input-group mb-3">
                                                 <input class="form-control" type="file" name="images[]" value="{{ old('images') }}" required accept="image/*" >
+                                                <div class="mt-2 text-muted w-100">
+                                                    <i class="fa fa-info-circle text-primary"></i> 
+                                                    <strong>@lang('lang.recommended_size'):</strong> 1080 x 1440 px (Aspect Ratio 3:4). 
+                                                    <span class="d-block mt-1">@lang('lang.product_size_hint')</span>
+                                                </div>
                                                 {{-- <div class="input-group-append">
                                                     <button id="removeRow" type="button" class="btn btn-danger">Remove</button>
                                                 </div> --}}

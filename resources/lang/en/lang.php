@@ -694,6 +694,11 @@ return  [
 	'deactivated' => 'Deactivated',
 	'paid' => 'Paid',
 	'pending' => 'Pending',
+	'recommended_size' => 'Recommended Size',
+	'slider_size_hint' => 'The slider automatically stretches and scales (using aspect-ratio) to match the width of the user\'s screen. Use a 16:9 aspect ratio to avoid distortion or cropping.',
+	'banner_size_hint' => 'Banners automatically stretch and scale (using aspect-ratio) to fit the page width on different screens. A 3:1 aspect ratio (e.g. 1080x360 px) is recommended.',
+	'category_size_hint' => 'Category icons/images are displayed as squares. A 1:1 aspect ratio (e.g. 500x500 px) is recommended to prevent clipping.',
+	'product_size_hint' => 'Product images display in a vertical rectangle. A 3:4 aspect ratio (1080x1440 px) is recommended to ensure correct display without stretching.',
 
 ];
 ?>
