@@ -36,7 +36,7 @@
 
 							<li><a class="lan-4 {{ Route::currentRouteName()=='category.index' ? 'active' : '' }}" href="{{route('category.index')}}">@lang('lang.Categories')</a></li>
 							<li><a class="lan-4 {{ Route::currentRouteName()=='home_page_category.index' ? 'active' : '' }}" href="{{route('home_page_category.index')}}">@lang('lang.home_page_categories')</a></li>
-                            <li><a class="lan-4 {{ Route::currentRouteName()=='attributes.index' ? 'active' : '' }}" href="{{route('attributes.index')}}">@lang('lang.Attributes')</a></li>
+                            <!-- <li><a class="lan-4 {{ Route::currentRouteName()=='attributes.index' ? 'active' : '' }}" href="{{route('attributes.index')}}">@lang('lang.Attributes')</a></li> -->
                             <!-- <li><a class="lan-4 {{ Route::currentRouteName()=='category-attributes.index' ? 'active' : '' }}" href="{{route('category-attributes.index')}}">@lang('lang.category_attributes')</a></li> -->
 
 							<!--@can('add category')-->
@@ -203,7 +203,7 @@
 
 					
 
-					<li class="sidebar-list">
+					<!-- <li class="sidebar-list">
 						<a class="sidebar-link sidebar-title {{ request()->route()->uri() == 'dashboard/attributes' ? 'active' : '' }}" href="#">
 							<i data-feather="tag"></i>
 							<span class="lan-7">{{ trans('lang.Attributes') }}</span>
@@ -218,16 +218,16 @@
 								</a>
 							</li>
 						</ul>
-						<!-- <ul class="sidebar-submenu" style="display: {{ request()->route()->uri() == 'dashboard/attributes' ? 'block;' : 'none;' }}">
+						 <ul class="sidebar-submenu" style="display: {{ request()->route()->uri() == 'dashboard/attributes' ? 'block;' : 'none;' }}">
 							<li>
 								<a href="{{ route('category-attributes.index') }}" class="{{ Route::currentRouteName() == 'category-attributes' ? 'active' : '' }}">
 									{{ trans('lang.category_attributes') }}
 								</a>
 							</li>
-						</ul> -->
+						</ul> 
 
 					
-					</li>
+					</li> -->
 
 
 					<li class="sidebar-list">
