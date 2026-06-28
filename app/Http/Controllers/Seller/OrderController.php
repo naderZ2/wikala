@@ -230,7 +230,13 @@ class OrderController extends Controller
 
         $invoice = view('admin.order.invoice', compact('order'))->render();
 
+        $tempDir = storage_path('app/mpdf');
+        if (!file_exists($tempDir)) {
+            mkdir($tempDir, 0775, true);
+        }
+
         $pdf = new Mpdf([
+            'tempDir' => $tempDir,
             'default_font' => 'dejavusans',
             'mode' => 'utf-8',
             'format' => 'A4',
