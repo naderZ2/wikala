@@ -22,6 +22,8 @@ Route::post('reset-password', [Seller\Auth\LoginController::class, 'resetPasswor
 Route::post('resend-otp', [Seller\Auth\LoginController::class, 'resendOtp']);
 Route::get('payment/success', [Seller\PlanPaymentController::class, 'paymentSuccess'])->name('seller.payment.success');
 Route::get('payment/fail', [Seller\PlanPaymentController::class, 'paymentFail'])->name('seller.payment.fail');
+Route::get('plans', [Seller\PlanPaymentController::class, 'getPlans']);
+Route::post('select-plan', [Seller\PlanPaymentController::class, 'selectPlan']);
 
 // ==========================================
 // Protected routes (auth:seller-api required)
@@ -30,10 +32,6 @@ Route::middleware('auth:seller-api')->group(function () {
 
     // Auth
     Route::post('logout', [Seller\Auth\LoginController::class, 'logout']);
-
-    // Subscription Plans
-    Route::get('plans', [Seller\PlanPaymentController::class, 'getPlans']);
-    Route::post('select-plan', [Seller\PlanPaymentController::class, 'selectPlan']);
 
     // Dashboard / Home
     Route::get('home', [Seller\StatisticsController::class, 'index']);

@@ -57,7 +57,7 @@ class LoginController extends Controller
     {
         $data = $request->only([
             'name', 'phone', 'password',
-            'shop_name_en', 'shop_name_ar'
+            'shop_name_en', 'shop_name_ar', 'plan_id'
         ]);
 
         // Use phone as email placeholder if no email provided

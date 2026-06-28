@@ -39,15 +39,12 @@ class PlanPaymentController extends Controller
     public function selectPlan(Request $request)
     {
         $request->validate([
+            'seller_id' => 'required|exists:sellers,id',
             'plan_id' => 'required|exists:plans,id',
             'payment_method' => 'sometimes|string',
         ]);
 
-        $seller = auth()->user();
-        if (!$seller) {
-            return $this->failed(null, 'Unauthorized', 401);
-        }
-
+        $seller = Seller::findOrFail($request->seller_id);
         $plan = Plan::findOrFail($request->plan_id);
 
         // Generate a unique tracking ID for the plan payment
