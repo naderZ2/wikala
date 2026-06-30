@@ -15,6 +15,42 @@ use App\Http\Controllers\Admin\AdsTypeController;
 use Illuminate\Http\Client\Events\RequestSending;
 use App\Http\Controllers\Admin\AttributeController;
 use App\Http\Controllers\Admin\RejectedReasonController;
+use Illuminate\Support\Facades\Response;
+
+// Route::get('/.well-known/apple-app-site-association', function () {
+//     $aasa = [
+//         "applinks" => [
+//             "apps" => [],
+//             "details" => [
+//                 [
+//                     "appID" => "9JA89QYZZ9.com.yourcompany.yourapp",
+//                     "paths" => ["/seller/*"]
+//                 ]
+//             ]
+//         ]
+//     ];
+
+//     return Response::json($aasa)
+//         ->header('Content-Type', 'application/json');
+// });
+
+Route::get('/.well-known/assetlinks.json', function () {
+    $assetlinks = [
+        [
+            "relation" => ["delegate_permission/common.handle_all_urls"],
+            "target" => [
+                "namespace" => "android_app",
+                "package_name" => "com.infovas.expo.expo",
+                "sha256_cert_fingerprints" => [
+                    "A6:D5:CA:C0:9F:57:B8:71:87:C0:77:EE:3A:41:75:6D:57:9C:BF:1D:8C:DD:B6:61:C5:54:88:29:B3:12:8A:B6"
+                ]
+            ]
+        ]
+    ];
+
+    return Response::json($assetlinks)
+        ->header('Content-Type', 'application/json');
+});
 
 // Route::get('test')->name('');
 Route::view('test2', 'test')->name('test');
