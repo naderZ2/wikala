@@ -51,7 +51,10 @@ class SellerController extends Controller
                       "category" => function($cq) use ($nameCol) {
                           $cq->select('id', "$nameCol as name");
                       },
-                      "attributes.attribute"
+                      "attributes.attribute",
+                      "variations.attributes.attribute" => function($vq) {
+                          $vq->select('id', $this->name, 'type', 'image', 'enable');
+                      }
                   ])
                   ->select('id', 'seller_id', $this->name, $this->description, $this->title, 'price', 'old_price', 'main_image', 'serving', 'category_id');
             }])
