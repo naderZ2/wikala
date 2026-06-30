@@ -91,27 +91,32 @@
 									<span class="show "></span> 
 								</div>
 							</div>
-							      <div class="col-md-12 mb-3">
+                            <div class="col-md-12 mb-3">
                                 <div class="col-lg-12">
                                     <div id="inputFormRow">
                                         <label for="exampleFormControlTextarea4">@lang('lang.image')</label>
-
                                         <div class="input-group mb-3">
-											
-											<input class="form-control" id="imageInput" onchange="previewImage(event)" type="file" name="img_path" value="{{ old('img_path') }}"  accept="image/*" >
-											
+                                            <input class="form-control" id="imageInput" onchange="previewImage(event)" type="file" name="img_path" value="{{ old('img_path') }}"  accept="image/*" >
                                         </div>
-										<img src="{{ asset($seller?->img_path) }}" id="imagePreview" alt=""  class="image-fluid"  height="150" width="150">
-
-
-
-
-
-
-
+                                        <img src="{{ asset($seller?->img_path) }}" id="imagePreview" alt=""  class="image-fluid"  height="150" width="150">
                                     </div>
-                
                                 </div>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="civilIdInput">Civil ID Image</label>
+                                <div class="input-group mb-3">
+                                    <input class="form-control" id="civilIdInput" onchange="previewCivilId(event)" type="file" name="civil_id_image" accept="image/*">
+                                </div>
+                                <img src="{{ $seller->civil_id_image ? asset($seller->civil_id_image) : '' }}" id="civilIdPreview" alt="" class="image-fluid img-thumbnail" height="150" width="150" style="{{ $seller->civil_id_image ? '' : 'display: none;' }}">
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="commercialLicenseInput">Commercial License Image</label>
+                                <div class="input-group mb-3">
+                                    <input class="form-control" id="commercialLicenseInput" onchange="previewCommercialLicense(event)" type="file" name="commercial_license_image" accept="image/*">
+                                </div>
+                                <img src="{{ $seller->commercial_license_image ? asset($seller->commercial_license_image) : '' }}" id="commercialLicensePreview" alt="" class="image-fluid img-thumbnail" height="150" width="150" style="{{ $seller->commercial_license_image ? '' : 'display: none;' }}">
                             </div>
 						</div>
 
@@ -207,4 +212,31 @@ function previewImage(event) {
     }
 }
 
+function previewCivilId(event) {
+    var image = document.getElementById('civilIdPreview');
+    var file = event.target.files[0];
+
+    if (file) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            image.src = e.target.result;
+            image.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+    }
+}
+
+function previewCommercialLicense(event) {
+    var image = document.getElementById('commercialLicensePreview');
+    var file = event.target.files[0];
+
+    if (file) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            image.src = e.target.result;
+            image.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+    }
+}
 </script>

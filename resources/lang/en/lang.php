@@ -628,6 +628,7 @@ return  [
 	'id_required' => 'The ID is required.',
 	'phone_already_registered' => 'This phone number is already registered.',
 	'address_id_required' => 'The address ID is required.',
+	'name_required' => 'The name of address field is required.',
 	'provider_required' => 'The provider is required.',
 	'token_required' => 'The token is required.',
 	'validation_errors' => 'Validation errors',

@@ -637,6 +637,7 @@ return  [
 	'id_required' => 'المعرف مطلوب.',
 	'phone_already_registered' => 'رقم الهاتف هذا مسجل بالفعل لدينا.',
 	'address_id_required' => 'معرف العنوان مطلوب.',
+	'name_required' => 'اسم العنوان مطلوب.',
 	'provider_required' => 'مزود الخدمة مطلوب.',
 	'token_required' => 'الرمز (token) مطلوب.',
 	'validation_errors' => 'أخطاء في التحقق من البيانات',

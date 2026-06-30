@@ -30,6 +30,7 @@ class StoreRequest extends FormRequest
     {
         return [
             // "id" => "required",
+            "name" => "required|string|max:255",
             "street" => "sometimes|nullable",
             "block_no" => "sometimes|nullable",
             "avenue" => "sometimes|nullable",
@@ -51,6 +52,7 @@ class StoreRequest extends FormRequest
     public function messages(): array {
         return [
             'id.required'  => __('lang.id_required'),
+            'name.required' => __('lang.name_required'),
         ];
     }
 }

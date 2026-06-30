@@ -79,6 +79,18 @@ class LoginController extends Controller
             $seller->save();
         }
 
+        // Handle Civil ID image upload
+        if ($request->hasFile('civil_id_image')) {
+            $seller->civil_id_image = $request->file('civil_id_image');
+            $seller->save();
+        }
+
+        // Handle Commercial License image upload
+        if ($request->hasFile('commercial_license_image')) {
+            $seller->commercial_license_image = $request->file('commercial_license_image');
+            $seller->save();
+        }
+
         // Attach categories (max 3)
         if ($request->categories) {
             $seller->categories()->sync(array_slice($request->categories, 0, 3));

@@ -31,6 +31,7 @@ class EditRequest extends FormRequest
         return [
             "id" => "required",
             "region_id" => "required",
+            "name" => "required|string|max:255",
             "street" => "sometimes|nullable",
             "block_no" => "sometimes|nullable",
             "building_no" => "sometimes|nullable",
@@ -49,6 +50,7 @@ class EditRequest extends FormRequest
         return [
             'id.required'  => __('lang.id_required'),
             'address_id.required'  => __('lang.address_id_required'),
+            'name.required' => __('lang.name_required'),
         ];
     }
 }

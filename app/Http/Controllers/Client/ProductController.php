@@ -32,6 +32,7 @@ class ProductController extends Controller
         ->with([
             'category' => function($q) { $q->select('id', $this->name); },
             'attributes' => function($q) { $q->select('id', 'product_id', 'value'); },
+            'variations.attributes.attribute' => function($q) { $q->select('id', $this->name, 'type', 'image', 'enable', 'deleted_at', 'created_at', 'updated_at'); },
             'seller'
         ])
         

@@ -30,6 +30,8 @@ class StoreRequest extends FormRequest
             'categories' => 'required|array|max:3',
             'cities' => 'required',
             'img_path' => 'required|max:1024',
+            'civil_id_image' => 'nullable|image|max:2048',
+            'commercial_license_image' => 'nullable|image|max:2048',
         ];
     }
 

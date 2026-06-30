@@ -46,6 +46,8 @@ class RegisterRequest extends FormRequest
             'categories.*' => 'exists:categories,id',
             'logo' => 'nullable|image|max:2048',
             'banner' => 'nullable|image|max:2048',
+            'civil_id_image' => 'required|image|max:2048',
+            'commercial_license_image' => 'required|image|max:2048',
         ];
     }
 

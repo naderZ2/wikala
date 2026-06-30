@@ -32,6 +32,8 @@ class EditRequest extends FormRequest
             'img_path' => 'sometimes|nullable|max:1024',
             'commission_type' => 'sometimes|nullable|in:percentage,fixed',
             'commission_value' => 'sometimes|nullable|numeric|min:0',
+            'civil_id_image' => 'sometimes|nullable|image|max:2048',
+            'commercial_license_image' => 'sometimes|nullable|image|max:2048',
         ];
     }
 

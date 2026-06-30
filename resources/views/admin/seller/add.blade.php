@@ -106,6 +106,20 @@
                                 </div>
                             </div>
 
+                            <div class="col-md-6 mb-3">
+                                <label for="civilIdInput">Civil ID Image</label>
+                                <div class="input-group mb-3">
+                                    <input class="form-control" id="civilIdInput" type="file" name="civil_id_image" accept="image/*">
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="commercialLicenseInput">Commercial License Image</label>
+                                <div class="input-group mb-3">
+                                    <input class="form-control" id="commercialLicenseInput" type="file" name="commercial_license_image" accept="image/*">
+                                </div>
+                            </div>
+
                         <div class="text-center">
                             <button class="btn btn-primary" type="submit">@lang('lang.save')</button>
                         </div>

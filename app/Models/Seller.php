@@ -25,7 +25,8 @@ class Seller extends Authenticatable
         'shop_name_en', 'shop_name_ar', 'banner', 'parent_id',
         'commission_type', 'commission_value',
         'icarry_warehouse_name',
-        'plan_id', 'payment_status', 'payment_details'
+        'plan_id', 'payment_status', 'payment_details',
+        'civil_id_image', 'commercial_license_image'
     ];
 
     protected $hidden = 
@@ -78,6 +79,24 @@ class Seller extends Authenticatable
             $this->attributes['banner'] = $this->uploadFile($value, 'banners', $this->attributes['banner'] ?? "");
         } else {
             $this->attributes['banner'] = $value;
+        }
+    }
+
+    public function setCivilIdImageAttribute($value)
+    {
+        if ($value instanceof \Illuminate\Http\UploadedFile) {
+            $this->attributes['civil_id_image'] = $this->uploadFile($value, 'documents', $this->attributes['civil_id_image'] ?? "");
+        } else {
+            $this->attributes['civil_id_image'] = $value;
+        }
+    }
+
+    public function setCommercialLicenseImageAttribute($value)
+    {
+        if ($value instanceof \Illuminate\Http\UploadedFile) {
+            $this->attributes['commercial_license_image'] = $this->uploadFile($value, 'documents', $this->attributes['commercial_license_image'] ?? "");
+        } else {
+            $this->attributes['commercial_license_image'] = $value;
         }
     }
 

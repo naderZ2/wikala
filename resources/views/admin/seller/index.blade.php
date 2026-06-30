@@ -102,6 +102,8 @@
 									<th>@lang('lang.Payment')</th>
 									<th>@lang('lang.Status')</th>
 									<th>@lang('lang.Image')</th>
+									<th>Civil ID</th>
+									<th>Commercial License</th>
 									<th>@lang('lang.joining_date')</th>
 									<th></th>
 								</tr>
@@ -145,6 +147,24 @@
 										</td>
 										<td >
 											<img src="{{ asset($seller?->img_path) }}"  alt=""  class="image-fluid rounded-circle"  height="50" width="50">
+										</td>
+										<td>
+											@if ($seller->civil_id_image)
+												<a href="{{ asset($seller->civil_id_image) }}" target="_blank">
+													<img src="{{ asset($seller->civil_id_image) }}" alt="Civil ID" class="img-thumbnail" style="height: 50px; max-width: 80px; object-fit: cover;">
+												</a>
+											@else
+												-
+											@endif
+										</td>
+										<td>
+											@if ($seller->commercial_license_image)
+												<a href="{{ asset($seller->commercial_license_image) }}" target="_blank">
+													<img src="{{ asset($seller->commercial_license_image) }}" alt="Commercial License" class="img-thumbnail" style="height: 50px; max-width: 80px; object-fit: cover;">
+												</a>
+											@else
+												-
+											@endif
 										</td>
 										<td>{{ $seller->created_at ? $seller->created_at->format('Y-m-d') : '-' }}</td>
 										
@@ -203,6 +223,8 @@
 									<th>@lang('lang.Payment')</th>
 									<th>@lang('lang.Status')</th>
 									<th>@lang('lang.Image')</th>
+									<th>Civil ID</th>
+									<th>Commercial License</th>
 									<th>@lang('lang.joining_date')</th>
 									<th></th>
 								</tr>
