@@ -63,9 +63,22 @@ class Seller extends Authenticatable
         return $this->hasMany(Product::class);
     }
     
-       public function setImgPathAttribute($value)
+    public function setImgPathAttribute($value)
     {
-        $this->attributes['img_path'] = $this->uploadFile($value,'profiles',$this->attributes['img_path'] ?? "");
+        if ($value instanceof \Illuminate\Http\UploadedFile) {
+            $this->attributes['img_path'] = $this->uploadFile($value, 'profiles', $this->attributes['img_path'] ?? "");
+        } else {
+            $this->attributes['img_path'] = $value;
+        }
+    }
+
+    public function setBannerAttribute($value)
+    {
+        if ($value instanceof \Illuminate\Http\UploadedFile) {
+            $this->attributes['banner'] = $this->uploadFile($value, 'banners', $this->attributes['banner'] ?? "");
+        } else {
+            $this->attributes['banner'] = $value;
+        }
     }
 
     public function orders()

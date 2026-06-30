@@ -12,7 +12,7 @@
 				<ul class="sidebar-links" id="simple-bar">
 					<li class="back-btn">
 						<a href="{{route('/')}}"><img class="img-fluid"src="{{asset('logo.png')}}" alt="" height="50" width="50" alt=""></a>
-						<div class="mobile-back text-end"><span>Back</span><i class="fa fa-angle-right ps-2" aria-hidden="true"></i></div>
+						<div class="mobile-back text-end"><span>@lang('lang.Back')</span><i class="fa fa-angle-right ps-2" aria-hidden="true"></i></div>
 					</li>
 					{{-- <li class="sidebar-main-title">
 						<div>

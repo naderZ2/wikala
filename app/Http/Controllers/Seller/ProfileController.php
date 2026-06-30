@@ -85,22 +85,20 @@ class ProfileController extends Controller
             $data['password'] = $request->password;
         }
 
+        // Fill and save profile data
+        $seller->fill(array_filter($data));
+
         // Handle logo upload 
         if ($request->hasFile('logo')) {
             $seller->img_path = $request->file('logo');
-            $seller->save();
         }
 
         // Handle banner upload
         if ($request->hasFile('banner')) {
-            if ($seller->banner && File::exists(public_path($seller->banner))) {
-                File::delete(public_path($seller->banner));
-            }
-            $path = $request->file('banner')->store('uploads/banners', 'public');
-            $data['banner'] = $path;
+            $seller->banner = $request->file('banner');
         }
 
-        $seller->update(array_filter($data));
+        $seller->save();
 
         // Update categories (max 3)
         if ($request->categories) {

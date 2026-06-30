@@ -1,5 +1,5 @@
 @extends('admin.layout.master')
-@section('title', 'Validation Forms')
+@section('title', trans('lang.add_Notification'))
 
 @section('css')
 <link rel="stylesheet" type="text/css" href="{{asset('assets/css/vendors/select2.css')}}">
@@ -32,15 +32,15 @@
                             <div class="col-md-6 mb-3">
                                 <label for="section_name">@lang('lang.Title_ar')</label>
                                 <input class="form-control" id="section_name" type="text" name="name_ar" value="" placeholder="" required="">
-                                <div class="valid-feedback">Looks good!</div>
-                                <div class="invalid-feedback">Please choose a Title.</div>
+                                <div class="valid-feedback">@lang('lang.looks_good')</div>
+                                <div class="invalid-feedback">@lang('lang.please_choose_title')</div>
         
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label for="section_name">@lang('lang.Title_En')</label>
                                 <input class="form-control" id="section_name" type="text" name="name_en" value="" placeholder="" required="">
-                                <div class="valid-feedback">Looks good!</div>
-                                <div class="invalid-feedback">Please choose a Title.</div>
+                                <div class="valid-feedback">@lang('lang.looks_good')</div>
+                                <div class="invalid-feedback">@lang('lang.please_choose_title')</div>
         
                             </div>
     
@@ -49,8 +49,8 @@
                                     <div class="mb-3 mb-0">
                                         <label for="exampleFormControlTextarea4">@lang('lang.Body_ar')</label>
                                         <textarea class="form-control" id="exampleFormControlTextarea4" name="description_ar" rows="3" required></textarea>
-                                        <div class="valid-feedback">Looks good!</div>
-                                        <div class="invalid-feedback">Please choose a Description.</div>
+                                        <div class="valid-feedback">@lang('lang.looks_good')</div>
+                                        <div class="invalid-feedback">@lang('lang.please_choose_desc')</div>
                                     </div>
                                 </div>
                                 
@@ -60,8 +60,8 @@
                                     <div class="mb-3 mb-0">
                                         <label for="exampleFormControlTextarea4">@lang('lang.Body_En')</label>
                                         <textarea class="form-control" id="exampleFormControlTextarea4" name="description_en" rows="3" required></textarea>
-                                        <div class="valid-feedback">Looks good!</div>
-                                        <div class="invalid-feedback">Please choose a Description.</div>
+                                        <div class="valid-feedback">@lang('lang.looks_good')</div>
+                                        <div class="invalid-feedback">@lang('lang.please_choose_desc')</div>
                                     </div>
                                 </div>
                                
@@ -72,25 +72,25 @@
                                 <label for="validationCustom03">@lang('lang.Type')</label>
 
                                 <select class="form-control col-sm-12"  id="validationCustom03"  name="type" required >
-                                    <option value="1">general</option>
+                                    <option value="1">@lang('lang.general_notification')</option>
                                 </select>
-                                <div class="invalid-feedback">Please provide a valid Type.</div>
+                                <div class="invalid-feedback">@lang('lang.please_provide_type')</div>
 
                             </div>
 
                             <div class="col-md-12 mb-3">
-                                <label for="recipient_type">Send to</label>
+                                <label for="recipient_type">@lang('lang.send_to')</label>
                                 <select class="form-control col-sm-12" id="recipient_type" name="recipient_type" required>
-                                    <option value="">-- Select Recipients --</option>
-                                    <option value="all">All Users (Total Subscriptions)</option>
-                                    <option value="clients">Clients Only</option>
-                                    <option value="sellers">Sellers Only</option>
-                                    <option value="specific_seller">Specific Seller</option>
+                                    <option value="">@lang('lang.select_recipients')</option>
+                                    <option value="all">@lang('lang.all_users_total_subs')</option>
+                                    <option value="clients">@lang('lang.clients_only')</option>
+                                    <option value="sellers">@lang('lang.sellers_only')</option>
+                                    <option value="specific_seller">@lang('lang.specific_seller')</option>
                                 </select>
                                 <small class="form-text text-muted">
-                                    <strong>All Users</strong> sends to the "Total Subscriptions" segment (all subscribed users)
+                                    <strong>@lang('lang.all_users')</strong> @lang('lang.sends_to_total_subs_hint')
                                 </small>
-                                <div class="invalid-feedback">Please select recipients.</div>
+                                <div class="invalid-feedback">@lang('lang.please_select_recipients')</div>
                             </div>
     
                             <div class="col-md-6 mb-3" id="seller_section" style="display: none;">
@@ -105,7 +105,7 @@
                                     @endforelse
 
                                 </select>
-                                <div class="invalid-feedback">Please provide a valid seller.</div>
+                                <div class="invalid-feedback">@lang('lang.please_provide_seller')</div>
 
                             </div>
 
@@ -123,7 +123,7 @@
                                     @endforelse
                               
                                 </select>
-                                <div class="invalid-feedback">Please provide a valid region.</div>
+                                <div class="invalid-feedback">@lang('lang.please_provide_region')</div>
 
                             </div>
     

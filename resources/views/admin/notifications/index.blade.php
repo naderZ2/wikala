@@ -1,5 +1,5 @@
 @extends('admin.layout.master')
-@section('title', 'Basic DataTables')
+@section('title', trans('lang.Notifications'))
 
 @section('css')
 <link rel="stylesheet" type="text/css" href="{{asset('assets/css/vendors/datatables.css')}}">
@@ -42,7 +42,7 @@
                                         <th>@lang('lang.Title')</th>
                                         <th>@lang('lang.Body')</th>
                                         <th>@lang('lang.Type')</th>
-                                        <th>Recipients</th>
+                                        <th>@lang('lang.recipients')</th>
                                         <th>@lang('lang.Seller')</th>
                                         <th>@lang('lang.Product')</th>
                                         <th>@lang('lang.region')</th>
@@ -58,7 +58,7 @@
                                         <td>
                                             @if ($notification->type == 1)
                                                 <span class="badge badge-primary">
-                                                    عام
+                                                    @lang('lang.general_notification')
                                                 </span>
 
                                             @endif
@@ -66,19 +66,19 @@
                                         <td>
                                             @switch($notification->recipient_type ?? 'all')
                                                 @case('all')
-                                                    <span class="badge badge-info">All Users</span>
+                                                    <span class="badge badge-info">@lang('lang.all_users')</span>
                                                     @break
                                                 @case('clients')
-                                                    <span class="badge badge-success">Clients</span>
+                                                    <span class="badge badge-success">@lang('lang.Clients')</span>
                                                     @break
                                                 @case('sellers')
-                                                    <span class="badge badge-warning">Sellers</span>
+                                                    <span class="badge badge-warning">@lang('lang.Sellers')</span>
                                                     @break
                                                 @case('specific_seller')
-                                                    <span class="badge badge-secondary">Specific Seller</span>
+                                                    <span class="badge badge-secondary">@lang('lang.specific_seller')</span>
                                                     @break
                                                 @default
-                                                    <span class="badge badge-info">All Users</span>
+                                                    <span class="badge badge-info">@lang('lang.all_users')</span>
                                             @endswitch
                                         </td>
                                         <td>
@@ -112,7 +112,7 @@
                                         <th>@lang('lang.Title')</th>
                                         <th>@lang('lang.Body')</th>
                                         <th>@lang('lang.Type')</th>
-                                        <th>Recipients</th>
+                                        <th>@lang('lang.recipients')</th>
                                         <th>@lang('lang.Seller')</th>
                                         <th>@lang('lang.Product')</th>
                                         <th>@lang('lang.region')</th>

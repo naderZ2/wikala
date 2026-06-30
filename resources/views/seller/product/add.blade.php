@@ -139,7 +139,7 @@
                                             <input class="form-control" type="file" name="main_image" value="{{ old('images') }}" required accept="image/*" >
                                             <div class="mt-2 text-muted w-100">
                                                 <i class="fa fa-info-circle text-primary"></i> 
-                                                <strong>@lang('lang.recommended_size'):</strong> 1080 x 1440 px (Aspect Ratio 3:4). 
+                                                <strong>@lang('lang.recommended_size'):</strong> @lang('lang.product_recommended_size')
                                                 <span class="d-block mt-1">@lang('lang.product_size_hint')</span>
                                             </div>
                                             {{-- <div class="input-group-append">
@@ -163,7 +163,7 @@
                                                 <input class="form-control" type="file" name="images[]" value="{{ old('images') }}" required accept="image/*" >
                                                 <div class="mt-2 text-muted w-100">
                                                     <i class="fa fa-info-circle text-primary"></i> 
-                                                    <strong>@lang('lang.recommended_size'):</strong> 1080 x 1440 px (Aspect Ratio 3:4). 
+                                                    <strong>@lang('lang.recommended_size'):</strong> @lang('lang.product_recommended_size')
                                                     <span class="d-block mt-1">@lang('lang.product_size_hint')</span>
                                                 </div>
                                                 {{-- <div class="input-group-append">

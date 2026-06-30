@@ -75,8 +75,7 @@ class LoginController extends Controller
 
         // Handle banner upload
         if ($request->hasFile('banner')) {
-            $path = $request->file('banner')->store('uploads/banners', 'public');
-            $seller->banner = $path;
+            $seller->banner = $request->file('banner');
             $seller->save();
         }
 
