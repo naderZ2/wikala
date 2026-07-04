@@ -39,6 +39,9 @@ Route::middleware(['auth:seller-api', 'checkSellerPlanPayment'])->group(function
     // Profile (View works without permission for the logged in user)
     Route::get('profile', [Seller\ProfileController::class, 'index']);
     
+    // Notifications
+    Route::get('notifications', [Seller\NotificationController::class, 'index']);
+    
     // Products (Viewing products open to all employees)
     Route::get('products', [Seller\ProductController::class, 'index']);
     Route::get('products/{id}', [Seller\ProductController::class, 'show']);
