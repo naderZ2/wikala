@@ -24,7 +24,10 @@ class ResetPasswordController extends Controller
         if (!Hash::check($request->old_password, auth()->user()->password)) {
             return $this->failed(null,trans('lang.Incorrect_old_password'));
         } 
-        auth()->user()->update(['password' => $request->password]);
+        
+        $newPassword = $request->input('new_password') ?? $request->input('password');
+        auth()->user()->update(['password' => $newPassword]);
+        
         return $this->success(null,trans('lang.password_changed'));
     }
 

@@ -28,24 +28,39 @@ class CheckRequest extends FormRequest
      */
     public function rules()
     {
-        return [
-            'password' => [
-                'required','confirmed',
-                Password::min(8) 
-                    ->mixedCase()        
-                    ->letters()   
-                    ->numbers()
-                    ->symbols(),     
-            ],
-            'old_password' => [
-                'required',
-                Password::min(8) 
-                    ->mixedCase()        
-                    ->letters()   
-                    ->numbers()
-                    ->symbols(),  
-            ],
+        $rules = [
+            'old_password' => 'required|string',
         ];
+
+        // Determine if they used new_password or password
+        $passwordField = $this->has('new_password') ? 'new_password' : 'password';
+
+        // Check if there is a custom confirm field (like confirm_new_password or confirm_password)
+        $confirmField = null;
+        if ($this->has('confirm_new_password')) {
+            $confirmField = 'confirm_new_password';
+        } elseif ($this->has('confirm_password')) {
+            $confirmField = 'confirm_password';
+        }
+
+        $passwordRules = [
+            'required',
+            Password::min(8) 
+                ->mixedCase()        
+                ->letters()   
+                ->numbers()
+                ->symbols(),     
+        ];
+
+        if ($confirmField) {
+            $passwordRules[] = "same:{$confirmField}";
+        } else {
+            $passwordRules[] = 'confirmed';
+        }
+
+        $rules[$passwordField] = $passwordRules;
+
+        return $rules;
     }
 
     public function failedValidation(Validator $validator)
@@ -56,7 +71,11 @@ class CheckRequest extends FormRequest
     public function messages(): array {
         return [
             'password.required'  => __('lang.password_required'),
-            'password.regex' => __('lang.password_regex'),
+            'password.confirmed' => __('lang.password_confirmed'),
+            'password.same'      => __('lang.password_confirmed'),
+            'new_password.required'  => __('lang.password_required'),
+            'new_password.confirmed' => __('lang.password_confirmed'),
+            'new_password.same'      => __('lang.password_confirmed'),
             'old_password.required'  => __('lang.old_password_required'),
         ];
     }
