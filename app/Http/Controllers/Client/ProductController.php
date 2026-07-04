@@ -95,6 +95,18 @@ class ProductController extends Controller
         ])
         ->select('id',$this->name ,$this->description ,$this->title,'price','main_image','picture','serving','seller_id','category_id')
         ->first();
+
+        if ($product) {
+            $more_from_seller = Product::where('seller_id', $product->seller_id)
+                ->where('id', '!=', $product->id)
+                ->where('is_available', 1)
+                ->select('id', $this->name, $this->description, $this->title, 'price', 'old_price', 'main_image', 'picture', 'serving', 'category_id', 'seller_id')
+                ->latest()
+                ->take(10)
+                ->get();
+            $product->setAttribute('more_from_seller', $more_from_seller);
+        }
+
         return $this->success($product);
     }
 
