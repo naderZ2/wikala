@@ -123,6 +123,12 @@
 								<div class="valid-feedback">Looks good!</div>
                                 <div class="invalid-feedback">Please choose a delivery fee.</div>
 							</div>
+							<div class="col-md-6 mb-3">
+								<label for="bannerPriceInput">@lang('lang.banner_price')</label>
+								<input class="form-control" id="bannerPriceInput" type="number" step="0.01" min="0" name="banner_price" value="{{ $settings->banner_price ?? 10.00 }}" placeholder="banner price for 7 days" required="">
+								<div class="valid-feedback">Looks good!</div>
+                                <div class="invalid-feedback">Please enter a banner price.</div>
+							</div>
 				
 						
 					</div>

@@ -31,7 +31,10 @@
 							<thead>
 								<tr>
 									<th>#</th>
-                                    <th>@lang('lang.parent_category')</th>
+									<th>@lang('lang.parent_category')</th>
+									<th>Seller</th>
+									<th>Status</th>
+									<th>Duration</th>
 									<th>@lang('lang.Image')</th>
 									<th></th>									
 								</tr>
@@ -45,6 +48,32 @@
 
 										<td>
 											{{ $banner->category->name ?? __('lang.main_category')  }}
+										</td>
+
+										<td>
+											{{ $banner->seller->name ?? 'Admin' }}
+										</td>
+
+										<td>
+											@if($banner->seller_id)
+												<span class="badge {{ $banner->is_paid ? 'badge-success' : 'badge-danger' }}">
+													{{ $banner->is_paid ? 'Paid' : 'Unpaid' }}
+												</span>
+											@else
+												<span class="badge badge-info">Permanent (Admin)</span>
+											@endif
+										</td>
+
+										<td>
+											@if($banner->seller_id)
+												@if($banner->start_date)
+													<small>{{ \Carbon\Carbon::parse($banner->start_date)->format('Y-m-d') }} to {{ \Carbon\Carbon::parse($banner->end_date)->format('Y-m-d') }}</small>
+												@else
+													<span class="text-warning">Pending Payment</span>
+												@endif
+											@else
+												<span>Unlimited</span>
+											@endif
 										</td>
 					
 										<td >
@@ -75,7 +104,10 @@
 							<tfoot>
 								<tr>
 									<th>#</th>
-                                    <th>@lang('lang.parent_category')</th>
+									<th>@lang('lang.parent_category')</th>
+									<th>Seller</th>
+									<th>Status</th>
+									<th>Duration</th>
 									<th>@lang('lang.Image')</th>
 									<th></th>									
 								</tr>							
