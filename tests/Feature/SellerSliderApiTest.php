@@ -80,9 +80,10 @@ class SellerSliderApiTest extends TestCase
         $publicResponse->assertStatus(200);
         $this->assertCount(0, $publicResponse->json('result.slider'));
 
-        $homeResponse = $this->getJson('/api/home'); // Homepage sliders via HomeController
-        $homeResponse->assertStatus(200);
-        $this->assertCount(0, $homeResponse->json('result.sliders'));
+
+        $categoryResponse = $this->getJson('/api/categories'); // Sliders via CategoryController
+        $categoryResponse->assertStatus(200);
+        $this->assertCount(0, $categoryResponse->json('result.sliders'));
 
         // 3. Initiate payment
         Http::fake([
@@ -132,9 +133,10 @@ class SellerSliderApiTest extends TestCase
         $this->assertCount(1, $publicResponsePaid->json('result.slider'));
         $this->assertEquals($slider->id, $publicResponsePaid->json('result.slider.0.id'));
 
-        $homeResponsePaid = $this->getJson('/api/home');
-        $homeResponsePaid->assertStatus(200);
-        $this->assertCount(1, $homeResponsePaid->json('result.sliders'));
-        $this->assertEquals($slider->id, $homeResponsePaid->json('result.sliders.0.id'));
+
+        $categoryResponsePaid = $this->getJson('/api/categories');
+        $categoryResponsePaid->assertStatus(200);
+        $this->assertCount(1, $categoryResponsePaid->json('result.sliders'));
+        $this->assertEquals($slider->id, $categoryResponsePaid->json('result.sliders.0.id'));
     }
 }

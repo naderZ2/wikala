@@ -117,7 +117,16 @@ class CategoryController extends Controller
         $parents = $categoriesQuery->select('id', $this->name, 'image', 'end_point')->get();
 
         // Fetch sliders
-        $sliders = Slider::get();
+        $now = now();
+        $sliders = Slider::whereNull('seller_id')
+            ->orWhere(function($q) use ($now) {
+                $q->where('is_paid', 1)
+                  ->whereNotNull('start_date')
+                  ->whereNotNull('end_date')
+                  ->where('start_date', '<=', $now)
+                  ->where('end_date', '>=', $now);
+            })
+            ->get();
 
         // Prepare response
         $result = [
