@@ -80,6 +80,10 @@ class SellerSliderApiTest extends TestCase
         $publicResponse->assertStatus(200);
         $this->assertCount(0, $publicResponse->json('result.slider'));
 
+        $homeResponse = $this->getJson('/api/home'); // Homepage sliders via HomeController
+        $homeResponse->assertStatus(200);
+        $this->assertCount(0, $homeResponse->json('result.sliders'));
+
         // 3. Initiate payment
         Http::fake([
             'https://development.payzah.net/ws/paymentgateway/index' => Http::response([
@@ -127,5 +131,10 @@ class SellerSliderApiTest extends TestCase
         $publicResponsePaid->assertStatus(200);
         $this->assertCount(1, $publicResponsePaid->json('result.slider'));
         $this->assertEquals($slider->id, $publicResponsePaid->json('result.slider.0.id'));
+
+        $homeResponsePaid = $this->getJson('/api/home');
+        $homeResponsePaid->assertStatus(200);
+        $this->assertCount(1, $homeResponsePaid->json('result.sliders'));
+        $this->assertEquals($slider->id, $homeResponsePaid->json('result.sliders.0.id'));
     }
 }
