@@ -109,6 +109,9 @@
 									<th>#</th>
 									<th>@lang('lang.Image')</th>
 									<th>Type</th>
+									<th>Seller</th>
+									<th>Status</th>
+									<th>Duration</th>
 									<th></th>									
 								</tr>
 							</thead>
@@ -128,7 +131,33 @@
 										</td>
 										<td>
 											<span class="badge {{ $category->type == 'video' ? 'bg-primary' : ($category->type == 'gif' ? 'bg-warning' : 'bg-success') }}">{{ $category->type ?? 'image' }}</span>
-										</td>							
+										</td>
+
+										<td>
+											{{ $category->seller->name ?? 'Admin' }}
+										</td>
+
+										<td>
+											@if($category->seller_id)
+												<span class="badge {{ $category->is_paid ? 'badge-success' : 'badge-danger' }}">
+													{{ $category->is_paid ? 'Paid' : 'Unpaid' }}
+												</span>
+											@else
+												<span class="badge badge-info">Permanent (Admin)</span>
+											@endif
+										</td>
+
+										<td>
+											@if($category->seller_id)
+												@if($category->start_date)
+													<small>{{ \Carbon\Carbon::parse($category->start_date)->format('Y-m-d') }} to {{ \Carbon\Carbon::parse($category->end_date)->format('Y-m-d') }}</small>
+												@else
+													<span class="text-warning">Pending Payment</span>
+												@endif
+											@else
+												<span>Unlimited</span>
+											@endif
+										</td>
 										
 										<td>
 											@can('update slider')
@@ -156,6 +185,9 @@
 									<th>#</th>
 									<th>@lang('lang.Image')</th>
 									<th>Type</th>
+									<th>Seller</th>
+									<th>Status</th>
+									<th>Duration</th>
 									<th></th>									
 								</tr>							
 							</tfoot>

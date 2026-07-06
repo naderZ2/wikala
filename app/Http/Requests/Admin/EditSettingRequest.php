@@ -35,7 +35,8 @@ class EditSettingRequest extends FormRequest
             'instance_id' => 'required',
             'access_token' => 'required',
             'delivery_fee' => 'required|numeric|min:0',
-            'banner_price' => 'required|numeric|min:0',
+            'banner_price' => 'sometimes|nullable|numeric|min:0',
+            'slider_price' => 'required|numeric|min:0',
 
             'ads_time_user' => 'sometimes|nullable',
             'ads_time_business' => 'sometimes|nullable',

@@ -30,8 +30,8 @@
 							<!--<li><a href="{{route('city.create')}}" class="{{ Route::currentRouteName()=='city.create' ? 'active' : '' }}">@lang('lang.add_region')</a></li>-->
 							
 							
-							<!--<li><a class="lan-4 {{ Route::currentRouteName()=='slider.index' ? 'active' : '' }}" href="{{route('slider.index')}}">@lang('lang.slider')</a></li>-->
-							<li><a class="lan-4 {{ Route::currentRouteName()=='banner.index' ? 'active' : '' }}" href="{{route('banner.index')}}">@lang('lang.banner')</a></li>
+							<li><a class="lan-4 {{ Route::currentRouteName()=='slider.index' ? 'active' : '' }}" href="{{route('slider.index')}}">@lang('lang.slider')</a></li>
+							<!--<li><a class="lan-4 {{ Route::currentRouteName()=='banner.index' ? 'active' : '' }}" href="{{route('banner.index')}}">@lang('lang.banner')</a></li>-->
 							<!--<li><a class="lan-4 {{ Route::currentRouteName()=='banner.create' ? 'active' : '' }}" href="{{route('banner.create')}}">@lang('lang.add_banner')</a></li>-->
 
 							<li><a class="lan-4 {{ Route::currentRouteName()=='category.index' ? 'active' : '' }}" href="{{route('category.index')}}">@lang('lang.Categories')</a></li>

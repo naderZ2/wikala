@@ -14,7 +14,7 @@ class AboutUs extends Model
         'insta','youtube',"phone","email",'ads_time_user','ads_time_business',
         'description','privacy','free_ads_business','free_ads_user',
         'terms_ar','terms_en','access_token','instance_id','image_limit','delivery_fee',
-        'banner_price'
+        'banner_price', 'slider_price'
     ];
 
     protected $hidden = ['updated_at'];

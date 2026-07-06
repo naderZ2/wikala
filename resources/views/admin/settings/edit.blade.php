@@ -124,10 +124,10 @@
                                 <div class="invalid-feedback">Please choose a delivery fee.</div>
 							</div>
 							<div class="col-md-6 mb-3">
-								<label for="bannerPriceInput">@lang('lang.banner_price')</label>
-								<input class="form-control" id="bannerPriceInput" type="number" step="0.01" min="0" name="banner_price" value="{{ $settings->banner_price ?? 10.00 }}" placeholder="banner price for 7 days" required="">
+								<label for="sliderPriceInput">Slider Price (7 Days)</label>
+								<input class="form-control" id="sliderPriceInput" type="number" step="0.01" min="0" name="slider_price" value="{{ $settings->slider_price ?? 10.00 }}" placeholder="slider price for 7 days" required="">
 								<div class="valid-feedback">Looks good!</div>
-                                <div class="invalid-feedback">Please enter a banner price.</div>
+                                <div class="invalid-feedback">Please enter a slider price.</div>
 							</div>
 				
 						

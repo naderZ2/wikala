@@ -15,7 +15,7 @@ class BannerController extends Controller
         $result['banners']= [];
         $now = now();
 
-        $activeBannerCallback = function($query) use ($now) {
+        $activeSliderCallback = function($query) use ($now) {
             $query->whereNull('seller_id')
                   ->orWhere(function($q) use ($now) {
                       $q->where('is_paid', 1)
@@ -25,23 +25,11 @@ class BannerController extends Controller
         };
 
         if($request->category_id){
-            $result['banners']= Banner::whereCategoryId($request->category_id)
-                ->where('type', 'banner')
-                ->where($activeBannerCallback)
-                ->get();
+            $result['banners']= Banner::whereCategoryId($request->category_id)->get();
         }
         else{
-            $sellerSliders = Banner::whereNull('category_id')
-                ->where('type', 'slider')
-                ->where($activeBannerCallback)
-                ->get();
-
-            $result['slider']= Slider::get()->concat($sellerSliders);
-
-            $result['banners']= Banner::whereNull('category_id')
-                ->where('type', 'banner')
-                ->where($activeBannerCallback)
-                ->get();
+            $result['slider']= Slider::where($activeSliderCallback)->get();
+            $result['banners']= Banner::whereNull('category_id')->get();
         }
         return $this->success($result);
     }

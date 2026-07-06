@@ -3,16 +3,18 @@
 namespace App\Http\Controllers\Seller;
 
 use App\Http\Controllers\Controller;
-use App\Models\Banner;
+use App\Models\Slider;
 use App\Models\AboutUs;
 use App\Services\PayzahService;
 use App\Traits\ResponsesTrait;
+use App\Traits\FileUploadTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
-class BannerController extends Controller
+class SliderController extends Controller
 {
     use ResponsesTrait;
+    use FileUploadTrait;
 
     protected $payzahService;
 
@@ -22,72 +24,86 @@ class BannerController extends Controller
     }
 
     /**
-     * List all banners uploaded by the logged-in seller
+     * List all sliders uploaded by the logged-in seller
      */
     public function index(Request $request)
     {
         $this->lang();
         $seller = $request->user();
 
-        $banners = Banner::where('seller_id', $seller->id)
-            ->with(['category' => function($q) {
-                $q->select('id', $this->name);
-            }])
+        $sliders = Slider::where('seller_id', $seller->id)
             ->latest()
             ->get();
 
-        // Get the current banner price configured by the admin
+        // Get the current slider price configured by the admin
         $settings = AboutUs::first();
-        $bannerPrice = $settings ? (float) $settings->banner_price : 10.00;
+        $sliderPrice = $settings ? (float) $settings->slider_price : 10.00;
 
         return $this->success([
-            'banners' => $banners,
-            'banner_price' => $bannerPrice
-        ], 'Seller banners retrieved successfully');
+            'sliders' => $sliders,
+            'slider_price' => $sliderPrice
+        ], 'Seller sliders retrieved successfully');
     }
 
     /**
-     * Upload/create a new banner
+     * Upload/create a new slider advertisement
      */
     public function store(Request $request)
     {
         $request->validate([
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:5120', // max 5MB
-            'category_id' => 'nullable|exists:categories,id',
-            'type' => 'sometimes|string|in:banner,slider',
+            'image' => 'required|file|mimes:jpeg,png,jpg,gif,mp4,mov,avi,webm|max:51200', // max 50MB for video support
+            'link' => 'nullable|url',
         ]);
 
         $seller = $request->user();
-
-        $banner = Banner::create([
-            'name' => $request->file('image'), // FileUploadTrait triggers setNameAttribute
-            'category_id' => $request->category_id,
+        $file = $request->file('image');
+        
+        $data = [
             'seller_id' => $seller->id,
             'is_paid' => 0,
-            'type' => $request->type ?? 'banner',
-        ]);
+            'link' => $request->link,
+        ];
 
-        return $this->success($banner, 'Banner created successfully. Proceed to payment.');
+        if ($file) {
+            $mime = $file->getMimeType();
+            $ext  = strtolower($file->getClientOriginalExtension());
+
+            if (str_starts_with($mime, 'video/')) {
+                $data['type']  = 'video';
+                $data['video'] = $this->uploadFile($file, 'sliders');
+                $data['name']  = '';
+            } elseif ($ext === 'gif' || $mime === 'image/gif') {
+                $data['type'] = 'gif';
+                $data['name'] = $this->uploadFile($file, 'sliders');
+            } else {
+                $data['type'] = 'image';
+                $data['name'] = $this->uploadFile($file, 'sliders');
+            }
+        }
+
+        $slider = Slider::create($data);
+
+        return $this->success($slider, 'Slider created successfully. Proceed to payment.');
     }
 
     /**
-     * Initiate Payzah payment for the banner
+     * Initiate Payzah payment for the slider
      */
     public function pay(Request $request, $id)
     {
         $seller = $request->user();
-        $banner = Banner::where('seller_id', $seller->id)->findOrFail($id);
+        $slider = Slider::where('seller_id', $seller->id)->findOrFail($id);
 
-        if ($banner->is_paid) {
-            return $this->failed(null, 'This banner has already been paid for.');
+        if ($slider->is_paid) {
+            return $this->failed(null, 'This slider has already been paid for.');
         }
 
-        // Get the banner price
+        // Get the slider price
         $settings = AboutUs::first();
-        $amount = $settings ? (float) $settings->banner_price : 10.00;
+        $amount = $settings ? (float) $settings->slider_price : 10.00;
 
         // Generate track id
-        $trackid = 'SELLERBANNER' . $banner->id . 'T' . time();
+        $trackid = 'SELLERMINISLIDER' . $slider->id . 'T' . time();
 
         $lang = $request->header('Lang') ?? 'en';
 
@@ -95,21 +111,21 @@ class BannerController extends Controller
         $payload = [
             "trackid" => $trackid,
             "amount" => $amount,
-            "success_url" => route('seller.banner_payment.success', ['trackid' => $trackid]),
-            "error_url" => route('seller.banner_payment.fail', ['trackid' => $trackid]),
+            "success_url" => route('seller.slider_payment.success', ['trackid' => $trackid]),
+            "error_url" => route('seller.slider_payment.fail', ['trackid' => $trackid]),
             "currency" => "KWD",
             "language" => $lang,
             "payment_type" => "1", // standard Payment Type
             "udf1" => (string) $seller->id,
-            "udf2" => (string) $banner->id,
+            "udf2" => (string) $slider->id,
         ];
 
-        Log::info('Initiating banner payment for seller ' . $seller->id . ', banner ' . $banner->id, $payload);
+        Log::info('Initiating slider payment for seller ' . $seller->id . ', slider ' . $slider->id, $payload);
 
         $paymentResponse = $this->payzahService->initiatePayment($payload);
 
         // Store payment response reference
-        $banner->update([
+        $slider->update([
             'payment_details' => json_encode($paymentResponse),
         ]);
 
@@ -122,26 +138,26 @@ class BannerController extends Controller
     public function paymentSuccess(Request $request)
     {
         $trackid = $request->get('trackid');
-        Log::info('Banner payment callback success: ' . $trackid, $request->all());
+        Log::info('Slider payment callback success: ' . $trackid, $request->all());
 
-        $bannerId = null;
-        if ($trackid && preg_match('/^SELLERBANNER(\d+)T\d+$/', $trackid, $matches)) {
-            $bannerId = $matches[1];
+        $sliderId = null;
+        if ($trackid && preg_match('/^SELLERMINISLIDER(\d+)T\d+$/', $trackid, $matches)) {
+            $sliderId = $matches[1];
         }
 
-        if ($bannerId) {
-            $banner = Banner::find($bannerId);
-            if ($banner) {
+        if ($sliderId) {
+            $slider = Slider::find($sliderId);
+            if ($slider) {
                 // Verify payment status with Payzah
                 $verification = $this->payzahService->verifyPayment(['trackid' => $trackid]);
-                Log::info('Payzah Banner Payment verification: ', $verification);
+                Log::info('Payzah Slider Payment verification: ', $verification);
 
-                $banner->update([
+                $slider->update([
                     'is_paid' => 1,
                     'start_date' => now(),
                     'end_date' => now()->addDays(7),
                     'payment_details' => json_encode(array_merge(
-                        json_decode($banner->payment_details, true) ?? [],
+                        json_decode($slider->payment_details, true) ?? [],
                         $verification,
                         ['callback_data' => $request->all()]
                     ))
@@ -150,8 +166,8 @@ class BannerController extends Controller
         }
 
         $title = "Payment Successful | الدفع ناجح";
-        $message = "Banner payment completed successfully. Your banner will be shown on the home page for 7 days.";
-        $messageAr = "تم دفع الإعلان بنجاح. سيتم عرض إعلانك على الصفحة الرئيسية لمدة 7 أيام.";
+        $message = "Slider ad payment completed successfully. Your slide will be shown on the homepage for 7 days.";
+        $messageAr = "تم دفع السلايدر بنجاح. سيتم عرض إعلانك على الصفحة الرئيسية لمدة 7 أيام.";
 
         return $this->renderHtmlResponse(true, $title, $message, $messageAr);
     }
@@ -162,19 +178,19 @@ class BannerController extends Controller
     public function paymentFail(Request $request)
     {
         $trackid = $request->get('trackid');
-        Log::warning('Banner payment callback failed: ' . $trackid, $request->all());
+        Log::warning('Slider payment callback failed: ' . $trackid, $request->all());
 
-        $bannerId = null;
-        if ($trackid && preg_match('/^SELLERBANNER(\d+)T\d+$/', $trackid, $matches)) {
-            $bannerId = $matches[1];
+        $sliderId = null;
+        if ($trackid && preg_match('/^SELLERMINISLIDER(\d+)T\d+$/', $trackid, $matches)) {
+            $sliderId = $matches[1];
         }
 
-        if ($bannerId) {
-            $banner = Banner::find($bannerId);
-            if ($banner) {
-                $banner->update([
+        if ($sliderId) {
+            $slider = Slider::find($sliderId);
+            if ($slider) {
+                $slider->update([
                     'payment_details' => json_encode(array_merge(
-                        json_decode($banner->payment_details, true) ?? [],
+                        json_decode($slider->payment_details, true) ?? [],
                         ['callback_data' => $request->all()]
                     ))
                 ]);
@@ -182,8 +198,8 @@ class BannerController extends Controller
         }
 
         $title = "Payment Failed | فشل الدفع";
-        $message = "Banner payment failed. Please try again from the application.";
-        $messageAr = "فشلت عملية دفع الإعلان. يرجى المحاولة مرة أخرى من التطبيق.";
+        $message = "Slider payment failed. Please try again from the application.";
+        $messageAr = "فشلت عملية دفع السلايدر. يرجى المحاولة مرة أخرى من التطبيق.";
 
         return $this->renderHtmlResponse(false, $title, $message, $messageAr);
     }

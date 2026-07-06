@@ -14,7 +14,7 @@ class SliderController extends Controller
     use FileUploadTrait;
 
     public function index(){
-        $sliders  =Slider::get();
+        $sliders  =Slider::with('seller')->get();
         return view('admin.slider.index',compact('sliders'));
     }
 

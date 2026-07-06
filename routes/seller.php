@@ -22,8 +22,8 @@ Route::post('reset-password', [Seller\Auth\LoginController::class, 'resetPasswor
 Route::post('resend-otp', [Seller\Auth\LoginController::class, 'resendOtp']);
 Route::get('payment/success', [Seller\PlanPaymentController::class, 'paymentSuccess'])->name('seller.payment.success');
 Route::get('payment/fail', [Seller\PlanPaymentController::class, 'paymentFail'])->name('seller.payment.fail');
-Route::get('payment/banner/success', [Seller\BannerController::class, 'paymentSuccess'])->name('seller.banner_payment.success');
-Route::get('payment/banner/fail', [Seller\BannerController::class, 'paymentFail'])->name('seller.banner_payment.fail');
+Route::get('payment/slider/success', [Seller\SliderController::class, 'paymentSuccess'])->name('seller.slider_payment.success');
+Route::get('payment/slider/fail', [Seller\SliderController::class, 'paymentFail'])->name('seller.slider_payment.fail');
 Route::get('plans', [Seller\PlanPaymentController::class, 'getPlans']);
 Route::post('select-plan', [Seller\PlanPaymentController::class, 'selectPlan']);
 
@@ -92,10 +92,10 @@ Route::middleware(['auth:seller-api', 'checkSellerPlanPayment'])->group(function
         Route::post('services', [Seller\SellerServicesController::class, 'store']);
         Route::put('services/{id}/toggle', [Seller\SellerServicesController::class, 'updateAvailability']);
 
-        // Homepage Banners
-        Route::get('banners', [Seller\BannerController::class, 'index']);
-        Route::post('banners', [Seller\BannerController::class, 'store']);
-        Route::post('banners/{id}/pay', [Seller\BannerController::class, 'pay']);
+        // Homepage Sliders
+        Route::get('sliders', [Seller\SliderController::class, 'index']);
+        Route::post('sliders', [Seller\SliderController::class, 'store']);
+        Route::post('sliders/{id}/pay', [Seller\SliderController::class, 'pay']);
     });
 
     // Employees Management
