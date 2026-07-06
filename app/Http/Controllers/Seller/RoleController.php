@@ -52,8 +52,9 @@ class RoleController extends Controller
         $role = Role::create([
             'name' => $request->name, 
             'guard_name' => 'seller-api',
-            'seller_id' => $mainSellerId
         ]);
+        $role->seller_id = $mainSellerId;
+        $role->save();
         
         if ($request->has('permissions') && !empty($request->permissions)) {
             $role->syncPermissions($request->permissions);
