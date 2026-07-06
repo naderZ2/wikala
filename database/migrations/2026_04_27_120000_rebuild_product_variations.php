@@ -105,8 +105,10 @@ return new class extends Migration
             if (Schema::hasColumn('product_variations', 'is_active')) {
                 $t->dropColumn('is_active');
             }
-            $t->unsignedBigInteger('parent_id')->nullable()->after('product_id');
-            $t->foreign('parent_id')->references('id')->on('product_variations')->cascadeOnDelete();
+            if (!Schema::hasColumn('product_variations', 'parent_id')) {
+                $t->unsignedBigInteger('parent_id')->nullable()->after('product_id');
+                $t->foreign('parent_id')->references('id')->on('product_variations')->cascadeOnDelete();
+            }
         });
     }
 

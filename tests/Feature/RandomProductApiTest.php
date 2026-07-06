@@ -19,11 +19,13 @@ class RandomProductApiTest extends TestCase
         $category = Category::create([
             'name_en' => 'Test Category',
             'name_ar' => 'قسم تجريبي',
+            'image' => 'category.png',
         ]);
 
         $seller = Seller::create([
             'name' => 'Test Seller',
             'phone' => '12345678',
+            'email' => 'seller@test.com',
             'password' => 'password123',
         ]);
 
@@ -38,6 +40,8 @@ class RandomProductApiTest extends TestCase
                 'title_ar' => "عنوان $i",
                 'price' => 10.0 * $i,
                 'is_available' => 1,
+                'main_image' => 'product.png',
+                'quantity' => 10,
                 'category_id' => $category->id,
                 'seller_id' => $seller->id,
             ]);
@@ -53,6 +57,8 @@ class RandomProductApiTest extends TestCase
             'title_ar' => "عنوان",
             'price' => 100.0,
             'is_available' => 0,
+            'main_image' => 'product.png',
+            'quantity' => 10,
             'category_id' => $category->id,
             'seller_id' => $seller->id,
         ]);
