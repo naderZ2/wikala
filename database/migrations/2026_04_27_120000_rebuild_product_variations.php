@@ -63,11 +63,13 @@ return new class extends Migration
                 $this->flattenTreeIntoLeaves();
 
                 // Drop FK + column
-                $parentFk = $this->findFk('product_variations', 'parent_id');
-                Schema::table('product_variations', function (Blueprint $t) use ($parentFk) {
-                    if ($parentFk) $t->dropForeign($parentFk);
-                    $t->dropColumn('parent_id');
-                });
+                if (DB::getDriverName() !== 'sqlite') {
+                    $parentFk = $this->findFk('product_variations', 'parent_id');
+                    Schema::table('product_variations', function (Blueprint $t) use ($parentFk) {
+                        if ($parentFk) $t->dropForeign($parentFk);
+                        $t->dropColumn('parent_id');
+                    });
+                }
             }
 
             // 5) Indexes / constraints
@@ -112,6 +114,9 @@ return new class extends Migration
 
     private function findFk(string $table, string $column): ?string
     {
+        if (DB::getDriverName() === 'sqlite') {
+            return null;
+        }
         $row = DB::selectOne(
             "SELECT CONSTRAINT_NAME AS name
              FROM information_schema.KEY_COLUMN_USAGE
@@ -127,6 +132,13 @@ return new class extends Migration
 
     private function hasIndex(string $table, string $index): bool
     {
+        if (DB::getDriverName() === 'sqlite') {
+            $row = DB::selectOne(
+                "SELECT 1 FROM sqlite_master WHERE type='index' AND name=?",
+                [$index]
+            );
+            return (bool) $row;
+        }
         $row = DB::selectOne(
             "SELECT 1 AS x FROM information_schema.STATISTICS
              WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ? AND INDEX_NAME = ?

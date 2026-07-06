@@ -20,7 +20,7 @@ return new class extends Migration
             $table->unsignedBigInteger('category_id');
             $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade')->onUpdate('cascade');
             $table->string('name_ar');
-            $table->boolen('is_available')->default(true);
+            $table->boolean('is_available')->default(true);
             $table->string('main_image');
             $table->string('name_en');
             $table->integer('quantity');
