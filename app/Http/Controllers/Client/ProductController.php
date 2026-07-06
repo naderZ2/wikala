@@ -110,4 +110,23 @@ class ProductController extends Controller
         return $this->success($product);
     }
 
+    public function random(Request $request)
+    {
+        $this->lang();
+
+        $products = Product::where('is_available', 1)
+            ->with([
+                'category' => function($q) { $q->select('id', $this->name); },
+                'attributes' => function($q) { $q->select('id', 'product_id', 'value'); },
+                'variations.attributes.attribute' => function($q) { $q->select('id', $this->name, 'type', 'image', 'enable', 'deleted_at', 'created_at', 'updated_at'); },
+                'seller'
+            ])
+            ->select('id', $this->name, $this->description, $this->title, 'price', 'old_price', 'main_image', 'serving', "category_id", "seller_id")
+            ->inRandomOrder()
+            ->take(10)
+            ->get();
+
+        return $this->success($products);
+    }
+
 }

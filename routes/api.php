@@ -55,6 +55,8 @@ Route::middleware(['checkLanguage'])->group(function () {
     Route::get('most_selling', [Client\ProductController::class, 'index']);
 
     Route::get('products', [Client\ProductController::class, 'index']);
+    Route::get('random_products', [Client\ProductController::class, 'random']);
+    Route::get('products/random', [Client\ProductController::class, 'random']);
     Route::get('product_details', [Client\ProductController::class, 'details']);
 
 
