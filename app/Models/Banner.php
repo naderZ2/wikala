@@ -11,7 +11,7 @@ class Banner extends Model
     use FileUploadTrait;
     use HasFactory;
     protected $fillable = [
-        'name', 'category_id', 'seller_id', 'is_paid', 'start_date', 'end_date', 'payment_details'
+        'name', 'category_id', 'seller_id', 'is_paid', 'start_date', 'end_date', 'payment_details', 'type'
     ];
     
     protected $hidden = [

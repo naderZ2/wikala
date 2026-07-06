@@ -26,12 +26,20 @@ class BannerController extends Controller
 
         if($request->category_id){
             $result['banners']= Banner::whereCategoryId($request->category_id)
+                ->where('type', 'banner')
                 ->where($activeBannerCallback)
                 ->get();
         }
         else{
-            $result['slider']= Slider::get();
+            $sellerSliders = Banner::whereNull('category_id')
+                ->where('type', 'slider')
+                ->where($activeBannerCallback)
+                ->get();
+
+            $result['slider']= Slider::get()->concat($sellerSliders);
+
             $result['banners']= Banner::whereNull('category_id')
+                ->where('type', 'banner')
                 ->where($activeBannerCallback)
                 ->get();
         }

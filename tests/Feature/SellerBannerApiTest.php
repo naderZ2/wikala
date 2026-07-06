@@ -135,4 +135,67 @@ class SellerBannerApiTest extends TestCase
         $this->assertCount(1, $publicResponsePaid->json('result.banners'));
         $this->assertEquals($banner->id, $publicResponsePaid->json('result.banners.0.id'));
     }
+
+    /** @test */
+    public function seller_can_upload_and_pay_for_slider_placement()
+    {
+        Storage::fake('public');
+
+        // 1. Upload Slider Ad
+        $image = UploadedFile::fake()->image('slider_ad.png', 1200, 600);
+
+        $response = $this->actingAs($this->seller, 'seller-api')
+            ->postJson('/seller/banners', [
+                'image' => $image,
+                'type' => 'slider', // Select slider type
+            ]);
+
+        $response->assertStatus(200);
+        $bannerId = $response->json('result.id');
+        $this->assertNotNull($bannerId);
+
+        $banner = Banner::find($bannerId);
+        $this->assertEquals('slider', $banner->type);
+        $this->assertEquals(0, $banner->is_paid);
+
+        // 2. Public index API should NOT return the unpaid slider
+        $publicResponse = $this->getJson('/api/banners');
+        $publicResponse->assertStatus(200);
+        $this->assertCount(0, $publicResponse->json('result.slider'));
+
+        // 3. Initiate payment
+        Http::fake([
+            'https://development.payzah.net/ws/paymentgateway/index' => Http::response([
+                'status' => 'success',
+                'paymentUrl' => 'https://payzah.net/pay/slider123'
+            ], 200)
+        ]);
+
+        $payResponse = $this->actingAs($this->seller, 'seller-api')
+            ->postJson("/seller/banners/{$bannerId}/pay");
+
+        $payResponse->assertStatus(200);
+
+        // 4. Simulate Payzah success callback
+        Http::fake([
+            'https://development.payzah.net/ws/paymentgateway/get-payment-details' => Http::response([
+                'status' => 'Captured',
+                'amount' => 25.00
+            ], 200)
+        ]);
+
+        $trackid = 'SELLERBANNER' . $banner->id . 'T' . time();
+
+        $callbackResponse = $this->getJson(route('seller.banner_payment.success', ['trackid' => $trackid]));
+        $callbackResponse->assertStatus(200);
+
+        // 5. Public index API should now return the active paid slider!
+        $publicResponsePaid = $this->getJson('/api/banners');
+        $publicResponsePaid->assertStatus(200);
+        
+        // It should be inside the slider array
+        $sliders = $publicResponsePaid->json('result.slider');
+        $this->assertCount(1, $sliders);
+        $this->assertEquals($banner->name, $sliders[0]['name']);
+    }
 }

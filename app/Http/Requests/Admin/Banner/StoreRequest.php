@@ -26,7 +26,8 @@ class StoreRequest extends FormRequest
         return [
             'name' => "required|file|mimes:jpg,jpeg,png,gif,webp,mp4,mov,avi,webm|max:51200",
             'link' => "sometimes|nullable",
-            "category_id" => "sometimes|nullable"
+            "category_id" => "sometimes|nullable",
+            "type" => "sometimes|in:banner,slider"
         ];
     }
 }

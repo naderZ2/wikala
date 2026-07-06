@@ -54,6 +54,7 @@ class BannerController extends Controller
         $request->validate([
             'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:5120', // max 5MB
             'category_id' => 'nullable|exists:categories,id',
+            'type' => 'sometimes|string|in:banner,slider',
         ]);
 
         $seller = $request->user();
@@ -63,6 +64,7 @@ class BannerController extends Controller
             'category_id' => $request->category_id,
             'seller_id' => $seller->id,
             'is_paid' => 0,
+            'type' => $request->type ?? 'banner',
         ]);
 
         return $this->success($banner, 'Banner created successfully. Proceed to payment.');

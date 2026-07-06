@@ -45,7 +45,15 @@
                                 <div class="invalid-feedback">Please provide a valid category.</div>
 
                             </div>
-					
+							<div class="col-md-6 mb-3">
+                                <label for="bannerTypeSelect">Placement Type</label>
+
+                                <select class="form-control" id="bannerTypeSelect" name="type" required>
+                                    <option value="banner" selected>Banner</option>
+                                    <option value="slider">Slider</option>
+                                </select>
+                                <div class="invalid-feedback">Please select a valid placement type.</div>
+                            </div>
 						</div>
 
 						<div class="mb-3">

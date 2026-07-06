@@ -33,6 +33,7 @@
 									<th>#</th>
 									<th>@lang('lang.parent_category')</th>
 									<th>Seller</th>
+									<th>Type</th>
 									<th>Status</th>
 									<th>Duration</th>
 									<th>@lang('lang.Image')</th>
@@ -52,6 +53,10 @@
 
 										<td>
 											{{ $banner->seller->name ?? 'Admin' }}
+										</td>
+
+										<td>
+											<span class="badge badge-light-primary text-uppercase">{{ $banner->type ?? 'banner' }}</span>
 										</td>
 
 										<td>
@@ -106,6 +111,7 @@
 									<th>#</th>
 									<th>@lang('lang.parent_category')</th>
 									<th>Seller</th>
+									<th>Type</th>
 									<th>Status</th>
 									<th>Duration</th>
 									<th>@lang('lang.Image')</th>
@@ -155,6 +161,19 @@
 						</div>
 					</div>
 
+					<div class="col-md-12 mb-3">
+						<div class="col">
+							<div class="mb-3 row">
+								<label class="col-sm-3 col-form-label">Type</label>
+								<div class="col-sm-9">
+									<select class="form-control" id="section_type" name="type" required>
+										<option value="banner">Banner</option>
+										<option value="slider">Slider</option>
+									</select>
+								</div>
+							</div>
+						</div>
+					</div>
 				</div>
 				{{-- <button class="btn btn-primary" type="submit">Submit form</button> --}}
 				<div class="modal-footer">
@@ -187,6 +206,7 @@
 
 	function getRecord(data){
 	    document.getElementById("section_id").value=data['id'];
+	    document.getElementById("section_type").value=data['type'] || 'banner';
    }
 
    function getId(id){
