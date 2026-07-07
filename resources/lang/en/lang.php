@@ -723,6 +723,21 @@ return  [
 	'please_select_recipients' => 'Please select recipients.',
 	'please_provide_seller' => 'Please provide a valid seller.',
 	'please_provide_region' => 'Please provide a valid region.',
-
+	'ads_limit' => 'Ads Limit',
+	'0_for_unlimited' => '0 for Unlimited',
+	'payment_history' => 'Subscription Payments',
+	'Seller' => 'Seller',
+	'Plan' => 'Plan',
+	'starts_at' => 'Starts At',
+	'ends_at' => 'Ends At',
+	'unlimited' => 'Unlimited',
+	'Transaction_ID' => 'Transaction ID',
+	'amount' => 'Amount',
+	'payment_method' => 'Payment Method',
+	'created_at' => 'Log Date',
+	'Status' => 'Status',
+	'paid' => 'Paid',
+	'failed' => 'Failed',
+	'pending' => 'Pending',
 ];
 ?>

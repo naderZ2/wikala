@@ -27,6 +27,10 @@ Route::get('payment/slider/fail', [Seller\SliderController::class, 'paymentFail'
 Route::get('plans', [Seller\PlanPaymentController::class, 'getPlans']);
 Route::post('select-plan', [Seller\PlanPaymentController::class, 'selectPlan']);
 
+Route::middleware(['auth:seller-api'])->group(function () {
+    Route::get('payment-history', [Seller\PlanPaymentController::class, 'paymentHistory']);
+});
+
 // ==========================================
 // Protected routes (auth:seller-api required)
 // ==========================================

@@ -44,9 +44,9 @@ class Report extends Model
 
     public function getRelationBasedOnType()
     {
-        if ($this->reportable_type === 'App\\Models\\Ad') {
+        if (in_array($this->reportable_type, ['App\\Models\\Ad', 'ad', 'product'])) {
             return $this->adSpecificRelation()->first();
-        } elseif ($this->reportable_type === 'App\\Models\\User') {
+        } elseif (in_array($this->reportable_type, ['App\\Models\\User', 'user', 'seller'])) {
             return $this->userSpecificRelation()->first();
         }
 

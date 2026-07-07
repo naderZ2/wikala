@@ -28,6 +28,7 @@ class PlanController extends Controller
             'description_ar' => 'nullable|string',
             'description_en' => 'nullable|string',
             'price' => 'required|numeric|min:0',
+            'ads_limit' => 'required|integer|min:0',
         ]);
 
         Plan::create($validated);
@@ -51,6 +52,7 @@ class PlanController extends Controller
             'description_ar' => 'nullable|string',
             'description_en' => 'nullable|string',
             'price' => 'required|numeric|min:0',
+            'ads_limit' => 'required|integer|min:0',
         ]);
 
         $plan->update($validated);
@@ -73,5 +75,15 @@ class PlanController extends Controller
         $plan->save();
 
         return redirect()->route('plans.index')->with('success', trans('lang.updated'));
+    }
+
+    /**
+     * View history of all seller subscription payments
+     */
+    public function paymentsHistory()
+    {
+        $this->lang();
+        $payments = \App\Models\SellerSubscriptionPayment::with(['seller', 'plan'])->latest()->get();
+        return view('admin.plans.payments', compact('payments'));
     }
 }

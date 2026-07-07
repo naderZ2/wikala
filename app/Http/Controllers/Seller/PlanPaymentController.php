@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Seller;
 use App\Http\Controllers\Controller;
 use App\Models\Plan;
 use App\Models\Seller;
+use App\Models\SellerSubscriptionPayment;
 use App\Services\PayzahService;
 use App\Traits\ResponsesTrait;
 use Illuminate\Http\Request;
@@ -79,6 +80,16 @@ class PlanPaymentController extends Controller
             'payment_details' => json_encode($paymentResponse),
         ]);
 
+        // Create log record
+        SellerSubscriptionPayment::create([
+            'seller_id' => $seller->id,
+            'plan_id' => $plan->id,
+            'amount' => $amount,
+            'status' => 'pending',
+            'transaction_id' => $trackid,
+            'payment_method' => $request->payment_method ?? 'Payzah',
+        ]);
+
         return response()->json($paymentResponse);
     }
 
@@ -104,11 +115,20 @@ class PlanPaymentController extends Controller
 
                 $seller->update([
                     'payment_status' => 'paid',
+                    'plan_starts_at' => now(),
+                    'plan_ends_at' => now()->addMonth(), // Monthly renewal
                     'payment_details' => json_encode(array_merge(
                         json_decode($seller->payment_details, true) ?? [],
                         $verification,
                         ['callback_data' => $request->all()]
                     ))
+                ]);
+
+                // Update history record
+                SellerSubscriptionPayment::where('transaction_id', $trackid)->update([
+                    'status' => 'paid',
+                    'starts_at' => now(),
+                    'ends_at' => now()->addMonth(),
                 ]);
             }
         }
@@ -143,6 +163,11 @@ class PlanPaymentController extends Controller
                         ['callback_data' => $request->all()]
                     ))
                 ]);
+
+                // Update history record
+                SellerSubscriptionPayment::where('transaction_id', $trackid)->update([
+                    'status' => 'failed',
+                ]);
             }
         }
 
@@ -151,6 +176,23 @@ class PlanPaymentController extends Controller
         $messageAr = "فشلت عملية دفع الاشتراك. يرجى المحاولة مرة أخرى من التطبيق.";
 
         return $this->renderHtmlResponse(false, $title, $message, $messageAr);
+    }
+
+    /**
+     * Get payment history for the logged-in seller
+     */
+    public function paymentHistory(Request $request)
+    {
+        $this->lang();
+        $sellerId = $request->user()->getMainSellerId();
+        $history = SellerSubscriptionPayment::where('seller_id', $sellerId)
+            ->with(['plan' => function($q) {
+                $q->select('id', 'name_ar', 'name_en', 'price', 'ads_limit');
+            }])
+            ->latest()
+            ->get();
+
+        return $this->success($history, 'Payment history retrieved successfully');
     }
 
     /**

@@ -26,11 +26,12 @@ class CheckSellerPlanPayment
             // Get the main seller (or parent seller if the current user is an employee)
             $mainSeller = $seller->parent_id ? $seller->parent : $seller;
 
-            if (!$mainSeller || $mainSeller->payment_status !== 'paid') {
+            if (!$mainSeller || $mainSeller->payment_status !== 'paid' || ($mainSeller->plan_ends_at && $mainSeller->plan_ends_at < now())) {
                 return $this->failed([
                     'payment_pending' => true,
+                    'expired' => $mainSeller->plan_ends_at && $mainSeller->plan_ends_at < now(),
                     'seller_id' => $seller->id
-                ], 'Payment pending. Please select a plan and pay to complete registration.');
+                ], 'Payment pending or subscription expired. Please select a plan and renew.');
             }
         }
 

@@ -732,6 +732,19 @@ return  [
 	'please_select_recipients' => 'يرجى اختيار المستلمين.',
 	'please_provide_seller' => 'يرجى اختيار بائع صحيح.',
 	'please_provide_region' => 'يرجى اختيار منطقة صحيحة.',
-
+	'ads_limit' => 'حد الإعلانات',
+	'0_for_unlimited' => '0 لغير محدود',
+	'payment_history' => 'سجل اشتراكات الباقات',
+	'Seller' => 'البائع',
+	'Plan' => 'الباقة',
+	'starts_at' => 'تاريخ البدء',
+	'ends_at' => 'تاريخ الانتهاء',
+	'unlimited' => 'غير محدود',
+	'Transaction_ID' => 'رقم العملية',
+	'amount' => 'القيمة',
+	'payment_method' => 'طريقة الدفع',
+	'created_at' => 'تاريخ العملية',
+	'Status' => 'الحالة',
+	'failed' => 'فشلت',
 ];
 ?>

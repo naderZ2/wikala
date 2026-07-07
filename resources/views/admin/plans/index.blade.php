@@ -30,6 +30,7 @@
 									<th>@lang('lang.Name')</th>
 									<th>@lang('lang.description')</th>
 									<th>@lang('lang.price')</th>
+									<th>@lang('lang.ads_limit')</th>
 									<th>@lang('lang.Status')</th>
 									<th></th>
 								</tr>
@@ -45,6 +46,9 @@
 									</td>
 									<td>
 										{{ $plan->price }} KWD
+									</td>
+									<td>
+										{{ $plan->ads_limit == 0 ? __('lang.unlimited') : $plan->ads_limit }}
 									</td>
 									<td>
 										@if ($plan->is_active)

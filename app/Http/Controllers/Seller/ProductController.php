@@ -87,9 +87,21 @@ class ProductController extends Controller
      */
     public function store(StoreRequest $request)
     {
+        $seller = $request->user();
+        $mainSellerId = $seller->getMainSellerId();
+        $mainSeller = $seller->parent_id ? $seller->parent : $seller;
+
+        $plan = $mainSeller->plan;
+        if ($plan && $plan->ads_limit > 0) {
+            $currentAdsCount = Product::where('seller_id', $mainSellerId)->count();
+            if ($currentAdsCount >= $plan->ads_limit) {
+                return $this->failed(null, 'You have reached the ads limit allowed by your current plan (' . $plan->ads_limit . ' ads).');
+            }
+        }
+
         $data = $request->validated();
         $data['is_available'] = 0; // under review
-        $data['seller_id'] = $request->user()->getMainSellerId();
+        $data['seller_id'] = $mainSellerId;
 
         if ($request->hasFile('main_image')) {
             $data['main_image'] = $this->uploadFile($request->file('main_image'), 'products');

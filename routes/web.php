@@ -301,6 +301,7 @@ Route::group(['middleware' => ['auth:admin', 'CheckUserActiviation']], function 
         Route::get('sellers/finance', [Admin\SellerFinanceController::class, 'index'])->name('admin.seller.finance');
         Route::post('sellers/{id}/update-commission', [Admin\SellerFinanceController::class, 'updateCommission'])->name('admin.seller.updateCommission');
 
+        Route::get('plans/payments', [Admin\PlanController::class, 'paymentsHistory'])->name('admin.plans.payments');
         Route::resource('plans', 'Admin\PlanController');
         Route::get('plans/{id}/toggle', [Admin\PlanController::class, 'toggle'])->name('plans.toggle');
 

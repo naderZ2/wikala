@@ -15,12 +15,14 @@ class Plan extends Model
         'description_ar',
         'description_en',
         'price',
+        'ads_limit',
         'is_active',
     ];
 
     protected $casts = [
         'is_active' => 'boolean',
         'price' => 'decimal:2',
+        'ads_limit' => 'integer',
     ];
 
     public function sellers()

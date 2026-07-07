@@ -34,11 +34,11 @@ class ReportRepository
     {
         return $this->model->with(['reportOption', 'reporter', 'getRelationBasedOnType' => function ($query) {
             $query->when(
-                $this->model->reportable_type === 'ad',
-                fn($q) => $q->with('adSpecificRelation') // Replace 'adSpecificRelation' with actual Ad relation
+                in_array($this->model->reportable_type, ['ad', 'product', \App\Models\Ad::class]),
+                fn($q) => $q->with('adSpecificRelation')
             )->when(
-                $this->model->reportable_type === 'user',
-                fn($q) => $q->with('userSpecificRelation') // Replace 'userSpecificRelation' with actual User relation
+                in_array($this->model->reportable_type, ['user', 'seller', \App\Models\User::class]),
+                fn($q) => $q->with('userSpecificRelation')
             );
         }])->get();
     }
@@ -62,9 +62,9 @@ class ReportRepository
     {
         $report = $this->model->with(['reportOption', 'reporter'])->findOrFail($id);
 
-        if ($report->reportable_type === \App\Models\Ad::class || $report->reportable_type === 'ad') {
+        if (in_array($report->reportable_type, [\App\Models\Ad::class, 'ad', 'product'])) {
             $report->load('adSpecificRelation');
-        } elseif ($report->reportable_type === \App\Models\User::class || $report->reportable_type === 'user') {
+        } elseif (in_array($report->reportable_type, [\App\Models\User::class, 'user', 'seller'])) {
             $report->load('userSpecificRelation');
         }
 

@@ -56,6 +56,11 @@
 								<label>@lang('lang.price') (KWD)</label>
 								<input class="form-control" type="number" step="0.01" name="price" value="{{ old('price', 0) }}" required>
 							</div>
+
+							<div class="col-md-6 mb-3">
+								<label>@lang('lang.ads_limit') (@lang('lang.0_for_unlimited'))</label>
+								<input class="form-control" type="number" name="ads_limit" value="{{ old('ads_limit', 0) }}" required min="0">
+							</div>
 						</div>
 
 						<button class="btn btn-primary" type="submit">@lang('lang.save')</button>

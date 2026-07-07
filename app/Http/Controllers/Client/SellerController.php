@@ -46,7 +46,16 @@ class SellerController extends Controller
         $seller = Seller::where('id', $id)
             ->where('active', 1)
             ->with(['products' => function($q) use ($nameCol) {
-                $q->where('is_available', 1)->latest()
+                $q->where('is_available', 1);
+
+                if (request()->filled('from')) {
+                    $q->where('price', '>=', request()->from);
+                }
+                if (request()->filled('to')) {
+                    $q->where('price', '<=', request()->to);
+                }
+
+                $q->latest()
                   ->with([
                       "category" => function($cq) use ($nameCol) {
                           $cq->select('id', "$nameCol as name");

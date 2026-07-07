@@ -312,6 +312,7 @@
                           <li><a href="{{ route('seller.index') }}" class="{{ Route::currentRouteName() == 'seller.index' ? 'active' : '' }}">{{ trans('lang.Sellers') }}</a></li>
                           <li><a href="{{ route('admin.seller.finance') }}" class="{{ Route::currentRouteName() == 'admin.seller.finance' ? 'active' : '' }}">@lang('lang.seller_finance')</a></li>
                           <li><a href="{{ route('plans.index') }}" class="{{ Route::currentRouteName() == 'plans.index' ? 'active' : '' }}">@lang('lang.plans')</a></li>
+                          <li><a href="{{ route('admin.plans.payments') }}" class="{{ Route::currentRouteName() == 'admin.plans.payments' ? 'active' : '' }}">@lang('lang.payment_history')</a></li>
 
                       </ul>
                   	</li>

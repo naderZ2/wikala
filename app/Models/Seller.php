@@ -26,6 +26,7 @@ class Seller extends Authenticatable
         'commission_type', 'commission_value',
         'icarry_warehouse_name',
         'plan_id', 'payment_status', 'payment_details',
+        'plan_starts_at', 'plan_ends_at',
         'civil_id_image', 'commercial_license_image'
     ];
 
@@ -37,6 +38,11 @@ class Seller extends Authenticatable
     public function plan()
     {
         return $this->belongsTo(Plan::class);
+    }
+
+    public function subscriptionPayments()
+    {
+        return $this->hasMany(SellerSubscriptionPayment::class);
     }
 
 
