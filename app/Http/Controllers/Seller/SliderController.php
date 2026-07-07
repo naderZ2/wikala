@@ -52,7 +52,7 @@ class SliderController extends Controller
     {
         $request->validate([
             'image' => 'required|file|mimes:jpeg,png,jpg,gif,mp4,mov,avi,webm|max:51200', // max 50MB for video support
-            'link' => 'nullable|url',
+            'link' => 'nullable',
         ]);
 
         $seller = $request->user();
