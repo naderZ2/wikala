@@ -25,21 +25,5 @@ class StoreRequest extends FormRequest
         ];
     }
 
-    /**
-     * Map client-friendly types (product, seller) to internal polymorphic types (ad, user).
-     */
-    public function validated($key = null, $default = null)
-    {
-        $validated = parent::validated($key, $default);
-
-        if (is_array($validated) && isset($validated['reportable_type'])) {
-            if ($validated['reportable_type'] === 'product') {
-                $validated['reportable_type'] = 'ad';
-            } elseif ($validated['reportable_type'] === 'seller') {
-                $validated['reportable_type'] = 'user';
-            }
-        }
-
-        return $validated;
-    }
+    // No custom mapping, store exactly what is sent
 }

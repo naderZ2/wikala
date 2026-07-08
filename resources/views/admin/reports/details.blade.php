@@ -27,8 +27,10 @@
             ? ($report->reportOption->title_en ?? $report->reportOption->title_ar)
             : ($report->reportOption->title_ar ?? $report->reportOption->title_en))
         : trans('lang.no_data');
-    $adRelation   = $report->adSpecificRelation;
-    $userRelation = $report->userSpecificRelation;
+    $adRelation      = $report->adSpecificRelation;
+    $productRelation = $report->productSpecificRelation;
+    $userRelation    = $report->userSpecificRelation;
+    $sellerRelation  = $report->sellerSpecificRelation;
 @endphp
 
 <div class="container-fluid">
@@ -64,10 +66,28 @@
                     </div>
                     @endif
 
+                    @if($productRelation)
+                    <div class="row mb-3">
+                        <div class="col-md-3 fw-bold">@lang('lang.Product_Title'):</div>
+                        <div class="col-md-9">{{ $productRelation->title_en ?? $productRelation->title_ar ?? $productRelation->name_en ?? $productRelation->name_ar ?? trans('lang.no_data') }}</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-3 fw-bold">@lang('lang.Product_Price'):</div>
+                        <div class="col-md-9">{{ $productRelation->price ?? trans('lang.no_data') }}</div>
+                    </div>
+                    @endif
+
                     @if($userRelation)
                     <div class="row mb-3">
                         <div class="col-md-3 fw-bold">@lang('lang.User_Specific_Relation'):</div>
                         <div class="col-md-9">{{ $userRelation->name ?? trans('lang.no_data') }}</div>
+                    </div>
+                    @endif
+
+                    @if($sellerRelation)
+                    <div class="row mb-3">
+                        <div class="col-md-3 fw-bold">@lang('lang.Seller_Name'):</div>
+                        <div class="col-md-9">{{ $sellerRelation->name ?? $sellerRelation->shop_name_en ?? $sellerRelation->shop_name_ar ?? trans('lang.no_data') }}</div>
                     </div>
                     @endif
                 </div>

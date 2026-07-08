@@ -44,10 +44,14 @@ class Report extends Model
 
     public function getRelationBasedOnType()
     {
-        if (in_array($this->reportable_type, ['App\\Models\\Ad', 'ad', 'product'])) {
+        if (in_array($this->reportable_type, ['App\\Models\\Ad', 'ad'])) {
             return $this->adSpecificRelation()->first();
-        } elseif (in_array($this->reportable_type, ['App\\Models\\User', 'user', 'seller'])) {
+        } elseif ($this->reportable_type === 'product') {
+            return $this->productSpecificRelation()->first();
+        } elseif (in_array($this->reportable_type, ['App\\Models\\User', 'user'])) {
             return $this->userSpecificRelation()->first();
+        } elseif ($this->reportable_type === 'seller') {
+            return $this->sellerSpecificRelation()->first();
         }
 
         return null;
@@ -57,7 +61,15 @@ class Report extends Model
         return $this->hasOne(Ad::class, 'id', 'reportable_id');
     }
 
+    public function productSpecificRelation(){
+        return $this->hasOne(Product::class, 'id', 'reportable_id');
+    }
+
     public function userSpecificRelation(){
         return $this->hasOne(User::class, 'id', 'reportable_id');
+    }
+
+    public function sellerSpecificRelation(){
+        return $this->hasOne(Seller::class, 'id', 'reportable_id');
     }
 }
