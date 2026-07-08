@@ -22,9 +22,9 @@ class ReportOptionService
     {
         return $this->reportOptionRepository->all();
     }
-    public function getEnable()
+    public function getEnable($columns = ['*'])
     {
-        return $this->reportOptionRepository->getEnable();
+        return $this->reportOptionRepository->getEnable($columns);
     }
 
     public function update($id, array $data)

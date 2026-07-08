@@ -20,6 +20,7 @@ class ReportOptionController extends Controller
 
     public function index()
     {
-        return $this->success($this->reportOptionService->getEnable());
+        $this->lang();
+        return $this->success($this->reportOptionService->getEnable(['id', $this->title, 'created_at', 'updated_at', 'enable']));
     }
 }

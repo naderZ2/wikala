@@ -22,9 +22,9 @@ class ReportOptionRepository
     {
         return $this->model->all();
     }
-    public function getEnable()
+    public function getEnable($columns = ['*'])
     {
-        return $this->model->where('enable', 1)->get();
+        return $this->model->where('enable', 1)->select($columns)->get();
     }
 
     public function update($id, array $data)

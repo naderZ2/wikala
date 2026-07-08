@@ -32,14 +32,14 @@ class ReportController extends Controller
         $report = $this->reportService->create($request->validated());
             
         $user = auth()->user();
-        $report->sendit  = $oneSignal->send(
-            "New Report Submitted",
-            "A new report was created by user : " . $user->name,
-            [
-                'report_id' => 30,
-                'user_id' => 300,
+        $report->sendit = $oneSignal->send([
+            'title' => "New Report Submitted",
+            'message' => "A new report was created by user : " . ($user ? $user->name : 'Guest'),
+            'data' => [
+                'report_id' => $report->id,
+                'user_id' => $user ? $user->id : null,
             ]
-        );
+        ]);
 
         
         return $this->success($report);
