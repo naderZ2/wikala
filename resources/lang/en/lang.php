@@ -254,6 +254,7 @@ return  [
 	'Show_Invoice' => 'show invoice',
 	'created_at' => 'created_at',
 	'invoice' => 'invoice',
+	'address_label' => 'Address',
 	"specialRequest" => "special request",
 	"addSpecialRequest" => "add special request",
 	"upload_file" => "upload file",

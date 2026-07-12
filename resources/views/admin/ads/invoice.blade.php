@@ -107,7 +107,7 @@ tr:nth-child(even) {
             <p class="info-item"><span>@lang('lang.phone') :</span> {{ $order->user?->phone }}</p>
             <p class="info-item"><span>@lang('lang.Email'):</span> {{ $order->user?->email }}</p>
             <p class="info-item"><span>@lang('lang.region') :</span> {{ (App::getLocale() == 'en') ? $order->address?->region?->name_en : $order->address?->region?->name_ar }}</p>
-            <p class="info-item"><span>@lang('lang.address'):</span> {{$order->address?->block_no . ' - '. $order->address?->street . ' - '. $order->address?->building_no . ' - '. $order->address?->floor_no . ' - '. $order->address?->flat_no . ' - '. $order->address?->notes}}</p>
+            <p class="info-item"><span>@lang('lang.address_label'):</span> {{$order->address?->block_no . ' - '. $order->address?->street . ' - '. $order->address?->building_no . ' - '. $order->address?->floor_no . ' - '. $order->address?->flat_no . ' - '. $order->address?->notes}}</p>
             <p class="info-item"><span>@lang('lang.created_at'):</span> {{ $order?->created_at->format('Y-m-d') }}</p>
         </div>
             

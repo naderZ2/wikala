@@ -452,7 +452,7 @@ class RequestLocalizationTest extends TestCase
                 ],
                 'title_en.required' => [
                     'en' => 'The title in English is required',
-                    'ae' => 'العنوان بالانجليزية مطلوب',
+                    'ae' => 'العنوان بالإنجليزية مطلوب',
                 ],
             ],
             \App\Http\Requests\Admin\Seller\EditRequest::class => [
