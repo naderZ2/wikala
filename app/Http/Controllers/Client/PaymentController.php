@@ -166,14 +166,14 @@ class PaymentController extends Controller
 
 
         $url = 'https://app.arrivewhats.com/api/send';
-
+        $settings = \App\Models\AboutUs::first();
         $params = [
             'query' => [
                 'number' => $formattedNumber,
                 'type' => 'text',
                 'message' => $message,
-                'instance_id' => '673DDC44F3250',
-                'access_token' => '673dda5a88081',
+                'instance_id' => $settings ? $settings->instance_id : '6A53B0DA3B7C6',
+                'access_token' => $settings ? $settings->access_token : '6a3808911d3cc',
             ],
         ];
 
