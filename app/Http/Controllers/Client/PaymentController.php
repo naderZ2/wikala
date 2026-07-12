@@ -165,15 +165,22 @@ class PaymentController extends Controller
                   // Log::info("sendOtpAsync:-" .$formattedNumber );
 
 
-        $url = 'https://app.arrivewhats.com/api/send';
         $settings = \App\Models\AboutUs::first();
+        if (!$settings || !$settings->instance_id || !$settings->access_token) {
+            return [
+                'success' => false,
+                'error' => 'WhatsApp settings are not configured in the database.',
+            ];
+        }
+
+        $url = 'https://app.arrivewhats.com/api/send';
         $params = [
             'query' => [
                 'number' => $formattedNumber,
                 'type' => 'text',
                 'message' => $message,
-                'instance_id' => $settings ? $settings->instance_id : '6A53B609334DC',
-                'access_token' => $settings ? $settings->access_token : '6a3808911d3cc',
+                'instance_id' => $settings->instance_id,
+                'access_token' => $settings->access_token,
             ],
         ];
 

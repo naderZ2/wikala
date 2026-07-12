@@ -188,23 +188,25 @@ class OrderController extends Controller
         $order->save();
 
         if ($order->user && $order->user->phone) {
-            $formattedNumber = ltrim($order->user->phone, '+');
-            $url = 'https://app.arrivewhats.com/api/send';
             $settings = \App\Models\AboutUs::first();
-            $params = [
-                'query' => [
-                    'number' => $formattedNumber,
-                    'type' => 'text',
-                    'message' => "https://wikala.org/ex/$path",
-                    'instance_id' => $settings ? $settings->instance_id : '6A53B609334DC',
-                    'access_token' => $settings ? $settings->access_token : '6a3808911d3cc',
-                ],
-            ];
-            try {
-                $client = new \GuzzleHttp\Client();
-                $client->getAsync($url, $params)->wait();
-            } catch (\Exception $e) {
-                // Ignore exception to not break invoice generation
+            if ($settings && $settings->instance_id && $settings->access_token) {
+                $formattedNumber = ltrim($order->user->phone, '+');
+                $url = 'https://app.arrivewhats.com/api/send';
+                $params = [
+                    'query' => [
+                        'number' => $formattedNumber,
+                        'type' => 'text',
+                        'message' => "https://wikala.org/ex/$path",
+                        'instance_id' => $settings->instance_id,
+                        'access_token' => $settings->access_token,
+                    ],
+                ];
+                try {
+                    $client = new \GuzzleHttp\Client();
+                    $client->getAsync($url, $params)->wait();
+                } catch (\Exception $e) {
+                    // Ignore exception to not break invoice generation
+                }
             }
         }
 
