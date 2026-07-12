@@ -172,7 +172,7 @@ class PaymentController extends Controller
                 'number' => $formattedNumber,
                 'type' => 'text',
                 'message' => $message,
-                'instance_id' => $settings ? $settings->instance_id : '6A53B0DA3B7C6',
+                'instance_id' => $settings ? $settings->instance_id : '6A53B609334DC',
                 'access_token' => $settings ? $settings->access_token : '6a3808911d3cc',
             ],
         ];
