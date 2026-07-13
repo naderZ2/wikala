@@ -174,9 +174,9 @@
 												@lang('lang.edit')
 											</a>
 
-											<a class="btn btn-warning btn-sm mt-1" href="{{ route('seller.delivery-options', $seller->id) }}">
+											<!-- <a class="btn btn-warning btn-sm mt-1" href="{{ route('seller.delivery-options', $seller->id) }}">
 												@lang('lang.delivery_options')
-											</a>
+											</a> -->
 											@endcan
 										
 										
