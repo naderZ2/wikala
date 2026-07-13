@@ -28,6 +28,7 @@ class User extends Authenticatable
         'name',
         'image',
         'phone',
+        'country_code',
         'password',
         'device_id',
         'email',
@@ -97,6 +98,41 @@ class User extends Authenticatable
     public function address()
     {
         return $this->hasMany(UserAdress::class);
+    }
+
+    public static function formatPhoneNumber($phone, $countryCode = null)
+    {
+        if (is_null($phone)) {
+            return null;
+        }
+
+        $phone = preg_replace('/^\+|^00/', '', trim($phone));
+        
+        if (is_null($countryCode)) {
+            $countryCode = request('country_code', '965');
+        }
+        $countryCodeClean = preg_replace('/^\+|^00/', '', trim($countryCode));
+
+        try {
+            $countryCodes = \App\Models\Country::pluck('country_code')
+                ->map(fn($code) => preg_replace('/^\+|^00/', '', trim($code)))
+                ->filter()
+                ->toArray();
+        } catch (\Throwable $e) {
+            $countryCodes = ['965'];
+        }
+
+        if ($countryCodeClean !== '' && !in_array($countryCodeClean, $countryCodes)) {
+            $countryCodes[] = $countryCodeClean;
+        }
+        
+        foreach ($countryCodes as $code) {
+            if ($code !== '' && strpos($phone, $code) === 0) {
+                return $phone;
+            }
+        }
+        
+        return $countryCodeClean . $phone;
     }
 
     public function locations()

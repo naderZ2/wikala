@@ -27,7 +27,8 @@ class UserAuthController extends Controller
     use ResponsesTrait,SendSmsTrait;
 
     public function checkClientExists(CheckClientExistsRequest $request){
-        $user = User::where("phone" , $request->phone)->first();
+        $formattedPhone = User::formatPhoneNumber($request->phone);
+        $user = User::where("phone" , $formattedPhone)->first();
         // where("email" , $request->email)
                 // ->or
         if($user)
@@ -44,10 +45,16 @@ class UserAuthController extends Controller
         $data=$request->validated();
         Log::info("register request data:-" . json_encode($data));
 
+        $formattedPhone = User::formatPhoneNumber($request->phone);
+        $data['phone'] = $formattedPhone;
+
+        $countryCode = request('country_code', '965');
+        $data['country_code'] = preg_replace('/^\+|^00/', '', trim($countryCode));
+
         $user = User::withTrashed()
         // ->where("email" , $request->email)
-        ->where("phone" , $request->phone)->first();
-        $phone= $request->phone;
+        ->where("phone" , $formattedPhone)->first();
+        $phone= $formattedPhone;
         $confirmationCode=ConfirmationCodes::where('phone',$phone)
         ->orderByDESC('id')
         ->first();
@@ -98,7 +105,8 @@ class UserAuthController extends Controller
 
     public function login(LoginRequest $request){
         Log::info("login request data:-" . json_encode($request->all()));
-        $data['phone']=$request->phone;
+        $formattedPhone = User::formatPhoneNumber($request->phone);
+        $data['phone']=$formattedPhone;
         $data['password']=$request->password;
         
         if (!auth()->attempt($data))
@@ -130,13 +138,9 @@ class UserAuthController extends Controller
 
     public function sendOtpPassword(Request $request){
         $code   = rand(1111,9999);
-        // $phone = '+965'.$request->phone;
-        $phone = $request->phone;
-        // $phone = "201142645054";
-
-        // $this->sendSMS($phone, "OTP code is: $code" );
-        // $this->sendOtpAsync($phone, "OTP code is: $code" );
-        ConfirmationCodes::create(['phone'=>$request->phone,'code'=>$code]);
+        $phone = User::formatPhoneNumber($request->phone);
+ 
+        ConfirmationCodes::create(['phone'=>$phone,'code'=>$code]);
         $res= $this->sendOtpAsync($phone, $code);
         if (isset($res['data']) && $res['data']['status'] == 'error') {
             return $this->failed(null,$res['data']['message']);
@@ -144,17 +148,14 @@ class UserAuthController extends Controller
         $data['otp_code'] = $code;
         return $this->success($data);
     }
-
+ 
     public function sendOtpRegister(CheckPhoneRequest $request){
         $code   = rand(1111,9999);
-        $phone = $request->phone;
-        // return $phone;
-        // $phone = "201142645054";
-
+        $phone = User::formatPhoneNumber($request->phone);
+ 
         ConfirmationCodes::create(["phone" => $phone,"code"=>$code]);
         $res= $this->sendOtpAsync($phone, $code);
-        // $res= $this->sendSmsWhatsApp($phone, $code);
-
+ 
         $data['otpCode'] = $code;
         return $this->success($data);
     }
@@ -227,9 +228,7 @@ class UserAuthController extends Controller
 
     public static function sendOtpAsync($phoneNumber, $message)
     {
-        // $countryCode = '965';
-        // $formattedNumber = $countryCode . ltrim($phoneNumber, '');
-        $formattedNumber = '965'.ltrim($phoneNumber, '+');
+        $formattedNumber = User::formatPhoneNumber($phoneNumber);
         // $formattedNumber = $phoneNumber;
                 //   // Log::info("sendOtpAsync:-" .$formattedNumber );
 

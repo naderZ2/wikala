@@ -21,22 +21,31 @@ class UsersController extends Controller
 
     public function create(){
         $this->lang();
-        return view('admin.clients.create');
+        $countries = \App\Models\Country::all();
+        return view('admin.clients.create', compact('countries'));
     }
 
     public function store(Request $request){
         $request->validate([
             'name'          => 'required|string|max:255',
-            'phone'         => 'required|string|max:30|unique:users,phone',
+            'phone'         => 'required|string|max:30',
             'email'         => 'nullable|email|max:255|unique:users,email',
             'password'      => 'required|string|min:6',
             'date_of_birth' => 'nullable|date',
             'bio'           => 'nullable|string',
         ]);
 
+        $formattedPhone = User::formatPhoneNumber($request->phone, $request->country_code);
+        $request->merge(['phone' => $formattedPhone]);
+
+        $request->validate([
+            'phone' => 'unique:users,phone',
+        ]);
+
         User::create([
             'name'          => $request->name,
-            'phone'         => '965' . ltrim($request->phone, '+'),
+            'phone'         => $formattedPhone,
+            'country_code'  => preg_replace('/^\+|^00/', '', trim($request->country_code ?? '965')),
             'email'         => $request->email,
             'password'      => $request->password,
             'date_of_birth' => $request->date_of_birth,

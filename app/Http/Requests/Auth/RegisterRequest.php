@@ -35,6 +35,7 @@ class RegisterRequest extends FormRequest
             'name' => 'required|max:255',
             // 'email' => 'required',
             'phone' => 'required',
+            'country_code' => 'sometimes|nullable|string|max:10',
             'password' => [
                 'required',
                 Password::min(8),

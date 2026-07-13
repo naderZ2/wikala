@@ -47,7 +47,20 @@
 							<div class="col-md-6 mb-3">
 								<label for="clientPhone">@lang('lang.phone')</label>
 								<div class="input-group">
-									<span class="input-group-text">+965</span>
+									<select class="form-select" name="country_code" style="max-width: 130px;">
+										@if(isset($countries) && $countries->count() > 0)
+											@foreach($countries as $country)
+												@php
+													$cleanCode = preg_replace('/^\+|^00/', '', $country->country_code);
+												@endphp
+												<option value="{{ $cleanCode }}" {{ $cleanCode == '965' ? 'selected' : '' }}>
+													+{{ $cleanCode }} ({{ $country->name }})
+												</option>
+											@endforeach
+										@else
+											<option value="965" selected>+965</option>
+										@endif
+									</select>
 									<input class="form-control" id="clientPhone" type="text" name="phone" value="{{ old('phone') }}" placeholder="phone" required="">
 								</div>
 								<div class="invalid-feedback">Please provide a valid phone.</div>

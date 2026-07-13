@@ -73,12 +73,24 @@ class PlanPaymentController extends Controller
 
         $paymentResponse = $this->payzahService->initiatePayment($payload);
 
-        // Store selected plan on the seller but keep payment status pending
-        $seller->update([
-            'plan_id' => $plan->id,
-            'payment_status' => 'pending',
-            'payment_details' => json_encode($paymentResponse),
-        ]);
+        // Determine if they currently have a valid paid plan
+        $hasActivePlan = $seller->payment_status === 'paid' && 
+                         $seller->plan_id !== null && 
+                         ($seller->plan_ends_at === null || $seller->plan_ends_at > now());
+
+        if (!$hasActivePlan) {
+            // Store selected plan on the seller but keep payment status pending
+            $seller->update([
+                'plan_id' => $plan->id,
+                'payment_status' => 'pending',
+                'payment_details' => json_encode($paymentResponse),
+            ]);
+        } else {
+            // Keep current plan and paid status, just save the new payment details
+            $seller->update([
+                'payment_details' => json_encode($paymentResponse),
+            ]);
+        }
 
         // Create log record
         SellerSubscriptionPayment::create([
@@ -113,7 +125,12 @@ class PlanPaymentController extends Controller
                 $verification = $this->payzahService->verifyPayment(['trackid' => $trackid]);
                 Log::info('Payzah Plan Payment verification: ', $verification);
 
+                // Fetch the payment record to get the plan_id
+                $paymentRecord = SellerSubscriptionPayment::where('transaction_id', $trackid)->first();
+                $newPlanId = $paymentRecord ? $paymentRecord->plan_id : null;
+
                 $seller->update([
+                    'plan_id' => $newPlanId ?? $seller->plan_id,
                     'payment_status' => 'paid',
                     'plan_starts_at' => now(),
                     'plan_ends_at' => now()->addMonth(), // Monthly renewal
@@ -156,13 +173,27 @@ class PlanPaymentController extends Controller
         if ($sellerId) {
             $seller = Seller::find($sellerId);
             if ($seller) {
-                $seller->update([
-                    'payment_status' => 'failed',
-                    'payment_details' => json_encode(array_merge(
-                        json_decode($seller->payment_details, true) ?? [],
-                        ['callback_data' => $request->all()]
-                    ))
-                ]);
+                // Check if they currently have a valid paid plan
+                $hasActivePlan = $seller->payment_status === 'paid' && 
+                                 $seller->plan_id !== null && 
+                                 ($seller->plan_ends_at === null || $seller->plan_ends_at > now());
+
+                if (!$hasActivePlan) {
+                    $seller->update([
+                        'payment_status' => 'failed',
+                        'payment_details' => json_encode(array_merge(
+                            json_decode($seller->payment_details, true) ?? [],
+                            ['callback_data' => $request->all()]
+                        ))
+                    ]);
+                } else {
+                    $seller->update([
+                        'payment_details' => json_encode(array_merge(
+                            json_decode($seller->payment_details, true) ?? [],
+                            ['callback_data' => $request->all()]
+                        ))
+                    ]);
+                }
 
                 // Update history record
                 SellerSubscriptionPayment::where('transaction_id', $trackid)->update([
