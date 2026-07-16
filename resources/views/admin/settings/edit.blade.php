@@ -53,17 +53,22 @@
 				
 						
 						
-							<div class="col-md-6 mb-3">
+							<!-- <div class="col-md-6 mb-3">
 								<label for="validationCustom01">@lang('lang.facebook')</label>
 								<input class="form-control" id="validationCustom01" type="text" name="facebook" value="{{ $settings->facebook}}" placeholder="facebook" required="">
 								<div class="valid-feedback">Looks good!</div>
                                 <div class="invalid-feedback">Please choose a facebook.</div>
-							</div>
+							</div> -->
 							<div class="col-md-6 mb-3">
 								<label for="validationCustom01">@lang('lang.insta')</label>
 								<input class="form-control" id="validationCustom01" type="text" name="insta" value="{{ $settings->insta}}" placeholder="insta" required="">
 								<div class="valid-feedback">Looks good!</div>
                                 <div class="invalid-feedback">Please choose a insta.</div>
+							</div>
+							<div class="col-md-6 mb-3">
+								<label for="tiktokInput">TikTok</label>
+								<input class="form-control" id="tiktokInput" type="text" name="tiktok" value="{{ $settings->tiktok}}" placeholder="TikTok">
+								<div class="valid-feedback">Looks good!</div>
 							</div>
 							
 							<div class="col-md-6 mb-3">
@@ -124,10 +129,16 @@
                                 <div class="invalid-feedback">Please choose a delivery fee.</div>
 							</div>
 							<div class="col-md-6 mb-3">
-								<label for="sliderPriceInput">Slider Price (7 Days)</label>
-								<input class="form-control" id="sliderPriceInput" type="number" step="0.01" min="0" name="slider_price" value="{{ $settings->slider_price ?? 10.00 }}" placeholder="slider price for 7 days" required="">
+								<label for="sliderPriceInput">Slider Price ({{ $settings->slider_days ?? 7 }} Days)</label>
+								<input class="form-control" id="sliderPriceInput" type="number" step="0.01" min="0" name="slider_price" value="{{ $settings->slider_price ?? 10.00 }}" placeholder="slider price for {{ $settings->slider_days ?? 7 }} days" required="">
 								<div class="valid-feedback">Looks good!</div>
                                 <div class="invalid-feedback">Please enter a slider price.</div>
+							</div>
+							<div class="col-md-6 mb-3">
+								<label for="sliderDaysInput">Slider Duration (Days)</label>
+								<input class="form-control" id="sliderDaysInput" type="number" min="1" name="slider_days" value="{{ $settings->slider_days ?? 7 }}" placeholder="slider duration in days" required="">
+								<div class="valid-feedback">Looks good!</div>
+                                <div class="invalid-feedback">Please enter a slider duration in days.</div>
 							</div>
 				
 						

@@ -28,6 +28,7 @@ class EditSettingRequest extends FormRequest
             'whatsapp_number' => 'sometimes|nullable',
             'facebook' => 'sometimes|nullable',
             'insta' => 'sometimes|nullable',
+            'tiktok' => 'sometimes|nullable|string',
             'phone' => 'sometimes|nullable',
             'email' => 'sometimes|nullable',
             'image_limit' => 'required|numeric|min:1',
@@ -37,7 +38,8 @@ class EditSettingRequest extends FormRequest
             'delivery_fee' => 'required|numeric|min:0',
             'banner_price' => 'sometimes|nullable|numeric|min:0',
             'slider_price' => 'required|numeric|min:0',
-
+            'slider_days' => 'required|integer|min:1',
+            
             'ads_time_user' => 'sometimes|nullable',
             'ads_time_business' => 'sometimes|nullable',
             

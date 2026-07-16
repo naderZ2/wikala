@@ -132,6 +132,7 @@ class OrderController extends Controller
                 'building' => $order->address->building_no,
                 'floor' => $order->address->floor_no,
                 'region' => $regionName,
+                'country' => $order->address->country,
             ] : null,
             'items' => $items,
             'status' => $order->status,

@@ -31,6 +31,7 @@ class StoreRequest extends FormRequest
         return [
             // "id" => "required",
             "name" => "required|string|max:255",
+            "country" => "sometimes|nullable|string",
             "street" => "sometimes|nullable",
             "block_no" => "sometimes|nullable",
             "avenue" => "sometimes|nullable",

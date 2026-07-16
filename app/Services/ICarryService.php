@@ -318,7 +318,7 @@ class ICarryService
         $user    = $order->user;
         $address = $order->address;
         $region  = $address ? $address->region : null; // City model
-        $country = config('services.icarry.default_country');
+        $country = ($address && $address->country) ? $address->country : config('services.icarry.default_country');
         $currency = config('services.icarry.cod_currency');
 
         $cityName = $region ? ($region->name_en ?? $region->name_ar ?? null) : null;

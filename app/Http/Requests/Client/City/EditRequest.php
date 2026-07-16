@@ -32,6 +32,7 @@ class EditRequest extends FormRequest
             "id" => "required",
             "region_id" => "required",
             "name" => "required|string|max:255",
+            "country" => "sometimes|nullable|string",
             "street" => "sometimes|nullable",
             "block_no" => "sometimes|nullable",
             "building_no" => "sometimes|nullable",

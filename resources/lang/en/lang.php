@@ -740,5 +740,6 @@ return  [
 	'paid' => 'Paid',
 	'failed' => 'Failed',
 	'pending' => 'Pending',
+	'country' => 'Country',
 ];
 ?>

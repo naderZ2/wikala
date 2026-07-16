@@ -38,10 +38,12 @@ class SliderController extends Controller
         // Get the current slider price configured by the admin
         $settings = AboutUs::first();
         $sliderPrice = $settings ? (float) $settings->slider_price : 10.00;
+        $sliderDays = $settings && isset($settings->slider_days) ? (int) $settings->slider_days : 7;
 
         return $this->success([
             'sliders' => $sliders,
-            'slider_price' => $sliderPrice
+            'slider_price' => $sliderPrice,
+            'slider_days' => $sliderDays
         ], 'Seller sliders retrieved successfully');
     }
 
@@ -152,10 +154,14 @@ class SliderController extends Controller
                 $verification = $this->payzahService->verifyPayment(['trackid' => $trackid]);
                 Log::info('Payzah Slider Payment verification: ', $verification);
 
+                // Get dynamic slider duration
+                $settings = AboutUs::first();
+                $days = $settings && isset($settings->slider_days) ? (int)$settings->slider_days : 7;
+
                 $slider->update([
                     'is_paid' => 1,
                     'start_date' => now(),
-                    'end_date' => now()->addDays(7),
+                    'end_date' => now()->addDays($days),
                     'payment_details' => json_encode(array_merge(
                         json_decode($slider->payment_details, true) ?? [],
                         $verification,
@@ -165,9 +171,13 @@ class SliderController extends Controller
             }
         }
 
+        // Get dynamic slider duration for response message
+        $settings = AboutUs::first();
+        $days = $settings && isset($settings->slider_days) ? (int)$settings->slider_days : 7;
+
         $title = "Payment Successful | الدفع ناجح";
-        $message = "Slider ad payment completed successfully. Your slide will be shown on the homepage for 7 days.";
-        $messageAr = "تم دفع السلايدر بنجاح. سيتم عرض إعلانك على الصفحة الرئيسية لمدة 7 أيام.";
+        $message = "Slider ad payment completed successfully. Your slide will be shown on the homepage for {$days} days.";
+        $messageAr = "تم دفع السلايدر بنجاح. سيتم عرض إعلانك على الصفحة الرئيسية لمدة {$days} أيام.";
 
         return $this->renderHtmlResponse(true, $title, $message, $messageAr);
     }

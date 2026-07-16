@@ -17,7 +17,7 @@ class AboutUsController extends Controller
         $this->lang();
 
         $data=$this->model::select('id','whatsapp_number',
-        'facebook','insta','youtube',$this->description,'privacy',$this->terms)
+        'facebook','insta','tiktok','youtube',$this->description,'privacy',$this->terms)
             ->first();
         return $this->success($data);
     }
