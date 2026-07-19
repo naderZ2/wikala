@@ -20,7 +20,10 @@ return new class extends Migration
 
         Schema::table('users', function (Blueprint $table) {
             if (!Schema::hasColumn('users', 'country_id')) {
-                $table->unsignedBigInteger('country_id')->nullable()->after('region_id');
+                $column = $table->unsignedBigInteger('country_id')->nullable();
+                if (Schema::hasColumn('users', 'region_id')) {
+                    $column->after('region_id');
+                }
                 $table->foreign('country_id')->references('id')->on('countries')->onDelete('set null');
             }
         });
