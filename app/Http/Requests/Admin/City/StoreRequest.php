@@ -25,6 +25,7 @@ class StoreRequest extends FormRequest
     {
         return [
             'parent_id' => 'sometimes|nullable',
+            'country_id' => 'sometimes|nullable|exists:countries,id',
             'name_ar' => 'required',
             'name_en' => 'required',
         ];

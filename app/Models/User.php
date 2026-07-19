@@ -41,7 +41,9 @@ class User extends Authenticatable
         'provider_name',
         'active',
         'bio',
-        'date_of_birth'
+        'date_of_birth',
+        'country_id',
+        'region_id'
     ];
 
     /**

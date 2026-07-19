@@ -33,15 +33,22 @@
             @endcan
         </div>
 
-        <div class="d-flex justify-content-start col-sm-12 mt-3">
-            <select class="js-example-placeholder-multiple col-sm-12" id="validationCustom03" name="parent_id">
-                <option value=""></option>
-                @foreach ($cities as $City)
-                @if ($City->parent == null)
-                <option value="{{ $City->id }}">{{ app()->getLocale() == "en" ? $City->name_en : $City->name_ar }}</option>
-                @endif
-                @endforeach
-            </select>
+        <div class="d-flex justify-content-start col-sm-12 mt-3 gap-3">
+            <div class="col-sm-6 p-0">
+                <label class="form-label font-weight-bold">@lang('lang.country')</label>
+                <select class="js-example-placeholder-multiple col-sm-12" id="countryFilter" name="country_id">
+                    <option value=""></option>
+                    @foreach ($countries as $country)
+                    <option value="{{ $country->id }}">{{ app()->getLocale() == "en" ? $country->name_en : $country->name }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="col-sm-6 p-0">
+                <label class="form-label font-weight-bold">@lang('lang.governorate') / @lang('lang.region')</label>
+                <select class="js-example-placeholder-multiple col-sm-12" id="validationCustom03" name="parent_id" disabled>
+                    <option value=""></option>
+                </select>
+            </div>
         </div>
 
         <div class="col-sm-12 mt-3">
@@ -118,17 +125,15 @@
                             <input class="form-control" id="section_name_en" type="text" name="name_en" value=""
                                 placeholder="name" required="">
                         </div>
-                        {{-- <div class="col-md-12 mb-3">
-                            <label for="parent_id">@lang('lang.sub_city')</label>
-                            <select class="form-control" id="parent_id" name="parent_id">
-                                <option value="">{{ __('lang.main_region') }}</option>
-                                @foreach ($cities as $City)
-                                @if ($City->parent == null)
-                                <option value="{{ $City->id }}">{{ app()->getLocale() == "en" ? $City->name_en : $City->name_ar }}</option>
-                                @endif
+                        <div class="col-md-12 mb-3" id="edit_country_div">
+                            <label for="edit_country_id">@lang('lang.country')</label>
+                            <select class="form-control" id="edit_country_id" name="country_id">
+                                <option value=""></option>
+                                @foreach ($countries as $country)
+                                <option value="{{ $country->id }}">{{ app()->getLocale() == "en" ? $country->name_en : $country->name }}</option>
                                 @endforeach
                             </select>
-                        </div> --}}
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button class="btn btn-primary" type="button" data-bs-dismiss="modal">@lang('lang.close')</button>
@@ -151,46 +156,104 @@
 <script src="{{asset('assets/js/sweet-alert/sweetalert.min.js')}}"></script>
 
 <script>
-    // Fetch areas dynamically and populate the table
+// Filter cities on Country select
+$('#countryFilter').on('change', function () {
+    var countryId = $(this).val();
+    $('#validationCustom03').html('<option value=""></option>').val('').trigger('change');
+    $('#areasTable').html('');
+
+    if (countryId) {
+        $('#validationCustom03').prop('disabled', false);
+        $.ajax({
+            url: "{{ route('get_city') }}?country_id=" + countryId,
+            type: 'get',
+            dataType: 'json',
+            success: function (res) {
+                if (res.length > 0) {
+                    res.forEach(function (item) {
+                        $('#validationCustom03').append(`
+                            <option value="${item.id}">${document.documentElement.dir == 'rtl' ? item.name_ar : item.name_en}</option>
+                        `);
+                        
+                        $('#areasTable').append(`
+                            <tr>
+                                <td>${document.documentElement.dir == 'rtl' ? item.name_ar : item.name_en}</td>
+                                <td>
+                                    @can('update city')
+                                    <button class="btn btn-primary edit-btn" 
+                                            type="button"
+                                            data-record='${JSON.stringify(item)}' 
+                                            data-bs-toggle="modal" 
+                                            data-bs-target="#exampleModal">
+                                        @lang('lang.edit')
+                                    </button>
+                                    @endcan
+                                    @can('delete city')
+                                    <form action="{{ route('dashboard.city.destroy') }}" method="POST" style="display:inline-block;">
+                                        @method('delete')
+                                        @csrf
+                                        <input type="hidden" name="id" value="${item.id}">
+                                        <button class="btn btn-danger" type="submit">@lang('lang.remove')</button>
+                                    </form>
+                                    @endcan
+                                </td>
+                            </tr>
+                        `);
+                    });
+                } else {
+                    $('#areasTable').html('<tr><td colspan="2">@lang('lang.no_data')</td></tr>');
+                }
+            }
+        });
+    } else {
+        $('#validationCustom03').prop('disabled', true);
+        location.reload();
+    }
+});
+
+// Filter regions on City select
 $('#validationCustom03').on('change', function () {
     var regionId = $(this).val();
+    if (!regionId) {
+        return;
+    }
     $('#areasTable').html('');
     $.ajax({
         url: "{{ route('get_city') }}?region_id=" + regionId,
         type: 'get',
         dataType: 'json',
         success: function (res) {
-    if (res.length > 0) {
-        res.forEach(function (item) {
-            $('#areasTable').append(`
-                <tr>
-                    <td>${document.documentElement.dir == 'rtl' ? item.name_ar : item.name_en}</td>
-                    <td>
-                        <!-- Updated Edit Button -->
-                        <button class="btn btn-primary edit-btn" 
-                                type="button"
-                                data-record='${JSON.stringify(item)}' 
-                                data-bs-toggle="modal" 
-                                data-bs-target="#exampleModal">
-                            @lang('lang.edit')
-                        </button>
-
-                        <!-- Delete Form -->
-                        <form action="{{ route('dashboard.city.destroy') }}" method="POST" style="display:inline-block;">
-                            @method('delete')
-                            @csrf
-                            <input type="hidden" name="id" value="${item.id}">
-                            <button class="btn btn-danger" type="submit">@lang('lang.remove')</button>
-                        </form>
-                    </td>
-                </tr>
-            `);
-        });
-    } else {
-        $('#areasTable').html('<tr><td colspan="3">@lang('lang.no_data')</td></tr>');
-    }
-}
-
+            if (res.length > 0) {
+                res.forEach(function (item) {
+                    $('#areasTable').append(`
+                        <tr>
+                            <td>${document.documentElement.dir == 'rtl' ? item.name_ar : item.name_en}</td>
+                            <td>
+                                @can('update city')
+                                <button class="btn btn-primary edit-btn" 
+                                        type="button"
+                                        data-record='${JSON.stringify(item)}' 
+                                        data-bs-toggle="modal" 
+                                        data-bs-target="#exampleModal">
+                                    @lang('lang.edit')
+                                </button>
+                                @endcan
+                                @can('delete city')
+                                <form action="{{ route('dashboard.city.destroy') }}" method="POST" style="display:inline-block;">
+                                    @method('delete')
+                                    @csrf
+                                    <input type="hidden" name="id" value="${item.id}">
+                                    <button class="btn btn-danger" type="submit">@lang('lang.remove')</button>
+                                </form>
+                                @endcan
+                            </td>
+                        </tr>
+                    `);
+                });
+            } else {
+                $('#areasTable').html('<tr><td colspan="2">@lang('lang.no_data')</td></tr>');
+            }
+        }
     });
 });
 
@@ -205,9 +268,14 @@ function getRecord(data) {
     $('#section_name_ar').val(data.name_ar || '');
     $('#section_name_en').val(data.name_en || '');
     $('#section_id').val(data.id || '');
-    // $('#parent_id').val(data.parent_id || ''); // Set parent_id value in the dropdown
+    
+    if (!data.parent_id) {
+        $('#edit_country_div').show();
+        $('#edit_country_id').val(data.country_id || '');
+    } else {
+        $('#edit_country_div').hide();
+        $('#edit_country_id').val('');
+    }
 }
-
-
 </script>
 @endsection

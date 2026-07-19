@@ -75,6 +75,7 @@ class OrderController extends Controller
                 'orderDetails.product:id,name_en,name_ar,price,main_image',
                 'orderDetails.variation.attributes.attribute',
                 'address.region',
+                'address.country',
             ])
             ->firstOrFail();
 
@@ -132,7 +133,13 @@ class OrderController extends Controller
                 'building' => $order->address->building_no,
                 'floor' => $order->address->floor_no,
                 'region' => $regionName,
-                'country' => $order->address->country,
+                'country' => $order->address->country
+                    ? (is_string($order->address->country) 
+                        ? $order->address->country 
+                        : ($lang == 'en' 
+                            ? ($order->address->country->name_en ?? $order->address->country->name) 
+                            : ($order->address->country->name ?? $order->address->country->name_en)))
+                    : null,
             ] : null,
             'items' => $items,
             'status' => $order->status,

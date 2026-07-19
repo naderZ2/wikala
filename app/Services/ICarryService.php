@@ -313,12 +313,14 @@ class ICarryService
      */
     public function buildCreateOrderPayload(Order $order, string $pickupLocation): array
     {
-        $order->loadMissing(['user', 'address.region', 'orderDetails']);
+        $order->loadMissing(['user', 'address.region', 'address.country', 'orderDetails']);
 
         $user    = $order->user;
         $address = $order->address;
         $region  = $address ? $address->region : null; // City model
-        $country = ($address && $address->country) ? $address->country : config('services.icarry.default_country');
+        $country = ($address && $address->country)
+            ? (is_string($address->country) ? $address->country : ($address->country->name_en ?? $address->country->name))
+            : config('services.icarry.default_country');
         $currency = config('services.icarry.cod_currency');
 
         $cityName = $region ? ($region->name_en ?? $region->name_ar ?? null) : null;

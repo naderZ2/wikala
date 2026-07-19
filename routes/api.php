@@ -36,6 +36,7 @@ Route::middleware(['checkLanguage'])->group(function () {
     Route::get('fail', [Client\PaymentController::class, 'failUrl']);
     Route::post('check_client_exists', [Client\Auth\UserAuthController::class, 'checkClientExists']);
 
+    Route::get('countries', [Client\CityController::class, 'countries']);
     Route::get('cities', [Client\CityController::class, 'cities']);
     Route::get('regions', [Client\CityController::class, 'regions']);
 

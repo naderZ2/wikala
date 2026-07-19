@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use DB;
 use Illuminate\Http\Request;
-use App\Models\{City,UserAdress};
+use App\Models\{City,UserAdress,Country};
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\City\EditRequest;
@@ -14,19 +14,20 @@ class CityController extends Controller
 {
     public function index(){
         $this->lang();
-        $cities = City::whereNull('parent_id')->get(['id','parent_id','name_ar','name_en']);
-        // dd($cities->);
-        return view('admin.city.index',compact('cities'));
+        $cities = City::whereNull('parent_id')->with('country')->get(['id','parent_id','name_ar','name_en','country_id']);
+        $countries = Country::all();
+        return view('admin.city.index',compact('cities','countries'));
     }
 
 
     public function get_city(Request $request)
     {
+        if ($request->filled('country_id')) {
+            $cities = City::whereNull('parent_id')->where('country_id', $request->country_id)->get();
+            return response()->json($cities);
+        }
 
-        // Log::info($request);
         $areas = City::where('parent_id', $request->region_id)->get();
-        // Log::info($areas);
-        // $sub_categories = Category::where('status', 1)->whereIn('parent_id', $subcategory_ids)->orderBy('id', 'desc')->select('id', 'name_' . $this->lang() . ' as name')->get();
         return response()->json($areas);
     }
 
@@ -35,7 +36,8 @@ class CityController extends Controller
     public function create(){
         $this->lang();
         $cities=City::whereNull('parent_id')->get(['id',$this->name]);
-        return view('admin.city.add',compact('cities'));
+        $countries = Country::all();
+        return view('admin.city.add',compact('cities','countries'));
     }
 
     public function store(StoreRequest $request){

@@ -12,7 +12,7 @@ class UserAdress extends Model
     use HasFactory;
     protected $table="address_user";
     protected $fillable = [
-        'name', 'user_id' , 'region_id' , 'country', 
+        'name', 'user_id' , 'region_id' , 'country_id', 
         'floor_no' ,'flat_no' , 
         'building_no' ,'block_no' , 
         'street'  , 'notes','latitude' , 'longitude' 
@@ -22,10 +22,15 @@ class UserAdress extends Model
         return $this->belongsTo(City::class);
     }
 
+    public function country(){
+        return $this->belongsTo(Country::class, 'country_id');
+    }
+
     protected $hidden = 
     [
         "user_id",
         "region_id",
+        "country_id",
         'updated_at',
         'created_at',
         'deleted_at',

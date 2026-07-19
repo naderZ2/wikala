@@ -25,6 +25,7 @@ class EditRequest extends FormRequest
     {
         return [
             'id' => 'required',
+            'country_id' => 'sometimes|nullable|exists:countries,id',
             'name_ar' => 'sometimes|nullable',
             'name_en' => 'sometimes|nullable',
         ];

@@ -2,17 +2,34 @@
 
 namespace App\Http\Controllers\Client;
 
-use App\Models\{City,UserAdress};
+use App\Models\{City,UserAdress,Country};
 use App\Traits\ResponsesTrait;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Client\City\{CheckRequest,StoreRequest,EditRequest};
+use Illuminate\Http\Request;
 
 class CityController extends Controller
 {
     use ResponsesTrait;
-    public function cities(){
+
+    public function countries() {
         $this->lang();
-        $cities = City::whereNull('parent_id')->select('id',$this->name)->get();
+        $nameField = (app()->getLocale() == "en" || request()->header('Lang') == "en") ? "name_en as name" : "name as name";
+        $currencyField = (app()->getLocale() == "en" || request()->header('Lang') == "en") ? "currency_en as currency" : "currency as currency";
+        
+        $countries = Country::where('active', '1')
+            ->select('id', $nameField, $currencyField, 'country_code', 'flag')
+            ->get();
+        return $this->success($countries);
+    }
+
+    public function cities(Request $request){
+        $this->lang();
+        $query = City::whereNull('parent_id');
+        if ($request->filled('country_id')) {
+            $query->where('country_id', $request->country_id);
+        }
+        $cities = $query->select('id',$this->name)->get();
         return $this->success($cities);
     }
 
@@ -24,7 +41,10 @@ class CityController extends Controller
 
     public function addClientRegion(StoreRequest $request){
         if(count( auth()->user()->address)==0){
-            auth()->user()->update(['region_id' => $request->id]);
+            auth()->user()->update([
+                'region_id' => $request->id,
+                'country_id' => $request->country_id
+            ]);
         }
         
         $data=$request->validated();

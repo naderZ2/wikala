@@ -14,4 +14,9 @@ class Country extends Model
 
     protected $hidden = ['name_en','currency', 'currency_en', 'flag', 'special', 'active', 'created_at', 'updated_at',
         'deleted_at','picture'];
+
+    public function cities()
+    {
+        return $this->hasMany(City::class, 'country_id')->whereNull('parent_id');
+    }
 }
