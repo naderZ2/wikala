@@ -20,7 +20,16 @@ class ProfileController extends Controller
         $this->lang();
         $userId = auth()->id() ;
         Log::info('User ID: ' . $userId);
-        $user = User::where('id', $userId)->first();
+
+        $isEnglish = (app()->getLocale() == "en" || request()->header('Lang') == "en");
+        $nameField = $isEnglish ? "name_en as name" : "name as name";
+        $currencyField = $isEnglish ? "currency_en as currency" : "currency as currency";
+
+        $user = User::where('id', $userId)
+            ->with(['country' => function ($q) use ($nameField, $currencyField) {
+                $q->select('id', \DB::raw($nameField), \DB::raw($currencyField), 'country_code', 'flag');
+            }])
+            ->first();
         Log::info('User data: ' . $user);
         $userAddress = $user ? $user->address : [];
 
@@ -32,6 +41,10 @@ class ProfileController extends Controller
             } else {
                 $address->region_parent = null;
             }
+
+            if ($address->country_id) {
+                $address->country = $address->country()->select('id', \DB::raw($nameField), \DB::raw($currencyField), 'country_code', 'flag')->first();
+            }
         }
         Log::info('User profile data', ['user' => $user->limit_ad]);
 
@@ -39,7 +52,14 @@ class ProfileController extends Controller
     }
     function showProfile($id){
         $this->lang();
-        $user = User::findOrFail($id);
+
+        $isEnglish = (app()->getLocale() == "en" || request()->header('Lang') == "en");
+        $nameField = $isEnglish ? "name_en as name" : "name as name";
+        $currencyField = $isEnglish ? "currency_en as currency" : "currency as currency";
+
+        $user = User::with(['country' => function ($q) use ($nameField, $currencyField) {
+            $q->select('id', \DB::raw($nameField), \DB::raw($currencyField), 'country_code', 'flag');
+        }])->findOrFail($id);
         $userAddress = $user->address;
         
         foreach ($userAddress as $address) {
@@ -49,6 +69,10 @@ class ProfileController extends Controller
                 $address->region_parent = $address->region->parent()->select('id', 'parent_id', $this->name)->first();
             } else {
                 $address->region_parent = null;
+            }
+
+            if ($address->country_id) {
+                $address->country = $address->country()->select('id', \DB::raw($nameField), \DB::raw($currencyField), 'country_code', 'flag')->first();
             }
         }
         
