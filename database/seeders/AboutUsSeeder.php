@@ -16,6 +16,9 @@ class AboutUsSeeder extends Seeder
     public function run()
     {
         $data=['whatsapp_number'=>"01142611070"];
-        AboutUs::create($data);
+        AboutUs::firstOrCreate(
+            ['whatsapp_number' => $data['whatsapp_number']],
+            $data
+        );
     }
 }

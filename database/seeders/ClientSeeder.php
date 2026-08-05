@@ -25,6 +25,9 @@ class ClientSeeder extends Seeder
                 "password"=>"user",
                 "image"=>"profiles/image.png"
             ];
-        user::create($consultant);
+        User::firstOrCreate(
+            ['email' => $consultant['email']],
+            $consultant
+        );
     }
 }

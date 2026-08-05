@@ -20,6 +20,9 @@ class AdminSeeder extends Seeder
             "email"=>"admin@admin.com",
             "password"=>"admin"
         ];
-        Admin::create($admin);
+        Admin::firstOrCreate(
+            ['email' => $admin['email']],
+            $admin
+        );
     }
 }
