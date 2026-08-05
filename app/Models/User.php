@@ -58,25 +58,24 @@ class User extends Authenticatable
         'password',
         'type',
         'limit_ad',
-        // 'device_id',
         'updated_at',
         'created_at',
         'deleted_at'
     ];
+
     public function setImageAttribute($value)
     {
-        $this->attributes['image'] = $this->uploadFile($value, 'profiles', $this->attributes['image'] ?? "");
+        if ($value instanceof \Illuminate\Http\UploadedFile) {
+            $this->attributes['image'] = $this->uploadFile($value, 'profiles', $this->attributes['image'] ?? "");
+        } else {
+            $this->attributes['image'] = $value;
+        }
     }
-
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
 
     protected $dates = [
         "birth_date"
     ];
+
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
@@ -117,7 +116,6 @@ class User extends Authenticatable
         return $this->hasMany(UserLocations::class);
     }
 
-
     public function ads()
     {
         return $this->hasMany(Ad::class, 'user_id');
@@ -147,7 +145,7 @@ class User extends Authenticatable
     // Relationship: Users that are following this user
     public function followers()
     {
-        return $this->belongsToMany(User::class, 'followers', 'user_id', 'follower_id');
+        return $this->belongsToMany(User::class, 'user_id', 'follower_id');
     }
 
     /**
