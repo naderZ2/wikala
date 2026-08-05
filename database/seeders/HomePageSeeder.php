@@ -11,6 +11,7 @@ use App\Models\HomePageCategory;
 use App\Models\Order;
 use App\Models\OrderDetails;
 use App\Models\Review;
+use App\Models\Country;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
@@ -18,13 +19,25 @@ class HomePageSeeder extends Seeder
 {
     public function run()
     {
+        // 0. Create Default Country if not existing
+        $country = Country::firstOrCreate(
+            ['name_en' => 'Saudi Arabia'],
+            [
+                'name' => 'المملكة العربية السعودية',
+                'country_code' => '+966',
+                'currency' => 'SAR',
+                'currency_en' => 'SAR',
+                'active' => 1,
+            ]
+        );
+
         // 1. Create Default Client/User for Orders & Reviews
         $user = User::firstOrCreate(
             ['email' => 'client@app.com'],
             [
                 'name' => 'أحمد علي',
                 'phone' => '0501234567',
-                'country_id' => 1,
+                'country_id' => $country->id,
                 'password' => Hash::make('password'),
                 'image' => 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=400&q=80',
             ]
