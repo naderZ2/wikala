@@ -15,11 +15,16 @@ use App\Http\Controllers\Seller;
 // Public routes (no auth required)
 // ==========================================
 Route::post('login', [Seller\Auth\LoginController::class, 'login']);
-Route::post('register', [Seller\Auth\LoginController::class, 'register']);
-Route::post('verify-otp', [Seller\Auth\LoginController::class, 'verifyOtp']);
-Route::post('forgot-password', [Seller\Auth\LoginController::class, 'forgotPassword']);
-Route::post('reset-password', [Seller\Auth\LoginController::class, 'resetPassword']);
-Route::post('resend-otp', [Seller\Auth\LoginController::class, 'resendOtp']);
+Route::post('register', [Seller\Auth\LoginController::class, 'register'])
+    ->middleware('throttle:5,1');
+Route::post('verify-otp', [Seller\Auth\LoginController::class, 'verifyOtp'])
+    ->middleware('throttle:10,1');
+Route::post('forgot-password', [Seller\Auth\LoginController::class, 'forgotPassword'])
+    ->middleware('throttle:5,1');
+Route::post('reset-password', [Seller\Auth\LoginController::class, 'resetPassword'])
+    ->middleware('throttle:10,1');
+Route::post('resend-otp', [Seller\Auth\LoginController::class, 'resendOtp'])
+    ->middleware('throttle:5,1');
 Route::get('payment/success', [Seller\PlanPaymentController::class, 'paymentSuccess'])->name('seller.payment.success');
 Route::get('payment/fail', [Seller\PlanPaymentController::class, 'paymentFail'])->name('seller.payment.fail');
 Route::get('payment/slider/success', [Seller\SliderController::class, 'paymentSuccess'])->name('seller.slider_payment.success');

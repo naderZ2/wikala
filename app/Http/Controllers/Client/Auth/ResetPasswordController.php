@@ -32,29 +32,39 @@ class ResetPasswordController extends Controller
     }
 
     public function resetPassword(ResetPasswordRequest $request){
-        $data = $request->validated();
-        
         $confirmationCode=ConfirmationCodes::where('phone',$request->phone)
         ->orderByDESC('id')
         ->first();
 
-    
-        
-        if(!$confirmationCode || $confirmationCode->code != $request->otpCode || $confirmationCode->active ==0 ){
-                return $this->failed(null,trans('lang.wrong_otp_number') );
-            }
-        if ($confirmationCode->created_at->addMinutes(5) < Carbon::now()) {
-                return $this->failed(null, trans('lang.otp_expired'));
+        if (
+            ! $confirmationCode
+            || (int) $confirmationCode->active !== 1
+            || ! hash_equals(
+                (string) $confirmationCode->code,
+                (string) $request->otpCode
+            )
+        ) {
+            return $this->failed(null,trans('lang.wrong_otp_number') );
         }
 
-        $data['password']=$request->password;
+        $expiryMinutes = max(
+            1,
+            (int) config('services.arrive_whats.otp_expiry_minutes', 5)
+        );
 
-        $user=$this->model::wherePhone($request->phone)->first();
-        
-        $user->update($data);
+        if ($confirmationCode->created_at->copy()->addMinutes($expiryMinutes)->isPast()) {
+            $confirmationCode->update(['active' => 0]);
 
+            return $this->failed(null, trans('lang.otp_expired'));
+        }
 
-        $confirmationCode->update(['active'=>0]);
+        \DB::transaction(function () use ($request, $confirmationCode): void {
+            $this->model::wherePhone($request->phone)
+                ->firstOrFail()
+                ->update(['password' => $request->password]);
+
+            $confirmationCode->update(['active'=>0]);
+        });
 
         return $this->success(null,trans('lang.new_password_created'));
     }

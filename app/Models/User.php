@@ -108,33 +108,8 @@ class User extends Authenticatable
             return null;
         }
 
-        $phone = preg_replace('/^\+|^00/', '', trim($phone));
-        
-        if (is_null($countryCode)) {
-            $countryCode = request('country_code', '965');
-        }
-        $countryCodeClean = preg_replace('/^\+|^00/', '', trim($countryCode));
-
-        try {
-            $countryCodes = \App\Models\Country::pluck('country_code')
-                ->map(fn($code) => preg_replace('/^\+|^00/', '', trim($code)))
-                ->filter()
-                ->toArray();
-        } catch (\Throwable $e) {
-            $countryCodes = ['965'];
-        }
-
-        if ($countryCodeClean !== '' && !in_array($countryCodeClean, $countryCodes)) {
-            $countryCodes[] = $countryCodeClean;
-        }
-        
-        foreach ($countryCodes as $code) {
-            if ($code !== '' && strpos($phone, $code) === 0) {
-                return $phone;
-            }
-        }
-        
-        return $countryCodeClean . $phone;
+        return app(\App\Services\ArriveWhatsService::class)
+            ->normalizePhoneNumber((string) $phone, $countryCode);
     }
 
     public function locations()

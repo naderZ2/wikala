@@ -41,11 +41,12 @@ Route::middleware(['checkLanguage'])->group(function () {
     Route::get('regions', [Client\CityController::class, 'regions']);
 
 
-    Route::post('send_otp_password', [Client\Auth\UserAuthController::class, 'sendOtpPassword']);
-    Route::post('send_otp_register', [Client\Auth\UserAuthController::class, 'sendOtpRegister']);
-    Route::post('reset_password', [Client\Auth\ResetPasswordController::class, 'resetPassword']);
-
-    Route::get('testotpwasage', [Client\Auth\UserAuthController::class, 'testotpwasage']);
+    Route::post('send_otp_password', [Client\Auth\UserAuthController::class, 'sendOtpPassword'])
+        ->middleware('throttle:5,1');
+    Route::post('send_otp_register', [Client\Auth\UserAuthController::class, 'sendOtpRegister'])
+        ->middleware('throttle:5,1');
+    Route::post('reset_password', [Client\Auth\ResetPasswordController::class, 'resetPassword'])
+        ->middleware('throttle:10,1');
     Route::post('login', [Client\Auth\UserAuthController::class, 'login']);
     Route::post('register', [Client\Auth\UserAuthController::class, 'register']);
 

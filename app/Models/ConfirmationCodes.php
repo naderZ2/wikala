@@ -18,6 +18,7 @@ class ConfirmationCodes extends Model
    
 
     protected $hidden = [
+        'code',
         'created_at',
         'updated_at',
     ];

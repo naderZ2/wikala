@@ -23,6 +23,16 @@ class RegisterRequest extends FormRequest
     }
     protected $stopOnFirstFailure = true;
 
+    protected function prepareForValidation(): void
+    {
+        if ($this->filled('phone')) {
+            $this->merge([
+                'phone' => app(\App\Services\ArriveWhatsService::class)
+                    ->normalizePhoneNumber($this->input('phone'), $this->input('country_code')),
+            ]);
+        }
+    }
+
 
     /**
      * Get the validation rules that apply to the request.
@@ -35,7 +45,7 @@ class RegisterRequest extends FormRequest
             'name' => 'required|max:255',
             // 'email' => 'required',
             'phone' => 'required',
-            'country_code' => 'sometimes|nullable|string|max:10',
+            'country_code' => ['sometimes', 'nullable', 'string', 'regex:/^\+?[0-9]{1,6}$/'],
             'password' => [
                 'required',
                 Password::min(8),

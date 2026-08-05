@@ -15,6 +15,13 @@ class RegisterRequest extends FormRequest
 
     protected function prepareForValidation()
     {
+        if ($this->filled('phone') && $this->filled('country_code')) {
+            $this->merge([
+                'phone' => app(\App\Services\ArriveWhatsService::class)
+                    ->normalizePhoneNumber($this->input('phone'), $this->input('country_code')),
+            ]);
+        }
+
         $existingSeller = null;
 
         if ($this->phone) {
@@ -37,6 +44,7 @@ class RegisterRequest extends FormRequest
         return [
             'name' => 'required|string|max:255',
             'phone' => 'required|string|unique:sellers,phone',
+            'country_code' => ['sometimes', 'nullable', 'string', 'regex:/^\+?[0-9]{1,6}$/'],
             'password' => 'required|string|min:6',
             'shop_name_en' => 'required|string|max:255',
             'shop_name_ar' => 'required|string|max:255',

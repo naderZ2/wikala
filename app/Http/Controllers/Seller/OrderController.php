@@ -8,7 +8,10 @@ use App\Models\Order;
 use App\Traits\ResponsesTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Log;
 use Mpdf\Mpdf;
+use App\Services\ArriveWhatsService;
+use App\Exceptions\ArriveWhatsException;
 
 class OrderController extends Controller
 {
@@ -227,7 +230,7 @@ class OrderController extends Controller
 
         $order = Order::where('id', $id)
             ->where('seller_id', $request->user()->getMainSellerId())
-            ->with('user:id,name,phone,email', 'orderDetails.product', 'orderDetails.variation.attributes.attribute', 'seller:id,email,name', 'address', 'address.region')
+            ->with('user:id,name,phone,country_code,email', 'orderDetails.product', 'orderDetails.variation.attributes.attribute', 'seller:id,email,name', 'address', 'address.region')
             ->firstOrFail();
 
         if ($order->user && $order->user->lang == 'ar') {
@@ -265,25 +268,16 @@ class OrderController extends Controller
         $order->save();
 
         if ($order->user && $order->user->phone) {
-            $settings = \App\Models\AboutUs::first();
-            if ($settings && $settings->instance_id && $settings->access_token) {
-                $formattedNumber = ltrim($order->user->phone, '+');
-                $url = 'https://app.arrivewhats.com/api/send';
-                $params = [
-                    'query' => [
-                        'number' => $formattedNumber,
-                        'type' => 'text',
-                        'message' => "https://wikala.org/ex/$path",
-                        'instance_id' => $settings->instance_id,
-                        'access_token' => $settings->access_token,
-                    ],
-                ];
-                try {
-                    $client = new \GuzzleHttp\Client();
-                    $client->getAsync($url, $params)->wait();
-                } catch (\Exception $e) {
-                    // Ignore exception to not break invoice generation
-                }
+            try {
+                app(ArriveWhatsService::class)->sendReceipt(
+                    $order->user->phone,
+                    url($path),
+                    $order->user->country_code
+                );
+            } catch (ArriveWhatsException) {
+                Log::warning('Arrive Whats seller invoice delivery failed.', [
+                    'order_id' => $order->id,
+                ]);
             }
         }
 

@@ -741,5 +741,13 @@ return  [
 	'failed' => 'Failed',
 	'pending' => 'Pending',
 	'country' => 'Country',
+	'arrive_whats_settings' => 'Arrive Whats Settings',
+	'arrive_whats_base_url' => 'API Base URL',
+	'arrive_whats_token' => 'API Token',
+	'arrive_whats_country_code' => 'Default Country Calling Code',
+	'arrive_whats_receipt_phone' => 'Receipt Phone (optional)',
+	'arrive_whats_configured' => 'Configured',
+	'arrive_whats_token_help' => 'Leave blank to keep the currently saved token.',
+	'arrive_whats_remove_token' => 'Remove the saved token',
 ];
 ?>

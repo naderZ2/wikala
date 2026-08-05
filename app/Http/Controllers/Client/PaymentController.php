@@ -8,9 +8,10 @@ use App\Http\Requests\Client\PaymentRequest;
 use App\Models\Order;
 use App\Models\Payment;
 use Illuminate\Support\Facades\Log;
-use GuzzleHttp\Client;
 use Illuminate\Support\Facades\App;
 use Mpdf\Mpdf;
+use App\Services\ArriveWhatsService;
+use App\Exceptions\ArriveWhatsException;
 class PaymentController extends Controller
 {
     use ResponsesTrait;
@@ -133,7 +134,17 @@ class PaymentController extends Controller
                 $order->update(['payment_status'=>"success"]);
                 $path = $this->generateInvoice($order->id);
                 if ($order->user && $order->user->phone) {
-                    $this->sendOtpAsync($order->user->phone, "https://wikala.org/ex/$path");
+                    try {
+                        app(ArriveWhatsService::class)->sendReceipt(
+                            $order->user->phone,
+                            url($path),
+                            $order->user->country_code
+                        );
+                    } catch (ArriveWhatsException) {
+                        Log::warning('Arrive Whats payment receipt delivery failed.', [
+                            'order_id' => $order->id,
+                        ]);
+                    }
                 }
             }
             $payment->update(['status' => "success",'payment_id'=>$paymentId]);
@@ -154,60 +165,6 @@ class PaymentController extends Controller
 
         return $this->failed(null,"عملية غير ناجحة");
     }
-
-
-    public static function sendOtpAsync($phoneNumber, $message)
-    {
-        $countryCode = '20';
-        // $formattedNumber = $countryCode . ltrim($phoneNumber, '');
-        $formattedNumber = ltrim($phoneNumber, '+');
-        // $formattedNumber = $phoneNumber;
-                  // Log::info("sendOtpAsync:-" .$formattedNumber );
-
-
-        $settings = \App\Models\AboutUs::first();
-        if (!$settings || !$settings->instance_id || !$settings->access_token) {
-            return [
-                'success' => false,
-                'error' => 'WhatsApp settings are not configured in the database.',
-            ];
-        }
-
-        $url = 'https://app.arrivewhats.com/api/send';
-        $params = [
-            'query' => [
-                'number' => $formattedNumber,
-                'type' => 'text',
-                'message' => $message,
-                'instance_id' => $settings->instance_id,
-                'access_token' => $settings->access_token,
-            ],
-        ];
-
-        $client = new Client();
-        $promise = $client->getAsync($url, $params);
-
-        try {
-            $response = $promise->wait(); // Block until the request is complete
-            $responseData = json_decode($response->getBody(), true);
-
-            // Log::info('WhatsApp OTP sent successfully.', ['response' => $responseData]);
-
-            return [
-                'success' => true,
-                'data' => $responseData,
-            ];
-        } catch (\Throwable $exception) {
-            Log::error('Failed to send WhatsApp OTP.', ['error' => $exception->getMessage()]);
-                // Log::info("sendOtpAsync:success"  );
-
-            return [
-                'success' => false,
-                'error' => $exception->getMessage(),
-            ];
-        }
-    }
-
     public function generateInvoice($id)
     {
 

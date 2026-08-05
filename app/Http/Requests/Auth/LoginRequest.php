@@ -21,6 +21,16 @@ class LoginRequest extends FormRequest
     }
     protected $stopOnFirstFailure = true;
 
+    protected function prepareForValidation(): void
+    {
+        if ($this->filled('phone')) {
+            $this->merge([
+                'phone' => app(\App\Services\ArriveWhatsService::class)
+                    ->normalizePhoneNumber($this->input('phone'), $this->input('country_code')),
+            ]);
+        }
+    }
+
 
     /**
      * Get the validation rules that apply to the request.
@@ -31,6 +41,7 @@ class LoginRequest extends FormRequest
     {
         return [
             'phone' => 'required',
+            'country_code' => ['sometimes', 'nullable', 'string', 'regex:/^\+?[0-9]{1,6}$/'],
             'password' => 'required',
             "device_id"=>"sometimes|nullable"
         ];

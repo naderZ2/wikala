@@ -64,4 +64,14 @@ return [
         'error_url' => env('PAYZAH_ERROR_URL', 'https://wikala.org/ex/api/fail'),
     ],
 
+    'arrive_whats' => [
+        'base_url' => env('ARRIVE_WHATS_BASE_URL', 'https://arrivewhats.com/api'),
+        'token' => env('ARRIVE_WHATS_TOKEN'),
+        'default_country_code' => env('ARRIVE_WHATS_DEFAULT_COUNTRY_CODE', '965'),
+        'receipt_phone' => env('ARRIVE_WHATS_RECEIPT_PHONE'),
+        'connect_timeout' => env('ARRIVE_WHATS_CONNECT_TIMEOUT', 5),
+        'timeout' => env('ARRIVE_WHATS_TIMEOUT', 15),
+        'otp_expiry_minutes' => env('OTP_EXPIRY_MINUTES', 5),
+    ],
+
 ];

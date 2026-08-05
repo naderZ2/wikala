@@ -13,10 +13,21 @@ class LoginRequest extends FormRequest
         return true;
     }
 
+    protected function prepareForValidation(): void
+    {
+        if ($this->filled('phone') && $this->filled('country_code')) {
+            $this->merge([
+                'phone' => app(\App\Services\ArriveWhatsService::class)
+                    ->normalizePhoneNumber($this->input('phone'), $this->input('country_code')),
+            ]);
+        }
+    }
+
     public function rules()
     {
         return [
             'phone' => 'required|exists:sellers,phone',
+            'country_code' => ['sometimes', 'nullable', 'string', 'regex:/^\+?[0-9]{1,6}$/'],
             'password' => 'required'
         ];
     }

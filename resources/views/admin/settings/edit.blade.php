@@ -109,18 +109,7 @@
 
 							
 
-							<div class="col-md-6 mb-3">
-								<label for="validationCustom01">@lang('lang.instance')</label>
-								<input class="form-control" id="validationCustom01" type="text" name="instance_id" value="{{ $settings->instance_id}}" required="">
-								<div class="valid-feedback">Looks good!</div>
-                                <div class="invalid-feedback">Please choose a instance_id.</div>
-							</div>
-							<div class="col-md-6 mb-3">
-								<label for="validationCustom01">@lang('lang.access_token')</label>
-								<input class="form-control" id="validationCustom01" type="text" name="access_token" value="{{ $settings->access_token}}" required="">
-								<div class="valid-feedback">Looks good!</div>
-                                <div class="invalid-feedback">Please choose a access_token.</div>
-							</div>
+							@include('admin.settings._arrive_whats')
 
 							<div class="col-md-6 mb-3">
 								<label for="validationCustom01">@lang('lang.delivery_fee')</label>

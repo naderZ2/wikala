@@ -2,272 +2,278 @@
 
 namespace App\Http\Controllers\Seller\Auth;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\Seller;
-use App\Models\ConfirmationCodes;
-use App\Traits\ResponsesTrait;
-use App\Traits\SendSmsTrait;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-use Carbon\Carbon;
 use App\Http\Requests\Seller\Auth\LoginRequest;
 use App\Http\Requests\Seller\Auth\RegisterRequest;
+use App\Models\ConfirmationCodes;
+use App\Models\Seller;
+use App\Services\ArriveWhatsService;
+use App\Traits\ResponsesTrait;
+use App\Traits\SendSmsTrait;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class LoginController extends Controller
 {
     use ResponsesTrait, SendSmsTrait;
 
-    /**
-     * Login with phone + password → return Passport token
-     */
     public function login(LoginRequest $request)
     {
         $seller = Seller::where('phone', $request->phone)->first();
 
-        if (!$seller || !Hash::check($request->password, $seller->password)) {
+        if (! $seller || ! Hash::check($request->password, $seller->password)) {
             return $this->failed(null, 'Invalid phone or password');
         }
 
-        // Get the main seller (or parent seller if the current user is an employee)
         $mainSeller = $seller->parent_id ? $seller->parent : $seller;
 
-        if (!$mainSeller || $mainSeller->payment_status !== 'paid') {
+        if (! $mainSeller || $mainSeller->payment_status !== 'paid') {
             return $this->failed([
                 'payment_pending' => true,
-                'seller_id' => $seller->id
+                'seller_id' => $seller->id,
             ], 'Payment pending. Please select a plan and pay to complete registration.');
         }
 
-        if (!$seller->active) {
+        if (! $seller->active) {
             return $this->failed(null, 'Your account is under review by admin');
         }
 
-        $token = $seller->createToken('seller-token')->accessToken;
-
         return $this->success([
-            'token' => $token,
-            'seller' => $seller
+            'token' => $seller->createToken('seller-token')->accessToken,
+            'seller' => $seller,
         ], 'Login successful');
     }
 
-    /**
-     * Register a new seller
-     */
     public function register(RegisterRequest $request)
     {
         $data = $request->only([
-            'name', 'phone', 'password',
-            'shop_name_en', 'shop_name_ar', 'plan_id'
+            'name',
+            'phone',
+            'password',
+            'shop_name_en',
+            'shop_name_ar',
+            'plan_id',
         ]);
-
-        // Use phone as email placeholder if no email provided
-        $data['email'] = $request->email ?? $request->phone . '@seller.e-expo.com';
-        $data['active'] = false; // Admin must approve
+        $data['email'] = $request->email ?? $request->phone.'@seller.e-expo.com';
+        $data['active'] = false;
 
         $seller = Seller::create($data);
 
-        // Handle logo upload
-        if ($request->hasFile('logo')) {
-            $seller->img_path = $request->file('logo');
-            $seller->save();
+        foreach ([
+            'logo' => 'img_path',
+            'banner' => 'banner',
+            'civil_id_image' => 'civil_id_image',
+            'commercial_license_image' => 'commercial_license_image',
+        ] as $input => $attribute) {
+            if ($request->hasFile($input)) {
+                $seller->{$attribute} = $request->file($input);
+            }
         }
+        $seller->save();
 
-        // Handle banner upload
-        if ($request->hasFile('banner')) {
-            $seller->banner = $request->file('banner');
-            $seller->save();
-        }
-
-        // Handle Civil ID image upload
-        if ($request->hasFile('civil_id_image')) {
-            $seller->civil_id_image = $request->file('civil_id_image');
-            $seller->save();
-        }
-
-        // Handle Commercial License image upload
-        if ($request->hasFile('commercial_license_image')) {
-            $seller->commercial_license_image = $request->file('commercial_license_image');
-            $seller->save();
-        }
-
-        // Attach categories (max 3)
         if ($request->categories) {
             $seller->categories()->sync(array_slice($request->categories, 0, 3));
         } elseif ($request->category_id) {
             $seller->categories()->sync([$request->category_id]);
         }
 
-        // Generate OTP
-        $code = rand(1000, 9999);
-        ConfirmationCodes::create([
-            'phone' => $request->phone,
-            'code' => $code,
-        ]);
-
-        // Send OTP via WhatsApp
-        $phone =  $request->phone;
-        $this->sendSmsWhatsApp($phone, $code);
+        if (! $this->sendAndStoreOtp(
+            $request->phone,
+            $request->country_code
+        )) {
+            return $this->failed(null, 'Unable to send OTP. Please try again.');
+        }
 
         return $this->success([
             'seller_id' => $seller->id,
-            'otp_code' => $code, // Remove in production
+            'channel' => 'whatsapp',
+            'expires_in' => $this->otpExpiryMinutes() * 60,
         ], 'Registration successful. Please verify your phone number.');
     }
 
-    /**
-     * Verify OTP code
-     */
     public function verifyOtp(Request $request)
     {
         $request->validate([
-            'phone' => 'required',
+            'phone' => 'required|string',
+            'country_code' => ['sometimes', 'nullable', 'string', 'regex:/^\+?[0-9]{1,6}$/'],
             'code' => 'required|string',
         ]);
-
-        $verification = ConfirmationCodes::where('phone', $request->phone)
-            ->where('code', $request->code)
+        $phone = $this->normalizePhone($request);
+        $verification = ConfirmationCodes::where('phone', $phone)
             ->where('active', 1)
             ->orderByDesc('id')
             ->first();
 
-        if (!$verification) {
+        if (! $this->otpMatches($verification, $request->code)) {
             return $this->failed(null, 'Invalid or expired OTP code');
         }
 
-        // Check if OTP is expired (5 minutes)
-        if ($verification->created_at->addMinutes(5) < Carbon::now()) {
+        if ($this->otpExpired($verification)) {
+            $verification->update(['active' => 0]);
+
             return $this->failed(null, 'OTP code has expired');
         }
 
-        // Mark code as used
         $verification->update(['active' => 0]);
 
         return $this->success(null, 'Phone number verified successfully');
     }
 
-    /**
-     * Forgot Password - Send OTP to seller phone
-     */
     public function forgotPassword(Request $request)
     {
         $request->validate([
             'phone' => 'required|string',
+            'country_code' => ['sometimes', 'nullable', 'string', 'regex:/^\+?[0-9]{1,6}$/'],
         ]);
+        $phone = $this->normalizePhone($request);
 
-        $seller = Seller::where('phone', $request->phone)->first();
-
-        if (!$seller) {
+        if (! Seller::where('phone', $phone)->exists()) {
             return $this->failed(null, 'No seller account found with this phone number');
         }
 
-        // Generate OTP
-        $code = rand(1111, 9999);
-        ConfirmationCodes::create([
-            'phone' => $request->phone,
-            'code' => $code,
-        ]);
-
-        // Send OTP via WhatsApp
-        $phone =  $request->phone;
-        $res = $this->sendSmsWhatsApp($phone, $code);
-
-        if (isset($res['data']) && $res['data']['status'] == 'error') {
-            return $this->failed(null, $res['data']['message']);
+        if (! $this->sendAndStoreOtp($phone, $request->country_code)) {
+            return $this->failed(null, 'Unable to send OTP. Please try again.');
         }
 
         return $this->success([
-            'otp_code' => $code, // Remove in production
+            'channel' => 'whatsapp',
+            'expires_in' => $this->otpExpiryMinutes() * 60,
         ], 'OTP sent successfully to your phone');
     }
 
-    /**
-     * Reset Password - Verify OTP and set new password
-     */
     public function resetPassword(Request $request)
     {
         $request->validate([
             'phone' => 'required|string',
+            'country_code' => ['sometimes', 'nullable', 'string', 'regex:/^\+?[0-9]{1,6}$/'],
             'code' => 'required|string',
             'password' => 'required|string|min:6|confirmed',
         ]);
-
-        $confirmationCode = ConfirmationCodes::where('phone', $request->phone)
+        $phone = $this->normalizePhone($request);
+        $confirmationCode = ConfirmationCodes::where('phone', $phone)
             ->orderByDesc('id')
             ->first();
 
-        if (!$confirmationCode || $confirmationCode->code != $request->code || $confirmationCode->active == 0) {
+        if (! $this->otpMatches($confirmationCode, $request->code)) {
             return $this->failed(null, 'Invalid or expired OTP code');
         }
 
-        // Check if OTP is expired (5 minutes)
-        if ($confirmationCode->created_at->addMinutes(5) < Carbon::now()) {
+        if ($this->otpExpired($confirmationCode)) {
+            $confirmationCode->update(['active' => 0]);
+
             return $this->failed(null, 'OTP code has expired');
         }
 
-        $seller = Seller::where('phone', $request->phone)->first();
+        $seller = Seller::where('phone', $phone)->first();
 
-        if (!$seller) {
+        if (! $seller) {
             return $this->failed(null, 'No seller account found with this phone number');
         }
 
-        $seller->update(['password' => $request->password]);
-
-        // Mark code as used
-        $confirmationCode->update(['active' => 0]);
+        DB::transaction(function () use ($seller, $request, $confirmationCode): void {
+            $seller->update(['password' => $request->password]);
+            $confirmationCode->update(['active' => 0]);
+        });
 
         return $this->success(null, 'Password reset successfully');
     }
 
-    /**
-     * Resend OTP - for both registration and forgot password
-     */
     public function resendOtp(Request $request)
     {
         $request->validate([
             'phone' => 'required|string',
+            'country_code' => ['sometimes', 'nullable', 'string', 'regex:/^\+?[0-9]{1,6}$/'],
             'type' => 'required|string|in:register,forgot_password',
         ]);
+        $phone = $this->normalizePhone($request);
 
-        // For forgot_password, check seller exists
-        if ($request->type === 'forgot_password') {
-            $seller = Seller::where('phone', $request->phone)->first();
-            if (!$seller) {
-                return $this->failed(null, 'No seller account found with this phone number');
-            }
+        if (
+            $request->type === 'forgot_password'
+            && ! Seller::where('phone', $phone)->exists()
+        ) {
+            return $this->failed(null, 'No seller account found with this phone number');
         }
 
-        // Deactivate old OTP codes for this phone
-        ConfirmationCodes::where('phone', $request->phone)
-            ->where('active', 1)
-            ->update(['active' => 0]);
-
-        // Generate new OTP
-        $code = rand(1111, 9999);
-        ConfirmationCodes::create([
-            'phone' => $request->phone,
-            'code' => $code,
-        ]);
-
-        // Send OTP via WhatsApp
-        $phone =  $request->phone;
-        $res = $this->sendSmsWhatsApp($phone, $code);
-
-        if (isset($res['data']) && $res['data']['status'] == 'error') {
-            return $this->failed(null, $res['data']['message']);
+        if (! $this->sendAndStoreOtp($phone, $request->country_code)) {
+            return $this->failed(null, 'Unable to send OTP. Please try again.');
         }
 
         return $this->success([
-            'otp_code' => $code, // Remove in production
+            'channel' => 'whatsapp',
+            'expires_in' => $this->otpExpiryMinutes() * 60,
         ], 'OTP resent successfully');
     }
 
-    /**
-     * Logout - revoke token
-     */
     public function logout(Request $request)
     {
         $request->user()->token()->revoke();
+
         return $this->success(null, 'Logged out successfully');
+    }
+
+    private function sendAndStoreOtp(
+        string $phone,
+        ?string $countryCode = null
+    ): bool {
+        $code = (string) random_int(1000, 9999);
+        $result = $this->sendSmsWhatsApp($phone, $code, $countryCode);
+
+        if (! $result['success']) {
+            return false;
+        }
+
+        DB::transaction(function () use ($phone, $code): void {
+            ConfirmationCodes::where('phone', $phone)
+                ->where('active', 1)
+                ->update(['active' => 0]);
+            ConfirmationCodes::create([
+                'phone' => $phone,
+                'code' => $code,
+                'active' => 1,
+            ]);
+        });
+
+        return true;
+    }
+
+    private function normalizePhone(Request $request): string
+    {
+        if (! $request->filled('country_code')) {
+            return trim((string) $request->phone);
+        }
+
+        return app(ArriveWhatsService::class)->normalizePhoneNumber(
+            $request->phone,
+            $request->country_code
+        );
+    }
+
+    private function otpMatches(
+        ?ConfirmationCodes $confirmationCode,
+        mixed $submittedCode
+    ): bool {
+        return $confirmationCode
+            && (int) $confirmationCode->active === 1
+            && hash_equals(
+                (string) $confirmationCode->code,
+                (string) $submittedCode
+            );
+    }
+
+    private function otpExpired(ConfirmationCodes $confirmationCode): bool
+    {
+        return $confirmationCode->created_at
+            ->copy()
+            ->addMinutes($this->otpExpiryMinutes())
+            ->isPast();
+    }
+
+    private function otpExpiryMinutes(): int
+    {
+        return max(
+            1,
+            (int) config('services.arrive_whats.otp_expiry_minutes', 5)
+        );
     }
 }

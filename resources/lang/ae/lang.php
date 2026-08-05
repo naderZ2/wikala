@@ -748,5 +748,13 @@ return  [
 	'Status' => 'الحالة',
 	'failed' => 'فشلت',
 	'country' => 'الدولة',
+	'arrive_whats_settings' => 'إعدادات Arrive Whats',
+	'arrive_whats_base_url' => 'الرابط الأساسي للواجهة البرمجية',
+	'arrive_whats_token' => 'رمز الواجهة البرمجية',
+	'arrive_whats_country_code' => 'مفتاح الاتصال الدولي الافتراضي',
+	'arrive_whats_receipt_phone' => 'رقم استلام الفواتير (اختياري)',
+	'arrive_whats_configured' => 'تم الإعداد',
+	'arrive_whats_token_help' => 'اترك الحقل فارغاً للاحتفاظ بالرمز المحفوظ.',
+	'arrive_whats_remove_token' => 'حذف الرمز المحفوظ',
 ];
 ?>

@@ -3,10 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\AboutUs;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\EditSettingRequest;
+use Illuminate\Support\Arr;
 
 class AboutUsController extends Controller
 {
@@ -17,10 +16,20 @@ class AboutUsController extends Controller
     }
 
     public function update(EditSettingRequest $request){
-        // Log::info($request->all());
-        $data=$request->validated();
-        // Log::info($data);
-        AboutUs::whereId(1)->update($data);
+        $settings = AboutUs::findOrFail(1);
+        $data = $request->validated();
+        $removeToken = (bool) Arr::pull($data, 'remove_arrive_whats_token', false);
+        $newToken = trim((string) Arr::pull($data, 'arrive_whats_token', ''));
+
+        if ($removeToken) {
+            $data['arrive_whats_token'] = null;
+        } elseif ($newToken !== '') {
+            $data['arrive_whats_token'] = $newToken;
+        }
+
+        // Saving through the model is required for the encrypted token cast.
+        $settings->fill($data)->save();
+
         return back()->with('success',trans('lang.updated'));
     }
 }
