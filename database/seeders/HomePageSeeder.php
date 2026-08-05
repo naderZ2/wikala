@@ -25,7 +25,6 @@ class HomePageSeeder extends Seeder
                 'name' => 'أحمد علي',
                 'phone' => '0501234567',
                 'country_id' => 1,
-                'birth_date' => '1995-05-15',
                 'password' => Hash::make('password'),
                 'image' => 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=400&q=80',
             ]
