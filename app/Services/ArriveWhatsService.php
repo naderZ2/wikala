@@ -67,8 +67,9 @@ class ArriveWhatsService
                     'msgtext' => $message,
                 ]);
         } catch (Throwable $exception) {
-            // Do not retain the HTTP exception: it may contain the form body,
-            // including the provider token and message text.
+            \Illuminate\Support\Facades\Log::error('ArriveWhats Connection Exception', [
+                'error' => $exception->getMessage(),
+            ]);
             throw new ArriveWhatsException('WhatsApp delivery failed.');
         }
 
@@ -77,7 +78,16 @@ class ArriveWhatsService
             && filter_var($payload['status'] ?? false, FILTER_VALIDATE_BOOLEAN);
 
         if (! $response->successful() || ! $providerAccepted) {
-            throw new ArriveWhatsException('WhatsApp delivery failed.');
+            $providerMessage = is_array($payload) && isset($payload['message'])
+                ? (string) $payload['message']
+                : 'Unknown provider response';
+
+            \Illuminate\Support\Facades\Log::error('ArriveWhats API Delivery Error', [
+                'http_status' => $response->status(),
+                'provider_message' => $providerMessage,
+            ]);
+
+            throw new ArriveWhatsException("WhatsApp delivery failed ({$response->status()}): {$providerMessage}");
         }
 
         return $payload;

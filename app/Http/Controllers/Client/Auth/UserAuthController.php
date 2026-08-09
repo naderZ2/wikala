@@ -173,8 +173,8 @@ class UserAuthController extends Controller
                 "Your OTP is: {$code}",
                 $countryCode
             );
-        } catch (ArriveWhatsException) {
-            Log::warning('Arrive Whats OTP delivery failed.', ['flow' => $flow]);
+        } catch (ArriveWhatsException $e) {
+            Log::warning('Arrive Whats OTP delivery failed.', ['flow' => $flow, 'error' => $e->getMessage()]);
 
             return $this->failed(null, 'Unable to send OTP. Please try again.');
         }

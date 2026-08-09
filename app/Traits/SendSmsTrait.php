@@ -24,9 +24,10 @@ trait SendSmsTrait
                 'success' => true,
                 'data' => $data,
             ];
-        } catch (ArriveWhatsException) {
+        } catch (ArriveWhatsException $e) {
             Log::warning('Arrive Whats OTP delivery failed.', [
                 'flow' => 'seller_auth',
+                'error' => $e->getMessage(),
             ]);
 
             return [
