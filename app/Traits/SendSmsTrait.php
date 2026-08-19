@@ -32,7 +32,17 @@ trait SendSmsTrait
 
             return [
                 'success' => false,
-                'error' => 'Unable to send OTP. Please try again.',
+                'error' => $e->getMessage(),
+            ];
+        } catch (\Throwable $e) {
+            Log::warning('Arrive Whats OTP delivery failed.', [
+                'flow' => 'seller_auth',
+                'error' => $e->getMessage(),
+            ]);
+
+            return [
+                'success' => false,
+                'error' => $e->getMessage(),
             ];
         }
     }

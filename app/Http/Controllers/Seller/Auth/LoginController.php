@@ -79,18 +79,27 @@ class LoginController extends Controller
             $seller->categories()->sync([$request->category_id]);
         }
 
-        if (! $this->sendAndStoreOtp(
+        $otpResult = $this->sendAndStoreOtp(
             $request->phone,
             $request->country_code
-        )) {
-            return $this->failed(null, 'Unable to send OTP. Please try again.');
-        }
+        );
 
-        return $this->success([
+        $responseData = [
             'seller_id' => $seller->id,
             'channel' => 'whatsapp',
             'expires_in' => $this->otpExpiryMinutes() * 60,
-        ], 'Registration successful. Please verify your phone number.');
+            'otp' => $otpResult['otp'] ?? null,
+            'otp_sent' => $otpResult['success'] ?? false,
+        ];
+
+        if (! empty($otpResult['error'])) {
+            $responseData['otp_error'] = $otpResult['error'];
+        }
+
+        return $this->success(
+            $responseData,
+            'Registration successful. Please verify your phone number.'
+        );
     }
 
     public function verifyOtp(Request $request)
@@ -133,14 +142,23 @@ class LoginController extends Controller
             return $this->failed(null, 'No seller account found with this phone number');
         }
 
-        if (! $this->sendAndStoreOtp($phone, $request->country_code)) {
-            return $this->failed(null, 'Unable to send OTP. Please try again.');
-        }
+        $otpResult = $this->sendAndStoreOtp($phone, $request->country_code);
 
-        return $this->success([
+        $responseData = [
             'channel' => 'whatsapp',
             'expires_in' => $this->otpExpiryMinutes() * 60,
-        ], 'OTP sent successfully to your phone');
+            'otp' => $otpResult['otp'] ?? null,
+            'otp_sent' => $otpResult['success'] ?? false,
+        ];
+
+        if (! empty($otpResult['error'])) {
+            $responseData['otp_error'] = $otpResult['error'];
+        }
+
+        return $this->success(
+            $responseData,
+            'OTP sent successfully to your phone'
+        );
     }
 
     public function resetPassword(Request $request)
@@ -196,14 +214,23 @@ class LoginController extends Controller
             return $this->failed(null, 'No seller account found with this phone number');
         }
 
-        if (! $this->sendAndStoreOtp($phone, $request->country_code)) {
-            return $this->failed(null, 'Unable to send OTP. Please try again.');
-        }
+        $otpResult = $this->sendAndStoreOtp($phone, $request->country_code);
 
-        return $this->success([
+        $responseData = [
             'channel' => 'whatsapp',
             'expires_in' => $this->otpExpiryMinutes() * 60,
-        ], 'OTP resent successfully');
+            'otp' => $otpResult['otp'] ?? null,
+            'otp_sent' => $otpResult['success'] ?? false,
+        ];
+
+        if (! empty($otpResult['error'])) {
+            $responseData['otp_error'] = $otpResult['error'];
+        }
+
+        return $this->success(
+            $responseData,
+            'OTP resent successfully'
+        );
     }
 
     public function logout(Request $request)
@@ -216,13 +243,9 @@ class LoginController extends Controller
     private function sendAndStoreOtp(
         string $phone,
         ?string $countryCode = null
-    ): bool {
+    ): array {
         $code = (string) random_int(1000, 9999);
         $result = $this->sendSmsWhatsApp($phone, $code, $countryCode);
-
-        if (! $result['success']) {
-            return false;
-        }
 
         DB::transaction(function () use ($phone, $code): void {
             ConfirmationCodes::where('phone', $phone)
@@ -235,7 +258,12 @@ class LoginController extends Controller
             ]);
         });
 
-        return true;
+        return [
+            'success' => $result['success'] ?? false,
+            'otp' => $code,
+            'error' => ! empty($result['success']) ? null : ($result['error'] ?? 'Unable to send OTP'),
+            'data' => $result['data'] ?? null,
+        ];
     }
 
     private function normalizePhone(Request $request): string
