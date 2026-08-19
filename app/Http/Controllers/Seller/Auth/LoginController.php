@@ -49,6 +49,7 @@ class LoginController extends Controller
     {
         $data = $request->only([
             'name',
+            'email',
             'phone',
             'password',
             'shop_name_en',

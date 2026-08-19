@@ -44,18 +44,18 @@ class RegisterRequest extends FormRequest
         return [
             'name' => 'required|string|max:255',
             'phone' => 'required|string|unique:sellers,phone',
-            'country_code' => ['sometimes', 'nullable', 'string', 'regex:/^\+?[0-9]{1,6}$/'],
             'password' => 'required|string|min:6',
-            'shop_name_en' => 'required|string|max:255',
-            'shop_name_ar' => 'required|string|max:255',
+            'country_code' => ['sometimes', 'nullable', 'string', 'regex:/^\+?[0-9]{1,6}$/'],
+            'shop_name_en' => 'nullable|string|max:255',
+            'shop_name_ar' => 'nullable|string|max:255',
             'plan_id' => 'nullable|exists:plans,id',
             'category_id' => 'nullable|exists:categories,id',  // single category (backward compatible)
             'categories' => 'nullable|array|max:3',
-            'categories.*' => 'exists:categories,id',
+            'categories.*' => 'nullable|exists:categories,id',
             'logo' => 'nullable|image|max:2048',
             'banner' => 'nullable|image|max:2048',
-            'civil_id_image' => 'required|image|max:2048',
-            'commercial_license_image' => 'required|image|max:2048',
+            'civil_id_image' => 'nullable|image|max:2048',
+            'commercial_license_image' => 'nullable|image|max:2048',
         ];
     }
 
