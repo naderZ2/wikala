@@ -7,15 +7,10 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-
 class CheckPhoneRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     *
-     * @return bool
-     */
     use ResponsesTrait;
+
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -25,7 +20,8 @@ class CheckPhoneRequest extends FormRequest
     {
         return true;
     }
-    protected $stopOnFirstFailure=true;
+
+    protected $stopOnFirstFailure = true;
 
     protected function prepareForValidation(): void
     {
@@ -45,20 +41,28 @@ class CheckPhoneRequest extends FormRequest
     public function rules()
     {
         return [
-            'phone' => 'required|unique:users,phone',
+            'phone' => [
+                'required',
+                function ($attribute, $value, $fail) {
+                    $candidates = \App\Models\User::phoneCandidates($value, $this->input('country_code'));
+                    if (\App\Models\User::whereIn('phone', $candidates)->exists()) {
+                        $fail(__('lang.phone_already_registered'));
+                    }
+                },
+            ],
             'country_code' => ['sometimes', 'nullable', 'string', 'regex:/^\+?[0-9]{1,6}$/'],
         ];
-
     }
 
     public function failedValidation(Validator $validator)
     {
-        throw new HttpResponseException($this->failed(null,$validator->errors()->first()));
+        throw new HttpResponseException($this->failed(null, $validator->errors()->first()));
     }
 
-    public function messages(): array {
+    public function messages(): array
+    {
         return [
-            'phone.unique'  => __('lang.phone_already_registered'),
+            'phone.unique' => __('lang.phone_already_registered'),
         ];
     }
 }

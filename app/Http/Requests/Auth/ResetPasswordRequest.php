@@ -11,6 +11,7 @@ use Illuminate\Http\Exceptions\HttpResponseException;
 class ResetPasswordRequest extends FormRequest
 {
     use ResponsesTrait;
+
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -20,7 +21,8 @@ class ResetPasswordRequest extends FormRequest
     {
         return true;
     }
-    protected $stopOnFirstFailure=true;
+
+    protected $stopOnFirstFailure = true;
 
     protected function prepareForValidation(): void
     {
@@ -40,16 +42,20 @@ class ResetPasswordRequest extends FormRequest
     public function rules()
     {
         return [
-            'phone' => 'required|exists:users,phone',
+            'phone' => [
+                'required',
+                function ($attribute, $value, $fail) {
+                    $candidates = \App\Models\User::phoneCandidates($value, $this->input('country_code'));
+                    if (! \App\Models\User::whereIn('phone', $candidates)->exists()) {
+                        $fail(__('lang.phone_not_registered'));
+                    }
+                },
+            ],
             'country_code' => ['sometimes', 'nullable', 'string', 'regex:/^\+?[0-9]{1,6}$/'],
             'otpCode' => 'required',
             'password' => [
-                'required','confirmed',
-                Password::min(8) 
-                    ->mixedCase()        
-                    ->letters()   
-                    ->numbers()
-                    ->symbols(),     
+                'required', 'confirmed',
+                Password::min(8),
             ],
         ];
     }
@@ -58,6 +64,4 @@ class ResetPasswordRequest extends FormRequest
     {
         throw new HttpResponseException($this->failed($validator->errors()->first()));
     }
-
-    
 }

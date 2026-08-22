@@ -15,7 +15,7 @@ class RegisterRequest extends FormRequest
 
     protected function prepareForValidation()
     {
-        if ($this->filled('phone') && $this->filled('country_code')) {
+        if ($this->filled('phone')) {
             $this->merge([
                 'phone' => app(\App\Services\ArriveWhatsService::class)
                     ->normalizePhoneNumber($this->input('phone'), $this->input('country_code')),
@@ -25,7 +25,8 @@ class RegisterRequest extends FormRequest
         $existingSeller = null;
 
         if ($this->phone) {
-            $existingSeller = \App\Models\Seller::where('phone', $this->phone)->first();
+            $candidates = \App\Models\Seller::phoneCandidates($this->phone, $this->input('country_code'));
+            $existingSeller = \App\Models\Seller::whereIn('phone', $candidates)->first();
         }
 
         if (!$existingSeller && $this->email) {
@@ -43,7 +44,16 @@ class RegisterRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255',
-            'phone' => 'required|string|unique:sellers,phone',
+            'phone' => [
+                'required',
+                'string',
+                function ($attribute, $value, $fail) {
+                    $candidates = \App\Models\Seller::phoneCandidates($value, $this->input('country_code'));
+                    if (\App\Models\Seller::whereIn('phone', $candidates)->exists()) {
+                        $fail(__('validation.unique', ['attribute' => 'phone']));
+                    }
+                },
+            ],
             'password' => 'required|string|min:6',
             'country_code' => ['sometimes', 'nullable', 'string', 'regex:/^\+?[0-9]{1,6}$/'],
             'shop_name_en' => 'nullable|string|max:255',

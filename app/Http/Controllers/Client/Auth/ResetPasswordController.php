@@ -32,9 +32,14 @@ class ResetPasswordController extends Controller
     }
 
     public function resetPassword(ResetPasswordRequest $request){
-        $confirmationCode=ConfirmationCodes::where('phone',$request->phone)
-        ->orderByDESC('id')
-        ->first();
+        $phoneCandidates = $this->model::phoneCandidates(
+            $request->phone,
+            $request->input('country_code')
+        );
+
+        $confirmationCode = ConfirmationCodes::whereIn('phone', $phoneCandidates)
+            ->orderByDESC('id')
+            ->first();
 
         if (
             ! $confirmationCode
@@ -58,12 +63,12 @@ class ResetPasswordController extends Controller
             return $this->failed(null, trans('lang.otp_expired'));
         }
 
-        \DB::transaction(function () use ($request, $confirmationCode): void {
-            $this->model::wherePhone($request->phone)
+        \DB::transaction(function () use ($request, $confirmationCode, $phoneCandidates): void {
+            $this->model::whereIn('phone', $phoneCandidates)
                 ->firstOrFail()
                 ->update(['password' => $request->password]);
 
-            $confirmationCode->update(['active'=>0]);
+            ConfirmationCodes::whereIn('phone', $phoneCandidates)->update(['active'=>0]);
         });
 
         return $this->success(null,trans('lang.new_password_created'));

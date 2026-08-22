@@ -111,6 +111,22 @@ class User extends Authenticatable
             ->normalizePhoneNumber((string) $phone, $countryCode);
     }
 
+    public static function phoneCandidates(?string $phone, ?string $countryCode = null): array
+    {
+        return app(\App\Services\ArriveWhatsService::class)
+            ->phoneCandidates($phone, $countryCode);
+    }
+
+    public function findForPassport($username)
+    {
+        $candidates = static::phoneCandidates($username);
+
+        return $this->where(function ($query) use ($candidates, $username) {
+            $query->whereIn('phone', $candidates)
+                ->orWhere('email', $username);
+        })->first();
+    }
+
     public function locations()
     {
         return $this->hasMany(UserLocations::class);

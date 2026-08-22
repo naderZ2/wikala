@@ -55,6 +55,32 @@ class Seller extends Authenticatable
             $this->attributes['password'] = bcrypt($value);
     }
 
+    public static function formatPhoneNumber($phone, $countryCode = null): ?string
+    {
+        if (is_null($phone)) {
+            return null;
+        }
+
+        return app(\App\Services\ArriveWhatsService::class)
+            ->normalizePhoneNumber((string) $phone, $countryCode);
+    }
+
+    public static function phoneCandidates(?string $phone, ?string $countryCode = null): array
+    {
+        return app(\App\Services\ArriveWhatsService::class)
+            ->phoneCandidates($phone, $countryCode);
+    }
+
+    public function findForPassport($username)
+    {
+        $candidates = static::phoneCandidates($username);
+
+        return $this->where(function ($query) use ($candidates, $username) {
+            $query->whereIn('phone', $candidates)
+                ->orWhere('email', $username);
+        })->first();
+    }
+
     public function categories()
     {
         return $this->belongsToMany(Category::class);

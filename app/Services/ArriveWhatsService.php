@@ -157,9 +157,72 @@ class ArriveWhatsService
             return $phoneDigits;
         }
 
+        // If no explicit country code was provided in arguments, check if phoneDigits starts with a known country calling code
+        if (! $countryCode) {
+            $knownPrefixes = [
+                '965', '966', '971', '974', '973', '968', '962', '961', '964', '967',
+                '963', '970', '972', '20', '212', '213', '216', '218', '249', '1',
+                '44', '90', '91', '92', '33', '49',
+            ];
+            foreach ($knownPrefixes as $prefix) {
+                if (str_starts_with($phoneDigits, $prefix) && strlen($phoneDigits) >= (strlen($prefix) + 7)) {
+                    return $phoneDigits;
+                }
+            }
+        }
+
         $localNumber = preg_replace('/^0+/', '', $phoneDigits) ?? $phoneDigits;
 
         return $countryDigits.$localNumber;
+    }
+
+    /**
+     * Return all possible string variations of a phone number (with/without plus prefix,
+     * normalized international format, and with country code) to ensure seamless matching
+     * in login and authentication lookups.
+     */
+    public function phoneCandidates(?string $phone, ?string $countryCode = null): array
+    {
+        $rawPhone = trim((string) $phone);
+
+        if ($rawPhone === '') {
+            return [];
+        }
+
+        $phoneDigits = preg_replace('/\D+/', '', $rawPhone) ?? '';
+
+        if (str_starts_with($rawPhone, '00')) {
+            $phoneDigits = substr($phoneDigits, 2);
+        }
+
+        $normalized = $this->normalizePhoneNumber($rawPhone, $countryCode);
+
+        $candidates = [
+            $rawPhone,
+            $phoneDigits,
+            '+'.$phoneDigits,
+            $normalized,
+            '+'.$normalized,
+            ltrim($rawPhone, '+'),
+            '+'.ltrim($rawPhone, '+'),
+        ];
+
+        if ($countryCode) {
+            $countryDigits = preg_replace('/\D+/', '', (string) $countryCode) ?? '';
+
+            if (str_starts_with($countryDigits, '00')) {
+                $countryDigits = substr($countryDigits, 2);
+            }
+
+            if ($countryDigits !== '' && ! str_starts_with($phoneDigits, $countryDigits)) {
+                $local = preg_replace('/^0+/', '', $phoneDigits) ?? $phoneDigits;
+                $withCc = $countryDigits.$local;
+                $candidates[] = $withCc;
+                $candidates[] = '+'.$withCc;
+            }
+        }
+
+        return array_values(array_unique(array_filter($candidates, fn ($c) => $c !== '' && $c !== '+')));
     }
 
     /**

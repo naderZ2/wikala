@@ -15,7 +15,7 @@ class LoginRequest extends FormRequest
 
     protected function prepareForValidation(): void
     {
-        if ($this->filled('phone') && $this->filled('country_code')) {
+        if ($this->filled('phone')) {
             $this->merge([
                 'phone' => app(\App\Services\ArriveWhatsService::class)
                     ->normalizePhoneNumber($this->input('phone'), $this->input('country_code')),
@@ -26,16 +26,9 @@ class LoginRequest extends FormRequest
     public function rules()
     {
         return [
-            'phone' => 'required|exists:sellers,phone',
+            'phone' => 'required',
             'country_code' => ['sometimes', 'nullable', 'string', 'regex:/^\+?[0-9]{1,6}$/'],
-            'password' => 'required'
-        ];
-    }
-
-    public function messages(): array
-    {
-        return [
-            'phone.exists' => __('lang.phone_not_registered'),
+            'password' => 'required',
         ];
     }
 

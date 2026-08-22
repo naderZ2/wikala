@@ -20,7 +20,8 @@ class LoginController extends Controller
 
     public function login(LoginRequest $request)
     {
-        $seller = Seller::where('phone', $request->phone)->first();
+        $phoneCandidates = Seller::phoneCandidates($request->phone, $request->country_code);
+        $seller = Seller::whereIn('phone', $phoneCandidates)->first();
 
         if (! $seller || ! Hash::check($request->password, $seller->password)) {
             return $this->failed(null, 'Invalid phone or password');
@@ -109,8 +110,8 @@ class LoginController extends Controller
             'country_code' => ['sometimes', 'nullable', 'string', 'regex:/^\+?[0-9]{1,6}$/'],
             'code' => 'required|string',
         ]);
-        $phone = $this->normalizePhone($request);
-        $verification = ConfirmationCodes::where('phone', $phone)
+        $phoneCandidates = Seller::phoneCandidates($request->phone, $request->country_code);
+        $verification = ConfirmationCodes::whereIn('phone', $phoneCandidates)
             ->where('active', 1)
             ->orderByDesc('id')
             ->first();
@@ -136,9 +137,10 @@ class LoginController extends Controller
             'phone' => 'required|string',
             'country_code' => ['sometimes', 'nullable', 'string', 'regex:/^\+?[0-9]{1,6}$/'],
         ]);
+        $phoneCandidates = Seller::phoneCandidates($request->phone, $request->country_code);
         $phone = $this->normalizePhone($request);
 
-        if (! Seller::where('phone', $phone)->exists()) {
+        if (! Seller::whereIn('phone', $phoneCandidates)->exists()) {
             return $this->failed(null, 'No seller account found with this phone number');
         }
 
@@ -169,8 +171,8 @@ class LoginController extends Controller
             'code' => 'required|string',
             'password' => 'required|string|min:6|confirmed',
         ]);
-        $phone = $this->normalizePhone($request);
-        $confirmationCode = ConfirmationCodes::where('phone', $phone)
+        $phoneCandidates = Seller::phoneCandidates($request->phone, $request->country_code);
+        $confirmationCode = ConfirmationCodes::whereIn('phone', $phoneCandidates)
             ->orderByDesc('id')
             ->first();
 
@@ -184,15 +186,15 @@ class LoginController extends Controller
             return $this->failed(null, 'OTP code has expired');
         }
 
-        $seller = Seller::where('phone', $phone)->first();
+        $seller = Seller::whereIn('phone', $phoneCandidates)->first();
 
         if (! $seller) {
             return $this->failed(null, 'No seller account found with this phone number');
         }
 
-        DB::transaction(function () use ($seller, $request, $confirmationCode): void {
+        DB::transaction(function () use ($seller, $request, $confirmationCode, $phoneCandidates): void {
             $seller->update(['password' => $request->password]);
-            $confirmationCode->update(['active' => 0]);
+            ConfirmationCodes::whereIn('phone', $phoneCandidates)->update(['active' => 0]);
         });
 
         return $this->success(null, 'Password reset successfully');
@@ -205,11 +207,12 @@ class LoginController extends Controller
             'country_code' => ['sometimes', 'nullable', 'string', 'regex:/^\+?[0-9]{1,6}$/'],
             'type' => 'required|string|in:register,forgot_password',
         ]);
+        $phoneCandidates = Seller::phoneCandidates($request->phone, $request->country_code);
         $phone = $this->normalizePhone($request);
 
         if (
             $request->type === 'forgot_password'
-            && ! Seller::where('phone', $phone)->exists()
+            && ! Seller::whereIn('phone', $phoneCandidates)->exists()
         ) {
             return $this->failed(null, 'No seller account found with this phone number');
         }
@@ -244,15 +247,17 @@ class LoginController extends Controller
         string $phone,
         ?string $countryCode = null
     ): array {
+        $phoneCandidates = Seller::phoneCandidates($phone, $countryCode);
+        $normalizedPhone = app(ArriveWhatsService::class)->normalizePhoneNumber($phone, $countryCode);
         $code = (string) random_int(1000, 9999);
-        $result = $this->sendSmsWhatsApp($phone, $code, $countryCode);
+        $result = $this->sendSmsWhatsApp($normalizedPhone, $code, $countryCode);
 
-        DB::transaction(function () use ($phone, $code): void {
-            ConfirmationCodes::where('phone', $phone)
+        DB::transaction(function () use ($phoneCandidates, $normalizedPhone, $code): void {
+            ConfirmationCodes::whereIn('phone', $phoneCandidates)
                 ->where('active', 1)
                 ->update(['active' => 0]);
             ConfirmationCodes::create([
-                'phone' => $phone,
+                'phone' => $normalizedPhone,
                 'code' => $code,
                 'active' => 1,
             ]);
@@ -268,13 +273,9 @@ class LoginController extends Controller
 
     private function normalizePhone(Request $request): string
     {
-        if (! $request->filled('country_code')) {
-            return trim((string) $request->phone);
-        }
-
         return app(ArriveWhatsService::class)->normalizePhoneNumber(
             $request->phone,
-            $request->country_code
+            $request->input('country_code')
         );
     }
 

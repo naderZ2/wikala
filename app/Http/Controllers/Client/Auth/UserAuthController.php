@@ -15,6 +15,7 @@ use App\Services\ArriveWhatsService;
 use App\Traits\ResponsesTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 
 class UserAuthController extends Controller
@@ -23,11 +24,11 @@ class UserAuthController extends Controller
 
     public function checkClientExists(CheckClientExistsRequest $request)
     {
-        $formattedPhone = User::formatPhoneNumber(
+        $phoneCandidates = User::phoneCandidates(
             $request->phone,
             $request->country_code
         );
-        $user = User::where('phone', $formattedPhone)->first();
+        $user = User::whereIn('phone', $phoneCandidates)->first();
 
         if ($user) {
             return $this->failed(null, trans('lang.emailorphone'));
@@ -47,14 +48,15 @@ class UserAuthController extends Controller
             $request->phone,
             $countryCode
         );
+        $phoneCandidates = User::phoneCandidates($request->phone, $countryCode);
 
         $data['phone'] = $formattedPhone;
         $data['country_code'] = preg_replace('/\D+/', '', (string) $countryCode);
 
         $user = User::withTrashed()
-            ->where('phone', $formattedPhone)
+            ->whereIn('phone', $phoneCandidates)
             ->first();
-        $confirmationCode = ConfirmationCodes::where('phone', $formattedPhone)
+        $confirmationCode = ConfirmationCodes::whereIn('phone', $phoneCandidates)
             ->orderByDesc('id')
             ->first();
 
@@ -90,22 +92,29 @@ class UserAuthController extends Controller
 
     public function login(LoginRequest $request)
     {
-        $credentials = [
-            'phone' => User::formatPhoneNumber(
-                $request->phone,
-                $request->country_code
-            ),
-            'password' => $request->password,
-        ];
+        $phoneCandidates = User::phoneCandidates(
+            $request->phone,
+            $request->country_code
+        );
 
-        if (! auth()->attempt($credentials)) {
+        $user = User::whereIn('phone', $phoneCandidates)->first();
+
+        if (! $user || ! Hash::check($request->password, $user->password)) {
             return $this->failed(
                 null,
                 trans('lang.wrong_username_or_password')
             );
         }
 
-        $user = auth()->user();
+        if ($user->deleted_at !== null) {
+            return $this->failed(
+                null,
+                trans('lang.wrong_username_or_password')
+            );
+        }
+
+        auth()->login($user);
+
         $user->update(['device_id' => $request->device_id]);
         $user->token = $user->createToken('API Token')->accessToken;
         $user->type = 1;
@@ -165,6 +174,7 @@ class UserAuthController extends Controller
             $phone,
             $countryCode
         );
+        $phoneCandidates = User::phoneCandidates($phone, $countryCode);
         $code = (string) random_int(1000, 9999);
 
         try {
@@ -179,8 +189,8 @@ class UserAuthController extends Controller
             return $this->failed(null, 'Unable to send OTP. Please try again.');
         }
 
-        DB::transaction(function () use ($formattedPhone, $code): void {
-            ConfirmationCodes::where('phone', $formattedPhone)
+        DB::transaction(function () use ($phoneCandidates, $formattedPhone, $code): void {
+            ConfirmationCodes::whereIn('phone', $phoneCandidates)
                 ->where('active', 1)
                 ->update(['active' => 0]);
 
